@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-14T12:35:57+07:00",
+  "id": "getting-started",
+  "duration": 36,
+  "title": "Getting Started with Our Learning Platform",
+  "summary": "Getting Started with Our Learning Platform",
+  "source": "getting-started.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "tutorial",
+    "beginner"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/yourusername/feedback",
+  "ga": "0",
+  "url": "getting-started"
+}

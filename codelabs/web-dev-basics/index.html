@@ -1,0 +1,712 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Web Development Basics</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid="0"
+                  codelab-ga4id=""
+                  id="web-dev-basics"
+                  title="Web Development Basics"
+                  environment="web"
+                  feedback-link="https://github.com/yourusername/feedback">
+    
+      <google-codelab-step label="Introduction" duration="2">
+        <p>Welcome to Web Development Basics! In this tutorial, you&#39;ll learn the three core technologies that power the web.</p>
+<h2 is-upgraded>What You&#39;ll Build</h2>
+<p>By the end of this tutorial, you&#39;ll create a simple interactive webpage with:</p>
+<ul>
+<li>Structured content (HTML)</li>
+<li>Beautiful styling (CSS)</li>
+<li>Interactive features (JavaScript)</li>
+</ul>
+<h2 is-upgraded>Prerequisites</h2>
+<ul>
+<li>A text editor (VS Code recommended)</li>
+<li>A web browser</li>
+<li>Basic computer skills</li>
+</ul>
+<p>Positive : No prior programming experience needed! We&#39;ll start from scratch.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Understanding HTML" duration="10">
+        <p>HTML (HyperText Markup Language) is the backbone of web pages. It defines the structure and content.</p>
+<h2 is-upgraded>Basic HTML Structure</h2>
+<p>Every HTML document follows this basic structure:</p>
+<pre><code language="language-html" class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;en&#34;&gt;
+&lt;head&gt;
+    &lt;meta charset=&#34;UTF-8&#34;&gt;
+    &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;&gt;
+    &lt;title&gt;My First Webpage&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Welcome to My Website&lt;/h1&gt;
+    &lt;p&gt;This is my first paragraph.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h2 is-upgraded>Common HTML Elements</h2>
+<p>Here are the most frequently used HTML tags:</p>
+<p><strong>Headings:</strong></p>
+<pre><code language="language-html" class="language-html">&lt;h1&gt;Main Heading&lt;/h1&gt;
+&lt;h2&gt;Subheading&lt;/h2&gt;
+&lt;h3&gt;Smaller Heading&lt;/h3&gt;
+</code></pre>
+<p><strong>Paragraphs and Text:</strong></p>
+<pre><code language="language-html" class="language-html">&lt;p&gt;This is a paragraph.&lt;/p&gt;
+&lt;strong&gt;Bold text&lt;/strong&gt;
+&lt;em&gt;Italic text&lt;/em&gt;
+</code></pre>
+<p><strong>Lists:</strong></p>
+<pre><code language="language-html" class="language-html">&lt;ul&gt;
+    &lt;li&gt;Unordered item 1&lt;/li&gt;
+    &lt;li&gt;Unordered item 2&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;ol&gt;
+    &lt;li&gt;Ordered item 1&lt;/li&gt;
+    &lt;li&gt;Ordered item 2&lt;/li&gt;
+&lt;/ol&gt;
+</code></pre>
+<p><strong>Links and Images:</strong></p>
+<pre><code language="language-html" class="language-html">&lt;a href=&#34;https://www.example.com&#34;&gt;Click here&lt;/a&gt;
+&lt;img src=&#34;image.jpg&#34; alt=&#34;Description&#34;&gt;
+</code></pre>
+<h2 is-upgraded>Try It Yourself</h2>
+<ol type="1">
+<li>Create a file named <code>index.html</code></li>
+<li>Copy the basic HTML structure above</li>
+<li>Add your own content</li>
+<li>Open it in your browser</li>
+</ol>
+<p>Positive : You&#39;ve created your first HTML page!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Styling with CSS" duration="12">
+        <p>CSS (Cascading Style Sheets) makes your webpage beautiful by controlling colors, fonts, layouts, and more.</p>
+<h2 is-upgraded>Adding CSS to HTML</h2>
+<p>There are three ways to add CSS:</p>
+<p><strong>1. Inline CSS:</strong></p>
+<pre><code language="language-html" class="language-html">&lt;p style=&#34;color: blue;&#34;&gt;This text is blue&lt;/p&gt;
+</code></pre>
+<p><strong>2. Internal CSS:</strong></p>
+<pre><code language="language-html" class="language-html">&lt;head&gt;
+    &lt;style&gt;
+        p {
+            color: blue;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+</code></pre>
+<p><strong>3. External CSS (Recommended):</strong></p>
+<pre><code language="language-html" class="language-html">&lt;head&gt;
+    &lt;link rel=&#34;stylesheet&#34; href=&#34;styles.css&#34;&gt;
+&lt;/head&gt;
+</code></pre>
+<h2 is-upgraded>CSS Selectors</h2>
+<p>Target HTML elements using selectors:</p>
+<pre><code language="language-css" class="language-css">/* Element selector */
+p {
+    color: #333;
+    font-size: 16px;
+}
+
+/* Class selector */
+.highlight {
+    background-color: yellow;
+}
+
+/* ID selector */
+#header {
+    background-color: #4285f4;
+    padding: 20px;
+}
+
+/* Multiple selectors */
+h1, h2, h3 {
+    font-family: Arial, sans-serif;
+}
+</code></pre>
+<h2 is-upgraded>Common CSS Properties</h2>
+<p>Here are essential CSS properties:</p>
+<pre><code language="language-css" class="language-css">.container {
+    /* Colors */
+    color: #333;
+    background-color: #f5f5f5;
+    
+    /* Spacing */
+    margin: 20px;
+    padding: 15px;
+    
+    /* Typography */
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    
+    /* Box model */
+    width: 80%;
+    height: 200px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    
+    /* Display */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+</code></pre>
+<h2 is-upgraded>Create Your Stylesheet</h2>
+<p>Create a file named <code>styles.css</code>:</p>
+<pre><code language="language-css" class="language-css">body {
+    font-family: &#39;Segoe UI&#39;, Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+    color: #4285f4;
+    border-bottom: 3px solid #4285f4;
+    padding-bottom: 10px;
+}
+
+button {
+    background-color: #4285f4;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #357ae8;
+}
+</code></pre>
+<p>Negative : Remember to link your CSS file in the HTML <code><head></code> section!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Adding Interactivity with JavaScript" duration="15">
+        <p>JavaScript brings your webpage to life with interactivity and dynamic behavior.</p>
+<h2 is-upgraded>Including JavaScript</h2>
+<p>Add JavaScript to your HTML:</p>
+<pre><code language="language-html" class="language-html">&lt;body&gt;
+    &lt;!-- Your HTML content --&gt;
+    
+    &lt;script src=&#34;script.js&#34;&gt;&lt;/script&gt;
+&lt;/body&gt;
+</code></pre>
+<h2 is-upgraded>JavaScript Basics</h2>
+<p>Learn fundamental JavaScript concepts:</p>
+<p><strong>Variables:</strong></p>
+<pre><code language="language-javascript" class="language-javascript">// Modern way to declare variables
+let name = &#34;John&#34;;
+const age = 25;
+var oldWay = &#34;avoid using var&#34;;
+
+// Different data types
+let number = 42;
+let text = &#34;Hello&#34;;
+let isTrue = true;
+let items = [1, 2, 3];
+let person = { name: &#34;Alice&#34;, age: 30 };
+</code></pre>
+<p><strong>Functions:</strong></p>
+<pre><code language="language-javascript" class="language-javascript">// Function declaration
+function greet(name) {
+    return `Hello, ${name}!`;
+}
+
+// Arrow function (modern)
+const greet = (name) =&gt; {
+    return `Hello, ${name}!`;
+};
+
+// Shorter arrow function
+const greet = (name) =&gt; `Hello, ${name}!`;
+
+// Using the function
+console.log(greet(&#34;World&#34;));
+</code></pre>
+<p><strong>DOM Manipulation:</strong></p>
+<pre><code language="language-javascript" class="language-javascript">// Select elements
+const button = document.getElementById(&#39;myButton&#39;);
+const heading = document.querySelector(&#39;h1&#39;);
+const allParagraphs = document.querySelectorAll(&#39;p&#39;);
+
+// Change content
+heading.textContent = &#39;New Heading&#39;;
+heading.innerHTML = &#39;&lt;span&gt;New HTML Content&lt;/span&gt;&#39;;
+
+// Change styles
+heading.style.color = &#39;blue&#39;;
+heading.style.fontSize = &#39;32px&#39;;
+
+// Add/remove classes
+heading.classList.add(&#39;highlight&#39;);
+heading.classList.remove(&#39;highlight&#39;);
+heading.classList.toggle(&#39;active&#39;);
+</code></pre>
+<p><strong>Event Listeners:</strong></p>
+<pre><code language="language-javascript" class="language-javascript">// Click event
+button.addEventListener(&#39;click&#39;, function() {
+    alert(&#39;Button clicked!&#39;);
+});
+
+// Modern arrow function syntax
+button.addEventListener(&#39;click&#39;, () =&gt; {
+    console.log(&#39;Button clicked!&#39;);
+});
+
+// Form submission
+const form = document.querySelector(&#39;form&#39;);
+form.addEventListener(&#39;submit&#39;, (e) =&gt; {
+    e.preventDefault();
+    console.log(&#39;Form submitted!&#39;);
+});
+</code></pre>
+<h2 is-upgraded>Create an Interactive Counter</h2>
+<p>Create <code>script.js</code>:</p>
+<pre><code language="language-javascript" class="language-javascript">// Wait for DOM to load
+document.addEventListener(&#39;DOMContentLoaded&#39;, () =&gt; {
+    let count = 0;
+    
+    const counterDisplay = document.getElementById(&#39;counter&#39;);
+    const incrementBtn = document.getElementById(&#39;increment&#39;);
+    const decrementBtn = document.getElementById(&#39;decrement&#39;);
+    const resetBtn = document.getElementById(&#39;reset&#39;);
+    
+    // Update display
+    function updateDisplay() {
+        counterDisplay.textContent = count;
+        
+        // Change color based on value
+        if (count &gt; 0) {
+            counterDisplay.style.color = &#39;green&#39;;
+        } else if (count &lt; 0) {
+            counterDisplay.style.color = &#39;red&#39;;
+        } else {
+            counterDisplay.style.color = &#39;black&#39;;
+        }
+    }
+    
+    // Event listeners
+    incrementBtn.addEventListener(&#39;click&#39;, () =&gt; {
+        count++;
+        updateDisplay();
+    });
+    
+    decrementBtn.addEventListener(&#39;click&#39;, () =&gt; {
+        count--;
+        updateDisplay();
+    });
+    
+    resetBtn.addEventListener(&#39;click&#39;, () =&gt; {
+        count = 0;
+        updateDisplay();
+    });
+});
+</code></pre>
+<p>Positive : JavaScript makes your webpage interactive and responsive to user actions!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Building Your First Project" duration="20">
+        <p>Let&#39;s combine HTML, CSS, and JavaScript to build a complete interactive webpage.</p>
+<h2 is-upgraded>Project: Interactive Task List</h2>
+<p><strong>index.html:</strong></p>
+<pre><code language="language-html" class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;en&#34;&gt;
+&lt;head&gt;
+    &lt;meta charset=&#34;UTF-8&#34;&gt;
+    &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;&gt;
+    &lt;title&gt;My Task List&lt;/title&gt;
+    &lt;link rel=&#34;stylesheet&#34; href=&#34;styles.css&#34;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&#34;container&#34;&gt;
+        &lt;h1&gt;📝 My Task List&lt;/h1&gt;
+        
+        &lt;div class=&#34;input-section&#34;&gt;
+            &lt;input type=&#34;text&#34; id=&#34;taskInput&#34; placeholder=&#34;Enter a new task...&#34;&gt;
+            &lt;button id=&#34;addBtn&#34;&gt;Add Task&lt;/button&gt;
+        &lt;/div&gt;
+        
+        &lt;ul id=&#34;taskList&#34;&gt;&lt;/ul&gt;
+        
+        &lt;div class=&#34;stats&#34;&gt;
+            &lt;p&gt;Total tasks: &lt;span id=&#34;totalTasks&#34;&gt;0&lt;/span&gt;&lt;/p&gt;
+            &lt;p&gt;Completed: &lt;span id=&#34;completedTasks&#34;&gt;0&lt;/span&gt;&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;script src=&#34;script.js&#34;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p><strong>styles.css:</strong></p>
+<pre><code language="language-css" class="language-css">* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: &#39;Segoe UI&#39;, Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    max-width: 500px;
+    width: 100%;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.input-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#taskInput {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+#taskInput:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+#addBtn {
+    padding: 12px 24px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+#addBtn:hover {
+    background: #5568d3;
+}
+
+#taskList {
+    list-style: none;
+    margin-bottom: 20px;
+}
+
+.task-item {
+    background: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.task-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.task-item.completed {
+    opacity: 0.6;
+    text-decoration: line-through;
+}
+
+.task-text {
+    flex: 1;
+    cursor: pointer;
+}
+
+.delete-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+}
+
+.stats {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 2px solid #eee;
+    color: #666;
+}
+
+.stats p {
+    margin: 5px 0;
+}
+
+.stats span {
+    font-weight: bold;
+    color: #667eea;
+}
+</code></pre>
+<p><strong>script.js:</strong></p>
+<pre><code language="language-javascript" class="language-javascript">document.addEventListener(&#39;DOMContentLoaded&#39;, () =&gt; {
+    const taskInput = document.getElementById(&#39;taskInput&#39;);
+    const addBtn = document.getElementById(&#39;addBtn&#39;);
+    const taskList = document.getElementById(&#39;taskList&#39;);
+    const totalTasksSpan = document.getElementById(&#39;totalTasks&#39;);
+    const completedTasksSpan = document.getElementById(&#39;completedTasks&#39;);
+    
+    let tasks = [];
+    
+    // Add task
+    function addTask() {
+        const taskText = taskInput.value.trim();
+        
+        if (taskText === &#39;&#39;) {
+            alert(&#39;Please enter a task!&#39;);
+            return;
+        }
+        
+        const task = {
+            id: Date.now(),
+            text: taskText,
+            completed: false
+        };
+        
+        tasks.push(task);
+        taskInput.value = &#39;&#39;;
+        renderTasks();
+    }
+    
+    // Toggle task completion
+    function toggleTask(id) {
+        const task = tasks.find(t =&gt; t.id === id);
+        if (task) {
+            task.completed = !task.completed;
+            renderTasks();
+        }
+    }
+    
+    // Delete task
+    function deleteTask(id) {
+        tasks = tasks.filter(t =&gt; t.id !== id);
+        renderTasks();
+    }
+    
+    // Render tasks
+    function renderTasks() {
+        taskList.innerHTML = &#39;&#39;;
+        
+        tasks.forEach(task =&gt; {
+            const li = document.createElement(&#39;li&#39;);
+            li.className = `task-item ${task.completed ? &#39;completed&#39; : &#39;&#39;}`;
+            
+            const span = document.createElement(&#39;span&#39;);
+            span.className = &#39;task-text&#39;;
+            span.textContent = task.text;
+            span.onclick = () =&gt; toggleTask(task.id);
+            
+            const deleteBtn = document.createElement(&#39;button&#39;);
+            deleteBtn.className = &#39;delete-btn&#39;;
+            deleteBtn.textContent = &#39;Delete&#39;;
+            deleteBtn.onclick = () =&gt; deleteTask(task.id);
+            
+            li.appendChild(span);
+            li.appendChild(deleteBtn);
+            taskList.appendChild(li);
+        });
+        
+        updateStats();
+    }
+    
+    // Update statistics
+    function updateStats() {
+        totalTasksSpan.textContent = tasks.length;
+        completedTasksSpan.textContent = tasks.filter(t =&gt; t.completed).length;
+    }
+    
+    // Event listeners
+    addBtn.addEventListener(&#39;click&#39;, addTask);
+    taskInput.addEventListener(&#39;keypress&#39;, (e) =&gt; {
+        if (e.key === &#39;Enter&#39;) {
+            addTask();
+        }
+    });
+});
+</code></pre>
+<h2 is-upgraded>Test Your Project</h2>
+<ol type="1">
+<li>Create all three files in the same folder</li>
+<li>Open <code>index.html</code> in your browser</li>
+<li>Try adding, completing, and deleting tasks</li>
+<li>Watch the statistics update automatically!</li>
+</ol>
+<p>Positive : Congratulations! You&#39;ve built a fully functional web application!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Best Practices" duration="8">
+        <h2 is-upgraded>HTML Best Practices</h2>
+<ul>
+<li>Use semantic HTML elements (<code><header></code>, <code><nav></code>, <code><main></code>, <code><footer></code>)</li>
+<li>Always include <code>alt</code> attributes for images</li>
+<li>Use proper heading hierarchy (h1 → h2 → h3)</li>
+<li>Validate your HTML</li>
+</ul>
+<h2 is-upgraded>CSS Best Practices</h2>
+<ul>
+<li>Use external stylesheets</li>
+<li>Follow a naming convention (BEM, SMACSS)</li>
+<li>Keep specificity low</li>
+<li>Use CSS variables for colors and spacing</li>
+<li>Make your design responsive</li>
+</ul>
+<pre><code language="language-css" class="language-css">:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --spacing: 20px;
+}
+
+.button {
+    background-color: var(--primary-color);
+    padding: var(--spacing);
+}
+</code></pre>
+<h2 is-upgraded>JavaScript Best Practices</h2>
+<ul>
+<li>Use <code>const</code> and <code>let</code> instead of <code>var</code></li>
+<li>Write descriptive variable and function names</li>
+<li>Keep functions small and focused</li>
+<li>Comment complex logic</li>
+<li>Handle errors gracefully</li>
+</ul>
+<pre><code language="language-javascript" class="language-javascript">// Good
+const calculateTotal = (items) =&gt; {
+    return items.reduce((sum, item) =&gt; sum + item.price, 0);
+};
+
+// Bad
+var x = (a) =&gt; { return a.reduce((b,c) =&gt; b + c.p, 0); };
+</code></pre>
+<p>Negative : Avoid inline styles and scripts in production code!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Next Steps" duration="3">
+        <h2 is-upgraded>Continue Learning</h2>
+<p>Now that you know the basics, explore:</p>
+<ul>
+<li><strong>Responsive Design</strong> - Make sites work on all devices</li>
+<li><strong>CSS Flexbox &amp; Grid</strong> - Advanced layouts</li>
+<li><strong>JavaScript ES6+</strong> - Modern JavaScript features</li>
+<li><strong>APIs and Fetch</strong> - Connect to external data</li>
+<li><strong>React or Vue</strong> - Modern JavaScript frameworks</li>
+</ul>
+<h2 is-upgraded>Resources</h2>
+<ul>
+<li><a href="https://developer.mozilla.org" target="_blank">MDN Web Docs</a> - Comprehensive web documentation</li>
+<li><a href="https://css-tricks.com" target="_blank">CSS-Tricks</a> - CSS tutorials and tips</li>
+<li><a href="https://javascript.info" target="_blank">JavaScript.info</a> - Modern JavaScript tutorial</li>
+<li><a href="https://www.freecodecamp.org" target="_blank">freeCodeCamp</a> - Free coding courses</li>
+</ul>
+<h2 is-upgraded>Build Projects</h2>
+<p>The best way to learn is by building:</p>
+<ol type="1">
+<li>Personal portfolio website</li>
+<li>Weather app using an API</li>
+<li>Calculator</li>
+<li>Quiz application</li>
+<li>Blog with comments</li>
+</ol>
+<p>Positive : Keep coding, keep learning, and most importantly - have fun! 🚀</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Summary" duration="1">
+        <h2 is-upgraded>What You Learned</h2>
+<ul>
+<li>✅ HTML structure and common elements</li>
+<li>✅ CSS styling and selectors</li>
+<li>✅ JavaScript basics and DOM manipulation</li>
+<li>✅ Building an interactive web application</li>
+<li>✅ Best practices for web development</li>
+</ul>
+<h2 is-upgraded>Your Achievement</h2>
+<p>You&#39;ve completed Web Development Basics and built a real working application!</p>
+<p>Keep practicing and building. Every expert was once a beginner. Happy coding! 💻</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
