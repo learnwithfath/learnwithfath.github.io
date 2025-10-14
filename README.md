@@ -1,6 +1,10 @@
-# My Learning Platform - Google Codelabs Style
+# Learn with Fath - Interactive Learning Platform
 
 A beautiful, interactive learning platform built using Google's Codelabs tools. Create engaging, step-by-step tutorials for any topic!
+
+## 🌐 Live Site
+
+Visit the live platform: **[learnwithfath.github.io](https://learnwithfath.github.io)**
 
 ## 🚀 Features
 
