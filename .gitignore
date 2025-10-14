@@ -3,6 +3,9 @@ node_modules/
 .pnp
 .pnp.js
 
+# Build output
+_site/
+
 # Testing
 coverage/
 
