@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-14T13:51:41+07:00",
+  "id": "go-http-rest-api",
+  "duration": 158,
+  "title": "Go HTTP \u0026 REST API",
+  "summary": "Belajar membuat REST API dengan Go menggunakan net/http, handlers, JSON, dan routing patterns",
+  "source": "go-http-rest-api.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "golang",
+    "backend",
+    "api",
+    "indonesia"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/feedback",
+  "url": "go-http-rest-api"
+}

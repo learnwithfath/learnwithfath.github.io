@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-14T13:53:19+07:00",
+  "id": "go-packages-modules",
+  "duration": 138,
+  "title": "Go Packages \u0026 Modules",
+  "summary": "Pelajari Go modules, package management, project structure, dan versioning untuk project yang scalable",
+  "source": "go-packages-modules.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "golang",
+    "backend",
+    "modules",
+    "indonesia"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/feedback",
+  "url": "go-packages-modules"
+}

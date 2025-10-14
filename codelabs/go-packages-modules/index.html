@@ -1,0 +1,804 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Go Packages &amp; Modules</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="go-packages-modules"
+                  title="Go Packages &amp; Modules"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/feedback">
+    
+      <google-codelab-step label="Pengenalan" duration="3">
+        <p>Selamat datang! Tutorial ini akan mengajarkan cara mengorganisir kode Go dengan packages dan modules untuk project yang scalable dan maintainable.</p>
+<h2 is-upgraded>Apa yang Akan Anda Pelajari</h2>
+<ul>
+<li>Go modules (go.mod)</li>
+<li>Package management</li>
+<li>Import packages</li>
+<li>Project structure best practices</li>
+<li>Versioning dan dependencies</li>
+<li>Publishing modules</li>
+<li>Workspace management</li>
+</ul>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Tutorial &#34;Go Dasar untuk Pemula&#34;</li>
+<li>Tutorial &#34;Go HTTP &amp; REST API&#34;</li>
+<li>Go 1.16+ terinstall</li>
+</ul>
+<p>Positive : Go modules adalah cara modern untuk manage dependencies di Go!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Apa itu Packages?" duration="10">
+        <p>Package adalah cara Go mengorganisir dan reuse kode.</p>
+<h2 is-upgraded>Package Basics</h2>
+<pre><code language="language-go" class="language-go">// File: math/calculator.go
+package math
+
+func Add(a, b int) int {
+    return a + b
+}
+
+func Subtract(a, b int) int {
+    return a - b
+}
+</code></pre>
+<pre><code language="language-go" class="language-go">// File: main.go
+package main
+
+import (
+    &#34;fmt&#34;
+    &#34;myapp/math&#34;
+)
+
+func main() {
+    result := math.Add(5, 3)
+    fmt.Println(result)
+}
+</code></pre>
+<h2 is-upgraded>Package Naming Rules</h2>
+<ol type="1">
+<li><strong>Lowercase</strong> - package names harus lowercase</li>
+<li><strong>Short</strong> - nama pendek dan deskriptif</li>
+<li><strong>No underscore</strong> - hindari underscore</li>
+<li><strong>Singular</strong> - gunakan singular (http, bukan https)</li>
+</ol>
+<pre><code language="language-go" class="language-go">// Good
+package user
+package http
+package json
+
+// Bad
+package User
+package http_client
+package users
+</code></pre>
+<h2 is-upgraded>Exported vs Unexported</h2>
+<pre><code language="language-go" class="language-go">package calculator
+
+// Exported (public) - dimulai dengan huruf besar
+func Add(a, b int) int {
+    return a + b
+}
+
+// Unexported (private) - dimulai dengan huruf kecil
+func multiply(a, b int) int {
+    return a * b
+}
+</code></pre>
+<p>Negative : Hanya identifier yang dimulai dengan huruf BESAR yang bisa diakses dari luar package!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Go Modules" duration="15">
+        <p>Go modules adalah sistem dependency management resmi di Go.</p>
+<h2 is-upgraded>Inisialisasi Module</h2>
+<pre><code language="language-bash" class="language-bash"># Buat project baru
+mkdir myapp
+cd myapp
+
+# Initialize module
+go mod init github.com/username/myapp
+</code></pre>
+<p>File <code>go.mod</code> akan dibuat:</p>
+<pre><code language="language-go" class="language-go">module github.com/username/myapp
+
+go 1.21
+</code></pre>
+<h2 is-upgraded>Module Path</h2>
+<p>Module path biasanya mengikuti format:</p>
+<pre><code>github.com/username/projectname
+gitlab.com/username/projectname
+example.com/myproject
+</code></pre>
+<p>Untuk local development:</p>
+<pre><code>myapp
+mycompany/myapp
+</code></pre>
+<h2 is-upgraded>go.mod File</h2>
+<pre><code language="language-go" class="language-go">module github.com/learnwithfath/notes-api
+
+go 1.21
+
+require (
+    github.com/google/uuid v1.3.0
+    github.com/gorilla/mux v1.8.0
+)
+
+require (
+    github.com/stretchr/testify v1.8.4 // indirect
+)
+</code></pre>
+<p><strong>Penjelasan:</strong></p>
+<ul>
+<li><code>module</code> - nama module</li>
+<li><code>go</code> - versi Go minimum</li>
+<li><code>require</code> - direct dependencies</li>
+<li><code>indirect</code> - transitive dependencies</li>
+</ul>
+<h2 is-upgraded>go.sum File</h2>
+<p>File ini berisi checksum untuk verify dependencies:</p>
+<pre><code>github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=
+github.com/google/uuid v1.3.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+</code></pre>
+<p>Positive : go.sum harus di-commit ke version control untuk security!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Managing Dependencies" duration="15">
+        <p>Cara mengelola dependencies di Go project.</p>
+<h2 is-upgraded>Menambah Dependency</h2>
+<pre><code language="language-bash" class="language-bash"># Cara 1: go get
+go get github.com/google/uuid
+
+# Cara 2: go get dengan versi spesifik
+go get github.com/google/uuid@v1.3.0
+
+# Cara 3: import di kode, lalu go mod tidy
+</code></pre>
+<h2 is-upgraded>Menggunakan Dependency</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;github.com/google/uuid&#34;
+)
+
+func main() {
+    id := uuid.New()
+    fmt.Println(&#34;UUID:&#34;, id.String())
+}
+</code></pre>
+<h2 is-upgraded>go mod Commands</h2>
+<pre><code language="language-bash" class="language-bash"># Download dependencies
+go mod download
+
+# Add missing and remove unused modules
+go mod tidy
+
+# Verify dependencies
+go mod verify
+
+# Copy dependencies to vendor/
+go mod vendor
+
+# Show module graph
+go mod graph
+
+# Explain why package needed
+go mod why github.com/google/uuid
+</code></pre>
+<h2 is-upgraded>Update Dependencies</h2>
+<pre><code language="language-bash" class="language-bash"># Update specific module
+go get -u github.com/google/uuid
+
+# Update all dependencies
+go get -u ./...
+
+# Update to specific version
+go get github.com/google/uuid@v1.4.0
+
+# Update to latest patch
+go get -u=patch ./...
+</code></pre>
+<h2 is-upgraded>Remove Dependency</h2>
+<pre><code language="language-bash" class="language-bash"># Remove dari kode, lalu:
+go mod tidy
+</code></pre>
+<p>Negative : Selalu jalankan <code>go mod tidy</code> setelah menambah/menghapus dependencies!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Project Structure" duration="20">
+        <p>Struktur project yang baik membuat kode mudah di-maintain.</p>
+<h2 is-upgraded>Standard Project Layout</h2>
+<pre><code>myapp/
+├── cmd/
+│   └── api/
+│       └── main.go
+├── internal/
+│   ├── handlers/
+│   │   ├── user.go
+│   │   └── auth.go
+│   ├── models/
+│   │   └── user.go
+│   ├── repository/
+│   │   └── user_repo.go
+│   └── service/
+│       └── user_service.go
+├── pkg/
+│   ├── logger/
+│   │   └── logger.go
+│   └── validator/
+│       └── validator.go
+├── api/
+│   └── openapi.yaml
+├── configs/
+│   └── config.yaml
+├── scripts/
+│   └── migrate.sh
+├── tests/
+│   └── integration/
+├── go.mod
+├── go.sum
+└── README.md
+</code></pre>
+<h2 is-upgraded>Penjelasan Struktur</h2>
+<p><strong>cmd/</strong> - Entry points aplikasi</p>
+<pre><code language="language-go" class="language-go">// cmd/api/main.go
+package main
+
+func main() {
+    // Start API server
+}
+</code></pre>
+<p><strong>internal/</strong> - Private application code</p>
+<ul>
+<li>Tidak bisa di-import oleh project lain</li>
+<li>Business logic utama</li>
+</ul>
+<p><strong>pkg/</strong> - Public libraries</p>
+<ul>
+<li>Bisa di-import oleh project lain</li>
+<li>Reusable code</li>
+</ul>
+<p><strong>api/</strong> - API definitions (OpenAPI, Protocol Buffers)</p>
+<p><strong>configs/</strong> - Configuration files</p>
+<p><strong>scripts/</strong> - Build dan deployment scripts</p>
+<h2 is-upgraded>Example: Notes API Structure</h2>
+<pre><code>notes-api/
+├── cmd/
+│   └── server/
+│       └── main.go
+├── internal/
+│   ├── api/
+│   │   ├── handlers/
+│   │   │   ├── note_handler.go
+│   │   │   └── health_handler.go
+│   │   ├── middleware/
+│   │   │   ├── logger.go
+│   │   │   ├── cors.go
+│   │   │   └── auth.go
+│   │   └── router/
+│   │       └── router.go
+│   ├── models/
+│   │   ├── note.go
+│   │   └── response.go
+│   ├── repository/
+│   │   └── note_repository.go
+│   ├── service/
+│   │   └── note_service.go
+│   └── config/
+│       └── config.go
+├── pkg/
+│   ├── logger/
+│   │   └── logger.go
+│   └── database/
+│       └── postgres.go
+├── go.mod
+└── go.sum
+</code></pre>
+<h2 is-upgraded>Implementasi Struktur</h2>
+<p><strong>cmd/server/main.go:</strong></p>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;log&#34;
+    &#34;notes-api/internal/api/router&#34;
+    &#34;notes-api/internal/config&#34;
+)
+
+func main() {
+    cfg := config.Load()
+    r := router.New()
+    
+    log.Printf(&#34;Server starting on %s&#34;, cfg.Port)
+    log.Fatal(r.Start(cfg.Port))
+}
+</code></pre>
+<p><strong>internal/models/note.go:</strong></p>
+<pre><code language="language-go" class="language-go">package models
+
+import &#34;time&#34;
+
+type Note struct {
+    ID        string    `json:&#34;id&#34;`
+    Title     string    `json:&#34;title&#34;`
+    Content   string    `json:&#34;content&#34;`
+    CreatedAt time.Time `json:&#34;created_at&#34;`
+    UpdatedAt time.Time `json:&#34;updated_at&#34;`
+}
+</code></pre>
+<p><strong>internal/repository/note_repository.go:</strong></p>
+<pre><code language="language-go" class="language-go">package repository
+
+import (
+    &#34;notes-api/internal/models&#34;
+    &#34;sync&#34;
+)
+
+type NoteRepository interface {
+    Create(note *models.Note) error
+    FindByID(id string) (*models.Note, error)
+    FindAll() ([]models.Note, error)
+    Update(note *models.Note) error
+    Delete(id string) error
+}
+
+type inMemoryRepo struct {
+    notes map[string]models.Note
+    mu    sync.RWMutex
+}
+
+func NewInMemoryRepository() NoteRepository {
+    return &amp;inMemoryRepo{
+        notes: make(map[string]models.Note),
+    }
+}
+
+func (r *inMemoryRepo) Create(note *models.Note) error {
+    r.mu.Lock()
+    defer r.mu.Unlock()
+    r.notes[note.ID] = *note
+    return nil
+}
+
+// Implement other methods...
+</code></pre>
+<p><strong>internal/service/note_service.go:</strong></p>
+<pre><code language="language-go" class="language-go">package service
+
+import (
+    &#34;notes-api/internal/models&#34;
+    &#34;notes-api/internal/repository&#34;
+    &#34;time&#34;
+)
+
+type NoteService interface {
+    CreateNote(title, content string) (*models.Note, error)
+    GetNote(id string) (*models.Note, error)
+    GetAllNotes() ([]models.Note, error)
+    UpdateNote(id, title, content string) (*models.Note, error)
+    DeleteNote(id string) error
+}
+
+type noteService struct {
+    repo repository.NoteRepository
+}
+
+func NewNoteService(repo repository.NoteRepository) NoteService {
+    return &amp;noteService{repo: repo}
+}
+
+func (s *noteService) CreateNote(title, content string) (*models.Note, error) {
+    note := &amp;models.Note{
+        ID:        generateID(),
+        Title:     title,
+        Content:   content,
+        CreatedAt: time.Now(),
+        UpdatedAt: time.Now(),
+    }
+    
+    if err := s.repo.Create(note); err != nil {
+        return nil, err
+    }
+    
+    return note, nil
+}
+
+// Implement other methods...
+</code></pre>
+<p>Positive : Struktur yang baik membuat kode mudah di-test dan di-maintain!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Internal vs Pkg" duration="10">
+        <p>Perbedaan antara <code>internal/</code> dan <code>pkg/</code>.</p>
+<h2 is-upgraded>internal/ Directory</h2>
+<pre><code>myapp/
+└── internal/
+    └── helper/
+        └── utils.go
+</code></pre>
+<p><strong>Karakteristik:</strong></p>
+<ul>
+<li>Hanya bisa di-import oleh code dalam module yang sama</li>
+<li>Private untuk project</li>
+<li>Business logic spesifik</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code language="language-go" class="language-go">// myapp/internal/helper/utils.go
+package helper
+
+func FormatUserName(name string) string {
+    // Project-specific logic
+    return strings.ToUpper(name)
+}
+</code></pre>
+<pre><code language="language-go" class="language-go">// myapp/cmd/main.go - ✅ BISA
+import &#34;myapp/internal/helper&#34;
+
+// otherapp/main.go - ❌ TIDAK BISA
+import &#34;myapp/internal/helper&#34;  // Error!
+</code></pre>
+<h2 is-upgraded>pkg/ Directory</h2>
+<pre><code>myapp/
+└── pkg/
+    └── logger/
+        └── logger.go
+</code></pre>
+<p><strong>Karakteristik:</strong></p>
+<ul>
+<li>Bisa di-import oleh project lain</li>
+<li>Public libraries</li>
+<li>Generic, reusable code</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code language="language-go" class="language-go">// myapp/pkg/logger/logger.go
+package logger
+
+func Info(msg string) {
+    log.Println(&#34;[INFO]&#34;, msg)
+}
+</code></pre>
+<pre><code language="language-go" class="language-go">// otherapp/main.go - ✅ BISA
+import &#34;myapp/pkg/logger&#34;
+
+logger.Info(&#34;Hello from other app&#34;)
+</code></pre>
+<h2 is-upgraded>Kapan Pakai Apa?</h2>
+<p><strong>Gunakan internal/ untuk:</strong></p>
+<ul>
+<li>Business logic</li>
+<li>Domain models</li>
+<li>Application-specific code</li>
+<li>Code yang tidak ingin di-share</li>
+</ul>
+<p><strong>Gunakan pkg/ untuk:</strong></p>
+<ul>
+<li>Utility functions</li>
+<li>Generic helpers</li>
+<li>Libraries yang bisa dipakai project lain</li>
+<li>Code yang mungkin di-extract jadi module terpisah</li>
+</ul>
+<p>Negative : Jangan taruh semua di pkg/! Kebanyakan code seharusnya di internal/.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Versioning" duration="15">
+        <p>Go modules menggunakan semantic versioning.</p>
+<h2 is-upgraded>Semantic Versioning</h2>
+<p>Format: <code>vMAJOR.MINOR.PATCH</code></p>
+<pre><code>v1.2.3
+│ │ │
+│ │ └─ PATCH: Bug fixes
+│ └─── MINOR: New features (backward compatible)
+└───── MAJOR: Breaking changes
+</code></pre>
+<h2 is-upgraded>Creating Versions</h2>
+<pre><code language="language-bash" class="language-bash"># Tag version
+git tag v1.0.0
+git push origin v1.0.0
+
+# List tags
+git tag
+
+# Delete tag
+git tag -d v1.0.0
+git push origin :refs/tags/v1.0.0
+</code></pre>
+<h2 is-upgraded>Version Constraints</h2>
+<pre><code language="language-go" class="language-go">// go.mod
+require (
+    github.com/google/uuid v1.3.0        // Exact version
+    github.com/gorilla/mux v1.8          // &gt;= v1.8.0, &lt; v2.0.0
+    github.com/lib/pq v1                 // &gt;= v1.0.0, &lt; v2.0.0
+)
+</code></pre>
+<h2 is-upgraded>Major Version Changes</h2>
+<p>Untuk breaking changes (v2, v3, dst):</p>
+<pre><code language="language-go" class="language-go">// go.mod
+module github.com/username/myapp/v2
+
+go 1.21
+</code></pre>
+<p>Import dengan version:</p>
+<pre><code language="language-go" class="language-go">import &#34;github.com/username/myapp/v2/pkg/logger&#34;
+</code></pre>
+<h2 is-upgraded>Pre-release Versions</h2>
+<pre><code>v1.0.0-alpha
+v1.0.0-beta
+v1.0.0-rc.1
+</code></pre>
+<pre><code language="language-bash" class="language-bash">git tag v2.0.0-beta.1
+git push origin v2.0.0-beta.1
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Publishing Module" duration="15">
+        <p>Cara publish Go module agar bisa dipakai orang lain.</p>
+<h2 is-upgraded>Persiapan</h2>
+<ol type="1">
+<li><strong>Buat repository di GitHub</strong></li>
+</ol>
+<pre><code language="language-bash" class="language-bash">git init
+git add .
+git commit -m &#34;Initial commit&#34;
+git remote add origin https://github.com/username/mymodule.git
+git push -u origin main
+</code></pre>
+<ol type="1" start="2">
+<li><strong>Struktur yang baik</strong></li>
+</ol>
+<pre><code>mymodule/
+├── README.md
+├── LICENSE
+├── go.mod
+├── mymodule.go
+└── mymodule_test.go
+</code></pre>
+<ol type="1" start="3">
+<li><strong>Documentation</strong></li>
+</ol>
+<pre><code language="language-go" class="language-go">// Package mymodule provides utilities for...
+package mymodule
+
+// Add returns the sum of a and b.
+// Example:
+//   result := Add(2, 3)  // result = 5
+func Add(a, b int) int {
+    return a + b
+}
+</code></pre>
+<h2 is-upgraded>Publishing Steps</h2>
+<ol type="1">
+<li><strong>Ensure tests pass</strong></li>
+</ol>
+<pre><code language="language-bash" class="language-bash">go test ./...
+</code></pre>
+<ol type="1" start="2">
+<li><strong>Tag version</strong></li>
+</ol>
+<pre><code language="language-bash" class="language-bash">git tag v1.0.0
+git push origin v1.0.0
+</code></pre>
+<ol type="1" start="3">
+<li><strong>Make it discoverable</strong></li>
+</ol>
+<pre><code language="language-bash" class="language-bash">GOPROXY=proxy.golang.org go list -m github.com/username/mymodule@v1.0.0
+</code></pre>
+<h2 is-upgraded>Using Published Module</h2>
+<pre><code language="language-bash" class="language-bash">go get github.com/username/mymodule
+</code></pre>
+<pre><code language="language-go" class="language-go">import &#34;github.com/username/mymodule&#34;
+
+func main() {
+    result := mymodule.Add(5, 3)
+}
+</code></pre>
+<h2 is-upgraded>Best Practices</h2>
+<ol type="1">
+<li><strong>Good README</strong></li>
+</ol>
+<pre><code language="language-markdown" class="language-markdown"># My Module
+
+Description of what it does.
+
+## Installation
+```go
+go get github.com/username/mymodule
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Usage" duration="0">
+        <pre><code language="language-go" class="language-go">import &#34;github.com/username/mymodule&#34;
+
+result := mymodule.Add(2, 3)
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="License" duration="0">
+        <p>MIT</p>
+<pre><code>2. **Comprehensive tests**
+3. **Clear documentation**
+4. **Semantic versioning**
+5. **Changelog**
+
+Positive
+: Module yang well-documented lebih mudah dipakai orang lain!
+
+## Workspaces
+Duration: 0:10:00
+
+Go workspaces untuk develop multiple modules bersamaan.
+
+### Create Workspace
+
+```bash
+mkdir myworkspace
+cd myworkspace
+
+# Initialize workspace
+go work init
+</code></pre>
+<h2 is-upgraded>Add Modules</h2>
+<pre><code language="language-bash" class="language-bash"># Add existing modules
+go work use ./module1
+go work use ./module2
+
+# Create go.work file
+</code></pre>
+<p><strong>go.work:</strong></p>
+<pre><code language="language-go" class="language-go">go 1.21
+
+use (
+    ./module1
+    ./module2
+)
+</code></pre>
+<h2 is-upgraded>Structure</h2>
+<pre><code>myworkspace/
+├── go.work
+├── module1/
+│   ├── go.mod
+│   └── main.go
+└── module2/
+    ├── go.mod
+    └── lib.go
+</code></pre>
+<h2 is-upgraded>Benefits</h2>
+<ul>
+<li>Develop multiple modules together</li>
+<li>Test changes across modules</li>
+<li>No need to publish untuk testing</li>
+</ul>
+<h2 is-upgraded>Example</h2>
+<p><strong>module2/lib.go:</strong></p>
+<pre><code language="language-go" class="language-go">package module2
+
+func Greet(name string) string {
+    return &#34;Hello, &#34; + name
+}
+</code></pre>
+<p><strong>module1/main.go:</strong></p>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;module2&#34;
+)
+
+func main() {
+    msg := module2.Greet(&#34;Go&#34;)
+    fmt.Println(msg)
+}
+</code></pre>
+<p>Negative : go.work tidak boleh di-commit! Add ke .gitignore.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Project: Refactor Notes API" duration="30">
+        <p>Mari refactor Notes API dengan struktur yang proper.</p>
+<h2 is-upgraded>New Structure</h2>
+<pre><code>notes-api/
+├── cmd/
+│   └── server/
+│       └── main.go
+├── internal/
+│   ├── api/
+│   │   ├── handlers/
+│   │   ├── middleware/
+│   │   └── router/
+│   ├── models/
+│   ├── repository/
+│   ├── service/
+│   └── config/
+├── pkg/
+│   └── response/
+├── go.mod
+└── README.md
+</code></pre>
+<h2 is-upgraded>Implementation</h2>
+<p>Lihat kode lengkap di repository untuk implementasi detail dari setiap layer.</p>
+<h2 is-upgraded>Run Project</h2>
+<pre><code language="language-bash" class="language-bash">go mod tidy
+go run cmd/server/main.go
+</code></pre>
+<p>Positive : Struktur yang baik membuat project scalable!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="5">
+        <p>Anda telah mempelajari:</p>
+<ul>
+<li>✅ Go packages dan modules</li>
+<li>✅ Dependency management</li>
+<li>✅ Project structure best practices</li>
+<li>✅ internal/ vs pkg/</li>
+<li>✅ Versioning</li>
+<li>✅ Publishing modules</li>
+<li>✅ Workspaces</li>
+</ul>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<ul>
+<li>Pelajari Concurrency &amp; Goroutines</li>
+<li>Database integration</li>
+<li>Testing strategies</li>
+<li>CI/CD setup</li>
+</ul>
+<h2 is-upgraded>Resources</h2>
+<ul>
+<li><a href="https://go.dev/ref/mod" target="_blank">Go Modules Reference</a></li>
+<li><a href="https://github.com/golang-standards/project-layout" target="_blank">Standard Go Project Layout</a></li>
+<li><a href="https://go.dev/blog/using-go-modules" target="_blank">Go Blog: Using Go Modules</a></li>
+</ul>
+<p>Positive : Lanjutkan ke tutorial Concurrency untuk belajar goroutines dan channels!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

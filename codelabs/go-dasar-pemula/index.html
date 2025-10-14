@@ -1,0 +1,389 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Go Dasar untuk Pemula</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="go-dasar-pemula"
+                  title="Go Dasar untuk Pemula"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/feedback">
+    
+      <google-codelab-step label="Pengenalan" duration="3">
+        <p>Selamat datang di tutorial Go Dasar! Dalam tutorial ini, Anda akan mempelajari fundamental bahasa pemrograman Go yang akan menjadi fondasi untuk pengembangan backend.</p>
+<h2 is-upgraded>Apa yang Akan Anda Pelajari</h2>
+<ul>
+<li>Syntax dasar Go</li>
+<li>Tipe data dan variabel</li>
+<li>Control flow (if, for, switch)</li>
+<li>Functions dan methods</li>
+<li>Interfaces</li>
+<li>Testing di Go</li>
+<li>Pengenalan concurrency</li>
+</ul>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Komputer dengan sistem operasi Windows, macOS, atau Linux</li>
+<li>Text editor (VS Code direkomendasikan)</li>
+<li>Koneksi internet untuk download Go</li>
+</ul>
+<p>Positive : Tutorial ini dirancang untuk pemula yang belum pernah menggunakan Go sebelumnya!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Instalasi Go" duration="5">
+        <p>Mari kita mulai dengan menginstal Go di komputer Anda.</p>
+<h2 is-upgraded>Download dan Install</h2>
+<ol type="1">
+<li>Kunjungi: https://go.dev/dl/</li>
+<li>Download installer sesuai OS Anda</li>
+<li>Install dan ikuti instruksi</li>
+</ol>
+<h2 is-upgraded>Verifikasi Instalasi</h2>
+<pre><code language="language-bash" class="language-bash">go version
+</code></pre>
+<p>Output:</p>
+<pre><code>go version go1.21.0 darwin/amd64
+</code></pre>
+<p>Positive : Go sudah terinstall! Mari kita mulai coding!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Hello World" duration="10">
+        <p>Program Go pertama Anda!</p>
+<h2 is-upgraded>Buat Project</h2>
+<pre><code language="language-bash" class="language-bash">mkdir hello-go
+cd hello-go
+go mod init hello-go
+</code></pre>
+<h2 is-upgraded>File main.go</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    fmt.Println(&#34;Hello, Go!&#34;)
+}
+</code></pre>
+<h2 is-upgraded>Jalankan</h2>
+<pre><code language="language-bash" class="language-bash">go run main.go
+</code></pre>
+<p>Positive : Selamat! Program Go pertama Anda berhasil!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Variabel dan Tipe Data" duration="15">
+        <h2 is-upgraded>Tipe Data Dasar</h2>
+<pre><code language="language-go" class="language-go">var age int = 25
+var price float64 = 99.99
+var name string = &#34;Fathullah&#34;
+var isActive bool = true
+</code></pre>
+<h2 is-upgraded>Cara Deklarasi</h2>
+<pre><code language="language-go" class="language-go">// Dengan var
+var name string = &#34;Go&#34;
+
+// Type inference
+var age = 10
+
+// Short declaration (recommended)
+name := &#34;Go&#34;
+age := 10
+</code></pre>
+<h2 is-upgraded>Constants</h2>
+<pre><code language="language-go" class="language-go">const Pi = 3.14159
+const AppName = &#34;MyApp&#34;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Control Flow" duration="15">
+        <h2 is-upgraded>If Statement</h2>
+<pre><code language="language-go" class="language-go">if age &gt;= 18 {
+    fmt.Println(&#34;Dewasa&#34;)
+} else {
+    fmt.Println(&#34;Belum dewasa&#34;)
+}
+</code></pre>
+<h2 is-upgraded>For Loop</h2>
+<pre><code language="language-go" class="language-go">// For klasik
+for i := 0; i &lt; 5; i++ {
+    fmt.Println(i)
+}
+
+// Range over slice
+numbers := []int{1, 2, 3, 4, 5}
+for index, value := range numbers {
+    fmt.Println(index, value)
+}
+</code></pre>
+<h2 is-upgraded>Switch</h2>
+<pre><code language="language-go" class="language-go">switch day {
+case &#34;Monday&#34;:
+    fmt.Println(&#34;Senin&#34;)
+case &#34;Saturday&#34;, &#34;Sunday&#34;:
+    fmt.Println(&#34;Akhir pekan&#34;)
+default:
+    fmt.Println(&#34;Hari kerja&#34;)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Functions" duration="15">
+        <h2 is-upgraded>Function Dasar</h2>
+<pre><code language="language-go" class="language-go">func add(a, b int) int {
+    return a + b
+}
+
+func main() {
+    result := add(5, 3)
+    fmt.Println(result)
+}
+</code></pre>
+<h2 is-upgraded>Multiple Returns</h2>
+<pre><code language="language-go" class="language-go">func divide(a, b float64) (float64, error) {
+    if b == 0 {
+        return 0, fmt.Errorf(&#34;tidak bisa dibagi nol&#34;)
+    }
+    return a / b, nil
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Structs dan Methods" duration="15">
+        <h2 is-upgraded>Struct</h2>
+<pre><code language="language-go" class="language-go">type Person struct {
+    FirstName string
+    LastName  string
+    Age       int
+}
+</code></pre>
+<h2 is-upgraded>Methods</h2>
+<pre><code language="language-go" class="language-go">func (p Person) FullName() string {
+    return p.FirstName + &#34; &#34; + p.LastName
+}
+
+func (p *Person) HaveBirthday() {
+    p.Age++
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Interfaces" duration="15">
+        <h2 is-upgraded>Interface Dasar</h2>
+<pre><code language="language-go" class="language-go">type Shape interface {
+    Area() float64
+}
+
+type Rectangle struct {
+    Width, Height float64
+}
+
+func (r Rectangle) Area() float64 {
+    return r.Width * r.Height
+}
+</code></pre>
+<p>Positive : Interfaces membuat kode fleksibel dan mudah di-test!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Testing" duration="20">
+        <h2 is-upgraded>File Test</h2>
+<p>Buat <code>calculator_test.go</code>:</p>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;testing&#34;
+
+func TestAdd(t *testing.T) {
+    result := Add(2, 3)
+    if result != 5 {
+        t.Errorf(&#34;Expected 5, got %d&#34;, result)
+    }
+}
+</code></pre>
+<h2 is-upgraded>Jalankan Test</h2>
+<pre><code language="language-bash" class="language-bash">go test
+go test -v
+go test -cover
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Concurrency Basics" duration="15">
+        <h2 is-upgraded>Goroutines</h2>
+<pre><code language="language-go" class="language-go">func sayHello() {
+    fmt.Println(&#34;Hello&#34;)
+}
+
+func main() {
+    go sayHello()  // Run in goroutine
+    time.Sleep(time.Second)
+}
+</code></pre>
+<h2 is-upgraded>Channels</h2>
+<pre><code language="language-go" class="language-go">func main() {
+    ch := make(chan string)
+    
+    go func() {
+        ch &lt;- &#34;Hello from goroutine&#34;
+    }()
+    
+    msg := &lt;-ch
+    fmt.Println(msg)
+}
+</code></pre>
+<p>Positive : Goroutines membuat concurrent programming mudah!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Project: Mini Console App" duration="30">
+        <p>Buat aplikasi TODO list sederhana!</p>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;bufio&#34;
+    &#34;fmt&#34;
+    &#34;os&#34;
+    &#34;strings&#34;
+)
+
+type Todo struct {
+    Title string
+    Done  bool
+}
+
+var todos []Todo
+
+func main() {
+    scanner := bufio.NewScanner(os.Stdin)
+    
+    for {
+        fmt.Println(&#34;\n=== TODO App ===&#34;)
+        fmt.Println(&#34;1. Add todo&#34;)
+        fmt.Println(&#34;2. List todos&#34;)
+        fmt.Println(&#34;3. Mark done&#34;)
+        fmt.Println(&#34;4. Exit&#34;)
+        fmt.Print(&#34;Choice: &#34;)
+        
+        scanner.Scan()
+        choice := scanner.Text()
+        
+        switch choice {
+        case &#34;1&#34;:
+            addTodo(scanner)
+        case &#34;2&#34;:
+            listTodos()
+        case &#34;3&#34;:
+            markDone(scanner)
+        case &#34;4&#34;:
+            return
+        }
+    }
+}
+
+func addTodo(scanner *bufio.Scanner) {
+    fmt.Print(&#34;Todo title: &#34;)
+    scanner.Scan()
+    title := scanner.Text()
+    
+    todos = append(todos, Todo{Title: title, Done: false})
+    fmt.Println(&#34;Todo added!&#34;)
+}
+
+func listTodos() {
+    if len(todos) == 0 {
+        fmt.Println(&#34;No todos yet!&#34;)
+        return
+    }
+    
+    for i, todo := range todos {
+        status := &#34; &#34;
+        if todo.Done {
+            status = &#34;✓&#34;
+        }
+        fmt.Printf(&#34;%d. [%s] %s\n&#34;, i+1, status, todo.Title)
+    }
+}
+
+func markDone(scanner *bufio.Scanner) {
+    listTodos()
+    fmt.Print(&#34;Number to mark done: &#34;)
+    scanner.Scan()
+    // Implementation here
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="5">
+        <p>Selamat! Anda telah mempelajari:</p>
+<ul>
+<li>✅ Syntax dasar Go</li>
+<li>✅ Variabel dan tipe data</li>
+<li>✅ Control flow</li>
+<li>✅ Functions</li>
+<li>✅ Structs dan methods</li>
+<li>✅ Interfaces</li>
+<li>✅ Testing</li>
+<li>✅ Concurrency basics</li>
+</ul>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<ul>
+<li>Pelajari HTTP dan REST API dengan Go</li>
+<li>Eksplorasi Go standard library</li>
+<li>Buat project nyata</li>
+</ul>
+<h2 is-upgraded>Resources</h2>
+<ul>
+<li><a href="https://gobyexample.com/" target="_blank">Go by Example</a></li>
+<li><a href="https://go.dev/tour/" target="_blank">Go Tour</a></li>
+<li><a href="https://www.boot.dev/tracks/backend" target="_blank">Boot.dev Backend Track</a></li>
+</ul>
+<p>Positive : Selamat belajar! Lanjutkan ke tutorial berikutnya untuk belajar HTTP &amp; REST API!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

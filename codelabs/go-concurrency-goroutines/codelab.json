@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-14T13:54:47+07:00",
+  "id": "go-concurrency-goroutines",
+  "duration": 178,
+  "title": "Go Concurrency \u0026 Goroutines",
+  "summary": "Master concurrency di Go dengan goroutines, channels, select, dan worker pool patterns",
+  "source": "go-concurrency-goroutines.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "golang",
+    "backend",
+    "concurrency",
+    "indonesia"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/feedback",
+  "url": "go-concurrency-goroutines"
+}

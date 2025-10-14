@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-14T13:50:23+07:00",
+  "id": "go-dasar-pemula",
+  "duration": 163,
+  "title": "Go Dasar untuk Pemula",
+  "summary": "Pelajari dasar-dasar bahasa pemrograman Go dari syntax, types, testing, interfaces, hingga concurrency",
+  "source": "go-dasar-pemula.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "golang",
+    "backend",
+    "pemula",
+    "indonesia"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/feedback",
+  "url": "go-dasar-pemula"
+}

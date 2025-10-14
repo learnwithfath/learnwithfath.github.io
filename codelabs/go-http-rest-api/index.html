@@ -1,0 +1,873 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Go HTTP &amp; REST API</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="go-http-rest-api"
+                  title="Go HTTP &amp; REST API"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/feedback">
+    
+      <google-codelab-step label="Pengenalan" duration="3">
+        <p>Selamat datang di tutorial REST API dengan Go! Anda akan belajar membuat API backend yang powerful menggunakan Go standard library.</p>
+<h2 is-upgraded>Apa yang Akan Anda Pelajari</h2>
+<ul>
+<li>Package net/http</li>
+<li>HTTP handlers dan routing</li>
+<li>Request dan Response handling</li>
+<li>JSON encoding/decoding</li>
+<li>Middleware</li>
+<li>Error handling</li>
+<li>CRUD operations</li>
+<li>Best practices REST API</li>
+</ul>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Sudah menyelesaikan tutorial &#34;Go Dasar untuk Pemula&#34;</li>
+<li>Memahami HTTP basics (GET, POST, PUT, DELETE)</li>
+<li>Postman atau curl untuk testing API</li>
+</ul>
+<p>Positive : Tutorial ini menggunakan Go standard library tanpa framework eksternal!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setup Project" duration="5">
+        <p>Mari kita setup project REST API kita.</p>
+<h2 is-upgraded>Buat Project Baru</h2>
+<pre><code language="language-bash" class="language-bash">mkdir notes-api
+cd notes-api
+go mod init notes-api
+</code></pre>
+<h2 is-upgraded>Struktur Folder</h2>
+<pre><code>notes-api/
+├── main.go
+├── handlers/
+│   └── notes.go
+├── models/
+│   └── note.go
+└── go.mod
+</code></pre>
+<h2 is-upgraded>Install Dependencies (Optional)</h2>
+<p>Untuk tutorial ini kita hanya pakai standard library, tapi untuk production biasanya butuh:</p>
+<pre><code language="language-bash" class="language-bash"># UUID generator (optional)
+go get github.com/google/uuid
+</code></pre>
+<p>Positive : Go standard library sudah sangat powerful untuk membuat API!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="HTTP Server Dasar" duration="10">
+        <p>Mari kita buat HTTP server pertama.</p>
+<h2 is-upgraded>File main.go</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;log&#34;
+    &#34;net/http&#34;
+)
+
+func main() {
+    // Handler sederhana
+    http.HandleFunc(&#34;/&#34;, homeHandler)
+    http.HandleFunc(&#34;/hello&#34;, helloHandler)
+    
+    // Start server
+    port := &#34;:8080&#34;
+    fmt.Printf(&#34;Server running on http://localhost%s\n&#34;, port)
+    log.Fatal(http.ListenAndServe(port, nil))
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &#34;Welcome to Notes API!&#34;)
+}
+
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+    name := r.URL.Query().Get(&#34;name&#34;)
+    if name == &#34;&#34; {
+        name = &#34;Guest&#34;
+    }
+    fmt.Fprintf(w, &#34;Hello, %s!&#34;, name)
+}
+</code></pre>
+<h2 is-upgraded>Jalankan Server</h2>
+<pre><code language="language-bash" class="language-bash">go run main.go
+</code></pre>
+<h2 is-upgraded>Test dengan curl</h2>
+<pre><code language="language-bash" class="language-bash"># Test home endpoint
+curl http://localhost:8080/
+
+# Test hello endpoint
+curl http://localhost:8080/hello?name=Fathullah
+</code></pre>
+<h2 is-upgraded>Penjelasan Kode</h2>
+<p><strong>http.HandleFunc()</strong></p>
+<ul>
+<li>Register handler untuk path tertentu</li>
+<li>Menerima path dan handler function</li>
+</ul>
+<p><strong>http.ResponseWriter</strong></p>
+<ul>
+<li>Interface untuk menulis response</li>
+<li>Method: Write(), WriteHeader(), Header()</li>
+</ul>
+<p><strong>http.Request</strong></p>
+<ul>
+<li>Struct yang berisi informasi request</li>
+<li>Method, URL, Headers, Body, dll</li>
+</ul>
+<p>Positive : Server HTTP Anda sudah berjalan! Mari kita buat REST API yang lebih kompleks.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="JSON Response" duration="15">
+        <p>REST API biasanya menggunakan JSON. Mari kita pelajari cara handle JSON di Go.</p>
+<h2 is-upgraded>Model Data</h2>
+<p>Buat file <code>models/note.go</code>:</p>
+<pre><code language="language-go" class="language-go">package models
+
+import &#34;time&#34;
+
+type Note struct {
+    ID        string    `json:&#34;id&#34;`
+    Title     string    `json:&#34;title&#34;`
+    Content   string    `json:&#34;content&#34;`
+    CreatedAt time.Time `json:&#34;created_at&#34;`
+    UpdatedAt time.Time `json:&#34;updated_at&#34;`
+}
+
+type Response struct {
+    Success bool        `json:&#34;success&#34;`
+    Message string      `json:&#34;message&#34;`
+    Data    interface{} `json:&#34;data,omitempty&#34;`
+}
+
+type ErrorResponse struct {
+    Success bool   `json:&#34;success&#34;`
+    Error   string `json:&#34;error&#34;`
+}
+</code></pre>
+<h2 is-upgraded>JSON Encoding</h2>
+<p>Update <code>main.go</code>:</p>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;encoding/json&#34;
+    &#34;log&#34;
+    &#34;net/http&#34;
+    &#34;time&#34;
+    
+    &#34;notes-api/models&#34;
+)
+
+func main() {
+    http.HandleFunc(&#34;/api/health&#34;, healthHandler)
+    http.HandleFunc(&#34;/api/notes&#34;, notesHandler)
+    
+    log.Println(&#34;Server running on :8080&#34;)
+    log.Fatal(http.ListenAndServe(&#34;:8080&#34;, nil))
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set(&#34;Content-Type&#34;, &#34;application/json&#34;)
+    
+    response := models.Response{
+        Success: true,
+        Message: &#34;API is healthy&#34;,
+        Data: map[string]string{
+            &#34;status&#34;: &#34;ok&#34;,
+            &#34;time&#34;:   time.Now().Format(time.RFC3339),
+        },
+    }
+    
+    json.NewEncoder(w).Encode(response)
+}
+
+func notesHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set(&#34;Content-Type&#34;, &#34;application/json&#34;)
+    
+    // Dummy data
+    notes := []models.Note{
+        {
+            ID:        &#34;1&#34;,
+            Title:     &#34;First Note&#34;,
+            Content:   &#34;This is my first note&#34;,
+            CreatedAt: time.Now(),
+            UpdatedAt: time.Now(),
+        },
+        {
+            ID:        &#34;2&#34;,
+            Title:     &#34;Second Note&#34;,
+            Content:   &#34;This is my second note&#34;,
+            CreatedAt: time.Now(),
+            UpdatedAt: time.Now(),
+        },
+    }
+    
+    response := models.Response{
+        Success: true,
+        Message: &#34;Notes retrieved successfully&#34;,
+        Data:    notes,
+    }
+    
+    json.NewEncoder(w).Encode(response)
+}
+</code></pre>
+<h2 is-upgraded>Test JSON Response</h2>
+<pre><code language="language-bash" class="language-bash"># Test health endpoint
+curl http://localhost:8080/api/health
+
+# Test notes endpoint
+curl http://localhost:8080/api/notes
+</code></pre>
+<p>Negative : Jangan lupa set Content-Type header ke &#34;application/json&#34;!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="HTTP Methods &amp; Routing" duration="15">
+        <p>REST API menggunakan HTTP methods yang berbeda untuk operasi yang berbeda.</p>
+<h2 is-upgraded>Method Routing</h2>
+<pre><code language="language-go" class="language-go">func notesHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set(&#34;Content-Type&#34;, &#34;application/json&#34;)
+    
+    switch r.Method {
+    case http.MethodGet:
+        getNotes(w, r)
+    case http.MethodPost:
+        createNote(w, r)
+    case http.MethodPut:
+        updateNote(w, r)
+    case http.MethodDelete:
+        deleteNote(w, r)
+    default:
+        sendError(w, &#34;Method not allowed&#34;, http.StatusMethodNotAllowed)
+    }
+}
+
+func getNotes(w http.ResponseWriter, r *http.Request) {
+    // Implementation
+}
+
+func createNote(w http.ResponseWriter, r *http.Request) {
+    // Implementation
+}
+
+func updateNote(w http.ResponseWriter, r *http.Request) {
+    // Implementation
+}
+
+func deleteNote(w http.ResponseWriter, r *http.Request) {
+    // Implementation
+}
+
+func sendError(w http.ResponseWriter, message string, statusCode int) {
+    w.WriteHeader(statusCode)
+    response := models.ErrorResponse{
+        Success: false,
+        Error:   message,
+    }
+    json.NewEncoder(w).Encode(response)
+}
+</code></pre>
+<h2 is-upgraded>Path Parameters</h2>
+<pre><code language="language-go" class="language-go">func noteDetailHandler(w http.ResponseWriter, r *http.Request) {
+    // Extract ID from URL path
+    // /api/notes/123 -&gt; ID = 123
+    path := r.URL.Path
+    id := strings.TrimPrefix(path, &#34;/api/notes/&#34;)
+    
+    if id == &#34;&#34; {
+        sendError(w, &#34;Note ID required&#34;, http.StatusBadRequest)
+        return
+    }
+    
+    // Find note by ID
+    // ...
+}
+</code></pre>
+<h2 is-upgraded>Query Parameters</h2>
+<pre><code language="language-go" class="language-go">func getNotesWithFilter(w http.ResponseWriter, r *http.Request) {
+    // Get query parameters
+    // /api/notes?search=golang&amp;limit=10
+    
+    search := r.URL.Query().Get(&#34;search&#34;)
+    limit := r.URL.Query().Get(&#34;limit&#34;)
+    
+    // Use parameters to filter
+    // ...
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="CRUD Operations" duration="25">
+        <p>Mari kita implementasikan CRUD lengkap untuk Notes API.</p>
+<h2 is-upgraded>In-Memory Storage</h2>
+<p>Buat file <code>handlers/notes.go</code>:</p>
+<pre><code language="language-go" class="language-go">package handlers
+
+import (
+    &#34;encoding/json&#34;
+    &#34;net/http&#34;
+    &#34;strings&#34;
+    &#34;sync&#34;
+    &#34;time&#34;
+    
+    &#34;notes-api/models&#34;
+)
+
+var (
+    notes   = make(map[string]models.Note)
+    notesMu sync.RWMutex
+    nextID  = 1
+)
+
+type CreateNoteRequest struct {
+    Title   string `json:&#34;title&#34;`
+    Content string `json:&#34;content&#34;`
+}
+
+type UpdateNoteRequest struct {
+    Title   string `json:&#34;title&#34;`
+    Content string `json:&#34;content&#34;`
+}
+</code></pre>
+<h2 is-upgraded>GET - List All Notes</h2>
+<pre><code language="language-go" class="language-go">func GetNotes(w http.ResponseWriter, r *http.Request) {
+    notesMu.RLock()
+    defer notesMu.RUnlock()
+    
+    notesList := make([]models.Note, 0, len(notes))
+    for _, note := range notes {
+        notesList = append(notesList, note)
+    }
+    
+    sendJSON(w, models.Response{
+        Success: true,
+        Message: &#34;Notes retrieved successfully&#34;,
+        Data:    notesList,
+    }, http.StatusOK)
+}
+</code></pre>
+<h2 is-upgraded>GET - Single Note</h2>
+<pre><code language="language-go" class="language-go">func GetNote(w http.ResponseWriter, r *http.Request) {
+    id := extractID(r.URL.Path)
+    if id == &#34;&#34; {
+        sendError(w, &#34;Note ID required&#34;, http.StatusBadRequest)
+        return
+    }
+    
+    notesMu.RLock()
+    note, exists := notes[id]
+    notesMu.RUnlock()
+    
+    if !exists {
+        sendError(w, &#34;Note not found&#34;, http.StatusNotFound)
+        return
+    }
+    
+    sendJSON(w, models.Response{
+        Success: true,
+        Message: &#34;Note retrieved successfully&#34;,
+        Data:    note,
+    }, http.StatusOK)
+}
+</code></pre>
+<h2 is-upgraded>POST - Create Note</h2>
+<pre><code language="language-go" class="language-go">func CreateNote(w http.ResponseWriter, r *http.Request) {
+    var req CreateNoteRequest
+    
+    if err := json.NewDecoder(r.Body).Decode(&amp;req); err != nil {
+        sendError(w, &#34;Invalid request body&#34;, http.StatusBadRequest)
+        return
+    }
+    
+    // Validation
+    if req.Title == &#34;&#34; {
+        sendError(w, &#34;Title is required&#34;, http.StatusBadRequest)
+        return
+    }
+    
+    // Create note
+    notesMu.Lock()
+    id := fmt.Sprintf(&#34;%d&#34;, nextID)
+    nextID++
+    
+    note := models.Note{
+        ID:        id,
+        Title:     req.Title,
+        Content:   req.Content,
+        CreatedAt: time.Now(),
+        UpdatedAt: time.Now(),
+    }
+    
+    notes[id] = note
+    notesMu.Unlock()
+    
+    sendJSON(w, models.Response{
+        Success: true,
+        Message: &#34;Note created successfully&#34;,
+        Data:    note,
+    }, http.StatusCreated)
+}
+</code></pre>
+<h2 is-upgraded>PUT - Update Note</h2>
+<pre><code language="language-go" class="language-go">func UpdateNote(w http.ResponseWriter, r *http.Request) {
+    id := extractID(r.URL.Path)
+    if id == &#34;&#34; {
+        sendError(w, &#34;Note ID required&#34;, http.StatusBadRequest)
+        return
+    }
+    
+    var req UpdateNoteRequest
+    if err := json.NewDecoder(r.Body).Decode(&amp;req); err != nil {
+        sendError(w, &#34;Invalid request body&#34;, http.StatusBadRequest)
+        return
+    }
+    
+    notesMu.Lock()
+    defer notesMu.Unlock()
+    
+    note, exists := notes[id]
+    if !exists {
+        sendError(w, &#34;Note not found&#34;, http.StatusNotFound)
+        return
+    }
+    
+    // Update fields
+    if req.Title != &#34;&#34; {
+        note.Title = req.Title
+    }
+    if req.Content != &#34;&#34; {
+        note.Content = req.Content
+    }
+    note.UpdatedAt = time.Now()
+    
+    notes[id] = note
+    
+    sendJSON(w, models.Response{
+        Success: true,
+        Message: &#34;Note updated successfully&#34;,
+        Data:    note,
+    }, http.StatusOK)
+}
+</code></pre>
+<h2 is-upgraded>DELETE - Delete Note</h2>
+<pre><code language="language-go" class="language-go">func DeleteNote(w http.ResponseWriter, r *http.Request) {
+    id := extractID(r.URL.Path)
+    if id == &#34;&#34; {
+        sendError(w, &#34;Note ID required&#34;, http.StatusBadRequest)
+        return
+    }
+    
+    notesMu.Lock()
+    defer notesMu.Unlock()
+    
+    if _, exists := notes[id]; !exists {
+        sendError(w, &#34;Note not found&#34;, http.StatusNotFound)
+        return
+    }
+    
+    delete(notes, id)
+    
+    sendJSON(w, models.Response{
+        Success: true,
+        Message: &#34;Note deleted successfully&#34;,
+        Data:    nil,
+    }, http.StatusOK)
+}
+</code></pre>
+<h2 is-upgraded>Helper Functions</h2>
+<pre><code language="language-go" class="language-go">func sendJSON(w http.ResponseWriter, data interface{}, statusCode int) {
+    w.Header().Set(&#34;Content-Type&#34;, &#34;application/json&#34;)
+    w.WriteHeader(statusCode)
+    json.NewEncoder(w).Encode(data)
+}
+
+func sendError(w http.ResponseWriter, message string, statusCode int) {
+    w.Header().Set(&#34;Content-Type&#34;, &#34;application/json&#34;)
+    w.WriteHeader(statusCode)
+    json.NewEncoder(w).Encode(models.ErrorResponse{
+        Success: false,
+        Error:   message,
+    })
+}
+
+func extractID(path string) string {
+    parts := strings.Split(path, &#34;/&#34;)
+    if len(parts) &gt; 0 {
+        return parts[len(parts)-1]
+    }
+    return &#34;&#34;
+}
+</code></pre>
+<p>Positive : CRUD operations lengkap! Mari kita test dengan Postman atau curl.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Testing API dengan curl" duration="15">
+        <p>Mari kita test semua endpoint yang sudah dibuat.</p>
+<h2 is-upgraded>1. Create Note (POST)</h2>
+<pre><code language="language-bash" class="language-bash">curl -X POST http://localhost:8080/api/notes \
+  -H &#34;Content-Type: application/json&#34; \
+  -d &#39;{
+    &#34;title&#34;: &#34;Belajar Go&#34;,
+    &#34;content&#34;: &#34;Go adalah bahasa yang powerful untuk backend&#34;
+  }&#39;
+</code></pre>
+<h2 is-upgraded>2. Get All Notes (GET)</h2>
+<pre><code language="language-bash" class="language-bash">curl http://localhost:8080/api/notes
+</code></pre>
+<h2 is-upgraded>3. Get Single Note (GET)</h2>
+<pre><code language="language-bash" class="language-bash">curl http://localhost:8080/api/notes/1
+</code></pre>
+<h2 is-upgraded>4. Update Note (PUT)</h2>
+<pre><code language="language-bash" class="language-bash">curl -X PUT http://localhost:8080/api/notes/1 \
+  -H &#34;Content-Type: application/json&#34; \
+  -d &#39;{
+    &#34;title&#34;: &#34;Belajar Go - Updated&#34;,
+    &#34;content&#34;: &#34;Go sangat cocok untuk microservices&#34;
+  }&#39;
+</code></pre>
+<h2 is-upgraded>5. Delete Note (DELETE)</h2>
+<pre><code language="language-bash" class="language-bash">curl -X DELETE http://localhost:8080/api/notes/1
+</code></pre>
+<h2 is-upgraded>Test dengan Postman</h2>
+<ol type="1">
+<li>Import collection atau buat manual</li>
+<li>Set base URL: <code>http://localhost:8080</code></li>
+<li>Test semua endpoints</li>
+<li>Verify responses</li>
+</ol>
+<p>Negative : Pastikan server berjalan sebelum testing!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Middleware" duration="15">
+        <p>Middleware adalah function yang berjalan sebelum handler utama. Berguna untuk logging, authentication, dll.</p>
+<h2 is-upgraded>Logger Middleware</h2>
+<pre><code language="language-go" class="language-go">func loggingMiddleware(next http.HandlerFunc) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        start := time.Now()
+        
+        log.Printf(&#34;[%s] %s %s&#34;, r.Method, r.URL.Path, r.RemoteAddr)
+        
+        next(w, r)
+        
+        log.Printf(&#34;Completed in %v&#34;, time.Since(start))
+    }
+}
+</code></pre>
+<h2 is-upgraded>CORS Middleware</h2>
+<pre><code language="language-go" class="language-go">func corsMiddleware(next http.HandlerFunc) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        w.Header().Set(&#34;Access-Control-Allow-Origin&#34;, &#34;*&#34;)
+        w.Header().Set(&#34;Access-Control-Allow-Methods&#34;, &#34;GET, POST, PUT, DELETE, OPTIONS&#34;)
+        w.Header().Set(&#34;Access-Control-Allow-Headers&#34;, &#34;Content-Type, Authorization&#34;)
+        
+        if r.Method == &#34;OPTIONS&#34; {
+            w.WriteHeader(http.StatusOK)
+            return
+        }
+        
+        next(w, r)
+    }
+}
+</code></pre>
+<h2 is-upgraded>Authentication Middleware</h2>
+<pre><code language="language-go" class="language-go">func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        token := r.Header.Get(&#34;Authorization&#34;)
+        
+        if token == &#34;&#34; {
+            sendError(w, &#34;Unauthorized&#34;, http.StatusUnauthorized)
+            return
+        }
+        
+        // Validate token
+        if !isValidToken(token) {
+            sendError(w, &#34;Invalid token&#34;, http.StatusUnauthorized)
+            return
+        }
+        
+        next(w, r)
+    }
+}
+
+func isValidToken(token string) bool {
+    // Implement token validation
+    return token == &#34;Bearer secret-token&#34;
+}
+</code></pre>
+<h2 is-upgraded>Chain Middleware</h2>
+<pre><code language="language-go" class="language-go">func chainMiddleware(handler http.HandlerFunc, middlewares ...func(http.HandlerFunc) http.HandlerFunc) http.HandlerFunc {
+    for i := len(middlewares) - 1; i &gt;= 0; i-- {
+        handler = middlewares[i](handler)
+    }
+    return handler
+}
+
+// Usage
+func main() {
+    http.HandleFunc(&#34;/api/notes&#34;, 
+        chainMiddleware(
+            notesHandler,
+            loggingMiddleware,
+            corsMiddleware,
+        ),
+    )
+}
+</code></pre>
+<p>Positive : Middleware membuat kode lebih modular dan reusable!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Error Handling" duration="10">
+        <p>Error handling yang baik penting untuk API yang robust.</p>
+<h2 is-upgraded>Custom Error Types</h2>
+<pre><code language="language-go" class="language-go">type APIError struct {
+    StatusCode int
+    Message    string
+    Err        error
+}
+
+func (e *APIError) Error() string {
+    if e.Err != nil {
+        return fmt.Sprintf(&#34;%s: %v&#34;, e.Message, e.Err)
+    }
+    return e.Message
+}
+
+func NewAPIError(statusCode int, message string, err error) *APIError {
+    return &amp;APIError{
+        StatusCode: statusCode,
+        Message:    message,
+        Err:        err,
+    }
+}
+</code></pre>
+<h2 is-upgraded>Error Handler Middleware</h2>
+<pre><code language="language-go" class="language-go">type HandlerWithError func(w http.ResponseWriter, r *http.Request) error
+
+func errorHandler(handler HandlerWithError) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        if err := handler(w, r); err != nil {
+            var apiErr *APIError
+            if errors.As(err, &amp;apiErr) {
+                sendError(w, apiErr.Message, apiErr.StatusCode)
+            } else {
+                sendError(w, &#34;Internal server error&#34;, http.StatusInternalServerError)
+            }
+            log.Printf(&#34;Error: %v&#34;, err)
+        }
+    }
+}
+</code></pre>
+<h2 is-upgraded>Usage</h2>
+<pre><code language="language-go" class="language-go">func getNoteWithError(w http.ResponseWriter, r *http.Request) error {
+    id := extractID(r.URL.Path)
+    if id == &#34;&#34; {
+        return NewAPIError(http.StatusBadRequest, &#34;Note ID required&#34;, nil)
+    }
+    
+    note, exists := notes[id]
+    if !exists {
+        return NewAPIError(http.StatusNotFound, &#34;Note not found&#34;, nil)
+    }
+    
+    sendJSON(w, note, http.StatusOK)
+    return nil
+}
+
+// Register handler
+http.HandleFunc(&#34;/api/notes/&#34;, errorHandler(getNoteWithError))
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Best Practices" duration="10">
+        <p>Tips untuk membuat REST API yang baik.</p>
+<h2 is-upgraded>1. Consistent Response Format</h2>
+<pre><code language="language-go" class="language-go">type APIResponse struct {
+    Success bool        `json:&#34;success&#34;`
+    Message string      `json:&#34;message,omitempty&#34;`
+    Data    interface{} `json:&#34;data,omitempty&#34;`
+    Error   string      `json:&#34;error,omitempty&#34;`
+    Meta    *Meta       `json:&#34;meta,omitempty&#34;`
+}
+
+type Meta struct {
+    Page       int `json:&#34;page,omitempty&#34;`
+    PerPage    int `json:&#34;per_page,omitempty&#34;`
+    TotalPages int `json:&#34;total_pages,omitempty&#34;`
+    TotalItems int `json:&#34;total_items,omitempty&#34;`
+}
+</code></pre>
+<h2 is-upgraded>2. Proper HTTP Status Codes</h2>
+<pre><code language="language-go" class="language-go">// Success
+200 OK          - GET, PUT, DELETE berhasil
+201 Created     - POST berhasil create resource
+204 No Content  - DELETE berhasil tanpa response body
+
+// Client Errors
+400 Bad Request      - Request invalid
+401 Unauthorized     - Belum login
+403 Forbidden        - Tidak punya akses
+404 Not Found        - Resource tidak ditemukan
+422 Unprocessable    - Validation error
+
+// Server Errors
+500 Internal Server Error - Error di server
+503 Service Unavailable   - Service down
+</code></pre>
+<h2 is-upgraded>3. Input Validation</h2>
+<pre><code language="language-go" class="language-go">func validateCreateNote(req CreateNoteRequest) error {
+    if req.Title == &#34;&#34; {
+        return fmt.Errorf(&#34;title is required&#34;)
+    }
+    if len(req.Title) &gt; 200 {
+        return fmt.Errorf(&#34;title too long (max 200 characters)&#34;)
+    }
+    if len(req.Content) &gt; 5000 {
+        return fmt.Errorf(&#34;content too long (max 5000 characters)&#34;)
+    }
+    return nil
+}
+</code></pre>
+<h2 is-upgraded>4. Pagination</h2>
+<pre><code language="language-go" class="language-go">func getPaginatedNotes(w http.ResponseWriter, r *http.Request) {
+    page, _ := strconv.Atoi(r.URL.Query().Get(&#34;page&#34;))
+    perPage, _ := strconv.Atoi(r.URL.Query().Get(&#34;per_page&#34;))
+    
+    if page &lt; 1 {
+        page = 1
+    }
+    if perPage &lt; 1 || perPage &gt; 100 {
+        perPage = 10
+    }
+    
+    // Calculate pagination
+    start := (page - 1) * perPage
+    end := start + perPage
+    
+    // Get paginated data
+    // ...
+}
+</code></pre>
+<p>Positive : Best practices membuat API Anda lebih maintainable dan user-friendly!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Project: Complete Notes API" duration="30">
+        <p>Mari kita gabungkan semua yang sudah dipelajari menjadi API lengkap.</p>
+<h2 is-upgraded>Final main.go</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;log&#34;
+    &#34;net/http&#34;
+    
+    &#34;notes-api/handlers&#34;
+)
+
+func main() {
+    // Health check
+    http.HandleFunc(&#34;/api/health&#34;, handlers.HealthCheck)
+    
+    // Notes endpoints
+    http.HandleFunc(&#34;/api/notes&#34;, handlers.NotesHandler)
+    http.HandleFunc(&#34;/api/notes/&#34;, handlers.NoteDetailHandler)
+    
+    // Start server
+    port := &#34;:8080&#34;
+    log.Printf(&#34;Server starting on http://localhost%s&#34;, port)
+    log.Printf(&#34;API Documentation: http://localhost%s/api/health&#34;, port)
+    
+    if err := http.ListenAndServe(port, nil); err != nil {
+        log.Fatal(err)
+    }
+}
+</code></pre>
+<h2 is-upgraded>Test Complete API</h2>
+<ol type="1">
+<li>Start server</li>
+<li>Create beberapa notes</li>
+<li>List all notes</li>
+<li>Update note</li>
+<li>Delete note</li>
+<li>Test error cases</li>
+</ol>
+<p>Positive : Selamat! Anda sudah membuat REST API lengkap dengan Go!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="5">
+        <p>Anda telah mempelajari:</p>
+<ul>
+<li>✅ HTTP server dengan net/http</li>
+<li>✅ JSON encoding/decoding</li>
+<li>✅ HTTP methods dan routing</li>
+<li>✅ CRUD operations lengkap</li>
+<li>✅ Middleware pattern</li>
+<li>✅ Error handling</li>
+<li>✅ Best practices REST API</li>
+</ul>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<ul>
+<li>Pelajari Go packages &amp; modules</li>
+<li>Integrasi dengan database (PostgreSQL)</li>
+<li>Authentication &amp; Authorization</li>
+<li>Deploy ke production</li>
+</ul>
+<h2 is-upgraded>Resources</h2>
+<ul>
+<li><a href="https://pkg.go.dev/net/http" target="_blank">Go net/http docs</a></li>
+<li><a href="https://restfulapi.net/" target="_blank">REST API Best Practices</a></li>
+<li><a href="https://www.boot.dev/tracks/backend" target="_blank">Boot.dev Backend Track</a></li>
+</ul>
+<p>Positive : Lanjutkan ke tutorial berikutnya untuk belajar Go Packages &amp; Modules!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
