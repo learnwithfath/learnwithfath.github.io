@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-14T17:11:54+07:00",
+  "id": "go-bab9-web-network",
+  "duration": 105,
+  "title": "Go Bab 9: Web \u0026 Network",
+  "summary": "Bab 9 - Web \u0026 Network di Go: HTTP Client/Server, Context dengan studi kasus REST API sederhana",
+  "source": "go-bab9-web-network.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "golang",
+    "backend",
+    "fundamental",
+    "indonesia"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/feedback",
+  "url": "go-bab9-web-network"
+}

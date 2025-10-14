@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-14T17:09:44+07:00",
+  "id": "go-bab5-advanced-types",
+  "duration": 140,
+  "title": "Go Bab 5: Advanced Types",
+  "summary": "Bab 5 - Advanced Types di Go: Pointers, Strings, Structs, Methods, Interfaces dengan studi kasus sistem manajemen karyawan",
+  "source": "go-bab5-advanced-types.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "golang",
+    "backend",
+    "fundamental",
+    "indonesia"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/feedback",
+  "url": "go-bab5-advanced-types"
+}

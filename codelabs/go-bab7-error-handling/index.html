@@ -1,0 +1,354 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Go Bab 7: Error Handling</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="go-bab7-error-handling"
+                  title="Go Bab 7: Error Handling"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/feedback">
+    
+      <google-codelab-step label="Pengenalan" duration="3">
+        <p>Error handling yang baik membuat aplikasi robust dan reliable!</p>
+<h2 is-upgraded>Apa yang Akan Dipelajari</h2>
+<ul>
+<li>❌ Errors - Menangani error dengan proper</li>
+<li>💥 Panic - Situasi exceptional</li>
+<li>🔄 Defer - Cleanup operations</li>
+<li>🛡️ Recover - Menangkap panic</li>
+<li>💼 Studi Kasus - File processor robust</li>
+</ul>
+<p>Positive : Good error handling = production-ready code!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Errors" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Error di Go adalah value, bukan exception. Function return error sebagai nilai terakhir.</p>
+<h2 is-upgraded>Basic Error Handling</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;errors&#34;
+    &#34;fmt&#34;
+)
+
+func divide(a, b float64) (float64, error) {
+    if b == 0 {
+        return 0, errors.New(&#34;division by zero&#34;)
+    }
+    return a / b, nil
+}
+
+func main() {
+    result, err := divide(10, 2)
+    if err != nil {
+        fmt.Println(&#34;Error:&#34;, err)
+        return
+    }
+    fmt.Println(&#34;Result:&#34;, result)
+    
+    // Error case
+    _, err = divide(10, 0)
+    if err != nil {
+        fmt.Println(&#34;Error:&#34;, err)
+    }
+}
+</code></pre>
+<h2 is-upgraded>Custom Errors</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+type ValidationError struct {
+    Field   string
+    Message string
+}
+
+func (e *ValidationError) Error() string {
+    return fmt.Sprintf(&#34;%s: %s&#34;, e.Field, e.Message)
+}
+
+func validateAge(age int) error {
+    if age &lt; 0 {
+        return &amp;ValidationError{
+            Field:   &#34;age&#34;,
+            Message: &#34;cannot be negative&#34;,
+        }
+    }
+    if age &lt; 17 {
+        return &amp;ValidationError{
+            Field:   &#34;age&#34;,
+            Message: &#34;must be at least 17&#34;,
+        }
+    }
+    return nil
+}
+
+func main() {
+    if err := validateAge(15); err != nil {
+        fmt.Println(&#34;Validation error:&#34;, err)
+    }
+}
+</code></pre>
+<h2 is-upgraded>Error Wrapping</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;errors&#34;
+)
+
+func processData(data string) error {
+    if data == &#34;&#34; {
+        return errors.New(&#34;empty data&#34;)
+    }
+    return nil
+}
+
+func handleRequest(data string) error {
+    if err := processData(data); err != nil {
+        return fmt.Errorf(&#34;handleRequest: %w&#34;, err)
+    }
+    return nil
+}
+
+func main() {
+    err := handleRequest(&#34;&#34;)
+    if err != nil {
+        fmt.Println(&#34;Error:&#34;, err)
+        
+        // Unwrap error
+        if errors.Is(err, errors.New(&#34;empty data&#34;)) {
+            fmt.Println(&#34;It&#39;s an empty data error&#34;)
+        }
+    }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Panic" duration="15">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Panic digunakan untuk situasi exceptional yang tidak bisa di-recover.</p>
+<h2 is-upgraded>Basic Panic</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func riskyOperation(x int) {
+    if x &lt; 0 {
+        panic(&#34;x cannot be negative&#34;)
+    }
+    fmt.Println(&#34;x is:&#34;, x)
+}
+
+func main() {
+    riskyOperation(10)
+    // riskyOperation(-5)  // Akan panic
+    fmt.Println(&#34;Program continues&#34;)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Defer" duration="15">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Defer menunda eksekusi function sampai surrounding function return.</p>
+<h2 is-upgraded>Basic Defer</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    defer fmt.Println(&#34;World&#34;)
+    fmt.Println(&#34;Hello&#34;)
+}
+// Output: Hello, World
+</code></pre>
+<h2 is-upgraded>Multiple Defers</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    defer fmt.Println(&#34;1&#34;)
+    defer fmt.Println(&#34;2&#34;)
+    defer fmt.Println(&#34;3&#34;)
+    fmt.Println(&#34;Start&#34;)
+}
+// Output: Start, 3, 2, 1 (LIFO)
+</code></pre>
+<h2 is-upgraded>Defer untuk Cleanup</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func processFile(filename string) error {
+    fmt.Println(&#34;Opening file:&#34;, filename)
+    defer fmt.Println(&#34;Closing file:&#34;, filename)
+    
+    // Process file...
+    fmt.Println(&#34;Processing file...&#34;)
+    
+    return nil
+}
+
+func main() {
+    processFile(&#34;data.txt&#34;)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Recover" duration="15">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Recover menangkap panic dan memungkinkan program continue.</p>
+<h2 is-upgraded>Basic Recover</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func riskyOperation() {
+    defer func() {
+        if r := recover(); r != nil {
+            fmt.Println(&#34;Recovered from panic:&#34;, r)
+        }
+    }()
+    
+    panic(&#34;something went wrong&#34;)
+    fmt.Println(&#34;This won&#39;t be printed&#34;)
+}
+
+func main() {
+    riskyOperation()
+    fmt.Println(&#34;Program continues&#34;)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Studi Kasus: File Processor" duration="30">
+        <pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;errors&#34;
+)
+
+type FileError struct {
+    Filename string
+    Op       string
+    Err      error
+}
+
+func (e *FileError) Error() string {
+    return fmt.Sprintf(&#34;%s %s: %v&#34;, e.Op, e.Filename, e.Err)
+}
+
+func openFile(filename string) error {
+    if filename == &#34;&#34; {
+        return &amp;FileError{
+            Filename: filename,
+            Op:       &#34;open&#34;,
+            Err:      errors.New(&#34;empty filename&#34;),
+        }
+    }
+    return nil
+}
+
+func readFile(filename string) (string, error) {
+    if err := openFile(filename); err != nil {
+        return &#34;&#34;, err
+    }
+    
+    // Simulate reading
+    return &#34;file content&#34;, nil
+}
+
+func processFile(filename string) (result string, err error) {
+    defer func() {
+        if r := recover(); r != nil {
+            err = fmt.Errorf(&#34;panic recovered: %v&#34;, r)
+        }
+    }()
+    
+    content, err := readFile(filename)
+    if err != nil {
+        return &#34;&#34;, fmt.Errorf(&#34;processFile: %w&#34;, err)
+    }
+    
+    return content, nil
+}
+
+func main() {
+    fmt.Println(&#34;╔═══════════════════════════════════╗&#34;)
+    fmt.Println(&#34;║      FILE PROCESSOR ROBUST        ║&#34;)
+    fmt.Println(&#34;╚═══════════════════════════════════╝\n&#34;)
+    
+    files := []string{&#34;data.txt&#34;, &#34;&#34;, &#34;config.json&#34;}
+    
+    for _, file := range files {
+        fmt.Printf(&#34;Processing: %s\n&#34;, file)
+        
+        content, err := processFile(file)
+        if err != nil {
+            fmt.Printf(&#34;  ❌ Error: %v\n\n&#34;, err)
+            continue
+        }
+        
+        fmt.Printf(&#34;  ✓ Success: %s\n\n&#34;, content)
+    }
+    
+    fmt.Println(&#34;═══════════════════════════════════════&#34;)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="2">
+        <h2 is-upgraded>Yang Sudah Dipelajari</h2>
+<p>✅ <strong>Errors</strong> - Proper error handling<br> ✅ <strong>Panic</strong> - Exceptional situations<br> ✅ <strong>Defer</strong> - Cleanup operations<br> ✅ <strong>Recover</strong> - Catching panics</p>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<p>Lanjut ke <strong>Bab 8: Standard Library</strong>!</p>
+<p>Positive : Error handling yang baik membuat aplikasi production-ready!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

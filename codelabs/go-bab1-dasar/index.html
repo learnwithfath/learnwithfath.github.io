@@ -1,0 +1,658 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Go Bab 1: Dasar-dasar Go</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="go-bab1-dasar"
+                  title="Go Bab 1: Dasar-dasar Go"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/feedback">
+    
+      <google-codelab-step label="Pengenalan" duration="3">
+        <p>Selamat datang di Bab 1 dari series Go Fundamental! Di bab ini kita akan mempelajari fondasi dasar bahasa Go.</p>
+<h2 is-upgraded>Apa yang Akan Dipelajari</h2>
+<ul>
+<li>🎯 Hello World - Program pertama Anda</li>
+<li>📊 Values - Tipe data dasar</li>
+<li>📦 Variables - Menyimpan dan mengubah data</li>
+<li>🔒 Constants - Nilai yang tidak berubah</li>
+<li>💼 Studi Kasus - Kalkulator sederhana</li>
+</ul>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Go terinstall (versi 1.16+)</li>
+<li>Text editor (VS Code recommended)</li>
+<li>Terminal/Command Prompt</li>
+</ul>
+<p>Positive : Bab ini adalah fondasi untuk semua bab selanjutnya. Pastikan Anda memahami setiap konsep!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Hello World" duration="10">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Program &#34;Hello World&#34; adalah tradisi dalam programming. Ini adalah program paling sederhana yang menampilkan teks ke layar.</p>
+<h2 is-upgraded>Struktur Program Go</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    fmt.Println(&#34;Hello, World!&#34;)
+}
+</code></pre>
+<h2 is-upgraded>Penjelasan Baris per Baris</h2>
+<p><strong>Line 1: </strong></p>
+<p><strong><code>package main</code></strong></p>
+<ul>
+<li>Setiap file Go harus dimulai dengan <code>package</code></li>
+<li><code>main</code> adalah package khusus untuk program yang bisa dijalankan</li>
+<li>Package lain digunakan untuk library</li>
+</ul>
+<p><strong>Line 3: </strong></p>
+<p><strong><code>import "fmt"</code></strong></p>
+<ul>
+<li><code>import</code> untuk menggunakan package lain</li>
+<li><code>fmt</code> adalah package untuk formatting dan printing</li>
+<li>Singkatan dari &#34;format&#34;</li>
+</ul>
+<p><strong>Line 5: </strong></p>
+<p><strong><code>func main()</code></strong></p>
+<ul>
+<li><code>func</code> untuk mendefinisikan function</li>
+<li><code>main()</code> adalah entry point program</li>
+<li>Program dimulai dari sini</li>
+</ul>
+<p><strong>Line 6: </strong></p>
+<p><strong><code>fmt.Println(...)</code></strong></p>
+<ul>
+<li><code>Println</code> = Print Line</li>
+<li>Menampilkan text dan pindah baris baru</li>
+<li>Dari package <code>fmt</code></li>
+</ul>
+<h2 is-upgraded>Cara Menjalankan</h2>
+<pre><code language="language-bash" class="language-bash"># Simpan sebagai hello.go
+go run hello.go
+
+# Atau compile dulu
+go build hello.go
+./hello
+</code></pre>
+<h2 is-upgraded>Variasi Hello World</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Println - dengan newline
+    fmt.Println(&#34;Hello, World!&#34;)
+    
+    // Print - tanpa newline
+    fmt.Print(&#34;Hello, &#34;)
+    fmt.Print(&#34;World!\n&#34;)
+    
+    // Printf - dengan formatting
+    name := &#34;Fathullah&#34;
+    fmt.Printf(&#34;Hello, %s!\n&#34;, name)
+}
+</code></pre>
+<p>Negative : Jangan lupa <code>package main</code> dan <code>func main()</code> - tanpa ini program tidak bisa dijalankan!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Values (Nilai)" duration="15">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Values adalah data yang digunakan dalam program. Go punya berbagai tipe data untuk berbagai keperluan.</p>
+<h2 is-upgraded>Tipe Data Dasar</h2>
+<h3 is-upgraded>1. String (Text)</h3>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // String dengan double quotes
+    fmt.Println(&#34;Hello, World!&#34;)
+    
+    // Concatenation (gabung string)
+    fmt.Println(&#34;Hello&#34; + &#34; &#34; + &#34;World&#34;)
+    
+    // Multi-line string dengan backticks
+    message := `Ini adalah
+    string multi-line
+    yang panjang`
+    fmt.Println(message)
+}
+</code></pre>
+<h3 is-upgraded>2. Integer (Bilangan Bulat)</h3>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Operasi matematika
+    fmt.Println(&#34;1 + 1 =&#34;, 1+1)
+    fmt.Println(&#34;7 - 3 =&#34;, 7-3)
+    fmt.Println(&#34;5 * 2 =&#34;, 5*2)
+    fmt.Println(&#34;10 / 3 =&#34;, 10/3)  // Integer division
+    fmt.Println(&#34;10 % 3 =&#34;, 10%3)  // Modulus (sisa bagi)
+    
+    // Tipe integer
+    var a int = 42        // Platform dependent (32 or 64 bit)
+    var b int8 = 127      // -128 to 127
+    var c int16 = 32767   // -32768 to 32767
+    var d uint = 42       // Unsigned (hanya positif)
+    
+    fmt.Println(a, b, c, d)
+}
+</code></pre>
+<h3 is-upgraded>3. Float (Bilangan Desimal)</h3>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Float operations
+    fmt.Println(&#34;7.0 / 3.0 =&#34;, 7.0/3.0)
+    fmt.Println(&#34;3.14 * 2 =&#34;, 3.14*2)
+    
+    // Tipe float
+    var x float32 = 3.14
+    var y float64 = 3.141592653589793
+    
+    fmt.Printf(&#34;float32: %.2f\n&#34;, x)
+    fmt.Printf(&#34;float64: %.15f\n&#34;, y)
+}
+</code></pre>
+<h3 is-upgraded>4. Boolean (True/False)</h3>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Boolean values
+    fmt.Println(true)
+    fmt.Println(false)
+    
+    // Logical operators
+    fmt.Println(&#34;true &amp;&amp; false =&#34;, true &amp;&amp; false)  // AND
+    fmt.Println(&#34;true || false =&#34;, true || false)  // OR
+    fmt.Println(&#34;!true =&#34;, !true)                  // NOT
+    
+    // Comparison
+    fmt.Println(&#34;5 &gt; 3 =&#34;, 5 &gt; 3)
+    fmt.Println(&#34;5 &lt; 3 =&#34;, 5 &lt; 3)
+    fmt.Println(&#34;5 == 5 =&#34;, 5 == 5)
+    fmt.Println(&#34;5 != 3 =&#34;, 5 != 3)
+}
+</code></pre>
+<h2 is-upgraded>Contoh Lengkap</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    fmt.Println(&#34;=== TIPE DATA GO ===\n&#34;)
+    
+    // String
+    fmt.Println(&#34;STRING:&#34;)
+    fmt.Println(&#34;Nama:&#34;, &#34;Ahmad Fathullah&#34;)
+    
+    // Integer
+    fmt.Println(&#34;\nINTEGER:&#34;)
+    fmt.Println(&#34;Umur:&#34;, 25)
+    fmt.Println(&#34;Tahun:&#34;, 2024)
+    
+    // Float
+    fmt.Println(&#34;\nFLOAT:&#34;)
+    fmt.Println(&#34;Tinggi:&#34;, 175.5, &#34;cm&#34;)
+    fmt.Println(&#34;Berat:&#34;, 68.3, &#34;kg&#34;)
+    
+    // Boolean
+    fmt.Println(&#34;\nBOOLEAN:&#34;)
+    fmt.Println(&#34;Sudah menikah:&#34;, false)
+    fmt.Println(&#34;Punya SIM:&#34;, true)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Variables (Variabel)" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Variable adalah &#34;kotak&#34; untuk menyimpan data yang bisa berubah. Seperti wadah yang bisa diisi dan diganti isinya.</p>
+<h2 is-upgraded>Cara Deklarasi Variable</h2>
+<h3 is-upgraded>1. Dengan <code>var</code> dan Tipe Data</h3>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Deklarasi dengan tipe
+    var name string = &#34;Fathullah&#34;
+    var age int = 25
+    var height float64 = 175.5
+    var isStudent bool = true
+    
+    fmt.Println(&#34;Nama:&#34;, name)
+    fmt.Println(&#34;Umur:&#34;, age)
+    fmt.Println(&#34;Tinggi:&#34;, height)
+    fmt.Println(&#34;Mahasiswa:&#34;, isStudent)
+}
+</code></pre>
+<h3 is-upgraded>2. Type Inference (Otomatis)</h3>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Go bisa menebak tipe data
+    var name = &#34;Fathullah&#34;      // string
+    var age = 25                // int
+    var height = 175.5          // float64
+    var isStudent = true        // bool
+    
+    fmt.Printf(&#34;%T: %v\n&#34;, name, name)
+    fmt.Printf(&#34;%T: %v\n&#34;, age, age)
+    fmt.Printf(&#34;%T: %v\n&#34;, height, height)
+    fmt.Printf(&#34;%T: %v\n&#34;, isStudent, isStudent)
+}
+</code></pre>
+<h3 is-upgraded>3. Short Declaration (Paling Umum)</h3>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Cara paling singkat dengan :=
+    name := &#34;Fathullah&#34;
+    age := 25
+    city := &#34;Jakarta&#34;
+    
+    fmt.Println(name, age, city)
+    
+    // Hanya bisa di dalam function
+    // Tidak bisa di level package
+}
+</code></pre>
+<h2 is-upgraded>Multiple Variables</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Deklarasi multiple variables
+    var x, y int = 1, 2
+    fmt.Println(x, y)
+    
+    // Dengan short declaration
+    a, b, c := 10, 20, 30
+    fmt.Println(a, b, c)
+    
+    // Berbeda tipe
+    name, age := &#34;Ahmad&#34;, 25
+    fmt.Println(name, age)
+    
+    // Group declaration
+    var (
+        firstName = &#34;Ahmad&#34;
+        lastName  = &#34;Fathullah&#34;
+        yearBorn  = 1999
+    )
+    fmt.Println(firstName, lastName, yearBorn)
+}
+</code></pre>
+<h2 is-upgraded>Update Variable</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Deklarasi
+    score := 75
+    fmt.Println(&#34;Score awal:&#34;, score)
+    
+    // Update
+    score = 85
+    fmt.Println(&#34;Score baru:&#34;, score)
+    
+    // Increment
+    score = score + 5
+    fmt.Println(&#34;Setelah +5:&#34;, score)
+    
+    // Shorthand operators
+    score += 10  // score = score + 10
+    fmt.Println(&#34;Setelah +=10:&#34;, score)
+    
+    score++      // score = score + 1
+    fmt.Println(&#34;Setelah ++:&#34;, score)
+}
+</code></pre>
+<h2 is-upgraded>Zero Values</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Variable tanpa nilai awal punya &#34;zero value&#34;
+    var i int
+    var f float64
+    var b bool
+    var s string
+    
+    fmt.Printf(&#34;int: %v\n&#34;, i)       // 0
+    fmt.Printf(&#34;float64: %v\n&#34;, f)   // 0
+    fmt.Printf(&#34;bool: %v\n&#34;, b)      // false
+    fmt.Printf(&#34;string: %q\n&#34;, s)    // &#34;&#34;
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Constants (Konstanta)" duration="15">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Constant adalah nilai yang <strong>tidak bisa diubah</strong> setelah dideklarasikan. Berguna untuk nilai tetap seperti Pi, nama aplikasi, atau konfigurasi.</p>
+<h2 is-upgraded>Deklarasi Constant</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+// Constant di level package
+const Pi = 3.14159
+const AppName = &#34;MyApp&#34;
+const Version = &#34;1.0.0&#34;
+
+func main() {
+    fmt.Println(&#34;Pi:&#34;, Pi)
+    fmt.Println(&#34;App:&#34;, AppName, &#34;v&#34;+Version)
+    
+    // Pi = 3.14  // Error! Tidak bisa diubah
+    
+    // Constant di dalam function
+    const MaxUsers = 100
+    fmt.Println(&#34;Max users:&#34;, MaxUsers)
+}
+</code></pre>
+<h2 is-upgraded>Grouped Constants</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+const (
+    StatusOK       = 200
+    StatusNotFound = 404
+    StatusError    = 500
+)
+
+const (
+    Monday    = 1
+    Tuesday   = 2
+    Wednesday = 3
+    Thursday  = 4
+    Friday    = 5
+)
+
+func main() {
+    fmt.Println(&#34;HTTP Status OK:&#34;, StatusOK)
+    fmt.Println(&#34;Hari Jumat:&#34;, Friday)
+}
+</code></pre>
+<h2 is-upgraded>Typed vs Untyped Constants</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Untyped constant (flexible)
+    const a = 42
+    var i int = a
+    var f float64 = a
+    fmt.Println(i, f)
+    
+    // Typed constant (strict)
+    const b int = 42
+    var j int = b
+    // var g float64 = b  // Error! Type mismatch
+    fmt.Println(j)
+}
+</code></pre>
+<h2 is-upgraded>Constant Expressions</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+const (
+    // Bisa pakai expression
+    SecondsPerMinute = 60
+    MinutesPerHour   = 60
+    SecondsPerHour   = SecondsPerMinute * MinutesPerHour
+    
+    // Bisa pakai operasi
+    KB = 1024
+    MB = KB * 1024
+    GB = MB * 1024
+)
+
+func main() {
+    fmt.Println(&#34;1 jam =&#34;, SecondsPerHour, &#34;detik&#34;)
+    fmt.Println(&#34;1 GB =&#34;, GB, &#34;bytes&#34;)
+}
+</code></pre>
+<h2 is-upgraded>iota (Auto Increment)</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+const (
+    Sunday = iota     // 0
+    Monday            // 1
+    Tuesday           // 2
+    Wednesday         // 3
+    Thursday          // 4
+    Friday            // 5
+    Saturday          // 6
+)
+
+const (
+    _  = iota         // Skip 0
+    KB = 1 &lt;&lt; (10 * iota)  // 1 &lt;&lt; 10 = 1024
+    MB                      // 1 &lt;&lt; 20 = 1048576
+    GB                      // 1 &lt;&lt; 30 = 1073741824
+)
+
+func main() {
+    fmt.Println(&#34;Friday:&#34;, Friday)
+    fmt.Println(&#34;1 MB:&#34;, MB, &#34;bytes&#34;)
+}
+</code></pre>
+<p>Positive : Gunakan constants untuk nilai yang tidak berubah seperti konfigurasi, status code, atau konstanta matematika!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Studi Kasus: Kalkulator Persegi Panjang" duration="15">
+        <h2 is-upgraded>Problem</h2>
+<p>Buat program kalkulator untuk menghitung luas dan keliling persegi panjang dengan fitur:</p>
+<ul>
+<li>Menampilkan informasi aplikasi</li>
+<li>Input panjang dan lebar</li>
+<li>Hitung luas dan keliling</li>
+<li>Format output yang rapi</li>
+</ul>
+<h2 is-upgraded>Solusi Lengkap</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+// Constants untuk aplikasi
+const (
+    AppName    = &#34;Kalkulator Persegi Panjang&#34;
+    Version    = &#34;1.0.0&#34;
+    Author     = &#34;Qiscus Engineering Team&#34;
+    Separator  = &#34;================================&#34;
+)
+
+func main() {
+    // Header aplikasi
+    fmt.Println(Separator)
+    fmt.Println(AppName)
+    fmt.Println(&#34;Version:&#34;, Version)
+    fmt.Println(&#34;By:&#34;, Author)
+    fmt.Println(Separator)
+    fmt.Println()
+    
+    // Input data (dalam cm)
+    panjang := 15.0
+    lebar := 8.0
+    
+    fmt.Println(&#34;INPUT:&#34;)
+    fmt.Printf(&#34;Panjang: %.2f cm\n&#34;, panjang)
+    fmt.Printf(&#34;Lebar: %.2f cm\n&#34;, lebar)
+    fmt.Println()
+    
+    // Perhitungan
+    luas := panjang * lebar
+    keliling := 2 * (panjang + lebar)
+    
+    // Output hasil
+    fmt.Println(&#34;HASIL PERHITUNGAN:&#34;)
+    fmt.Println(Separator)
+    fmt.Printf(&#34;Luas       : %.2f cm²\n&#34;, luas)
+    fmt.Printf(&#34;Keliling   : %.2f cm\n&#34;, keliling)
+    fmt.Println(Separator)
+    
+    // Informasi tambahan
+    fmt.Println(&#34;\nINFORMASI TAMBAHAN:&#34;)
+    diagonal := calculateDiagonal(panjang, lebar)
+    fmt.Printf(&#34;Diagonal   : %.2f cm\n&#34;, diagonal)
+    
+    // Kategori berdasarkan luas
+    var kategori string
+    if luas &lt; 50 {
+        kategori = &#34;Kecil&#34;
+    } else if luas &lt; 100 {
+        kategori = &#34;Sedang&#34;
+    } else {
+        kategori = &#34;Besar&#34;
+    }
+    fmt.Printf(&#34;Kategori   : %s\n&#34;, kategori)
+}
+
+// Helper function untuk hitung diagonal
+func calculateDiagonal(p, l float64) float64 {
+    // Menggunakan teorema Pythagoras: c² = a² + b²
+    return sqrt(p*p + l*l)
+}
+
+// Simple square root approximation
+func sqrt(x float64) float64 {
+    z := 1.0
+    for i := 0; i &lt; 10; i++ {
+        z -= (z*z - x) / (2 * z)
+    }
+    return z
+}
+</code></pre>
+<h2 is-upgraded>Output Program</h2>
+<pre><code>================================
+Kalkulator Persegi Panjang
+Version: 1.0.0
+By: Qiscus Engineering Team
+================================
+
+INPUT:
+Panjang: 15.00 cm
+Lebar: 8.00 cm
+
+HASIL PERHITUNGAN:
+================================
+Luas       : 120.00 cm²
+Keliling   : 46.00 cm
+================================
+
+INFORMASI TAMBAHAN:
+Diagonal   : 17.00 cm
+Kategori   : Besar
+</code></pre>
+<h2 is-upgraded>Penjelasan Code</h2>
+<ol type="1">
+<li><strong>Constants</strong> - Untuk info aplikasi yang tidak berubah</li>
+<li><strong>Variables</strong> - Untuk data yang bisa berubah (panjang, lebar)</li>
+<li><strong>Calculations</strong> - Operasi matematika sederhana</li>
+<li><strong>Formatting</strong> - Printf untuk output yang rapi</li>
+<li><strong>Functions</strong> - Helper function untuk diagonal</li>
+</ol>
+<h2 is-upgraded>Latihan</h2>
+<p>Coba modifikasi program untuk:</p>
+<ol type="1">
+<li>Tambah input tinggi (untuk balok)</li>
+<li>Hitung volume balok</li>
+<li>Tambah kategori berdasarkan volume</li>
+<li>Format output dengan warna (optional)</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="2">
+        <p>Selamat! Anda telah menyelesaikan Bab 1: Dasar-dasar Go.</p>
+<h2 is-upgraded>Yang Sudah Dipelajari</h2>
+<p>✅ <strong>Hello World</strong> - Struktur program Go dasar<br> ✅ <strong>Values</strong> - String, Integer, Float, Boolean<br> ✅ <strong>Variables</strong> - var, type inference, short declaration<br> ✅ <strong>Constants</strong> - const, grouped constants, iota<br> ✅ <strong>Studi Kasus</strong> - Kalkulator persegi panjang</p>
+<h2 is-upgraded>Key Takeaways</h2>
+<ul>
+<li>Setiap program Go dimulai dengan <code>package main</code> dan <code>func main()</code></li>
+<li>Gunakan <code>:=</code> untuk deklarasi variable yang singkat</li>
+<li>Gunakan <code>const</code> untuk nilai yang tidak berubah</li>
+<li>Go punya type inference yang smart</li>
+<li>Zero values: int=0, float=0, bool=false, string=&#34;&#34;</li>
+</ul>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<p>Lanjut ke <strong>Bab 2: Control Flow</strong> untuk belajar:</p>
+<ul>
+<li>For loops</li>
+<li>If/Else statements</li>
+<li>Switch cases</li>
+<li>Flow control patterns</li>
+</ul>
+<h2 is-upgraded>Resources</h2>
+<ul>
+<li><a href="https://go.dev/tour/" target="_blank">Go Tour</a></li>
+<li><a href="https://gobyexample.com/" target="_blank">Go by Example</a></li>
+<li><a href="https://go.dev/doc/" target="_blank">Go Documentation</a></li>
+</ul>
+<p>Positive : Praktik membuat sempurna! Coba buat variasi dari studi kasus untuk memperdalam pemahaman.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

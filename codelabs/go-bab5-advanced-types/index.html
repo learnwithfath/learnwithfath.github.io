@@ -1,0 +1,457 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Go Bab 5: Advanced Types</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="go-bab5-advanced-types"
+                  title="Go Bab 5: Advanced Types"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/feedback">
+    
+      <google-codelab-step label="Pengenalan" duration="3">
+        <p>Selamat datang di Bab 5! Di bab ini kita akan belajar tipe data advanced untuk struktur yang lebih kompleks.</p>
+<h2 is-upgraded>Apa yang Akan Dipelajari</h2>
+<ul>
+<li>👉 Pointers - Reference ke memory address</li>
+<li>📝 Strings - Manipulasi text</li>
+<li>📦 Structs - Custom data types</li>
+<li>🔧 Methods - Functions pada types</li>
+<li>🔌 Interfaces - Abstraksi dan polymorphism</li>
+<li>💼 Studi Kasus - Sistem manajemen karyawan</li>
+</ul>
+<p>Positive : Advanced types membuat code lebih terstruktur dan maintainable!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Pointers" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Pointer menyimpan <strong>alamat memori</strong> dari sebuah variable, bukan nilainya langsung.</p>
+<h2 is-upgraded>Basic Pointers</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    x := 10
+    p := &amp;x  // &amp; = ambil alamat
+    
+    fmt.Println(&#34;Nilai x:&#34;, x)
+    fmt.Println(&#34;Alamat x:&#34;, p)
+    fmt.Println(&#34;Nilai via pointer:&#34;, *p)  // * = dereference
+    
+    // Ubah nilai via pointer
+    *p = 20
+    fmt.Println(&#34;Nilai x setelah diubah:&#34;, x)
+}
+</code></pre>
+<h2 is-upgraded>Pointer vs Value</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func modifyValue(x int) {
+    x = 100  // Tidak affect original
+}
+
+func modifyPointer(x *int) {
+    *x = 100  // Affect original
+}
+
+func main() {
+    num := 10
+    
+    modifyValue(num)
+    fmt.Println(&#34;After modifyValue:&#34;, num)  // 10
+    
+    modifyPointer(&amp;num)
+    fmt.Println(&#34;After modifyPointer:&#34;, num)  // 100
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Strings" duration="15">
+        <h2 is-upgraded>String Operations</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;strings&#34;
+)
+
+func main() {
+    s := &#34;Hello, World!&#34;
+    
+    // Length
+    fmt.Println(&#34;Length:&#34;, len(s))
+    
+    // Access character
+    fmt.Println(&#34;First char:&#34;, string(s[0]))
+    
+    // Substring
+    fmt.Println(&#34;Substring:&#34;, s[0:5])
+    
+    // strings package
+    fmt.Println(&#34;ToUpper:&#34;, strings.ToUpper(s))
+    fmt.Println(&#34;ToLower:&#34;, strings.ToLower(s))
+    fmt.Println(&#34;Contains:&#34;, strings.Contains(s, &#34;World&#34;))
+    fmt.Println(&#34;Replace:&#34;, strings.Replace(s, &#34;World&#34;, &#34;Go&#34;, 1))
+    fmt.Println(&#34;Split:&#34;, strings.Split(s, &#34;, &#34;))
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Structs" duration="25">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Struct adalah custom type yang menggabungkan beberapa fields dengan tipe berbeda.</p>
+<h2 is-upgraded>Basic Struct</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+type Person struct {
+    name string
+    age  int
+    city string
+}
+
+func main() {
+    // Cara 1: Field by field
+    var p1 Person
+    p1.name = &#34;Ahmad&#34;
+    p1.age = 25
+    p1.city = &#34;Jakarta&#34;
+    
+    // Cara 2: Literal
+    p2 := Person{
+        name: &#34;Budi&#34;,
+        age:  30,
+        city: &#34;Bandung&#34;,
+    }
+    
+    // Cara 3: Positional
+    p3 := Person{&#34;Citra&#34;, 28, &#34;Surabaya&#34;}
+    
+    fmt.Println(p1)
+    fmt.Println(p2)
+    fmt.Println(p3)
+}
+</code></pre>
+<h2 is-upgraded>Nested Structs</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+type Address struct {
+    street  string
+    city    string
+    zipCode string
+}
+
+type Employee struct {
+    id      int
+    name    string
+    address Address
+}
+
+func main() {
+    emp := Employee{
+        id:   1,
+        name: &#34;Ahmad&#34;,
+        address: Address{
+            street:  &#34;Jl. Sudirman&#34;,
+            city:    &#34;Jakarta&#34;,
+            zipCode: &#34;12345&#34;,
+        },
+    }
+    
+    fmt.Printf(&#34;%s tinggal di %s\n&#34;, emp.name, emp.address.city)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Methods" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Methods adalah functions yang attached ke type tertentu.</p>
+<h2 is-upgraded>Basic Methods</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+type Rectangle struct {
+    width  float64
+    height float64
+}
+
+// Method dengan receiver
+func (r Rectangle) area() float64 {
+    return r.width * r.height
+}
+
+func (r Rectangle) perimeter() float64 {
+    return 2 * (r.width + r.height)
+}
+
+func main() {
+    rect := Rectangle{width: 10, height: 5}
+    
+    fmt.Println(&#34;Area:&#34;, rect.area())
+    fmt.Println(&#34;Perimeter:&#34;, rect.perimeter())
+}
+</code></pre>
+<h2 is-upgraded>Pointer Receivers</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+type Counter struct {
+    count int
+}
+
+// Value receiver - tidak modify original
+func (c Counter) increment() {
+    c.count++
+}
+
+// Pointer receiver - modify original
+func (c *Counter) incrementPtr() {
+    c.count++
+}
+
+func main() {
+    counter := Counter{count: 0}
+    
+    counter.increment()
+    fmt.Println(&#34;After increment:&#34;, counter.count)  // 0
+    
+    counter.incrementPtr()
+    fmt.Println(&#34;After incrementPtr:&#34;, counter.count)  // 1
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Interfaces" duration="25">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Interface mendefinisikan behavior (methods) tanpa implementasi. Membuat code lebih flexible.</p>
+<h2 is-upgraded>Basic Interface</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+type Shape interface {
+    area() float64
+}
+
+type Rectangle struct {
+    width, height float64
+}
+
+type Circle struct {
+    radius float64
+}
+
+func (r Rectangle) area() float64 {
+    return r.width * r.height
+}
+
+func (c Circle) area() float64 {
+    return 3.14 * c.radius * c.radius
+}
+
+func printArea(s Shape) {
+    fmt.Printf(&#34;Area: %.2f\n&#34;, s.area())
+}
+
+func main() {
+    rect := Rectangle{width: 10, height: 5}
+    circle := Circle{radius: 7}
+    
+    printArea(rect)
+    printArea(circle)
+}
+</code></pre>
+<h2 is-upgraded>Empty Interface</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func describe(i interface{}) {
+    fmt.Printf(&#34;Type: %T, Value: %v\n&#34;, i, i)
+}
+
+func main() {
+    describe(42)
+    describe(&#34;hello&#34;)
+    describe(true)
+    describe([]int{1, 2, 3})
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Studi Kasus: Sistem Manajemen Karyawan" duration="30">
+        <pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+type Address struct {
+    street  string
+    city    string
+    zipCode string
+}
+
+type Employee struct {
+    id       int
+    name     string
+    position string
+    salary   float64
+    address  Address
+}
+
+// Methods
+func (e Employee) displayInfo() {
+    fmt.Printf(&#34;\n╔══════════════════════════════════╗\n&#34;)
+    fmt.Printf(&#34;  ID: %d\n&#34;, e.id)
+    fmt.Printf(&#34;  Nama: %s\n&#34;, e.name)
+    fmt.Printf(&#34;  Posisi: %s\n&#34;, e.position)
+    fmt.Printf(&#34;  Gaji: Rp %.0f\n&#34;, e.salary)
+    fmt.Printf(&#34;  Alamat: %s, %s\n&#34;, e.address.street, e.address.city)
+    fmt.Printf(&#34;╚══════════════════════════════════╝\n&#34;)
+}
+
+func (e *Employee) giveRaise(percent float64) {
+    e.salary += e.salary * (percent / 100)
+}
+
+func (e *Employee) promote(newPosition string, salaryIncrease float64) {
+    e.position = newPosition
+    e.salary += salaryIncrease
+}
+
+// Interface untuk berbagai tipe karyawan
+type Worker interface {
+    work() string
+    getSalary() float64
+}
+
+func (e Employee) work() string {
+    return fmt.Sprintf(&#34;%s bekerja sebagai %s&#34;, e.name, e.position)
+}
+
+func (e Employee) getSalary() float64 {
+    return e.salary
+}
+
+func main() {
+    fmt.Println(&#34;═══════════════════════════════════════&#34;)
+    fmt.Println(&#34;   SISTEM MANAJEMEN KARYAWAN&#34;)
+    fmt.Println(&#34;═══════════════════════════════════════&#34;)
+    
+    // Buat karyawan
+    emp1 := Employee{
+        id:       1,
+        name:     &#34;Ahmad Fathullah&#34;,
+        position: &#34;Software Engineer&#34;,
+        salary:   15000000,
+        address: Address{
+            street:  &#34;Jl. Sudirman No. 123&#34;,
+            city:    &#34;Jakarta&#34;,
+            zipCode: &#34;12190&#34;,
+        },
+    }
+    
+    emp2 := Employee{
+        id:       2,
+        name:     &#34;Budi Santoso&#34;,
+        position: &#34;Product Manager&#34;,
+        salary:   20000000,
+        address: Address{
+            street:  &#34;Jl. Gatot Subroto No. 45&#34;,
+            city:    &#34;Jakarta&#34;,
+            zipCode: &#34;12930&#34;,
+        },
+    }
+    
+    // Display info
+    emp1.displayInfo()
+    emp2.displayInfo()
+    
+    // Give raise
+    fmt.Println(&#34;\n📈 KENAIKAN GAJI:&#34;)
+    fmt.Printf(&#34;%s mendapat kenaikan 10%%\n&#34;, emp1.name)
+    emp1.giveRaise(10)
+    fmt.Printf(&#34;Gaji baru: Rp %.0f\n&#34;, emp1.salary)
+    
+    // Promote
+    fmt.Println(&#34;\n🎉 PROMOSI:&#34;)
+    fmt.Printf(&#34;%s dipromosikan!\n&#34;, emp1.name)
+    emp1.promote(&#34;Senior Software Engineer&#34;, 3000000)
+    emp1.displayInfo()
+    
+    // Interface usage
+    fmt.Println(&#34;\n💼 AKTIVITAS KERJA:&#34;)
+    employees := []Worker{emp1, emp2}
+    totalSalary := 0.0
+    
+    for _, emp := range employees {
+        fmt.Println(&#34;  -&#34;, emp.work())
+        totalSalary += emp.getSalary()
+    }
+    
+    fmt.Printf(&#34;\nTotal Gaji: Rp %.0f\n&#34;, totalSalary)
+    fmt.Println(&#34;═══════════════════════════════════════&#34;)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="2">
+        <h2 is-upgraded>Yang Sudah Dipelajari</h2>
+<p>✅ <strong>Pointers</strong> - Reference dan dereference<br> ✅ <strong>Strings</strong> - Manipulasi text<br> ✅ <strong>Structs</strong> - Custom types<br> ✅ <strong>Methods</strong> - Functions pada types<br> ✅ <strong>Interfaces</strong> - Abstraksi dan polymorphism</p>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<p>Lanjut ke <strong>Bab 6: Concurrency</strong> untuk belajar goroutines dan channels!</p>
+<p>Positive : Advanced types membuat code lebih terstruktur dan professional!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

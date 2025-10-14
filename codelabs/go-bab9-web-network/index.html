@@ -1,0 +1,329 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Go Bab 9: Web &amp; Network</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="go-bab9-web-network"
+                  title="Go Bab 9: Web &amp; Network"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/feedback">
+    
+      <google-codelab-step label="Pengenalan" duration="3">
+        <p>Bab terakhir! Mari belajar membuat web applications dengan Go.</p>
+<h2 is-upgraded>Apa yang Akan Dipelajari</h2>
+<ul>
+<li>🌐 HTTP Server - Membuat web server</li>
+<li>📡 HTTP Client - Request ke API</li>
+<li>🎯 Routing - Handle different paths</li>
+<li>📦 Context - Request context management</li>
+<li>💼 Studi Kasus - REST API sederhana</li>
+</ul>
+<p>Positive : Go sangat powerful untuk web development!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="HTTP Server" duration="25">
+        <h2 is-upgraded>Basic Server</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;net/http&#34;
+)
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &#34;Welcome to Home Page!&#34;)
+}
+
+func aboutHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &#34;About Us&#34;)
+}
+
+func main() {
+    http.HandleFunc(&#34;/&#34;, homeHandler)
+    http.HandleFunc(&#34;/about&#34;, aboutHandler)
+    
+    fmt.Println(&#34;Server running on :8080&#34;)
+    http.ListenAndServe(&#34;:8080&#34;, nil)
+}
+</code></pre>
+<h2 is-upgraded>JSON Response</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;encoding/json&#34;
+    &#34;net/http&#34;
+)
+
+type Response struct {
+    Message string `json:&#34;message&#34;`
+    Status  int    `json:&#34;status&#34;`
+}
+
+func apiHandler(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set(&#34;Content-Type&#34;, &#34;application/json&#34;)
+    
+    response := Response{
+        Message: &#34;Hello from API&#34;,
+        Status:  200,
+    }
+    
+    json.NewEncoder(w).Encode(response)
+}
+
+func main() {
+    http.HandleFunc(&#34;/api&#34;, apiHandler)
+    http.ListenAndServe(&#34;:8080&#34;, nil)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="HTTP Client" duration="20">
+        <h2 is-upgraded>Making Requests</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;io&#34;
+    &#34;net/http&#34;
+)
+
+func main() {
+    // GET request
+    resp, err := http.Get(&#34;https://api.github.com&#34;)
+    if err != nil {
+        fmt.Println(&#34;Error:&#34;, err)
+        return
+    }
+    defer resp.Body.Close()
+    
+    body, _ := io.ReadAll(resp.Body)
+    fmt.Println(&#34;Response:&#34;, string(body))
+    fmt.Println(&#34;Status:&#34;, resp.Status)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Context" duration="20">
+        <h2 is-upgraded>Request Context</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;context&#34;
+    &#34;fmt&#34;
+    &#34;net/http&#34;
+    &#34;time&#34;
+)
+
+func handler(w http.ResponseWriter, r *http.Request) {
+    ctx := r.Context()
+    
+    select {
+    case &lt;-time.After(2 * time.Second):
+        fmt.Fprintf(w, &#34;Request completed&#34;)
+    case &lt;-ctx.Done():
+        fmt.Fprintf(w, &#34;Request cancelled&#34;)
+    }
+}
+
+func main() {
+    http.HandleFunc(&#34;/&#34;, handler)
+    http.ListenAndServe(&#34;:8080&#34;, nil)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Studi Kasus: REST API Sederhana" duration="35">
+        <pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;encoding/json&#34;
+    &#34;fmt&#34;
+    &#34;net/http&#34;
+    &#34;sync&#34;
+)
+
+type Book struct {
+    ID     int    `json:&#34;id&#34;`
+    Title  string `json:&#34;title&#34;`
+    Author string `json:&#34;author&#34;`
+}
+
+var (
+    books  = make(map[int]Book)
+    nextID = 1
+    mu     sync.RWMutex
+)
+
+type Response struct {
+    Success bool        `json:&#34;success&#34;`
+    Message string      `json:&#34;message&#34;`
+    Data    interface{} `json:&#34;data,omitempty&#34;`
+}
+
+func sendJSON(w http.ResponseWriter, data interface{}, status int) {
+    w.Header().Set(&#34;Content-Type&#34;, &#34;application/json&#34;)
+    w.WriteHeader(status)
+    json.NewEncoder(w).Encode(data)
+}
+
+func booksHandler(w http.ResponseWriter, r *http.Request) {
+    switch r.Method {
+    case &#34;GET&#34;:
+        getBooks(w, r)
+    case &#34;POST&#34;:
+        createBook(w, r)
+    default:
+        sendJSON(w, Response{
+            Success: false,
+            Message: &#34;Method not allowed&#34;,
+        }, http.StatusMethodNotAllowed)
+    }
+}
+
+func getBooks(w http.ResponseWriter, r *http.Request) {
+    mu.RLock()
+    defer mu.RUnlock()
+    
+    bookList := []Book{}
+    for _, book := range books {
+        bookList = append(bookList, book)
+    }
+    
+    sendJSON(w, Response{
+        Success: true,
+        Message: &#34;Books retrieved&#34;,
+        Data:    bookList,
+    }, http.StatusOK)
+}
+
+func createBook(w http.ResponseWriter, r *http.Request) {
+    var book Book
+    if err := json.NewDecoder(r.Body).Decode(&amp;book); err != nil {
+        sendJSON(w, Response{
+            Success: false,
+            Message: &#34;Invalid request body&#34;,
+        }, http.StatusBadRequest)
+        return
+    }
+    
+    mu.Lock()
+    book.ID = nextID
+    nextID++
+    books[book.ID] = book
+    mu.Unlock()
+    
+    sendJSON(w, Response{
+        Success: true,
+        Message: &#34;Book created&#34;,
+        Data:    book,
+    }, http.StatusCreated)
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+    sendJSON(w, Response{
+        Success: true,
+        Message: &#34;API is healthy&#34;,
+    }, http.StatusOK)
+}
+
+func main() {
+    fmt.Println(&#34;╔═══════════════════════════════════╗&#34;)
+    fmt.Println(&#34;║       BOOKS REST API              ║&#34;)
+    fmt.Println(&#34;╚═══════════════════════════════════╝&#34;)
+    
+    // Seed data
+    books[1] = Book{ID: 1, Title: &#34;Go Programming&#34;, Author: &#34;John Doe&#34;}
+    books[2] = Book{ID: 2, Title: &#34;Web Development&#34;, Author: &#34;Jane Smith&#34;}
+    nextID = 3
+    
+    // Routes
+    http.HandleFunc(&#34;/health&#34;, healthHandler)
+    http.HandleFunc(&#34;/api/books&#34;, booksHandler)
+    
+    fmt.Println(&#34;\n🚀 Server running on http://localhost:8080&#34;)
+    fmt.Println(&#34;\nEndpoints:&#34;)
+    fmt.Println(&#34;  GET  /health&#34;)
+    fmt.Println(&#34;  GET  /api/books&#34;)
+    fmt.Println(&#34;  POST /api/books&#34;)
+    fmt.Println(&#34;\n═══════════════════════════════════════&#34;)
+    
+    http.ListenAndServe(&#34;:8080&#34;, nil)
+}
+</code></pre>
+<h2 is-upgraded>Testing API</h2>
+<pre><code language="language-bash" class="language-bash"># Health check
+curl http://localhost:8080/health
+
+# Get all books
+curl http://localhost:8080/api/books
+
+# Create book
+curl -X POST http://localhost:8080/api/books \
+  -H &#34;Content-Type: application/json&#34; \
+  -d &#39;{&#34;title&#34;:&#34;New Book&#34;,&#34;author&#34;:&#34;Author Name&#34;}&#39;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="2">
+        <h2 is-upgraded>Selamat! 🎉</h2>
+<p>Anda telah menyelesaikan <strong>semua 9 bab</strong> Go Fundamental!</p>
+<h2 is-upgraded>Yang Sudah Dipelajari</h2>
+<p>✅ <strong>Bab 1</strong> - Dasar-dasar Go<br> ✅ <strong>Bab 2</strong> - Control Flow<br> ✅ <strong>Bab 3</strong> - Data Structures<br> ✅ <strong>Bab 4</strong> - Functions<br> ✅ <strong>Bab 5</strong> - Advanced Types<br> ✅ <strong>Bab 6</strong> - Concurrency<br> ✅ <strong>Bab 7</strong> - Error Handling<br> ✅ <strong>Bab 8</strong> - Standard Library<br> ✅ <strong>Bab 9</strong> - Web &amp; Network</p>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<ol type="1">
+<li><strong>Practice</strong> - Buat project sendiri</li>
+<li><strong>Database</strong> - Belajar PostgreSQL &amp; GORM</li>
+<li><strong>Docker</strong> - Containerize aplikasi</li>
+<li><strong>Deploy</strong> - Deploy ke production</li>
+</ol>
+<h2 is-upgraded>Resources</h2>
+<ul>
+<li><a href="https://go.dev/doc/" target="_blank">Go Documentation</a></li>
+<li><a href="https://gobyexample.com/" target="_blank">Go by Example</a></li>
+<li><a href="https://go.dev/doc/effective_go" target="_blank">Effective Go</a></li>
+</ul>
+<p>Positive : Selamat menyelesaikan Go Fundamental! Anda siap membuat aplikasi production-ready! 🚀</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

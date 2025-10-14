@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-14T17:10:15+07:00",
+  "id": "go-bab6-concurrency",
+  "duration": 115,
+  "title": "Go Bab 6: Concurrency",
+  "summary": "Bab 6 - Concurrency di Go: Goroutines, Channels, Select, WaitGroups dengan studi kasus web scraper concurrent",
+  "source": "go-bab6-concurrency.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "golang",
+    "backend",
+    "fundamental",
+    "indonesia"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/feedback",
+  "url": "go-bab6-concurrency"
+}

@@ -1,0 +1,685 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Go Bab 2: Control Flow</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="go-bab2-control-flow"
+                  title="Go Bab 2: Control Flow"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/feedback">
+    
+      <google-codelab-step label="Pengenalan" duration="3">
+        <p>Selamat datang di Bab 2! Di bab ini kita akan belajar mengontrol alur eksekusi program.</p>
+<h2 is-upgraded>Apa yang Akan Dipelajari</h2>
+<ul>
+<li>🔄 For Loops - Perulangan dalam berbagai bentuk</li>
+<li>⚡ If/Else - Membuat keputusan</li>
+<li>🔀 Switch - Alternatif untuk multiple if-else</li>
+<li>💼 Studi Kasus - Sistem grading siswa</li>
+</ul>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Sudah menyelesaikan Bab 1</li>
+<li>Memahami variables dan values</li>
+</ul>
+<p>Positive : Control flow adalah kunci untuk membuat program yang dinamis dan interaktif!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="For Loops" duration="25">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Loop (perulangan) digunakan untuk menjalankan code berulang kali. Go hanya punya satu keyword untuk loop: <code>for</code>.</p>
+<h2 is-upgraded>1. Classic For Loop</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Struktur: for init; condition; post
+    for i := 0; i &lt; 5; i++ {
+        fmt.Println(&#34;Iterasi ke-&#34;, i)
+    }
+}
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Iterasi ke- 0
+Iterasi ke- 1
+Iterasi ke- 2
+Iterasi ke- 3
+Iterasi ke- 4
+</code></pre>
+<p><strong>Penjelasan:</strong></p>
+<ul>
+<li><code>i := 0</code> - Inisialisasi (dijalankan sekali)</li>
+<li><code>i < 5</code> - Kondisi (dicek setiap iterasi)</li>
+<li><code>i++</code> - Post statement (dijalankan setiap akhir iterasi)</li>
+</ul>
+<h2 is-upgraded>2. While-Style Loop</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // For tanpa init dan post (seperti while)
+    i := 0
+    for i &lt; 5 {
+        fmt.Println(&#34;Nilai i:&#34;, i)
+        i++
+    }
+}
+</code></pre>
+<h2 is-upgraded>3. Infinite Loop</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    count := 0
+    
+    // Loop tanpa kondisi = infinite
+    for {
+        fmt.Println(&#34;Count:&#34;, count)
+        count++
+        
+        // Harus ada break untuk keluar
+        if count &gt;= 3 {
+            break
+        }
+    }
+    
+    fmt.Println(&#34;Loop selesai&#34;)
+}
+</code></pre>
+<h2 is-upgraded>4. Break dan Continue</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    fmt.Println(&#34;=== BREAK ===&#34;)
+    for i := 0; i &lt; 10; i++ {
+        if i == 5 {
+            break  // Keluar dari loop
+        }
+        fmt.Print(i, &#34; &#34;)
+    }
+    
+    fmt.Println(&#34;\n\n=== CONTINUE ===&#34;)
+    for i := 0; i &lt; 10; i++ {
+        if i%2 == 0 {
+            continue  // Skip ke iterasi berikutnya
+        }
+        fmt.Print(i, &#34; &#34;)  // Hanya print angka ganjil
+    }
+}
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>=== BREAK ===
+0 1 2 3 4 
+
+=== CONTINUE ===
+1 3 5 7 9
+</code></pre>
+<h2 is-upgraded>5. Range Loop</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Range over array/slice
+    numbers := []int{10, 20, 30, 40, 50}
+    
+    fmt.Println(&#34;Dengan index dan value:&#34;)
+    for index, value := range numbers {
+        fmt.Printf(&#34;Index %d: %d\n&#34;, index, value)
+    }
+    
+    // Hanya value
+    fmt.Println(&#34;\nHanya value:&#34;)
+    for _, value := range numbers {
+        fmt.Println(value)
+    }
+    
+    // Hanya index
+    fmt.Println(&#34;\nHanya index:&#34;)
+    for index := range numbers {
+        fmt.Println(index)
+    }
+    
+    // Range over string
+    fmt.Println(&#34;\nRange over string:&#34;)
+    for i, char := range &#34;Hello&#34; {
+        fmt.Printf(&#34;%d: %c\n&#34;, i, char)
+    }
+}
+</code></pre>
+<h2 is-upgraded>Contoh Praktis: Tabel Perkalian</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    number := 7
+    
+    fmt.Printf(&#34;=== TABEL PERKALIAN %d ===\n\n&#34;, number)
+    
+    for i := 1; i &lt;= 10; i++ {
+        result := number * i
+        fmt.Printf(&#34;%d × %d = %d\n&#34;, number, i, result)
+    }
+}
+</code></pre>
+<p>Negative : Di Go tidak ada while atau do-while. Semua loop menggunakan <code>for</code>!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="If/Else Statements" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>If/else digunakan untuk membuat keputusan berdasarkan kondisi tertentu.</p>
+<h2 is-upgraded>1. Basic If</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    age := 20
+    
+    if age &gt;= 18 {
+        fmt.Println(&#34;Anda sudah dewasa&#34;)
+    }
+    
+    if age &lt; 18 {
+        fmt.Println(&#34;Anda masih anak-anak&#34;)
+    }
+}
+</code></pre>
+<h2 is-upgraded>2. If-Else</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    score := 75
+    
+    if score &gt;= 60 {
+        fmt.Println(&#34;LULUS&#34;)
+    } else {
+        fmt.Println(&#34;TIDAK LULUS&#34;)
+    }
+}
+</code></pre>
+<h2 is-upgraded>3. If-Else If-Else</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    score := 85
+    
+    if score &gt;= 90 {
+        fmt.Println(&#34;Grade: A (Excellent!)&#34;)
+    } else if score &gt;= 80 {
+        fmt.Println(&#34;Grade: B (Good!)&#34;)
+    } else if score &gt;= 70 {
+        fmt.Println(&#34;Grade: C (Fair)&#34;)
+    } else if score &gt;= 60 {
+        fmt.Println(&#34;Grade: D (Pass)&#34;)
+    } else {
+        fmt.Println(&#34;Grade: E (Fail)&#34;)
+    }
+}
+</code></pre>
+<h2 is-upgraded>4. If dengan Statement</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Variable hanya ada di scope if
+    if num := 9; num &lt; 0 {
+        fmt.Println(num, &#34;is negative&#34;)
+    } else if num &lt; 10 {
+        fmt.Println(num, &#34;has 1 digit&#34;)
+    } else {
+        fmt.Println(num, &#34;has multiple digits&#34;)
+    }
+    
+    // num tidak bisa diakses di sini
+}
+</code></pre>
+<h2 is-upgraded>5. Nested If</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    age := 25
+    hasLicense := true
+    
+    if age &gt;= 17 {
+        if hasLicense {
+            fmt.Println(&#34;Boleh menyetir&#34;)
+        } else {
+            fmt.Println(&#34;Umur cukup, tapi belum punya SIM&#34;)
+        }
+    } else {
+        fmt.Println(&#34;Umur belum cukup&#34;)
+    }
+}
+</code></pre>
+<h2 is-upgraded>Contoh Praktis: Cek Bilangan</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    numbers := []int{-5, 0, 7, 12, -3, 15}
+    
+    fmt.Println(&#34;=== ANALISIS BILANGAN ===\n&#34;)
+    
+    for _, num := range numbers {
+        fmt.Printf(&#34;Bilangan %d: &#34;, num)
+        
+        // Cek positif/negatif/nol
+        if num &gt; 0 {
+            fmt.Print(&#34;Positif, &#34;)
+        } else if num &lt; 0 {
+            fmt.Print(&#34;Negatif, &#34;)
+        } else {
+            fmt.Print(&#34;Nol, &#34;)
+        }
+        
+        // Cek genap/ganjil
+        if num%2 == 0 {
+            fmt.Println(&#34;Genap&#34;)
+        } else {
+            fmt.Println(&#34;Ganjil&#34;)
+        }
+    }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Switch Statements" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Switch adalah cara yang lebih clean untuk menulis multiple if-else. Lebih mudah dibaca dan di-maintain.</p>
+<h2 is-upgraded>1. Basic Switch</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    day := 3
+    
+    switch day {
+    case 1:
+        fmt.Println(&#34;Senin&#34;)
+    case 2:
+        fmt.Println(&#34;Selasa&#34;)
+    case 3:
+        fmt.Println(&#34;Rabu&#34;)
+    case 4:
+        fmt.Println(&#34;Kamis&#34;)
+    case 5:
+        fmt.Println(&#34;Jumat&#34;)
+    case 6:
+        fmt.Println(&#34;Sabtu&#34;)
+    case 7:
+        fmt.Println(&#34;Minggu&#34;)
+    default:
+        fmt.Println(&#34;Hari tidak valid&#34;)
+    }
+}
+</code></pre>
+<h2 is-upgraded>2. Multiple Conditions</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    day := &#34;Sabtu&#34;
+    
+    switch day {
+    case &#34;Senin&#34;, &#34;Selasa&#34;, &#34;Rabu&#34;, &#34;Kamis&#34;, &#34;Jumat&#34;:
+        fmt.Println(&#34;Hari kerja&#34;)
+    case &#34;Sabtu&#34;, &#34;Minggu&#34;:
+        fmt.Println(&#34;Weekend!&#34;)
+    default:
+        fmt.Println(&#34;Hari tidak valid&#34;)
+    }
+}
+</code></pre>
+<h2 is-upgraded>3. Switch Tanpa Expression</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    score := 85
+    
+    // Switch tanpa expression (seperti if-else)
+    switch {
+    case score &gt;= 90:
+        fmt.Println(&#34;Grade: A&#34;)
+    case score &gt;= 80:
+        fmt.Println(&#34;Grade: B&#34;)
+    case score &gt;= 70:
+        fmt.Println(&#34;Grade: C&#34;)
+    case score &gt;= 60:
+        fmt.Println(&#34;Grade: D&#34;)
+    default:
+        fmt.Println(&#34;Grade: E&#34;)
+    }
+}
+</code></pre>
+<h2 is-upgraded>4. Switch dengan Statement</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Variable hanya ada di scope switch
+    switch num := 15; {
+    case num &lt; 0:
+        fmt.Println(&#34;Negatif&#34;)
+    case num == 0:
+        fmt.Println(&#34;Nol&#34;)
+    case num &lt; 10:
+        fmt.Println(&#34;Satu digit&#34;)
+    default:
+        fmt.Println(&#34;Dua digit atau lebih&#34;)
+    }
+}
+</code></pre>
+<h2 is-upgraded>5. Type Switch</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    var i interface{} = &#34;hello&#34;
+    
+    switch v := i.(type) {
+    case int:
+        fmt.Printf(&#34;Integer: %d\n&#34;, v)
+    case string:
+        fmt.Printf(&#34;String: %s\n&#34;, v)
+    case bool:
+        fmt.Printf(&#34;Boolean: %t\n&#34;, v)
+    default:
+        fmt.Printf(&#34;Unknown type: %T\n&#34;, v)
+    }
+}
+</code></pre>
+<h2 is-upgraded>6. Fallthrough</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    num := 2
+    
+    switch num {
+    case 1:
+        fmt.Println(&#34;Satu&#34;)
+    case 2:
+        fmt.Println(&#34;Dua&#34;)
+        fallthrough  // Lanjut ke case berikutnya
+    case 3:
+        fmt.Println(&#34;Tiga&#34;)
+    default:
+        fmt.Println(&#34;Lainnya&#34;)
+    }
+}
+</code></pre>
+<p><strong>Output:</strong></p>
+<pre><code>Dua
+Tiga
+</code></pre>
+<p>Positive : Switch di Go otomatis break setelah case match. Tidak perlu tulis <code>break</code> seperti di bahasa lain!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Studi Kasus: Sistem Grading Siswa" duration="20">
+        <h2 is-upgraded>Problem</h2>
+<p>Buat sistem untuk:</p>
+<ol type="1">
+<li>Input data siswa (nama dan nilai)</li>
+<li>Tentukan grade berdasarkan nilai</li>
+<li>Tentukan status kelulusan</li>
+<li>Hitung statistik kelas</li>
+</ol>
+<h2 is-upgraded>Solusi Lengkap</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+// Struct untuk siswa
+type Student struct {
+    name  string
+    score int
+}
+
+func main() {
+    fmt.Println(&#34;╔════════════════════════════════════╗&#34;)
+    fmt.Println(&#34;║   SISTEM GRADING SISWA KELAS 10A  ║&#34;)
+    fmt.Println(&#34;╚════════════════════════════════════╝&#34;)
+    fmt.Println()
+    
+    // Data siswa
+    students := []Student{
+        {&#34;Ahmad Fathullah&#34;, 92},
+        {&#34;Budi Santoso&#34;, 78},
+        {&#34;Citra Dewi&#34;, 85},
+        {&#34;Deni Pratama&#34;, 65},
+        {&#34;Eka Putri&#34;, 58},
+        {&#34;Fajar Ramadan&#34;, 95},
+    }
+    
+    // Statistik
+    totalScore := 0
+    passCount := 0
+    failCount := 0
+    
+    // Proses setiap siswa
+    fmt.Println(&#34;HASIL PENILAIAN:&#34;)
+    fmt.Println(&#34;────────────────────────────────────&#34;)
+    
+    for i, student := range students {
+        fmt.Printf(&#34;\n%d. %s\n&#34;, i+1, student.name)
+        fmt.Printf(&#34;   Nilai: %d\n&#34;, student.score)
+        
+        // Tentukan grade dengan switch
+        var grade string
+        var predikat string
+        
+        switch {
+        case student.score &gt;= 90:
+            grade = &#34;A&#34;
+            predikat = &#34;Excellent!&#34;
+        case student.score &gt;= 80:
+            grade = &#34;B&#34;
+            predikat = &#34;Very Good&#34;
+        case student.score &gt;= 70:
+            grade = &#34;C&#34;
+            predikat = &#34;Good&#34;
+        case student.score &gt;= 60:
+            grade = &#34;D&#34;
+            predikat = &#34;Fair&#34;
+        default:
+            grade = &#34;E&#34;
+            predikat = &#34;Need Improvement&#34;
+        }
+        
+        fmt.Printf(&#34;   Grade: %s (%s)\n&#34;, grade, predikat)
+        
+        // Tentukan status dengan if-else
+        if student.score &gt;= 60 {
+            fmt.Println(&#34;   Status: ✓ LULUS&#34;)
+            passCount++
+        } else {
+            fmt.Println(&#34;   Status: ✗ TIDAK LULUS&#34;)
+            failCount++
+        }
+        
+        // Tambah ke total
+        totalScore += student.score
+    }
+    
+    // Hitung rata-rata
+    average := float64(totalScore) / float64(len(students))
+    
+    // Tampilkan statistik
+    fmt.Println(&#34;\n════════════════════════════════════&#34;)
+    fmt.Println(&#34;STATISTIK KELAS:&#34;)
+    fmt.Println(&#34;────────────────────────────────────&#34;)
+    fmt.Printf(&#34;Total Siswa    : %d orang\n&#34;, len(students))
+    fmt.Printf(&#34;Lulus          : %d orang (%.1f%%)\n&#34;, 
+        passCount, float64(passCount)/float64(len(students))*100)
+    fmt.Printf(&#34;Tidak Lulus    : %d orang (%.1f%%)\n&#34;, 
+        failCount, float64(failCount)/float64(len(students))*100)
+    fmt.Printf(&#34;Rata-rata Nilai: %.2f\n&#34;, average)
+    
+    // Kategori kelas
+    fmt.Println(&#34;\nKATEGORI KELAS:&#34;)
+    switch {
+    case average &gt;= 85:
+        fmt.Println(&#34;★★★ Kelas Unggulan&#34;)
+    case average &gt;= 75:
+        fmt.Println(&#34;★★ Kelas Baik&#34;)
+    case average &gt;= 65:
+        fmt.Println(&#34;★ Kelas Cukup&#34;)
+    default:
+        fmt.Println(&#34;Perlu Peningkatan&#34;)
+    }
+    
+    fmt.Println(&#34;════════════════════════════════════&#34;)
+}
+</code></pre>
+<h2 is-upgraded>Output Program</h2>
+<pre><code>╔════════════════════════════════════╗
+║   SISTEM GRADING SISWA KELAS 10A  ║
+╚════════════════════════════════════╝
+
+HASIL PENILAIAN:
+────────────────────────────────────
+
+1. Ahmad Fathullah
+   Nilai: 92
+   Grade: A (Excellent!)
+   Status: ✓ LULUS
+
+2. Budi Santoso
+   Nilai: 78
+   Grade: C (Good)
+   Status: ✓ LULUS
+
+3. Citra Dewi
+   Nilai: 85
+   Grade: B (Very Good)
+   Status: ✓ LULUS
+
+4. Deni Pratama
+   Nilai: 65
+   Grade: D (Fair)
+   Status: ✓ LULUS
+
+5. Eka Putri
+   Nilai: 58
+   Grade: E (Need Improvement)
+   Status: ✗ TIDAK LULUS
+
+6. Fajar Ramadan
+   Nilai: 95
+   Grade: A (Excellent!)
+   Status: ✓ LULUS
+
+════════════════════════════════════
+STATISTIK KELAS:
+────────────────────────────────────
+Total Siswa    : 6 orang
+Lulus          : 5 orang (83.3%)
+Tidak Lulus    : 1 orang (16.7%)
+Rata-rata Nilai: 78.83
+
+KATEGORI KELAS:
+★★ Kelas Baik
+════════════════════════════════════
+</code></pre>
+<h2 is-upgraded>Latihan Tambahan</h2>
+<p>Coba modifikasi program untuk:</p>
+<ol type="1">
+<li>Tambah input dari user (scan)</li>
+<li>Simpan hasil ke file</li>
+<li>Tambah fitur cari siswa berdasarkan nama</li>
+<li>Urutkan siswa berdasarkan nilai</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="2">
+        <p>Selamat! Anda telah menyelesaikan Bab 2: Control Flow.</p>
+<h2 is-upgraded>Yang Sudah Dipelajari</h2>
+<p>✅ <strong>For Loops</strong> - Classic, while-style, infinite, range<br> ✅ <strong>Break &amp; Continue</strong> - Kontrol flow dalam loop<br> ✅ <strong>If/Else</strong> - Conditional statements<br> ✅ <strong>Switch</strong> - Clean alternative untuk multiple if-else<br> ✅ <strong>Studi Kasus</strong> - Sistem grading siswa lengkap</p>
+<h2 is-upgraded>Key Takeaways</h2>
+<ul>
+<li>Go hanya punya <code>for</code> untuk semua jenis loop</li>
+<li>Switch di Go otomatis break (tidak perlu tulis break)</li>
+<li>If bisa punya statement untuk variable lokal</li>
+<li>Range sangat berguna untuk iterate collections</li>
+<li>Switch tanpa expression bisa dipakai seperti if-else</li>
+</ul>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<p>Lanjut ke <strong>Bab 3: Data Structures</strong> untuk belajar:</p>
+<ul>
+<li>Arrays</li>
+<li>Slices</li>
+<li>Maps</li>
+<li>Struct basics</li>
+</ul>
+<h2 is-upgraded>Resources</h2>
+<ul>
+<li><a href="https://go.dev/tour/flowcontrol/" target="_blank">Go Control Flow</a></li>
+<li><a href="https://go.dev/doc/effective_go#control-structures" target="_blank">Effective Go - Control Structures</a></li>
+</ul>
+<p>Positive : Control flow adalah fondasi untuk membuat program yang dinamis. Praktik dengan berbagai variasi!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

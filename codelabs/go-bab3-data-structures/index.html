@@ -1,0 +1,775 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Go Bab 3: Data Structures</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="go-bab3-data-structures"
+                  title="Go Bab 3: Data Structures"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/feedback">
+    
+      <google-codelab-step label="Pengenalan" duration="3">
+        <p>Selamat datang di Bab 3! Di bab ini kita akan belajar menyimpan dan mengelola koleksi data.</p>
+<h2 is-upgraded>Apa yang Akan Dipelajari</h2>
+<ul>
+<li>📊 Arrays - Koleksi dengan ukuran tetap</li>
+<li>🔄 Slices - Koleksi dinamis yang flexible</li>
+<li>🗺️ Maps - Key-value pairs (dictionary)</li>
+<li>💼 Studi Kasus - Sistem inventori toko</li>
+</ul>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Sudah menyelesaikan Bab 1 &amp; 2</li>
+<li>Memahami loops dan control flow</li>
+</ul>
+<p>Positive : Data structures adalah fondasi untuk menyimpan dan mengelola data dalam aplikasi!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Arrays" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Array adalah koleksi dengan <strong>ukuran tetap</strong> dan semua elemen harus <strong>tipe data yang sama</strong>.</p>
+<h2 is-upgraded>1. Deklarasi Array</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Deklarasi array kosong
+    var numbers [5]int
+    fmt.Println(&#34;Empty array:&#34;, numbers)  // [0 0 0 0 0]
+    
+    // Array dengan nilai awal
+    var fruits [3]string = [3]string{&#34;Apple&#34;, &#34;Banana&#34;, &#34;Orange&#34;}
+    fmt.Println(&#34;Fruits:&#34;, fruits)
+    
+    // Short declaration
+    colors := [4]string{&#34;Red&#34;, &#34;Green&#34;, &#34;Blue&#34;, &#34;Yellow&#34;}
+    fmt.Println(&#34;Colors:&#34;, colors)
+    
+    // Auto length dengan ...
+    days := [...]string{&#34;Mon&#34;, &#34;Tue&#34;, &#34;Wed&#34;, &#34;Thu&#34;, &#34;Fri&#34;}
+    fmt.Println(&#34;Days:&#34;, days)
+    fmt.Println(&#34;Length:&#34;, len(days))
+}
+</code></pre>
+<h2 is-upgraded>2. Akses dan Modifikasi</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    numbers := [5]int{10, 20, 30, 40, 50}
+    
+    // Akses element
+    fmt.Println(&#34;Element 0:&#34;, numbers[0])
+    fmt.Println(&#34;Element 2:&#34;, numbers[2])
+    
+    // Modifikasi element
+    numbers[1] = 25
+    fmt.Println(&#34;After modify:&#34;, numbers)
+    
+    // Length
+    fmt.Println(&#34;Length:&#34;, len(numbers))
+    
+    // Loop through array
+    fmt.Println(&#34;\nAll elements:&#34;)
+    for i := 0; i &lt; len(numbers); i++ {
+        fmt.Printf(&#34;Index %d: %d\n&#34;, i, numbers[i])
+    }
+    
+    // Range loop
+    fmt.Println(&#34;\nWith range:&#34;)
+    for index, value := range numbers {
+        fmt.Printf(&#34;%d: %d\n&#34;, index, value)
+    }
+}
+</code></pre>
+<h2 is-upgraded>3. Multi-Dimensional Arrays</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // 2D Array (matrix)
+    var matrix [3][3]int
+    
+    // Set values
+    matrix[0][0] = 1
+    matrix[0][1] = 2
+    matrix[0][2] = 3
+    matrix[1][0] = 4
+    matrix[1][1] = 5
+    matrix[1][2] = 6
+    matrix[2][0] = 7
+    matrix[2][1] = 8
+    matrix[2][2] = 9
+    
+    // Print matrix
+    fmt.Println(&#34;Matrix:&#34;)
+    for i := 0; i &lt; 3; i++ {
+        for j := 0; j &lt; 3; j++ {
+            fmt.Printf(&#34;%d &#34;, matrix[i][j])
+        }
+        fmt.Println()
+    }
+    
+    // 2D Array dengan nilai awal
+    grid := [2][3]int{
+        {1, 2, 3},
+        {4, 5, 6},
+    }
+    fmt.Println(&#34;\nGrid:&#34;, grid)
+}
+</code></pre>
+<h2 is-upgraded>4. Array Comparison</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    a := [3]int{1, 2, 3}
+    b := [3]int{1, 2, 3}
+    c := [3]int{1, 2, 4}
+    
+    fmt.Println(&#34;a == b:&#34;, a == b)  // true
+    fmt.Println(&#34;a == c:&#34;, a == c)  // false
+    
+    // Array adalah value type (di-copy)
+    d := a
+    d[0] = 100
+    fmt.Println(&#34;a:&#34;, a)  // [1 2 3] - tidak berubah
+    fmt.Println(&#34;d:&#34;, d)  // [100 2 3]
+}
+</code></pre>
+<p>Negative : Array memiliki ukuran tetap! Setelah dibuat, ukurannya tidak bisa diubah.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Slices" duration="30">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Slice adalah versi <strong>dinamis</strong> dari array. Ukurannya bisa bertambah atau berkurang. Slice adalah tipe data yang paling sering digunakan di Go.</p>
+<h2 is-upgraded>1. Membuat Slice</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Slice literal
+    numbers := []int{1, 2, 3, 4, 5}
+    fmt.Println(&#34;Numbers:&#34;, numbers)
+    
+    // Empty slice
+    var fruits []string
+    fmt.Println(&#34;Empty slice:&#34;, fruits)
+    fmt.Println(&#34;Length:&#34;, len(fruits))
+    fmt.Println(&#34;Is nil:&#34;, fruits == nil)
+    
+    // Make slice dengan length
+    colors := make([]string, 3)
+    fmt.Println(&#34;Make slice:&#34;, colors)  // [&#34;&#34; &#34;&#34; &#34;&#34;]
+    
+    // Make slice dengan length dan capacity
+    scores := make([]int, 3, 5)
+    fmt.Println(&#34;Scores:&#34;, scores)
+    fmt.Println(&#34;Length:&#34;, len(scores))
+    fmt.Println(&#34;Capacity:&#34;, cap(scores))
+}
+</code></pre>
+<h2 is-upgraded>2. Append (Menambah Element)</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Start dengan empty slice
+    var numbers []int
+    fmt.Println(&#34;Initial:&#34;, numbers)
+    
+    // Append satu element
+    numbers = append(numbers, 10)
+    fmt.Println(&#34;After append 10:&#34;, numbers)
+    
+    // Append multiple elements
+    numbers = append(numbers, 20, 30, 40)
+    fmt.Println(&#34;After append multiple:&#34;, numbers)
+    
+    // Append slice ke slice
+    moreNumbers := []int{50, 60, 70}
+    numbers = append(numbers, moreNumbers...)
+    fmt.Println(&#34;After append slice:&#34;, numbers)
+    
+    fmt.Println(&#34;Final length:&#34;, len(numbers))
+    fmt.Println(&#34;Final capacity:&#34;, cap(numbers))
+}
+</code></pre>
+<h2 is-upgraded>3. Slicing (Memotong Slice)</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    numbers := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
+    
+    fmt.Println(&#34;Original:&#34;, numbers)
+    
+    // Slice [start:end] - end tidak termasuk
+    fmt.Println(&#34;numbers[2:5]:&#34;, numbers[2:5])    // [2 3 4]
+    fmt.Println(&#34;numbers[:4]:&#34;, numbers[:4])      // [0 1 2 3]
+    fmt.Println(&#34;numbers[5:]:&#34;, numbers[5:])      // [5 6 7 8 9]
+    fmt.Println(&#34;numbers[:]:&#34;, numbers[:])        // [0 1 2 3 4 5 6 7 8 9]
+    
+    // Slice dengan step (tidak ada syntax khusus, harus manual)
+    evens := []int{}
+    for i := 0; i &lt; len(numbers); i += 2 {
+        evens = append(evens, numbers[i])
+    }
+    fmt.Println(&#34;Evens:&#34;, evens)
+}
+</code></pre>
+<h2 is-upgraded>4. Copy Slice</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    source := []int{1, 2, 3, 4, 5}
+    
+    // Cara 1: Make dan copy
+    dest1 := make([]int, len(source))
+    copy(dest1, source)
+    fmt.Println(&#34;Dest1:&#34;, dest1)
+    
+    // Cara 2: Append ke empty slice
+    dest2 := append([]int{}, source...)
+    fmt.Println(&#34;Dest2:&#34;, dest2)
+    
+    // Modifikasi dest tidak affect source
+    dest1[0] = 100
+    fmt.Println(&#34;Source:&#34;, source)  // [1 2 3 4 5]
+    fmt.Println(&#34;Dest1:&#34;, dest1)    // [100 2 3 4 5]
+}
+</code></pre>
+<h2 is-upgraded>5. Remove Element</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    numbers := []int{10, 20, 30, 40, 50}
+    fmt.Println(&#34;Original:&#34;, numbers)
+    
+    // Remove element at index 2 (30)
+    index := 2
+    numbers = append(numbers[:index], numbers[index+1:]...)
+    fmt.Println(&#34;After remove index 2:&#34;, numbers)
+    
+    // Remove first element
+    numbers = numbers[1:]
+    fmt.Println(&#34;After remove first:&#34;, numbers)
+    
+    // Remove last element
+    numbers = numbers[:len(numbers)-1]
+    fmt.Println(&#34;After remove last:&#34;, numbers)
+}
+</code></pre>
+<h2 is-upgraded>6. Slice Tricks</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Insert element
+    numbers := []int{1, 2, 4, 5}
+    index := 2
+    value := 3
+    numbers = append(numbers[:index], append([]int{value}, numbers[index:]...)...)
+    fmt.Println(&#34;After insert:&#34;, numbers)  // [1 2 3 4 5]
+    
+    // Reverse slice
+    original := []int{1, 2, 3, 4, 5}
+    reversed := make([]int, len(original))
+    for i, v := range original {
+        reversed[len(original)-1-i] = v
+    }
+    fmt.Println(&#34;Reversed:&#34;, reversed)
+    
+    // Filter slice
+    numbers2 := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+    evens := []int{}
+    for _, num := range numbers2 {
+        if num%2 == 0 {
+            evens = append(evens, num)
+        }
+    }
+    fmt.Println(&#34;Evens:&#34;, evens)
+}
+</code></pre>
+<p>Positive : Slice adalah tipe data yang paling sering digunakan untuk koleksi di Go!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Maps" duration="25">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Map adalah koleksi <strong>key-value pairs</strong>. Seperti dictionary di Python atau object di JavaScript.</p>
+<h2 is-upgraded>1. Membuat Map</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Make map
+    ages := make(map[string]int)
+    fmt.Println(&#34;Empty map:&#34;, ages)
+    
+    // Map literal
+    scores := map[string]int{
+        &#34;Ahmad&#34;: 85,
+        &#34;Budi&#34;:  90,
+        &#34;Citra&#34;: 78,
+    }
+    fmt.Println(&#34;Scores:&#34;, scores)
+    
+    // Map dengan berbagai tipe
+    person := map[string]interface{}{
+        &#34;name&#34;: &#34;Ahmad&#34;,
+        &#34;age&#34;:  25,
+        &#34;city&#34;: &#34;Jakarta&#34;,
+    }
+    fmt.Println(&#34;Person:&#34;, person)
+}
+</code></pre>
+<h2 is-upgraded>2. Operasi Dasar Map</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Buat map
+    fruits := make(map[string]int)
+    
+    // Set values
+    fruits[&#34;apple&#34;] = 5
+    fruits[&#34;banana&#34;] = 3
+    fruits[&#34;orange&#34;] = 7
+    fmt.Println(&#34;Fruits:&#34;, fruits)
+    
+    // Get value
+    appleCount := fruits[&#34;apple&#34;]
+    fmt.Println(&#34;Apple count:&#34;, appleCount)
+    
+    // Get non-existent key (returns zero value)
+    grapeCount := fruits[&#34;grape&#34;]
+    fmt.Println(&#34;Grape count:&#34;, grapeCount)  // 0
+    
+    // Check if key exists
+    value, exists := fruits[&#34;apple&#34;]
+    if exists {
+        fmt.Println(&#34;Apple exists:&#34;, value)
+    }
+    
+    _, exists = fruits[&#34;grape&#34;]
+    if !exists {
+        fmt.Println(&#34;Grape doesn&#39;t exist&#34;)
+    }
+    
+    // Update value
+    fruits[&#34;apple&#34;] = 10
+    fmt.Println(&#34;After update:&#34;, fruits)
+    
+    // Delete key
+    delete(fruits, &#34;banana&#34;)
+    fmt.Println(&#34;After delete:&#34;, fruits)
+    
+    // Length
+    fmt.Println(&#34;Length:&#34;, len(fruits))
+}
+</code></pre>
+<h2 is-upgraded>3. Iterate Map</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    scores := map[string]int{
+        &#34;Ahmad&#34;: 85,
+        &#34;Budi&#34;:  90,
+        &#34;Citra&#34;: 78,
+        &#34;Deni&#34;:  92,
+    }
+    
+    // Iterate key-value
+    fmt.Println(&#34;All scores:&#34;)
+    for name, score := range scores {
+        fmt.Printf(&#34;%s: %d\n&#34;, name, score)
+    }
+    
+    // Only keys
+    fmt.Println(&#34;\nOnly names:&#34;)
+    for name := range scores {
+        fmt.Println(name)
+    }
+    
+    // Only values
+    fmt.Println(&#34;\nOnly scores:&#34;)
+    for _, score := range scores {
+        fmt.Println(score)
+    }
+}
+</code></pre>
+<h2 is-upgraded>4. Map dengan Struct Value</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+type Student struct {
+    name  string
+    age   int
+    grade string
+}
+
+func main() {
+    // Map dengan struct value
+    students := map[string]Student{
+        &#34;S001&#34;: {&#34;Ahmad&#34;, 20, &#34;A&#34;},
+        &#34;S002&#34;: {&#34;Budi&#34;, 21, &#34;B&#34;},
+        &#34;S003&#34;: {&#34;Citra&#34;, 20, &#34;A&#34;},
+    }
+    
+    // Access
+    fmt.Println(&#34;Student S001:&#34;, students[&#34;S001&#34;])
+    
+    // Iterate
+    fmt.Println(&#34;\nAll students:&#34;)
+    for id, student := range students {
+        fmt.Printf(&#34;%s: %s (%d years) - Grade %s\n&#34;, 
+            id, student.name, student.age, student.grade)
+    }
+    
+    // Add new student
+    students[&#34;S004&#34;] = Student{&#34;Deni&#34;, 22, &#34;B&#34;}
+    fmt.Println(&#34;\nAfter add:&#34;, len(students), &#34;students&#34;)
+}
+</code></pre>
+<h2 is-upgraded>5. Nested Maps</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Map of maps
+    grades := map[string]map[string]int{
+        &#34;Ahmad&#34;: {
+            &#34;Math&#34;:    85,
+            &#34;English&#34;: 90,
+            &#34;Science&#34;: 88,
+        },
+        &#34;Budi&#34;: {
+            &#34;Math&#34;:    78,
+            &#34;English&#34;: 82,
+            &#34;Science&#34;: 80,
+        },
+    }
+    
+    // Access nested value
+    fmt.Println(&#34;Ahmad&#39;s Math:&#34;, grades[&#34;Ahmad&#34;][&#34;Math&#34;])
+    
+    // Iterate nested map
+    for student, subjects := range grades {
+        fmt.Printf(&#34;\n%s&#39;s grades:\n&#34;, student)
+        for subject, grade := range subjects {
+            fmt.Printf(&#34;  %s: %d\n&#34;, subject, grade)
+        }
+    }
+}
+</code></pre>
+<p>Negative : Map tidak terurut! Iterasi map bisa menghasilkan urutan yang berbeda setiap kali.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Studi Kasus: Sistem Inventori Toko" duration="25">
+        <h2 is-upgraded>Problem</h2>
+<p>Buat sistem inventori toko dengan fitur:</p>
+<ol type="1">
+<li>Tambah produk baru</li>
+<li>Update stok produk</li>
+<li>Jual produk (kurangi stok)</li>
+<li>Tampilkan semua produk</li>
+<li>Cari produk berdasarkan ID</li>
+<li>Hitung total nilai inventori</li>
+</ol>
+<h2 is-upgraded>Solusi Lengkap</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+// Struct untuk produk
+type Product struct {
+    id    string
+    name  string
+    price float64
+    stock int
+}
+
+// Struct untuk transaksi
+type Transaction struct {
+    productID string
+    quantity  int
+    total     float64
+}
+
+func main() {
+    fmt.Println(&#34;╔═══════════════════════════════════════╗&#34;)
+    fmt.Println(&#34;║     SISTEM INVENTORI TOKO ELEKTRONIK  ║&#34;)
+    fmt.Println(&#34;╚═══════════════════════════════════════╝&#34;)
+    fmt.Println()
+    
+    // Inventori menggunakan map
+    inventory := make(map[string]Product)
+    
+    // Tambah produk awal
+    inventory[&#34;P001&#34;] = Product{&#34;P001&#34;, &#34;Laptop ASUS&#34;, 10000000, 5}
+    inventory[&#34;P002&#34;] = Product{&#34;P002&#34;, &#34;Mouse Logitech&#34;, 150000, 20}
+    inventory[&#34;P003&#34;] = Product{&#34;P003&#34;, &#34;Keyboard Mechanical&#34;, 500000, 15}
+    inventory[&#34;P004&#34;] = Product{&#34;P004&#34;, &#34;Monitor LG 24\&#34;&#34;, 2000000, 8}
+    inventory[&#34;P005&#34;] = Product{&#34;P005&#34;, &#34;Webcam HD&#34;, 300000, 12}
+    
+    // Riwayat transaksi
+    var transactions []Transaction
+    
+    // Tampilkan semua produk
+    displayInventory(inventory)
+    
+    // Simulasi transaksi penjualan
+    fmt.Println(&#34;\n📦 TRANSAKSI PENJUALAN:&#34;)
+    fmt.Println(&#34;─────────────────────────────────────────&#34;)
+    
+    // Transaksi 1
+    if product, ok := inventory[&#34;P001&#34;]; ok {
+        qty := 2
+        if product.stock &gt;= qty {
+            product.stock -= qty
+            inventory[&#34;P001&#34;] = product
+            
+            transaction := Transaction{
+                productID: &#34;P001&#34;,
+                quantity:  qty,
+                total:     float64(qty) * product.price,
+            }
+            transactions = append(transactions, transaction)
+            
+            fmt.Printf(&#34;✓ Terjual: %d %s = Rp %.0f\n&#34;, 
+                qty, product.name, transaction.total)
+        }
+    }
+    
+    // Transaksi 2
+    if product, ok := inventory[&#34;P002&#34;]; ok {
+        qty := 5
+        if product.stock &gt;= qty {
+            product.stock -= qty
+            inventory[&#34;P002&#34;] = product
+            
+            transaction := Transaction{
+                productID: &#34;P002&#34;,
+                quantity:  qty,
+                total:     float64(qty) * product.price,
+            }
+            transactions = append(transactions, transaction)
+            
+            fmt.Printf(&#34;✓ Terjual: %d %s = Rp %.0f\n&#34;, 
+                qty, product.name, transaction.total)
+        }
+    }
+    
+    // Transaksi 3 - Stok tidak cukup
+    if product, ok := inventory[&#34;P004&#34;]; ok {
+        qty := 10
+        if product.stock &gt;= qty {
+            product.stock -= qty
+            inventory[&#34;P004&#34;] = product
+        } else {
+            fmt.Printf(&#34;✗ Stok %s tidak cukup (tersedia: %d, diminta: %d)\n&#34;, 
+                product.name, product.stock, qty)
+        }
+    }
+    
+    // Tampilkan stok terkini
+    fmt.Println(&#34;\n📊 STOK TERKINI:&#34;)
+    fmt.Println(&#34;─────────────────────────────────────────&#34;)
+    displayInventory(inventory)
+    
+    // Hitung statistik
+    fmt.Println(&#34;\n💰 STATISTIK:&#34;)
+    fmt.Println(&#34;─────────────────────────────────────────&#34;)
+    
+    totalValue := 0.0
+    totalItems := 0
+    lowStockProducts := []string{}
+    
+    for _, product := range inventory {
+        value := float64(product.stock) * product.price
+        totalValue += value
+        totalItems += product.stock
+        
+        if product.stock &lt; 10 {
+            lowStockProducts = append(lowStockProducts, product.name)
+        }
+    }
+    
+    totalSales := 0.0
+    for _, trans := range transactions {
+        totalSales += trans.total
+    }
+    
+    fmt.Printf(&#34;Total Produk      : %d jenis\n&#34;, len(inventory))
+    fmt.Printf(&#34;Total Item        : %d unit\n&#34;, totalItems)
+    fmt.Printf(&#34;Nilai Inventori   : Rp %.0f\n&#34;, totalValue)
+    fmt.Printf(&#34;Total Penjualan   : Rp %.0f\n&#34;, totalSales)
+    fmt.Printf(&#34;Jumlah Transaksi  : %d\n&#34;, len(transactions))
+    
+    // Produk stok rendah
+    if len(lowStockProducts) &gt; 0 {
+        fmt.Println(&#34;\n⚠️  PERINGATAN STOK RENDAH:&#34;)
+        for _, name := range lowStockProducts {
+            fmt.Printf(&#34;   - %s\n&#34;, name)
+        }
+    }
+    
+    fmt.Println(&#34;\n═══════════════════════════════════════════&#34;)
+}
+
+func displayInventory(inventory map[string]Product) {
+    fmt.Printf(&#34;%-6s %-25s %12s %8s %15s\n&#34;, 
+        &#34;ID&#34;, &#34;Nama Produk&#34;, &#34;Harga&#34;, &#34;Stok&#34;, &#34;Nilai&#34;)
+    fmt.Println(&#34;─────────────────────────────────────────&#34;)
+    
+    for _, product := range inventory {
+        value := float64(product.stock) * product.price
+        fmt.Printf(&#34;%-6s %-25s Rp %9.0f %5d Rp %12.0f\n&#34;, 
+            product.id, product.name, product.price, 
+            product.stock, value)
+    }
+}
+</code></pre>
+<h2 is-upgraded>Output Program</h2>
+<pre><code>╔═══════════════════════════════════════╗
+║     SISTEM INVENTORI TOKO ELEKTRONIK  ║
+╚═══════════════════════════════════════╝
+
+ID     Nama Produk               Harga     Stok           Nilai
+─────────────────────────────────────────
+P001   Laptop ASUS          Rp  10000000     5 Rp   50000000
+P002   Mouse Logitech       Rp    150000    20 Rp    3000000
+P003   Keyboard Mechanical  Rp    500000    15 Rp    7500000
+P004   Monitor LG 24&#34;       Rp   2000000     8 Rp   16000000
+P005   Webcam HD            Rp    300000    12 Rp    3600000
+
+📦 TRANSAKSI PENJUALAN:
+─────────────────────────────────────────
+✓ Terjual: 2 Laptop ASUS = Rp 20000000
+✓ Terjual: 5 Mouse Logitech = Rp 750000
+✗ Stok Monitor LG 24&#34; tidak cukup (tersedia: 8, diminta: 10)
+
+📊 STOK TERKINI:
+─────────────────────────────────────────
+ID     Nama Produk               Harga     Stok           Nilai
+─────────────────────────────────────────
+P001   Laptop ASUS          Rp  10000000     3 Rp   30000000
+P002   Mouse Logitech       Rp    150000    15 Rp    2250000
+P003   Keyboard Mechanical  Rp    500000    15 Rp    7500000
+P004   Monitor LG 24&#34;       Rp   2000000     8 Rp   16000000
+P005   Webcam HD            Rp    300000    12 Rp    3600000
+
+💰 STATISTIK:
+─────────────────────────────────────────
+Total Produk      : 5 jenis
+Total Item        : 53 unit
+Nilai Inventori   : Rp 59350000
+Total Penjualan   : Rp 20750000
+Jumlah Transaksi  : 2
+
+⚠️  PERINGATAN STOK RENDAH:
+   - Laptop ASUS
+   - Monitor LG 24&#34;
+
+═══════════════════════════════════════════
+</code></pre>
+<h2 is-upgraded>Latihan Tambahan</h2>
+<p>Coba tambahkan fitur:</p>
+<ol type="1">
+<li>Tambah produk baru dari input user</li>
+<li>Kategori produk (map of slices)</li>
+<li>Diskon untuk pembelian tertentu</li>
+<li>Export laporan ke file</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="2">
+        <p>Selamat! Anda telah menyelesaikan Bab 3: Data Structures.</p>
+<h2 is-upgraded>Yang Sudah Dipelajari</h2>
+<p>✅ <strong>Arrays</strong> - Koleksi fixed-size<br> ✅ <strong>Slices</strong> - Koleksi dinamis (append, slicing, copy)<br> ✅ <strong>Maps</strong> - Key-value pairs<br> ✅ <strong>Studi Kasus</strong> - Sistem inventori toko lengkap</p>
+<h2 is-upgraded>Key Takeaways</h2>
+<ul>
+<li>Array memiliki ukuran tetap, Slice dinamis</li>
+<li>Slice adalah reference type, Array adalah value type</li>
+<li>Map tidak terurut dan key harus unique</li>
+<li>Gunakan <code>make()</code> untuk inisialisasi slice dan map</li>
+<li><code>append()</code> untuk menambah element ke slice</li>
+<li><code>delete()</code> untuk menghapus key dari map</li>
+</ul>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<p>Lanjut ke <strong>Bab 4: Functions</strong> untuk belajar:</p>
+<ul>
+<li>Multiple return values</li>
+<li>Variadic functions</li>
+<li>Closures</li>
+<li>Recursion</li>
+</ul>
+<h2 is-upgraded>Resources</h2>
+<ul>
+<li><a href="https://go.dev/blog/slices-intro" target="_blank">Go Slices</a></li>
+<li><a href="https://go.dev/blog/maps" target="_blank">Go Maps</a></li>
+<li><a href="https://github.com/golang/go/wiki/SliceTricks" target="_blank">Slice Tricks</a></li>
+</ul>
+<p>Positive : Data structures adalah fondasi untuk menyimpan data. Praktik dengan berbagai kombinasi!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

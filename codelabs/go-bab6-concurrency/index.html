@@ -1,0 +1,378 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Go Bab 6: Concurrency</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="go-bab6-concurrency"
+                  title="Go Bab 6: Concurrency"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/feedback">
+    
+      <google-codelab-step label="Pengenalan" duration="3">
+        <p>Concurrency adalah salah satu fitur paling powerful di Go!</p>
+<h2 is-upgraded>Apa yang Akan Dipelajari</h2>
+<ul>
+<li>🚀 Goroutines - Lightweight threads</li>
+<li>📡 Channels - Komunikasi antar goroutines</li>
+<li>🔀 Select - Multiple channel operations</li>
+<li>⏳ WaitGroups - Synchronization</li>
+<li>💼 Studi Kasus - Web scraper concurrent</li>
+</ul>
+<p>Positive : Concurrency di Go jauh lebih mudah dibanding bahasa lain!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Goroutines" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Goroutine adalah lightweight thread yang dikelola oleh Go runtime.</p>
+<h2 is-upgraded>Basic Goroutine</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;time&#34;
+)
+
+func sayHello() {
+    fmt.Println(&#34;Hello from goroutine!&#34;)
+}
+
+func main() {
+    // Jalankan sebagai goroutine
+    go sayHello()
+    
+    // Wait agar goroutine selesai
+    time.Sleep(time.Second)
+    
+    fmt.Println(&#34;Main function ends&#34;)
+}
+</code></pre>
+<h2 is-upgraded>Multiple Goroutines</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;time&#34;
+)
+
+func printNumbers() {
+    for i := 1; i &lt;= 5; i++ {
+        fmt.Printf(&#34;Number: %d\n&#34;, i)
+        time.Sleep(100 * time.Millisecond)
+    }
+}
+
+func printLetters() {
+    for i := &#39;a&#39;; i &lt;= &#39;e&#39;; i++ {
+        fmt.Printf(&#34;Letter: %c\n&#34;, i)
+        time.Sleep(100 * time.Millisecond)
+    }
+}
+
+func main() {
+    go printNumbers()
+    go printLetters()
+    
+    time.Sleep(time.Second)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Channels" duration="25">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Channels adalah cara goroutines berkomunikasi dan synchronize.</p>
+<h2 is-upgraded>Basic Channel</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Buat channel
+    ch := make(chan string)
+    
+    // Send ke channel (di goroutine)
+    go func() {
+        ch &lt;- &#34;Hello from channel&#34;
+    }()
+    
+    // Receive dari channel
+    msg := &lt;-ch
+    fmt.Println(msg)
+}
+</code></pre>
+<h2 is-upgraded>Buffered Channel</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Buffered channel
+    ch := make(chan int, 3)
+    
+    // Send tanpa goroutine (tidak block karena ada buffer)
+    ch &lt;- 1
+    ch &lt;- 2
+    ch &lt;- 3
+    
+    // Receive
+    fmt.Println(&lt;-ch)
+    fmt.Println(&lt;-ch)
+    fmt.Println(&lt;-ch)
+}
+</code></pre>
+<h2 is-upgraded>Range over Channel</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    ch := make(chan int)
+    
+    go func() {
+        for i := 1; i &lt;= 5; i++ {
+            ch &lt;- i
+        }
+        close(ch)  // Penting!
+    }()
+    
+    // Range akan loop sampai channel closed
+    for num := range ch {
+        fmt.Println(num)
+    }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Select Statement" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Select memungkinkan goroutine menunggu multiple channel operations.</p>
+<h2 is-upgraded>Basic Select</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;time&#34;
+)
+
+func main() {
+    ch1 := make(chan string)
+    ch2 := make(chan string)
+    
+    go func() {
+        time.Sleep(1 * time.Second)
+        ch1 &lt;- &#34;from channel 1&#34;
+    }()
+    
+    go func() {
+        time.Sleep(2 * time.Second)
+        ch2 &lt;- &#34;from channel 2&#34;
+    }()
+    
+    // Select akan execute case yang ready duluan
+    select {
+    case msg1 := &lt;-ch1:
+        fmt.Println(msg1)
+    case msg2 := &lt;-ch2:
+        fmt.Println(msg2)
+    }
+}
+</code></pre>
+<h2 is-upgraded>Timeout Pattern</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;time&#34;
+)
+
+func main() {
+    ch := make(chan string)
+    
+    go func() {
+        time.Sleep(2 * time.Second)
+        ch &lt;- &#34;result&#34;
+    }()
+    
+    select {
+    case result := &lt;-ch:
+        fmt.Println(result)
+    case &lt;-time.After(1 * time.Second):
+        fmt.Println(&#34;Timeout!&#34;)
+    }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="WaitGroups" duration="15">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>WaitGroup digunakan untuk menunggu collection of goroutines selesai.</p>
+<h2 is-upgraded>Basic WaitGroup</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;sync&#34;
+    &#34;time&#34;
+)
+
+func worker(id int, wg *sync.WaitGroup) {
+    defer wg.Done()  // Panggil Done saat selesai
+    
+    fmt.Printf(&#34;Worker %d starting\n&#34;, id)
+    time.Sleep(time.Second)
+    fmt.Printf(&#34;Worker %d done\n&#34;, id)
+}
+
+func main() {
+    var wg sync.WaitGroup
+    
+    for i := 1; i &lt;= 5; i++ {
+        wg.Add(1)  // Tambah counter
+        go worker(i, &amp;wg)
+    }
+    
+    wg.Wait()  // Wait sampai semua Done
+    fmt.Println(&#34;All workers done&#34;)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Studi Kasus: Web Scraper Concurrent" duration="30">
+        <pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;sync&#34;
+    &#34;time&#34;
+)
+
+type Result struct {
+    URL    string
+    Status string
+    Time   time.Duration
+}
+
+func fetch(url string) Result {
+    start := time.Now()
+    
+    // Simulate HTTP request
+    time.Sleep(time.Second)
+    
+    return Result{
+        URL:    url,
+        Status: &#34;200 OK&#34;,
+        Time:   time.Since(start),
+    }
+}
+
+func worker(id int, urls &lt;-chan string, results chan&lt;- Result, wg *sync.WaitGroup) {
+    defer wg.Done()
+    
+    for url := range urls {
+        fmt.Printf(&#34;Worker %d fetching %s\n&#34;, id, url)
+        result := fetch(url)
+        results &lt;- result
+    }
+}
+
+func main() {
+    fmt.Println(&#34;╔═══════════════════════════════════╗&#34;)
+    fmt.Println(&#34;║    CONCURRENT WEB SCRAPER         ║&#34;)
+    fmt.Println(&#34;╚═══════════════════════════════════╝\n&#34;)
+    
+    urls := []string{
+        &#34;https://golang.org&#34;,
+        &#34;https://github.com&#34;,
+        &#34;https://stackoverflow.com&#34;,
+        &#34;https://reddit.com&#34;,
+        &#34;https://twitter.com&#34;,
+    }
+    
+    numWorkers := 3
+    urlsChan := make(chan string, len(urls))
+    results := make(chan Result, len(urls))
+    
+    var wg sync.WaitGroup
+    
+    // Start workers
+    for i := 1; i &lt;= numWorkers; i++ {
+        wg.Add(1)
+        go worker(i, urlsChan, results, &amp;wg)
+    }
+    
+    // Send URLs
+    for _, url := range urls {
+        urlsChan &lt;- url
+    }
+    close(urlsChan)
+    
+    // Wait for workers
+    go func() {
+        wg.Wait()
+        close(results)
+    }()
+    
+    // Collect results
+    fmt.Println(&#34;\n📊 RESULTS:&#34;)
+    fmt.Println(&#34;─────────────────────────────────────&#34;)
+    for result := range results {
+        fmt.Printf(&#34;✓ %s: %s (%.2fs)\n&#34;, 
+            result.URL, result.Status, result.Time.Seconds())
+    }
+    
+    fmt.Println(&#34;═══════════════════════════════════════&#34;)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="2">
+        <h2 is-upgraded>Yang Sudah Dipelajari</h2>
+<p>✅ <strong>Goroutines</strong> - Lightweight concurrency<br> ✅ <strong>Channels</strong> - Communication between goroutines<br> ✅ <strong>Select</strong> - Multiple channel operations<br> ✅ <strong>WaitGroups</strong> - Synchronization</p>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<p>Lanjut ke <strong>Bab 7: Error Handling</strong>!</p>
+<p>Positive : Concurrency membuat program lebih efficient dan responsive!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-14T17:00:30+07:00",
+  "id": "go-bab1-dasar",
+  "duration": 80,
+  "title": "Go Bab 1: Dasar-dasar Go",
+  "summary": "Bab 1 - Pelajari dasar-dasar Go: Hello World, Values, Variables, dan Constants dengan penjelasan sederhana dan studi kasus",
+  "source": "go-bab1-dasar.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "golang",
+    "backend",
+    "fundamental",
+    "indonesia"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/feedback",
+  "url": "go-bab1-dasar"
+}

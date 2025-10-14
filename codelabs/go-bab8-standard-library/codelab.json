@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-14T17:11:20+07:00",
+  "id": "go-bab8-standard-library",
+  "duration": 125,
+  "title": "Go Bab 8: Standard Library",
+  "summary": "Bab 8 - Standard Library Go: String, Time, JSON, File I/O dengan studi kasus aplikasi todo list",
+  "source": "go-bab8-standard-library.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "golang",
+    "backend",
+    "fundamental",
+    "indonesia"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/feedback",
+  "url": "go-bab8-standard-library"
+}

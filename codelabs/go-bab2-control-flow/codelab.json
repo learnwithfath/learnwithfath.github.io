@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-14T17:03:49+07:00",
+  "id": "go-bab2-control-flow",
+  "duration": 90,
+  "title": "Go Bab 2: Control Flow",
+  "summary": "Bab 2 - Kuasai Control Flow di Go: For loops, If/Else, Switch dengan penjelasan sederhana dan studi kasus nyata",
+  "source": "go-bab2-control-flow.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "golang",
+    "backend",
+    "fundamental",
+    "indonesia"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/feedback",
+  "url": "go-bab2-control-flow"
+}

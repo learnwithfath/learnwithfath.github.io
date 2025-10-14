@@ -1,0 +1,357 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Go Bab 8: Standard Library</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="go-bab8-standard-library"
+                  title="Go Bab 8: Standard Library"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/feedback">
+    
+      <google-codelab-step label="Pengenalan" duration="3">
+        <p>Go punya standard library yang sangat lengkap!</p>
+<h2 is-upgraded>Apa yang Akan Dipelajari</h2>
+<ul>
+<li>📝 String Manipulation</li>
+<li>⏰ Time &amp; Date</li>
+<li>📦 JSON Encoding/Decoding</li>
+<li>📁 File I/O Operations</li>
+<li>💼 Studi Kasus - Todo List App</li>
+</ul>
+<p>Positive : Standard library Go sangat powerful dan production-ready!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="String Manipulation" duration="20">
+        <h2 is-upgraded>strings Package</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;strings&#34;
+)
+
+func main() {
+    s := &#34;Hello, World!&#34;
+    
+    // Basic operations
+    fmt.Println(&#34;ToUpper:&#34;, strings.ToUpper(s))
+    fmt.Println(&#34;ToLower:&#34;, strings.ToLower(s))
+    fmt.Println(&#34;Contains:&#34;, strings.Contains(s, &#34;World&#34;))
+    fmt.Println(&#34;HasPrefix:&#34;, strings.HasPrefix(s, &#34;Hello&#34;))
+    fmt.Println(&#34;HasSuffix:&#34;, strings.HasSuffix(s, &#34;!&#34;))
+    
+    // Split &amp; Join
+    parts := strings.Split(s, &#34;, &#34;)
+    fmt.Println(&#34;Split:&#34;, parts)
+    fmt.Println(&#34;Join:&#34;, strings.Join(parts, &#34; - &#34;))
+    
+    // Replace
+    fmt.Println(&#34;Replace:&#34;, strings.Replace(s, &#34;World&#34;, &#34;Go&#34;, 1))
+    fmt.Println(&#34;ReplaceAll:&#34;, strings.ReplaceAll(s, &#34;l&#34;, &#34;L&#34;))
+    
+    // Trim
+    text := &#34;  hello  &#34;
+    fmt.Println(&#34;Trim:&#34;, strings.Trim(text, &#34; &#34;))
+}
+</code></pre>
+<h2 is-upgraded>fmt Package</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    name := &#34;Ahmad&#34;
+    age := 25
+    score := 85.5
+    
+    // Printf
+    fmt.Printf(&#34;Name: %s, Age: %d\n&#34;, name, age)
+    fmt.Printf(&#34;Score: %.2f\n&#34;, score)
+    
+    // Sprintf (return string)
+    message := fmt.Sprintf(&#34;%s is %d years old&#34;, name, age)
+    fmt.Println(message)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Time &amp; Date" duration="20">
+        <h2 is-upgraded>time Package</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;time&#34;
+)
+
+func main() {
+    // Current time
+    now := time.Now()
+    fmt.Println(&#34;Now:&#34;, now)
+    
+    // Format time
+    fmt.Println(&#34;Formatted:&#34;, now.Format(&#34;2006-01-02 15:04:05&#34;))
+    fmt.Println(&#34;Date:&#34;, now.Format(&#34;02/01/2006&#34;))
+    fmt.Println(&#34;Time:&#34;, now.Format(&#34;15:04:05&#34;))
+    
+    // Parse time
+    dateStr := &#34;2024-01-15&#34;
+    date, _ := time.Parse(&#34;2006-01-02&#34;, dateStr)
+    fmt.Println(&#34;Parsed:&#34;, date)
+    
+    // Time operations
+    tomorrow := now.Add(24 * time.Hour)
+    fmt.Println(&#34;Tomorrow:&#34;, tomorrow.Format(&#34;2006-01-02&#34;))
+    
+    yesterday := now.Add(-24 * time.Hour)
+    fmt.Println(&#34;Yesterday:&#34;, yesterday.Format(&#34;2006-01-02&#34;))
+    
+    // Duration
+    duration := tomorrow.Sub(now)
+    fmt.Println(&#34;Duration:&#34;, duration.Hours(), &#34;hours&#34;)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="JSON" duration="25">
+        <h2 is-upgraded>JSON Encoding/Decoding</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;encoding/json&#34;
+    &#34;fmt&#34;
+)
+
+type Person struct {
+    Name  string `json:&#34;name&#34;`
+    Age   int    `json:&#34;age&#34;`
+    Email string `json:&#34;email&#34;`
+}
+
+func main() {
+    // Encoding (Marshal)
+    person := Person{
+        Name:  &#34;Ahmad&#34;,
+        Age:   25,
+        Email: &#34;ahmad@email.com&#34;,
+    }
+    
+    jsonData, _ := json.Marshal(person)
+    fmt.Println(&#34;JSON:&#34;, string(jsonData))
+    
+    // Pretty print
+    jsonPretty, _ := json.MarshalIndent(person, &#34;&#34;, &#34;  &#34;)
+    fmt.Println(&#34;Pretty JSON:\n&#34;, string(jsonPretty))
+    
+    // Decoding (Unmarshal)
+    jsonStr := `{&#34;name&#34;:&#34;Budi&#34;,&#34;age&#34;:30,&#34;email&#34;:&#34;budi@email.com&#34;}`
+    var p Person
+    json.Unmarshal([]byte(jsonStr), &amp;p)
+    fmt.Printf(&#34;Decoded: %+v\n&#34;, p)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="File I/O" duration="25">
+        <h2 is-upgraded>Reading Files</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;os&#34;
+)
+
+func main() {
+    // Read entire file
+    content, err := os.ReadFile(&#34;data.txt&#34;)
+    if err != nil {
+        fmt.Println(&#34;Error:&#34;, err)
+        return
+    }
+    fmt.Println(&#34;Content:&#34;, string(content))
+}
+</code></pre>
+<h2 is-upgraded>Writing Files</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;os&#34;
+)
+
+func main() {
+    // Write to file
+    data := []byte(&#34;Hello, File!&#34;)
+    err := os.WriteFile(&#34;output.txt&#34;, data, 0644)
+    if err != nil {
+        fmt.Println(&#34;Error:&#34;, err)
+        return
+    }
+    fmt.Println(&#34;File written successfully&#34;)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Studi Kasus: Todo List App" duration="30">
+        <pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;encoding/json&#34;
+    &#34;fmt&#34;
+    &#34;os&#34;
+    &#34;time&#34;
+)
+
+type Todo struct {
+    ID        int       `json:&#34;id&#34;`
+    Title     string    `json:&#34;title&#34;`
+    Completed bool      `json:&#34;completed&#34;`
+    CreatedAt time.Time `json:&#34;created_at&#34;`
+}
+
+type TodoList struct {
+    Todos []Todo `json:&#34;todos&#34;`
+}
+
+func (tl *TodoList) Add(title string) {
+    todo := Todo{
+        ID:        len(tl.Todos) + 1,
+        Title:     title,
+        Completed: false,
+        CreatedAt: time.Now(),
+    }
+    tl.Todos = append(tl.Todos, todo)
+}
+
+func (tl *TodoList) Complete(id int) {
+    for i := range tl.Todos {
+        if tl.Todos[i].ID == id {
+            tl.Todos[i].Completed = true
+            break
+        }
+    }
+}
+
+func (tl *TodoList) Display() {
+    fmt.Println(&#34;\n📝 TODO LIST:&#34;)
+    fmt.Println(&#34;─────────────────────────────────────&#34;)
+    for _, todo := range tl.Todos {
+        status := &#34;⬜&#34;
+        if todo.Completed {
+            status = &#34;✅&#34;
+        }
+        fmt.Printf(&#34;%s %d. %s\n&#34;, status, todo.ID, todo.Title)
+    }
+}
+
+func (tl *TodoList) Save(filename string) error {
+    data, err := json.MarshalIndent(tl, &#34;&#34;, &#34;  &#34;)
+    if err != nil {
+        return err
+    }
+    return os.WriteFile(filename, data, 0644)
+}
+
+func (tl *TodoList) Load(filename string) error {
+    data, err := os.ReadFile(filename)
+    if err != nil {
+        return err
+    }
+    return json.Unmarshal(data, tl)
+}
+
+func main() {
+    fmt.Println(&#34;╔═══════════════════════════════════╗&#34;)
+    fmt.Println(&#34;║         TODO LIST APP             ║&#34;)
+    fmt.Println(&#34;╚═══════════════════════════════════╝&#34;)
+    
+    todoList := &amp;TodoList{}
+    
+    // Add todos
+    todoList.Add(&#34;Belajar Go&#34;)
+    todoList.Add(&#34;Buat project&#34;)
+    todoList.Add(&#34;Deploy aplikasi&#34;)
+    
+    // Display
+    todoList.Display()
+    
+    // Complete task
+    fmt.Println(&#34;\n✓ Menyelesaikan task #1&#34;)
+    todoList.Complete(1)
+    todoList.Display()
+    
+    // Save to file
+    fmt.Println(&#34;\n💾 Menyimpan ke file...&#34;)
+    if err := todoList.Save(&#34;todos.json&#34;); err != nil {
+        fmt.Println(&#34;Error saving:&#34;, err)
+    } else {
+        fmt.Println(&#34;✓ Tersimpan ke todos.json&#34;)
+    }
+    
+    // Load from file
+    fmt.Println(&#34;\n📂 Memuat dari file...&#34;)
+    newList := &amp;TodoList{}
+    if err := newList.Load(&#34;todos.json&#34;); err != nil {
+        fmt.Println(&#34;Error loading:&#34;, err)
+    } else {
+        fmt.Println(&#34;✓ Berhasil dimuat&#34;)
+        newList.Display()
+    }
+    
+    fmt.Println(&#34;\n═══════════════════════════════════════&#34;)
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="2">
+        <h2 is-upgraded>Yang Sudah Dipelajari</h2>
+<p>✅ <strong>String</strong> - Manipulation dengan strings package<br> ✅ <strong>Time</strong> - Date &amp; time operations<br> ✅ <strong>JSON</strong> - Encoding &amp; decoding<br> ✅ <strong>File I/O</strong> - Read &amp; write files</p>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<p>Lanjut ke <strong>Bab 9: Web &amp; Network</strong> - bab terakhir!</p>
+<p>Positive : Standard library Go sangat lengkap untuk production apps!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

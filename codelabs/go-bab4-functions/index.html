@@ -1,0 +1,1018 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Go Bab 4: Functions</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="go-bab4-functions"
+                  title="Go Bab 4: Functions"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/feedback">
+    
+      <google-codelab-step label="Pengenalan" duration="3">
+        <p>Selamat datang di Bab 4! Functions membuat code reusable dan terorganisir dengan baik.</p>
+<h2 is-upgraded>Apa yang Akan Dipelajari</h2>
+<ul>
+<li>🔧 Basic Functions - Deklarasi dan penggunaan</li>
+<li>🔄 Multiple Return - Return lebih dari satu nilai</li>
+<li>📦 Variadic Functions - Parameter tidak terbatas</li>
+<li>🎯 Closures - Function dalam function</li>
+<li>♻️ Recursion - Function yang memanggil dirinya sendiri</li>
+<li>💼 Studi Kasus - Kalkulator lengkap</li>
+</ul>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Sudah menyelesaikan Bab 1-3</li>
+<li>Memahami data structures</li>
+</ul>
+<p>Positive : Functions adalah building block utama dalam programming. Master functions = master programming!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Basic Functions" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Function adalah blok code yang bisa dipanggil berulang kali. Membuat code lebih modular dan mudah di-maintain.</p>
+<h2 is-upgraded>1. Function Tanpa Parameter</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func sayHello() {
+    fmt.Println(&#34;Hello, World!&#34;)
+}
+
+func greet() {
+    fmt.Println(&#34;Selamat datang!&#34;)
+    fmt.Println(&#34;Semoga hari Anda menyenangkan&#34;)
+}
+
+func main() {
+    sayHello()
+    greet()
+    sayHello()  // Bisa dipanggil berkali-kali
+}
+</code></pre>
+<h2 is-upgraded>2. Function dengan Parameter</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+// Single parameter
+func greet(name string) {
+    fmt.Printf(&#34;Hello, %s!\n&#34;, name)
+}
+
+// Multiple parameters
+func introduce(name string, age int) {
+    fmt.Printf(&#34;Nama: %s, Umur: %d tahun\n&#34;, name, age)
+}
+
+// Parameters dengan tipe sama (shorthand)
+func add(a, b int) {
+    result := a + b
+    fmt.Printf(&#34;%d + %d = %d\n&#34;, a, b, result)
+}
+
+func main() {
+    greet(&#34;Ahmad&#34;)
+    introduce(&#34;Budi&#34;, 25)
+    add(10, 5)
+}
+</code></pre>
+<h2 is-upgraded>3. Function dengan Return Value</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+// Return single value
+func add(a, b int) int {
+    return a + b
+}
+
+func multiply(a, b int) int {
+    return a * b
+}
+
+// Return dengan expression
+func isEven(n int) bool {
+    return n%2 == 0
+}
+
+func main() {
+    sum := add(5, 3)
+    fmt.Println(&#34;Sum:&#34;, sum)
+    
+    product := multiply(4, 6)
+    fmt.Println(&#34;Product:&#34;, product)
+    
+    if isEven(10) {
+        fmt.Println(&#34;10 is even&#34;)
+    }
+    
+    // Direct use
+    fmt.Println(&#34;15 + 20 =&#34;, add(15, 20))
+}
+</code></pre>
+<h2 is-upgraded>4. Named Return Values</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+// Named return values
+func calculate(a, b int) (sum int, product int) {
+    sum = a + b
+    product = a * b
+    return  // Naked return
+}
+
+// Dengan explicit return
+func divide(a, b float64) (result float64, err error) {
+    if b == 0 {
+        err = fmt.Errorf(&#34;cannot divide by zero&#34;)
+        return
+    }
+    result = a / b
+    return
+}
+
+func main() {
+    s, p := calculate(5, 3)
+    fmt.Printf(&#34;Sum: %d, Product: %d\n&#34;, s, p)
+    
+    r, e := divide(10, 2)
+    if e != nil {
+        fmt.Println(&#34;Error:&#34;, e)
+    } else {
+        fmt.Println(&#34;Result:&#34;, r)
+    }
+}
+</code></pre>
+<h2 is-upgraded>5. Function sebagai Value</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Assign function ke variable
+    add := func(a, b int) int {
+        return a + b
+    }
+    
+    result := add(5, 3)
+    fmt.Println(&#34;Result:&#34;, result)
+    
+    // Pass function sebagai parameter
+    calculate(10, 5, add)
+    
+    // Return function dari function
+    multiplier := makeMultiplier(3)
+    fmt.Println(&#34;3 × 5 =&#34;, multiplier(5))
+}
+
+func calculate(a, b int, operation func(int, int) int) {
+    result := operation(a, b)
+    fmt.Println(&#34;Calculate result:&#34;, result)
+}
+
+func makeMultiplier(factor int) func(int) int {
+    return func(x int) int {
+        return x * factor
+    }
+}
+</code></pre>
+<p>Positive : Functions membuat code DRY (Don&#39;t Repeat Yourself) - tulis sekali, pakai berkali-kali!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Multiple Return Values" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Go bisa return lebih dari satu nilai. Sangat berguna untuk return hasil dan error sekaligus.</p>
+<h2 is-upgraded>1. Basic Multiple Returns</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+// Return 2 values
+func swap(x, y string) (string, string) {
+    return y, x
+}
+
+// Return 3 values
+func getPersonInfo() (string, int, string) {
+    return &#34;Ahmad&#34;, 25, &#34;Jakarta&#34;
+}
+
+func main() {
+    // Receive all returns
+    a, b := swap(&#34;hello&#34;, &#34;world&#34;)
+    fmt.Println(a, b)  // world hello
+    
+    name, age, city := getPersonInfo()
+    fmt.Printf(&#34;%s, %d tahun, dari %s\n&#34;, name, age, city)
+}
+</code></pre>
+<h2 is-upgraded>2. Return dengan Error</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;errors&#34;
+)
+
+func divide(a, b float64) (float64, error) {
+    if b == 0 {
+        return 0, errors.New(&#34;division by zero&#34;)
+    }
+    return a / b, nil
+}
+
+func sqrt(x float64) (float64, error) {
+    if x &lt; 0 {
+        return 0, fmt.Errorf(&#34;cannot sqrt negative number: %f&#34;, x)
+    }
+    // Simple approximation
+    result := 1.0
+    for i := 0; i &lt; 10; i++ {
+        result = (result + x/result) / 2
+    }
+    return result, nil
+}
+
+func main() {
+    // Handle error
+    result, err := divide(10, 2)
+    if err != nil {
+        fmt.Println(&#34;Error:&#34;, err)
+    } else {
+        fmt.Println(&#34;Result:&#34;, result)
+    }
+    
+    // Error case
+    _, err = divide(10, 0)
+    if err != nil {
+        fmt.Println(&#34;Error:&#34;, err)
+    }
+    
+    // Sqrt
+    s, err := sqrt(16)
+    if err == nil {
+        fmt.Println(&#34;√16 =&#34;, s)
+    }
+}
+</code></pre>
+<h2 is-upgraded>3. Ignore Return Values</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func calculate(a, b int) (int, int, int) {
+    return a + b, a - b, a * b
+}
+
+func main() {
+    // Get all
+    sum, diff, prod := calculate(10, 5)
+    fmt.Println(sum, diff, prod)
+    
+    // Ignore some dengan _
+    sum2, _, _ := calculate(20, 10)
+    fmt.Println(&#34;Only sum:&#34;, sum2)
+    
+    // Ignore all (hanya execute function)
+    _, _, _ = calculate(5, 3)
+}
+</code></pre>
+<h2 is-upgraded>4. Practical Example: Validation</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+type User struct {
+    username string
+    email    string
+    age      int
+}
+
+func validateUser(user User) (bool, []string) {
+    errors := []string{}
+    
+    if len(user.username) &lt; 3 {
+        errors = append(errors, &#34;Username terlalu pendek (min 3 karakter)&#34;)
+    }
+    
+    if len(user.email) &lt; 5 || !contains(user.email, &#34;@&#34;) {
+        errors = append(errors, &#34;Email tidak valid&#34;)
+    }
+    
+    if user.age &lt; 17 {
+        errors = append(errors, &#34;Umur minimal 17 tahun&#34;)
+    }
+    
+    return len(errors) == 0, errors
+}
+
+func contains(s, substr string) bool {
+    for i := 0; i &lt;= len(s)-len(substr); i++ {
+        if s[i:i+len(substr)] == substr {
+            return true
+        }
+    }
+    return false
+}
+
+func main() {
+    user1 := User{&#34;ab&#34;, &#34;invalid&#34;, 15}
+    valid, errors := validateUser(user1)
+    
+    if !valid {
+        fmt.Println(&#34;Validasi gagal:&#34;)
+        for _, err := range errors {
+            fmt.Println(&#34;  -&#34;, err)
+        }
+    }
+    
+    user2 := User{&#34;ahmad&#34;, &#34;ahmad@email.com&#34;, 25}
+    valid2, _ := validateUser(user2)
+    if valid2 {
+        fmt.Println(&#34;\nUser valid!&#34;)
+    }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Variadic Functions" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Variadic function bisa menerima jumlah parameter yang tidak terbatas (variable number of arguments).</p>
+<h2 is-upgraded>1. Basic Variadic</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+// Variadic parameter dengan ...
+func sum(numbers ...int) int {
+    total := 0
+    for _, num := range numbers {
+        total += num
+    }
+    return total
+}
+
+func main() {
+    // Call dengan berbagai jumlah argument
+    fmt.Println(sum(1, 2))           // 3
+    fmt.Println(sum(1, 2, 3))        // 6
+    fmt.Println(sum(1, 2, 3, 4, 5))  // 15
+    
+    // Pass slice dengan ...
+    numbers := []int{10, 20, 30, 40}
+    fmt.Println(sum(numbers...))     // 100
+}
+</code></pre>
+<h2 is-upgraded>2. Mix Regular dan Variadic</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+// Regular parameter harus sebelum variadic
+func greetAll(greeting string, names ...string) {
+    for _, name := range names {
+        fmt.Printf(&#34;%s, %s!\n&#34;, greeting, name)
+    }
+}
+
+func calculate(operation string, numbers ...float64) float64 {
+    if len(numbers) == 0 {
+        return 0
+    }
+    
+    result := numbers[0]
+    for i := 1; i &lt; len(numbers); i++ {
+        switch operation {
+        case &#34;add&#34;:
+            result += numbers[i]
+        case &#34;multiply&#34;:
+            result *= numbers[i]
+        }
+    }
+    return result
+}
+
+func main() {
+    greetAll(&#34;Hello&#34;, &#34;Ahmad&#34;, &#34;Budi&#34;, &#34;Citra&#34;)
+    
+    fmt.Println(&#34;\nCalculations:&#34;)
+    fmt.Println(&#34;Sum:&#34;, calculate(&#34;add&#34;, 1, 2, 3, 4, 5))
+    fmt.Println(&#34;Product:&#34;, calculate(&#34;multiply&#34;, 2, 3, 4))
+}
+</code></pre>
+<h2 is-upgraded>3. Practical Example: Printf-style</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func logMessage(level string, format string, args ...interface{}) {
+    prefix := fmt.Sprintf(&#34;[%s] &#34;, level)
+    message := fmt.Sprintf(format, args...)
+    fmt.Println(prefix + message)
+}
+
+func main() {
+    logMessage(&#34;INFO&#34;, &#34;Server started on port %d&#34;, 8080)
+    logMessage(&#34;ERROR&#34;, &#34;Failed to connect to %s:%d&#34;, &#34;localhost&#34;, 5432)
+    logMessage(&#34;DEBUG&#34;, &#34;User %s logged in at %s&#34;, &#34;ahmad&#34;, &#34;10:30&#34;)
+}
+</code></pre>
+<h2 is-upgraded>4. Advanced: Generic Operations</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func max(numbers ...int) int {
+    if len(numbers) == 0 {
+        return 0
+    }
+    
+    maximum := numbers[0]
+    for _, num := range numbers[1:] {
+        if num &gt; maximum {
+            maximum = num
+        }
+    }
+    return maximum
+}
+
+func min(numbers ...int) int {
+    if len(numbers) == 0 {
+        return 0
+    }
+    
+    minimum := numbers[0]
+    for _, num := range numbers[1:] {
+        if num &lt; minimum {
+            minimum = num
+        }
+    }
+    return minimum
+}
+
+func average(numbers ...float64) float64 {
+    if len(numbers) == 0 {
+        return 0
+    }
+    
+    sum := 0.0
+    for _, num := range numbers {
+        sum += num
+    }
+    return sum / float64(len(numbers))
+}
+
+func main() {
+    fmt.Println(&#34;Max:&#34;, max(5, 2, 9, 1, 7))
+    fmt.Println(&#34;Min:&#34;, min(5, 2, 9, 1, 7))
+    fmt.Println(&#34;Average:&#34;, average(85.5, 90.0, 78.5, 92.0))
+}
+</code></pre>
+<p>Negative : Variadic parameter harus yang terakhir! Tidak bisa ada parameter setelahnya.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Closures" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Closure adalah function yang bisa mengakses variable dari scope luarnya. Function &#34;mengingat&#34; environment tempat ia dibuat.</p>
+<h2 is-upgraded>1. Basic Closure</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func main() {
+    // Variable di outer scope
+    message := &#34;Hello&#34;
+    
+    // Closure yang akses variable outer
+    greet := func(name string) {
+        fmt.Printf(&#34;%s, %s!\n&#34;, message, name)
+    }
+    
+    greet(&#34;Ahmad&#34;)
+    
+    // Ubah variable outer
+    message = &#34;Hi&#34;
+    greet(&#34;Budi&#34;)  // Menggunakan nilai baru
+}
+</code></pre>
+<h2 is-upgraded>2. Counter Closure</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func counter() func() int {
+    count := 0
+    
+    return func() int {
+        count++
+        return count
+    }
+}
+
+func main() {
+    // Buat counter
+    increment := counter()
+    
+    fmt.Println(increment())  // 1
+    fmt.Println(increment())  // 2
+    fmt.Println(increment())  // 3
+    
+    // Counter baru (independent)
+    newCounter := counter()
+    fmt.Println(newCounter())  // 1
+    fmt.Println(newCounter())  // 2
+}
+</code></pre>
+<h2 is-upgraded>3. Function Factory</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func makeMultiplier(factor int) func(int) int {
+    return func(x int) int {
+        return x * factor
+    }
+}
+
+func makeAdder(addend int) func(int) int {
+    return func(x int) int {
+        return x + addend
+    }
+}
+
+func main() {
+    // Buat multipliers
+    double := makeMultiplier(2)
+    triple := makeMultiplier(3)
+    
+    fmt.Println(&#34;Double 5:&#34;, double(5))   // 10
+    fmt.Println(&#34;Triple 5:&#34;, triple(5))   // 15
+    
+    // Buat adders
+    add10 := makeAdder(10)
+    add100 := makeAdder(100)
+    
+    fmt.Println(&#34;5 + 10:&#34;, add10(5))      // 15
+    fmt.Println(&#34;5 + 100:&#34;, add100(5))    // 105
+}
+</code></pre>
+<h2 is-upgraded>4. Practical: Event Handlers</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+type Button struct {
+    label   string
+    onClick func()
+}
+
+func (b *Button) click() {
+    if b.onClick != nil {
+        b.onClick()
+    }
+}
+
+func main() {
+    clickCount := 0
+    
+    button := Button{
+        label: &#34;Click Me&#34;,
+        onClick: func() {
+            clickCount++
+            fmt.Printf(&#34;Button clicked %d times\n&#34;, clickCount)
+        },
+    }
+    
+    button.click()
+    button.click()
+    button.click()
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Recursion" duration="20">
+        <h2 is-upgraded>Penjelasan Sederhana</h2>
+<p>Recursion adalah function yang memanggil dirinya sendiri. Berguna untuk masalah yang bisa dipecah menjadi sub-masalah yang sama.</p>
+<h2 is-upgraded>1. Factorial</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func factorial(n int) int {
+    // Base case
+    if n == 0 || n == 1 {
+        return 1
+    }
+    // Recursive case
+    return n * factorial(n-1)
+}
+
+func main() {
+    fmt.Println(&#34;5! =&#34;, factorial(5))    // 120
+    fmt.Println(&#34;10! =&#34;, factorial(10))  // 3628800
+    
+    // Show steps
+    for i := 0; i &lt;= 7; i++ {
+        fmt.Printf(&#34;%d! = %d\n&#34;, i, factorial(i))
+    }
+}
+</code></pre>
+<h2 is-upgraded>2. Fibonacci</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func fibonacci(n int) int {
+    if n &lt;= 1 {
+        return n
+    }
+    return fibonacci(n-1) + fibonacci(n-2)
+}
+
+func main() {
+    fmt.Print(&#34;Fibonacci sequence: &#34;)
+    for i := 0; i &lt; 10; i++ {
+        fmt.Print(fibonacci(i), &#34; &#34;)
+    }
+    fmt.Println()
+}
+</code></pre>
+<h2 is-upgraded>3. Sum Array</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func sumArray(arr []int) int {
+    // Base case: empty array
+    if len(arr) == 0 {
+        return 0
+    }
+    // Recursive: first + sum of rest
+    return arr[0] + sumArray(arr[1:])
+}
+
+func main() {
+    numbers := []int{1, 2, 3, 4, 5}
+    fmt.Println(&#34;Sum:&#34;, sumArray(numbers))  // 15
+}
+</code></pre>
+<h2 is-upgraded>4. Power</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import &#34;fmt&#34;
+
+func power(base, exp int) int {
+    if exp == 0 {
+        return 1
+    }
+    return base * power(base, exp-1)
+}
+
+func main() {
+    fmt.Println(&#34;2^3 =&#34;, power(2, 3))    // 8
+    fmt.Println(&#34;5^4 =&#34;, power(5, 4))    // 625
+    fmt.Println(&#34;10^2 =&#34;, power(10, 2))  // 100
+}
+</code></pre>
+<h2 is-upgraded>5. Countdown</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;time&#34;
+)
+
+func countdown(n int) {
+    if n == 0 {
+        fmt.Println(&#34;🚀 Blast off!&#34;)
+        return
+    }
+    fmt.Println(n)
+    time.Sleep(time.Second)
+    countdown(n - 1)
+}
+
+func main() {
+    fmt.Println(&#34;Countdown:&#34;)
+    countdown(5)
+}
+</code></pre>
+<p>Positive : Recursion elegant tapi hati-hati dengan stack overflow! Pastikan ada base case.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Studi Kasus: Kalkulator Lengkap" duration="25">
+        <h2 is-upgraded>Problem</h2>
+<p>Buat kalkulator dengan fitur:</p>
+<ol type="1">
+<li>Operasi dasar (tambah, kurang, kali, bagi)</li>
+<li>Operasi lanjutan (pangkat, akar, faktorial)</li>
+<li>Statistik (rata-rata, max, min)</li>
+<li>History transaksi</li>
+</ol>
+<h2 is-upgraded>Solusi Lengkap</h2>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;math&#34;
+)
+
+// History untuk menyimpan operasi
+type Operation struct {
+    operation string
+    values    []float64
+    result    float64
+}
+
+var history []Operation
+
+// Operasi Dasar
+func add(a, b float64) float64 {
+    result := a + b
+    saveHistory(&#34;add&#34;, []float64{a, b}, result)
+    return result
+}
+
+func subtract(a, b float64) float64 {
+    result := a - b
+    saveHistory(&#34;subtract&#34;, []float64{a, b}, result)
+    return result
+}
+
+func multiply(a, b float64) float64 {
+    result := a * b
+    saveHistory(&#34;multiply&#34;, []float64{a, b}, result)
+    return result
+}
+
+func divide(a, b float64) (float64, error) {
+    if b == 0 {
+        return 0, fmt.Errorf(&#34;division by zero&#34;)
+    }
+    result := a / b
+    saveHistory(&#34;divide&#34;, []float64{a, b}, result)
+    return result, nil
+}
+
+// Operasi Lanjutan
+func powerOf(base, exp float64) float64 {
+    result := math.Pow(base, exp)
+    saveHistory(&#34;power&#34;, []float64{base, exp}, result)
+    return result
+}
+
+func squareRoot(n float64) (float64, error) {
+    if n &lt; 0 {
+        return 0, fmt.Errorf(&#34;cannot calculate square root of negative number&#34;)
+    }
+    result := math.Sqrt(n)
+    saveHistory(&#34;sqrt&#34;, []float64{n}, result)
+    return result, nil
+}
+
+func factorial(n int) int {
+    if n &lt;= 1 {
+        return 1
+    }
+    return n * factorial(n-1)
+}
+
+// Statistik (Variadic)
+func average(numbers ...float64) float64 {
+    if len(numbers) == 0 {
+        return 0
+    }
+    
+    sum := 0.0
+    for _, num := range numbers {
+        sum += num
+    }
+    result := sum / float64(len(numbers))
+    saveHistory(&#34;average&#34;, numbers, result)
+    return result
+}
+
+func maximum(numbers ...float64) float64 {
+    if len(numbers) == 0 {
+        return 0
+    }
+    
+    max := numbers[0]
+    for _, num := range numbers[1:] {
+        if num &gt; max {
+            max = num
+        }
+    }
+    saveHistory(&#34;max&#34;, numbers, max)
+    return max
+}
+
+func minimum(numbers ...float64) float64 {
+    if len(numbers) == 0 {
+        return 0
+    }
+    
+    min := numbers[0]
+    for _, num := range numbers[1:] {
+        if num &lt; min {
+            min = num
+        }
+    }
+    saveHistory(&#34;min&#34;, numbers, min)
+    return min
+}
+
+// Helper Functions
+func saveHistory(op string, values []float64, result float64) {
+    history = append(history, Operation{
+        operation: op,
+        values:    values,
+        result:    result,
+    })
+}
+
+func showHistory() {
+    if len(history) == 0 {
+        fmt.Println(&#34;No history yet&#34;)
+        return
+    }
+    
+    fmt.Println(&#34;\n📜 HISTORY:&#34;)
+    fmt.Println(&#34;─────────────────────────────────────&#34;)
+    for i, op := range history {
+        fmt.Printf(&#34;%d. %s(&#34;, i+1, op.operation)
+        for j, v := range op.values {
+            if j &gt; 0 {
+                fmt.Print(&#34;, &#34;)
+            }
+            fmt.Printf(&#34;%.2f&#34;, v)
+        }
+        fmt.Printf(&#34;) = %.2f\n&#34;, op.result)
+    }
+}
+
+func main() {
+    fmt.Println(&#34;╔═══════════════════════════════════╗&#34;)
+    fmt.Println(&#34;║      KALKULATOR SUPER LENGKAP     ║&#34;)
+    fmt.Println(&#34;╚═══════════════════════════════════╝&#34;)
+    
+    // Operasi Dasar
+    fmt.Println(&#34;\n🔢 OPERASI DASAR:&#34;)
+    fmt.Println(&#34;─────────────────────────────────────&#34;)
+    fmt.Printf(&#34;10 + 5 = %.2f\n&#34;, add(10, 5))
+    fmt.Printf(&#34;10 - 5 = %.2f\n&#34;, subtract(10, 5))
+    fmt.Printf(&#34;10 × 5 = %.2f\n&#34;, multiply(10, 5))
+    
+    if result, err := divide(10, 5); err == nil {
+        fmt.Printf(&#34;10 ÷ 5 = %.2f\n&#34;, result)
+    }
+    
+    // Operasi Lanjutan
+    fmt.Println(&#34;\n⚡ OPERASI LANJUTAN:&#34;)
+    fmt.Println(&#34;─────────────────────────────────────&#34;)
+    fmt.Printf(&#34;2³ = %.0f\n&#34;, powerOf(2, 3))
+    fmt.Printf(&#34;10² = %.0f\n&#34;, powerOf(10, 2))
+    
+    if sqrt, err := squareRoot(16); err == nil {
+        fmt.Printf(&#34;√16 = %.0f\n&#34;, sqrt)
+    }
+    
+    fmt.Printf(&#34;5! = %d\n&#34;, factorial(5))
+    fmt.Printf(&#34;7! = %d\n&#34;, factorial(7))
+    
+    // Statistik
+    fmt.Println(&#34;\n📊 STATISTIK:&#34;)
+    fmt.Println(&#34;─────────────────────────────────────&#34;)
+    scores := []float64{85, 90, 78, 92, 88, 95}
+    fmt.Printf(&#34;Nilai: %v\n&#34;, scores)
+    fmt.Printf(&#34;Rata-rata: %.2f\n&#34;, average(scores...))
+    fmt.Printf(&#34;Nilai Tertinggi: %.0f\n&#34;, maximum(scores...))
+    fmt.Printf(&#34;Nilai Terendah: %.0f\n&#34;, minimum(scores...))
+    
+    // Show History
+    showHistory()
+    
+    fmt.Println(&#34;\n═══════════════════════════════════════&#34;)
+}
+</code></pre>
+<h2 is-upgraded>Output Program</h2>
+<pre><code>╔═══════════════════════════════════╗
+║      KALKULATOR SUPER LENGKAP     ║
+╚═══════════════════════════════════╝
+
+🔢 OPERASI DASAR:
+─────────────────────────────────────
+10 + 5 = 15.00
+10 - 5 = 5.00
+10 × 5 = 50.00
+10 ÷ 5 = 2.00
+
+⚡ OPERASI LANJUTAN:
+─────────────────────────────────────
+2³ = 8
+10² = 100
+√16 = 4
+5! = 120
+7! = 5040
+
+📊 STATISTIK:
+─────────────────────────────────────
+Nilai: [85 90 78 92 88 95]
+Rata-rata: 88.00
+Nilai Tertinggi: 95
+Nilai Terendah: 78
+
+📜 HISTORY:
+─────────────────────────────────────
+1. add(10.00, 5.00) = 15.00
+2. subtract(10.00, 5.00) = 5.00
+3. multiply(10.00, 5.00) = 50.00
+4. divide(10.00, 5.00) = 2.00
+5. power(2.00, 3.00) = 8.00
+6. power(10.00, 2.00) = 100.00
+7. sqrt(16.00) = 4.00
+8. average(85.00, 90.00, 78.00, 92.00, 88.00, 95.00) = 88.00
+9. max(85.00, 90.00, 78.00, 92.00, 88.00, 95.00) = 95.00
+10. min(85.00, 90.00, 78.00, 92.00, 88.00, 95.00) = 78.00
+
+═══════════════════════════════════════
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="2">
+        <p>Selamat! Anda telah menyelesaikan Bab 4: Functions.</p>
+<h2 is-upgraded>Yang Sudah Dipelajari</h2>
+<p>✅ <strong>Basic Functions</strong> - Parameter dan return values<br> ✅ <strong>Multiple Returns</strong> - Return lebih dari satu nilai<br> ✅ <strong>Variadic Functions</strong> - Parameter tidak terbatas<br> ✅ <strong>Closures</strong> - Function yang mengakses outer scope<br> ✅ <strong>Recursion</strong> - Function memanggil dirinya sendiri<br> ✅ <strong>Studi Kasus</strong> - Kalkulator super lengkap</p>
+<h2 is-upgraded>Key Takeaways</h2>
+<ul>
+<li>Functions membuat code reusable dan modular</li>
+<li>Multiple returns berguna untuk return hasil dan error</li>
+<li>Variadic parameter harus yang terakhir</li>
+<li>Closures &#34;mengingat&#34; environment tempat dibuat</li>
+<li>Recursion butuh base case untuk stop</li>
+</ul>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<p>Lanjut ke <strong>Bab 5: Advanced Types</strong> untuk belajar:</p>
+<ul>
+<li>Pointers</li>
+<li>Strings manipulation</li>
+<li>Structs</li>
+<li>Methods</li>
+<li>Interfaces</li>
+</ul>
+<h2 is-upgraded>Resources</h2>
+<ul>
+<li><a href="https://go.dev/tour/basics/4" target="_blank">Go Functions</a></li>
+<li><a href="https://go.dev/doc/effective_go#functions" target="_blank">Effective Go - Functions</a></li>
+</ul>
+<p>Positive : Functions adalah fondasi programming. Practice makes perfect!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
