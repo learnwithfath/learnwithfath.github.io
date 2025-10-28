@@ -1,0 +1,32 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-28T11:18:49+07:00",
+  "id": "qiscus-multichannel-widget-integration",
+  "duration": 52,
+  "title": "Qiscus Multichannel Widget Integration Guide",
+  "authors": "Qiscus Team",
+  "summary": "Qiscus Multichannel Widget Integration Guide",
+  "source": "qiscus-multichannel-widget-integration/qiscus-multichannel-widget-integration.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "webdevelopment",
+    "customersupport",
+    "chatintegration"
+  ],
+  "tags": [
+    "chat",
+    "javascript",
+    "multichannel",
+    "qiscus",
+    "vanilla-js",
+    "widget"
+  ],
+  "feedback": "https://github.com/fathullahqiscus/support-multichannel-widget-embed-version",
+  "url": "qiscus-multichannel-widget-integration"
+}

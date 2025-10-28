@@ -1,0 +1,1024 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Qiscus Multichannel Widget Integration Guide</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="qiscus-multichannel-widget-integration"
+                  title="Qiscus Multichannel Widget Integration Guide"
+                  environment="web"
+                  feedback-link="https://github.com/fathullahqiscus/support-multichannel-widget-embed-version">
+    
+      <google-codelab-step label="Overview" duration="2">
+        <h2 class="checklist" is-upgraded>What You&#39;ll Learn</h2>
+<ul class="checklist">
+<li>How to integrate Qiscus Multichannel Widget into your website</li>
+<li>Configure the widget with your app credentials</li>
+<li>Customize the widget appearance</li>
+<li>Handle user sessions with smart restoration</li>
+<li>Manage resolved conversations intelligently</li>
+<li>Implement advanced features and event handling</li>
+</ul>
+<h2 is-upgraded>What You&#39;ll Need</h2>
+<ul>
+<li>A Qiscus Multichannel account and App ID</li>
+<li>Basic knowledge of HTML and JavaScript</li>
+<li>A web server or local development environment</li>
+<li>Modern web browser (Chrome, Firefox, Safari, or Edge)</li>
+</ul>
+<h2 is-upgraded>What You&#39;ll Build</h2>
+<p>A fully functional customer support chat widget integrated into your website with:</p>
+<ul>
+<li>Real-time messaging</li>
+<li>Smart session restoration with error handling</li>
+<li>Resolved room detection and management</li>
+<li>Custom styling</li>
+<li>Comprehensive event handling</li>
+<li>User management</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Getting Your Qiscus Credentials" duration="3">
+        <h2 is-upgraded>Step 1: Create a Qiscus Account</h2>
+<ol type="1">
+<li>Visit <a href="https://multichannel.qiscus.com/" target="_blank">Qiscus Multichannel Dashboard</a></li>
+<li>Sign up for a new account or log in</li>
+<li>Create a new application</li>
+</ol>
+<h2 is-upgraded>Step 2: Get Your App ID</h2>
+<ol type="1">
+<li>Navigate to your application dashboard</li>
+<li>Go to <strong>Settings</strong> → <strong>App Information</strong></li>
+<li>Copy your <strong>App ID</strong> (you&#39;ll need this for integration)</li>
+<li>Optionally, copy your <strong>Channel ID</strong> for specific channel routing</li>
+</ol>
+<h2 is-upgraded>Step 3: Configure Your Application</h2>
+<p>Configure these settings in your dashboard:</p>
+<ul>
+<li><strong>Application Name</strong>: Your company/product name</li>
+<li><strong>Avatar</strong>: Upload your company logo</li>
+<li><strong>Welcome Message</strong>: Set a greeting message</li>
+<li><strong>Office Hours</strong>: Configure availability times</li>
+<li><strong>Agent Assignment</strong>: Set up automatic or manual assignment</li>
+</ul>
+<p>positive : Keep your App ID secure and never commit it to public repositories!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Basic Integration" duration="5">
+        <h2 is-upgraded>Step 1: Download the Widget Files</h2>
+<p>Clone or download the widget from GitHub:</p>
+<pre><code language="language-bash" class="language-bash">git clone https://github.com/fathullahqiscus/support-multichannel-widget-embed-version.git
+cd support-multichannel-widget-embed-version
+</code></pre>
+<h2 is-upgraded>Step 2: Include Required Files</h2>
+<p>Add these files to your HTML page in the correct order (including LoggerService):</p>
+<pre><code language="language-html" class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;en&#34;&gt;
+&lt;head&gt;
+    &lt;meta charset=&#34;UTF-8&#34;&gt;
+    &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;&gt;
+    &lt;title&gt;My Website with Qiscus Chat&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Welcome to My Website&lt;/h1&gt;
+    
+    &lt;!-- Load Qiscus Widget Services --&gt;
+    &lt;script src=&#34;services/EventEmitter.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/LoggerService.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/StorageService.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/SDKService.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/APIService.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/StateManager.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/UIService.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/ChatService.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;qiscus-widget.js&#34;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<h2 is-upgraded>Step 3: Initialize the Widget</h2>
+<p>Add this script after loading all files:</p>
+<pre><code language="language-html" class="language-html">&lt;script&gt;
+    // Initialize widget with your App ID
+    const widget = new QiscusMultichannelWidget({
+        appId: &#39;YOUR_APP_ID&#39;, // Replace with your actual App ID
+        channelId: &#39;YOUR_CHANNEL_ID&#39;, // Optional
+        primaryColor: &#39;#55B29A&#39;,
+        onReady: (widget) =&gt; {
+            console.log(&#39;Widget is ready!&#39;);
+        }
+    });
+&lt;/script&gt;
+</code></pre>
+<p>negative : Don&#39;t forget to replace <code>YOUR_APP_ID</code> with your actual App ID from the dashboard!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setting Up User Authentication" duration="4">
+        <h2 is-upgraded>Configure User Information</h2>
+<p>Before initiating a chat, you need to set user information:</p>
+<pre><code language="language-javascript" class="language-javascript">// Set user information
+widget.setUser({
+    userId: &#39;customer@example.com&#39;,
+    displayName: &#39;John Doe&#39;,
+    avatarUrl: &#39;https://ui-avatars.com/api/?name=John+Doe&#39;,
+    extras: {
+        department: &#39;Sales&#39;,
+        plan: &#39;Premium&#39;
+    },
+    userProperties: {
+        customerType: &#39;VIP&#39;,
+        registrationDate: &#39;2024-01-01&#39;
+    }
+});
+</code></pre>
+<h2 is-upgraded>User Configuration Options</h2>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Parameter</p>
+</td><td colspan="1" rowspan="1"><p>Type</p>
+</td><td colspan="1" rowspan="1"><p>Required</p>
+</td><td colspan="1" rowspan="1"><p>Description</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>userId</code></p>
+</td><td colspan="1" rowspan="1"><p>string</p>
+</td><td colspan="1" rowspan="1"><p>Yes</p>
+</td><td colspan="1" rowspan="1"><p>Unique identifier for the user</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>displayName</code></p>
+</td><td colspan="1" rowspan="1"><p>string</p>
+</td><td colspan="1" rowspan="1"><p>Yes</p>
+</td><td colspan="1" rowspan="1"><p>User&#39;s display name</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>avatarUrl</code></p>
+</td><td colspan="1" rowspan="1"><p>string</p>
+</td><td colspan="1" rowspan="1"><p>No</p>
+</td><td colspan="1" rowspan="1"><p>URL to user&#39;s avatar image</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>extras</code></p>
+</td><td colspan="1" rowspan="1"><p>object</p>
+</td><td colspan="1" rowspan="1"><p>No</p>
+</td><td colspan="1" rowspan="1"><p>Additional user metadata</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>userProperties</code></p>
+</td><td colspan="1" rowspan="1"><p>object</p>
+</td><td colspan="1" rowspan="1"><p>No</p>
+</td><td colspan="1" rowspan="1"><p>Custom user properties</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Initiate Chat Session</h2>
+<p>After setting user information, initiate the chat:</p>
+<pre><code language="language-javascript" class="language-javascript">// Start the chat
+widget.initiateChat()
+    .then((user) =&gt; {
+        console.log(&#39;Chat initiated for:&#39;, user);
+    })
+    .catch((error) =&gt; {
+        console.error(&#39;Failed to initiate chat:&#39;, error);
+    });
+</code></pre>
+<p>positive : The widget automatically handles session restoration on page refresh!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Customizing Widget Appearance" duration="3">
+        <h2 is-upgraded>Theme Configuration</h2>
+<p>Customize colors to match your brand:</p>
+<pre><code language="language-javascript" class="language-javascript">const widget = new QiscusMultichannelWidget({
+    appId: &#39;YOUR_APP_ID&#39;,
+    primaryColor: &#39;#667eea&#39;,
+    secondaryColor: &#39;#f0f0f0&#39;,
+    theme: {
+        fontFamily: &#39;Arial, sans-serif&#39;,
+        borderRadius: &#39;12px&#39;
+    }
+});
+</code></pre>
+<h2 is-upgraded>Custom CSS</h2>
+<p>You can also customize the widget with CSS:</p>
+<pre><code language="language-css" class="language-css">/* Customize chat button */
+.qiscus-chat-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Customize header */
+.qiscus-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Customize message bubbles */
+.qiscus-message.right .qiscus-message-bubble {
+    background: #667eea;
+    border-radius: 18px 18px 4px 18px;
+}
+
+.qiscus-message.left .qiscus-message-bubble {
+    background: #f5f5f5;
+    border-radius: 18px 18px 18px 4px;
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Handling Chat Events" duration="4">
+        <h2 is-upgraded>Available Event Callbacks</h2>
+<p>The widget provides several callbacks for handling events:</p>
+<pre><code language="language-javascript" class="language-javascript">const widget = new QiscusMultichannelWidget({
+    appId: &#39;YOUR_APP_ID&#39;,
+    
+    // Widget is ready
+    onReady: (widget) =&gt; {
+        console.log(&#39;Widget initialized&#39;);
+    },
+    
+    // User logged in successfully
+    onLoginSuccess: (user) =&gt; {
+        console.log(&#39;User logged in:&#39;, user);
+        // Update your UI, analytics, etc.
+    },
+    
+    // Login failed
+    onLoginError: (error) =&gt; {
+        console.error(&#39;Login failed:&#39;, error);
+        // Show error message to user
+    },
+    
+    // New message received
+    onMessageReceived: (message) =&gt; {
+        console.log(&#39;New message:&#39;, message);
+        // Show notification, play sound, etc.
+    },
+    
+    // Message sent successfully
+    onMessageSent: (message) =&gt; {
+        console.log(&#39;Message sent:&#39;, message);
+    },
+    
+    // Room/conversation changed
+    onRoomChanged: (room) =&gt; {
+        console.log(&#39;Room changed:&#39;, room);
+    },
+    
+    // Agent is typing
+    onTyping: (data) =&gt; {
+        console.log(&#39;Typing status:&#39;, data);
+    }
+});
+</code></pre>
+<h2 is-upgraded>Using Event Emitter</h2>
+<p>For more granular control, use the event emitter:</p>
+<pre><code language="language-javascript" class="language-javascript">// Session Events
+widget.eventEmitter.on(&#39;chat:initiated&#39;, (data) =&gt; {
+    console.log(&#39;New chat session created&#39;, data);
+});
+
+widget.eventEmitter.on(&#39;chat:restored&#39;, (data) =&gt; {
+    console.log(&#39;Session restored!&#39;);
+    console.log(&#39;User:&#39;, data.user);
+    console.log(&#39;Room:&#39;, data.room);
+    console.log(&#39;Messages:&#39;, data.messages.length);
+});
+
+widget.eventEmitter.on(&#39;chat:error&#39;, (error) =&gt; {
+    console.error(&#39;Chat error:&#39;, error);
+    // Handle session restoration failure
+    if (error.message.includes(&#39;restore&#39;)) {
+        widget.clearUser();
+    }
+});
+
+// Message Events
+widget.eventEmitter.on(&#39;message:received&#39;, (message) =&gt; {
+    console.log(&#39;Message received:&#39;, message);
+    
+    // Show browser notification
+    if (Notification.permission === &#39;granted&#39;) {
+        new Notification(&#39;New message from support&#39;, {
+            body: message.message,
+            icon: &#39;/icon.png&#39;
+        });
+    }
+});
+
+widget.eventEmitter.on(&#39;message:sent&#39;, (message) =&gt; {
+    console.log(&#39;Message sent successfully&#39;, message);
+});
+
+// Room Events
+widget.eventEmitter.on(&#39;room:loaded&#39;, (room) =&gt; {
+    console.log(&#39;Room loaded:&#39;, room.name);
+});
+
+widget.eventEmitter.on(&#39;state:unreadChanged&#39;, (count) =&gt; {
+    console.log(&#39;Unread messages:&#39;, count);
+    
+    // Update badge in your UI
+    document.getElementById(&#39;unread-badge&#39;).textContent = count;
+});
+
+// Authentication Events
+widget.eventEmitter.on(&#39;sdk:loginSuccess&#39;, (user) =&gt; {
+    console.log(&#39;SDK login successful&#39;, user);
+});
+
+widget.eventEmitter.on(&#39;sdk:userSet&#39;, (userData) =&gt; {
+    console.log(&#39;User set with token&#39;, userData);
+});
+</code></pre>
+<h2 is-upgraded>Available Events</h2>
+<p><strong>Session Events:</strong></p>
+<ul>
+<li><code>chat:initiated</code> - New chat session created</li>
+<li><code>chat:restored</code> - Session restored from localStorage</li>
+<li><code>chat:error</code> - Chat error occurred</li>
+<li><code>session:cleared</code> - Session cleared by user</li>
+</ul>
+<p><strong>Message Events:</strong></p>
+<ul>
+<li><code>message:sent</code> - Message sent successfully</li>
+<li><code>message:received</code> - New message received</li>
+<li><code>sdk:newMessages</code> - Multiple new messages received</li>
+<li><code>state:messageAdded</code> - Message added to state</li>
+</ul>
+<p><strong>Room Events:</strong></p>
+<ul>
+<li><code>room:loaded</code> - Room data loaded</li>
+<li><code>state:unreadChanged</code> - Unread message count changed</li>
+</ul>
+<p><strong>Authentication Events:</strong></p>
+<ul>
+<li><code>sdk:loginSuccess</code> - User logged in to SDK</li>
+<li><code>sdk:loginError</code> - SDK login failed</li>
+<li><code>sdk:userSet</code> - User set with token</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Debug Mode &amp; Logging" duration="3">
+        <h2 is-upgraded>Enable Debug Mode</h2>
+<p>For development and troubleshooting, enable debug mode to see detailed logs:</p>
+<pre><code language="language-javascript" class="language-javascript">const widget = new QiscusMultichannelWidget({
+    appId: &#39;YOUR_APP_ID&#39;,
+    debugMode: true  // Enable detailed logging
+});
+</code></pre>
+<p>negative : Always set <code>debugMode: false</code> in production to avoid exposing sensitive information!</p>
+<h2 is-upgraded>LoggerService</h2>
+<p>The widget uses a centralized LoggerService for conditional logging:</p>
+<ul>
+<li><strong>Debug Mode ON</strong>: All logs are shown (development)</li>
+<li><strong>Debug Mode OFF</strong>: Only errors are logged (production)</li>
+</ul>
+<h2 is-upgraded>Production Configuration</h2>
+<pre><code language="language-javascript" class="language-javascript">// Production-ready configuration
+const widget = new QiscusMultichannelWidget({
+    appId: &#39;YOUR_APP_ID&#39;,
+    debugMode: false,  // No debug logs (default)
+    primaryColor: &#39;#55B29A&#39;
+});
+</code></pre>
+<p>positive : Debug mode defaults to <code>false</code> for production safety!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Advanced Features" duration="5">
+        <h2 is-upgraded>Programmatic Control</h2>
+<p>Control the widget programmatically:</p>
+<pre><code language="language-javascript" class="language-javascript">// Open widget
+widget.openWidget();
+
+// Close widget
+widget.closeWidget();
+
+// Toggle widget
+widget.toggleWidget();
+
+// Send message programmatically
+widget.sendMessage(&#39;Hello from code!&#39;);
+
+// Load more messages
+widget.loadMoreMessages()
+    .then((messages) =&gt; {
+        console.log(&#39;Loaded messages:&#39;, messages);
+    });
+
+// Update room info (refresh room and messages)
+const roomId = widget.stateManager.get(&#39;roomId&#39;);
+const [room, messages] = await widget.updateRoomInfo(roomId);
+console.log(&#39;Room:&#39;, room);
+console.log(&#39;Messages:&#39;, messages.length);
+
+// Clear user session
+widget.clearUser();
+</code></pre>
+<h2 is-upgraded>Integration with Your Authentication System</h2>
+<pre><code language="language-javascript" class="language-javascript">// Example: Integrate with your login system
+document.getElementById(&#39;login-form&#39;).addEventListener(&#39;submit&#39;, async (e) =&gt; {
+    e.preventDefault();
+    
+    const email = document.getElementById(&#39;email&#39;).value;
+    const name = document.getElementById(&#39;name&#39;).value;
+    
+    // Your authentication logic
+    const user = await yourAuthSystem.login(email);
+    
+    // Set user in Qiscus widget
+    widget.setUser({
+        userId: user.email,
+        displayName: user.name,
+        avatarUrl: user.avatar,
+        extras: {
+            memberId: user.id,
+            memberSince: user.createdAt
+        }
+    });
+    
+    // Initiate chat
+    await widget.initiateChat();
+});
+</code></pre>
+<h2 is-upgraded>Sending Messages with Metadata</h2>
+<pre><code language="language-javascript" class="language-javascript">// Send message with custom metadata
+widget.sendMessage(&#39;I need help with my order&#39;, {
+    orderId: &#39;12345&#39;,
+    orderDate: &#39;2024-10-27&#39;,
+    orderTotal: 99.99
+});
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Session Management" duration="5">
+        <h2 is-upgraded>Smart Session Restoration</h2>
+<p>The widget automatically saves and restores user sessions with intelligent error handling:</p>
+<pre><code language="language-javascript" class="language-javascript">// Listen for session restoration
+widget.eventEmitter.on(&#39;chat:restored&#39;, (data) =&gt; {
+    console.log(&#39;Session restored!&#39;);
+    console.log(&#39;User:&#39;, data.user);
+    console.log(&#39;Room:&#39;, data.room);
+    console.log(&#39;Messages:&#39;, data.messages.length);
+});
+
+// Listen for errors
+widget.eventEmitter.on(&#39;chat:error&#39;, (error) =&gt; {
+    console.error(&#39;Session error:&#39;, error);
+    // Handle failed restoration
+    widget.clearUser();
+});
+</code></pre>
+<h2 is-upgraded>Session Flow</h2>
+<ol type="1">
+<li><strong>First Visit</strong>: User sets info and initiates chat</li>
+<li><strong>Session Saved</strong>: User data, token, and room ID stored in localStorage</li>
+<li><strong>Page Refresh</strong>: Widget checks for existing session</li>
+<li><strong>Session Restored</strong>: Room and messages automatically loaded</li>
+<li><strong>Resolved Rooms</strong>: Intelligent handling based on app configuration</li>
+</ol>
+<h2 is-upgraded>Resolved Room Handling</h2>
+<p>The widget intelligently handles resolved conversations:</p>
+<pre><code language="language-javascript" class="language-javascript">// When a room is marked as resolved:
+// 1. Widget checks room.options.is_resolved flag
+// 2. If resolved AND app is sessional → creates new session
+// 3. If resolved AND app is NOT sessional → restores existing room
+// 4. If NOT resolved → always restores existing room
+
+// Check if room is resolved
+const isResolved = widget.chatService.checkIfRoomResolved();
+console.log(&#39;Room resolved:&#39;, isResolved);
+</code></pre>
+<h2 is-upgraded>Session Restoration with Error Handling</h2>
+<pre><code language="language-javascript" class="language-javascript">// initiateChat() automatically handles session restoration
+try {
+    await widget.initiateChat();
+    // Session restored or new session created
+} catch (error) {
+    console.error(&#39;Failed to initiate chat:&#39;, error);
+    
+    // If session restoration fails, clear and retry
+    widget.clearUser();
+    widget.setUser({ userId: &#39;user@example.com&#39;, displayName: &#39;John&#39; });
+    await widget.initiateChat();
+}
+</code></pre>
+<h2 is-upgraded>Manual Session Control</h2>
+<pre><code language="language-javascript" class="language-javascript">// Clear session manually
+widget.clearUser();
+
+// Check session status
+const session = widget.storageService.getSession(widget.config.appId);
+console.log(&#39;Has session:&#39;, !!session);
+
+// Update room info manually
+const [room, messages] = await widget.updateRoomInfo(roomId);
+console.log(&#39;Room:&#39;, room);
+console.log(&#39;Messages:&#39;, messages.length);
+</code></pre>
+<p>positive : Sessions persist across page refreshes with automatic error recovery!</p>
+<p>negative : If you see &#34;Failed to restore existing session&#34;, use widget.clearUser() to reset</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Production Deployment" duration="4">
+        <h2 is-upgraded>Step 1: Minify and Bundle</h2>
+<p>For production, minify your JavaScript files:</p>
+<pre><code language="language-bash" class="language-bash"># Using Terser (install: npm install -g terser)
+terser services/*.js qiscus-widget.js \
+  --compress \
+  --mangle \
+  --output qiscus-widget.min.js
+</code></pre>
+<h2 is-upgraded>Step 2: CDN Hosting</h2>
+<p>Host the minified file on a CDN:</p>
+<pre><code language="language-html" class="language-html">&lt;script src=&#34;https://cdn.yourcompany.com/qiscus-widget.min.js&#34;&gt;&lt;/script&gt;
+</code></pre>
+<h2 is-upgraded>Step 3: Async Loading</h2>
+<p>Load the widget asynchronously for better performance:</p>
+<pre><code language="language-html" class="language-html">&lt;script&gt;
+    (function() {
+        const script = document.createElement(&#39;script&#39;);
+        script.src = &#39;https://cdn.yourcompany.com/qiscus-widget.min.js&#39;;
+        script.async = true;
+        script.onload = function() {
+            const widget = new QiscusMultichannelWidget({
+                appId: &#39;YOUR_APP_ID&#39;,
+                debugMode: false  // Disable debug mode in production
+            });
+        };
+        document.head.appendChild(script);
+    })();
+&lt;/script&gt;
+</code></pre>
+<h2 is-upgraded>Step 4: Environment Configuration</h2>
+<p>Use environment variables for different environments:</p>
+<pre><code language="language-javascript" class="language-javascript">const config = {
+    development: {
+        appId: &#39;dev-app-id&#39;,
+        debugMode: true
+    },
+    production: {
+        appId: &#39;prod-app-id&#39;,
+        debugMode: false
+    }
+};
+
+const env = process.env.NODE_ENV || &#39;production&#39;;
+const widget = new QiscusMultichannelWidget(config[env]);
+</code></pre>
+<p>positive : Always disable debug mode in production for security and performance!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Testing Your Integration" duration="3">
+        <h2 is-upgraded>Local Testing</h2>
+<ol type="1">
+<li><strong>Start a local server</strong>:</li>
+</ol>
+<pre><code language="language-bash" class="language-bash"># Using Python
+python -m http.server 8000
+
+# Or using Node.js
+npx http-server -p 8000
+</code></pre>
+<ol type="1" start="2">
+<li><strong>Open in browser</strong>:</li>
+</ol>
+<pre><code language="language-bash" class="language-bash">open http://localhost:8000/index.html
+</code></pre>
+<ol type="1" start="3">
+<li><strong>Test the widget</strong>: <ul>
+<li>Click the chat button</li>
+<li>Send a message</li>
+<li>Refresh the page (test session restoration)</li>
+<li>Check browser console for logs (if debug mode enabled)</li>
+</ul>
+</li>
+</ol>
+<h2 is-upgraded>Browser Compatibility Testing</h2>
+<p>Test on multiple browsers:</p>
+<ul>
+<li>✅ Chrome 90+</li>
+<li>✅ Firefox 88+</li>
+<li>✅ Safari 14+</li>
+<li>✅ Edge 90+</li>
+<li>✅ Mobile browsers (iOS Safari, Chrome Mobile)</li>
+</ul>
+<h2 is-upgraded>Testing Checklist</h2>
+<ul>
+<li>[ ] Widget appears on page load</li>
+<li>[ ] Chat button is clickable</li>
+<li>[ ] User can send messages</li>
+<li>[ ] Messages are received</li>
+<li>[ ] Session persists on refresh</li>
+<li>[ ] Resolved rooms handled correctly</li>
+<li>[ ] No console errors (except expected ones)</li>
+<li>[ ] Debug mode works correctly</li>
+<li>[ ] Mobile responsive</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Troubleshooting" duration="3">
+        <h2 is-upgraded>Common Issues and Solutions</h2>
+<h3 is-upgraded>Widget Not Appearing</h3>
+<p><strong>Problem</strong>: Widget doesn&#39;t show on page</p>
+<p><strong>Solution</strong>:</p>
+<pre><code language="language-javascript" class="language-javascript">// Check console for errors
+console.log(&#39;QiscusMultichannelWidget:&#39;, typeof QiscusMultichannelWidget);
+
+// Verify App ID
+const widget = new QiscusMultichannelWidget({
+    appId: &#39;YOUR_APP_ID&#39;,
+    debugMode: true,  // Enable to see logs
+    onReady: () =&gt; console.log(&#39;Widget ready!&#39;)
+});
+</code></pre>
+<h3 is-upgraded>Messages Not Sending</h3>
+<p><strong>Problem</strong>: Messages fail to send</p>
+<p><strong>Solution</strong>:</p>
+<pre><code language="language-javascript" class="language-javascript">// Ensure user is set
+if (!widget.userConfig) {
+    console.error(&#39;User not set. Call setUser() first.&#39;);
+}
+
+// Check chat is initiated
+widget.initiateChat()
+    .then(() =&gt; widget.sendMessage(&#39;Test&#39;))
+    .catch(error =&gt; console.error(&#39;Error:&#39;, error));
+</code></pre>
+<h3 is-upgraded>Session Not Persisting</h3>
+<p><strong>Problem</strong>: Session doesn&#39;t restore on refresh</p>
+<p><strong>Solution</strong>:</p>
+<pre><code language="language-javascript" class="language-javascript">// Check localStorage
+if (typeof(Storage) === &#34;undefined&#34;) {
+    console.error(&#39;localStorage not supported&#39;);
+}
+
+// Check stored session
+const session = localStorage.getItem(&#39;QiscusWidget::last-user-data&#39;);
+console.log(&#39;Stored session:&#39;, session);
+</code></pre>
+<h3 is-upgraded>Session Restoration Failed</h3>
+<p><strong>Problem</strong>: Error: &#34;Failed to restore existing session&#34;</p>
+<p><strong>Solution</strong>:</p>
+<pre><code language="language-javascript" class="language-javascript">// Clear the session and try again
+widget.clearUser();
+widget.setUser({ userId: &#39;user@example.com&#39;, displayName: &#39;John&#39; });
+await widget.initiateChat();
+
+// Or manually clear localStorage
+Object.keys(localStorage)
+    .filter(key =&gt; key.startsWith(&#39;QiscusWidget::&#39;))
+    .forEach(key =&gt; localStorage.removeItem(key));
+</code></pre>
+<h3 is-upgraded>Debug Mode Issues</h3>
+<p><strong>Problem</strong>: Too many logs in production</p>
+<p><strong>Solution</strong>:</p>
+<pre><code language="language-javascript" class="language-javascript">// Ensure debug mode is disabled
+const widget = new QiscusMultichannelWidget({
+    appId: &#39;YOUR_APP_ID&#39;,
+    debugMode: false  // Must be false in production
+});
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Best Practices" duration="2">
+        <h2 is-upgraded>Security</h2>
+<ol type="1">
+<li><strong>Never expose sensitive data</strong>:</li>
+</ol>
+<pre><code language="language-javascript" class="language-javascript">// ❌ Bad
+const widget = new QiscusMultichannelWidget({
+    appId: &#39;my-secret-app-id&#39;, // Don&#39;t hardcode
+    apiKey: &#39;secret-key&#39; // Never expose API keys
+});
+
+// ✅ Good
+const widget = new QiscusMultichannelWidget({
+    appId: process.env.QISCUS_APP_ID // Use environment variables
+});
+</code></pre>
+<ol type="1" start="2">
+<li><strong>Validate user input</strong>:</li>
+</ol>
+<pre><code language="language-javascript" class="language-javascript">// Sanitize user input before sending
+function sanitizeMessage(text) {
+    return text.trim().replace(/&lt;script&gt;/gi, &#39;&#39;);
+}
+
+widget.sendMessage(sanitizeMessage(userInput));
+</code></pre>
+<h2 is-upgraded>Performance</h2>
+<ol type="1">
+<li><strong>Lazy load the widget</strong>:</li>
+</ol>
+<pre><code language="language-javascript" class="language-javascript">// Load widget only when needed
+document.getElementById(&#39;chat-button&#39;).addEventListener(&#39;click&#39;, () =&gt; {
+    if (!window.qiscusWidget) {
+        loadQiscusWidget().then(() =&gt; {
+            window.qiscusWidget.openWidget();
+        });
+    }
+});
+</code></pre>
+<ol type="1" start="2">
+<li><strong>Limit message history</strong>:</li>
+</ol>
+<pre><code language="language-javascript" class="language-javascript">// Load only recent messages
+widget.loadMoreMessages(20); // Limit to 20 messages
+</code></pre>
+<h2 is-upgraded>User Experience</h2>
+<ol type="1">
+<li><strong>Show loading states</strong>:</li>
+</ol>
+<pre><code language="language-javascript" class="language-javascript">widget.eventEmitter.on(&#39;chat:initiated&#39;, () =&gt; {
+    hideLoadingSpinner();
+    showChatInterface();
+});
+</code></pre>
+<ol type="1" start="2">
+<li><strong>Handle errors gracefully</strong>:</li>
+</ol>
+<pre><code language="language-javascript" class="language-javascript">widget.eventEmitter.on(&#39;chat:error&#39;, (error) =&gt; {
+    showUserFriendlyError(&#39;Unable to connect. Please try again.&#39;);
+    logErrorToMonitoring(error);
+});
+</code></pre>
+<ol type="1" start="3">
+<li><strong>Provide feedback</strong>:</li>
+</ol>
+<pre><code language="language-javascript" class="language-javascript">widget.eventEmitter.on(&#39;message:sent&#39;, () =&gt; {
+    showSuccessToast(&#39;Message sent!&#39;);
+});
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Complete Example" duration="5">
+        <p>Here&#39;s a complete, production-ready example:</p>
+<pre><code language="language-html" class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;en&#34;&gt;
+&lt;head&gt;
+    &lt;meta charset=&#34;UTF-8&#34;&gt;
+    &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width, initial-scale=1.0&#34;&gt;
+    &lt;title&gt;My Website with Qiscus Chat&lt;/title&gt;
+    &lt;style&gt;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, &#39;Segoe UI&#39;, Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Welcome to My Website&lt;/h1&gt;
+    &lt;p&gt;Need help? Click the chat button in the bottom right corner!&lt;/p&gt;
+    
+    &lt;div id=&#34;notification&#34; class=&#34;notification&#34;&gt;&lt;/div&gt;
+    
+    &lt;!-- Load Qiscus Widget Services --&gt;
+    &lt;script src=&#34;services/EventEmitter.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/LoggerService.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/StorageService.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/SDKService.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/APIService.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/StateManager.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/UIService.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;services/ChatService.js&#34;&gt;&lt;/script&gt;
+    &lt;script src=&#34;qiscus-widget.js&#34;&gt;&lt;/script&gt;
+    
+    &lt;script&gt;
+        // Initialize widget
+        const widget = new QiscusMultichannelWidget({
+            appId: &#39;your-app-id&#39;,
+            channelId: &#39;127590&#39;,
+            primaryColor: &#39;#667eea&#39;,
+            debugMode: false,  // Disable in production
+            
+            // Callbacks
+            onReady: (w) =&gt; {
+                console.log(&#39;Widget ready!&#39;);
+                showNotification(&#39;Chat is ready!&#39;, &#39;success&#39;);
+            },
+            
+            onLoginSuccess: (user) =&gt; {
+                console.log(&#39;Login success:&#39;, user.username);
+                showNotification(`Welcome, ${user.username}!`, &#39;success&#39;);
+            },
+            
+            onLoginError: (error) =&gt; {
+                console.error(&#39;Login error:&#39;, error);
+                showNotification(&#39;Failed to connect to chat&#39;, &#39;error&#39;);
+            },
+            
+            onMessageReceived: (message) =&gt; {
+                console.log(&#39;New message:&#39;, message.message);
+                showNotification(&#39;New message received!&#39;, &#39;info&#39;);
+                
+                // Show browser notification
+                if (Notification.permission === &#39;granted&#39;) {
+                    new Notification(&#39;New message from support&#39;, {
+                        body: message.message,
+                        icon: &#39;/icon.png&#39;
+                    });
+                }
+            },
+            
+            onMessageSent: (message) =&gt; {
+                console.log(&#39;Message sent:&#39;, message.message);
+            },
+            
+            onRoomChanged: (room) =&gt; {
+                console.log(&#39;Room changed:&#39;, room);
+            },
+            
+            onTyping: (data) =&gt; {
+                console.log(&#39;Typing:&#39;, data.typing);
+            }
+        });
+        
+        // Set user information (get from your auth system)
+        const currentUser = getCurrentUser(); // Your function
+        
+        if (currentUser) {
+            widget.setUser({
+                userId: currentUser.email,
+                displayName: currentUser.name,
+                avatarUrl: currentUser.avatar,
+                extras: {
+                    userId: currentUser.id,
+                    plan: currentUser.plan
+                }
+            });
+            
+            // Initiate chat
+            widget.initiateChat()
+                .then((user) =&gt; {
+                    console.log(&#39;Chat initiated for:&#39;, user);
+                })
+                .catch((error) =&gt; {
+                    console.error(&#39;Failed to initiate chat:&#39;, error);
+                    // Handle error - maybe clear session and retry
+                    if (error.message.includes(&#39;restore&#39;)) {
+                        widget.clearUser();
+                        showNotification(&#39;Please refresh and try again&#39;, &#39;error&#39;);
+                    }
+                });
+        }
+        
+        // Listen to events
+        widget.eventEmitter.on(&#39;chat:restored&#39;, (data) =&gt; {
+            console.log(&#39;Session restored:&#39;, data.user);
+            showNotification(&#39;Welcome back!&#39;, &#39;success&#39;);
+        });
+        
+        widget.eventEmitter.on(&#39;chat:error&#39;, (error) =&gt; {
+            console.error(&#39;Chat error:&#39;, error);
+            showNotification(&#39;Chat error occurred&#39;, &#39;error&#39;);
+        });
+        
+        widget.eventEmitter.on(&#39;state:unreadChanged&#39;, (count) =&gt; {
+            console.log(&#39;Unread messages:&#39;, count);
+            updateUnreadBadge(count);
+        });
+        
+        // Helper functions
+        function showNotification(message, type) {
+            const notification = document.getElementById(&#39;notification&#39;);
+            notification.textContent = message;
+            notification.style.background = type === &#39;error&#39; ? &#39;#f44336&#39; : 
+                                           type === &#39;success&#39; ? &#39;#4CAF50&#39; : &#39;#2196F3&#39;;
+            notification.style.display = &#39;block&#39;;
+            setTimeout(() =&gt; {
+                notification.style.display = &#39;none&#39;;
+            }, 3000);
+        }
+        
+        function getCurrentUser() {
+            // Replace with your actual auth system
+            return {
+                email: &#39;customer@example.com&#39;,
+                name: &#39;John Doe&#39;,
+                avatar: &#39;https://ui-avatars.com/api/?name=John+Doe&#39;,
+                id: &#39;12345&#39;,
+                plan: &#39;Premium&#39;
+            };
+        }
+        
+        function updateUnreadBadge(count) {
+            // Update your UI with unread count
+            const badge = document.getElementById(&#39;unread-badge&#39;);
+            if (badge) {
+                badge.textContent = count;
+                badge.style.display = count &gt; 0 ? &#39;block&#39; : &#39;none&#39;;
+            }
+        }
+        
+        // Request notification permission
+        if (&#39;Notification&#39; in window &amp;&amp; Notification.permission === &#39;default&#39;) {
+            Notification.requestPermission();
+        }
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Next Steps" duration="1">
+        <h2 is-upgraded>Congratulations! 🎉</h2>
+<p>You&#39;ve successfully integrated the Qiscus Multichannel Widget into your website!</p>
+<h2 is-upgraded>What&#39;s Next?</h2>
+<p><strong>Explore More Features:</strong></p>
+<ul>
+<li><a href="https://github.com/fathullahqiscus/support-multichannel-widget-embed-version/blob/main/API_DOCUMENTATION.md" target="_blank">API Documentation</a></li>
+<li><a href="https://github.com/fathullahqiscus/support-multichannel-widget-embed-version" target="_blank">GitHub Repository</a></li>
+<li><a href="https://multichannel.qiscus.com/" target="_blank">Qiscus Dashboard</a></li>
+</ul>
+<p><strong>Customize Further:</strong></p>
+<ul>
+<li>Adjust colors and styling to match your brand</li>
+<li>Implement custom event handlers</li>
+<li>Add analytics tracking</li>
+<li>Integrate with your CRM system</li>
+</ul>
+<p><strong>Production Deployment:</strong></p>
+<ul>
+<li>Minify and bundle your code</li>
+<li>Set up CDN hosting</li>
+<li>Configure environment variables</li>
+<li>Enable error tracking (Sentry, LogRocket, etc.)</li>
+</ul>
+<p><strong>Get Support:</strong></p>
+<ul>
+<li>📧 Email: support@qiscus.com</li>
+<li>💬 Chat: Use the widget on <a href="https://qiscus.com" target="_blank">qiscus.com</a></li>
+<li>🐛 Issues: <a href="https://github.com/fathullahqiscus/support-multichannel-widget-embed-version/issues" target="_blank">GitHub Issues</a></li>
+</ul>
+<p>positive : Remember to disable debug mode in production for security and performance!</p>
+<h2 is-upgraded>Resources</h2>
+<ul>
+<li><a href="https://multichannel.qiscus.com/" target="_blank">Qiscus Multichannel Dashboard</a></li>
+<li><a href="./API_DOCUMENTATION.md" target="_blank">API Documentation</a></li>
+<li><a href="https://github.com/fathullahqiscus/support-multichannel-widget-embed-version" target="_blank">GitHub Repository</a></li>
+<li><a href="./index.html" target="_blank">Example Implementation</a></li>
+</ul>
+<p>Made with ❤️ by Qiscus Team</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
