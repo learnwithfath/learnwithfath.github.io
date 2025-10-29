@@ -3,7 +3,6 @@ id: qiscus-multichannel-widget-integration
 categories: Web Development, Customer Support, Chat Integration
 tags: qiscus, javascript, widget, chat, multichannel, vanilla-js
 status: Published
-authors: Qiscus Team
 Feedback Link: https://github.com/fathullahqiscus/support-multichannel-widget-embed-version
 
 # Qiscus Multichannel Widget Integration Guide
@@ -1073,5 +1072,3 @@ positive
 - [Example Implementation](./index.html)
 
 ---
-
-Made with ❤️ by Qiscus Team
