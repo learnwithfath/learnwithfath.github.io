@@ -11,6 +11,14 @@ Feedback Link: https://github.com/fathullahqiscus/support-multichannel-widget-em
 ## Overview
 Duration: 2
 
+### ⚠️ Disclaimer / Penafian
+
+negative
+: **English:** This is an **unofficial** open-source project. Any consequences or issues arising from the use of this project are **not the responsibility of Qiscus**. As this is open-source software, you are free to modify it as extensively as you wish.
+
+negative
+: **Bahasa Indonesia:** Project ini bersifat **unofficial** artinya segala apapun akibat yang akan timbul **bukan tanggung jawab dari sisi Qiscus**, dan karena sifatnya open source boleh dimodifikasi semaksimal mungkin.
+
 ### What You'll Learn
 
 - How to integrate Qiscus Multichannel Widget into your website
