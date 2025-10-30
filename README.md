@@ -85,10 +85,23 @@ This creates a directory with the same name as your codelab ID containing the HT
 ### Step 3: Preview Locally
 
 ```bash
+# Using npm script (recommended)
+npm run serve
+
+# Or directly with claat
 claat serve
 ```
 
 Open your browser to `http://localhost:9090` and click on your codelab!
+
+**To stop the server:**
+
+```bash
+# Stop the running server
+npm run stop
+
+# Or press Ctrl+C in the terminal where server is running
+```
 
 ## 📚 Markdown Syntax Guide
 

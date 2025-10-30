@@ -9,6 +9,9 @@
 # Start server
 npm run serve
 
+# Stop server (when done)
+npm run stop
+
 # Add new codelab: Edit data/codelabs.json
 # That's it! ✨
 ```

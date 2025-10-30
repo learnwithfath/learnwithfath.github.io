@@ -4,6 +4,7 @@
   "description": "Interactive learning platform using Google Codelabs",
   "scripts": {
     "serve": "./serve.sh",
+    "stop": "./stop.sh",
     "new": "./new-codelab.sh",
     "export": "cd codelabs && go run github.com/googlecodelabs/tools/claat@latest export *.md",
     "export:single": "cd codelabs && go run github.com/googlecodelabs/tools/claat@latest export",
