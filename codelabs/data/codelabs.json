@@ -1,0 +1,76 @@
+{
+  "codelabs": [
+    {
+      "id": "getting-started",
+      "title": "Getting Started",
+      "icon": "📚",
+      "summary": "Learn how to use this interactive learning platform. Discover navigation, progress tracking, and best practices for effective learning.",
+      "duration": 36,
+      "sections": 8,
+      "tags": ["Tutorial", "Beginner", "Platform Guide"],
+      "categories": ["tutorial", "beginner"],
+      "searchTerms": "getting started platform tutorial",
+      "url": "getting-started/",
+      "ctaText": "Start Learning"
+    },
+    {
+      "id": "web-dev-basics",
+      "title": "Web Development Basics",
+      "icon": "💻",
+      "summary": "Master the fundamentals of web development with HTML, CSS, and JavaScript. Build a fully functional task list application from scratch.",
+      "duration": 61,
+      "sections": 8,
+      "tags": ["Web Development", "HTML", "CSS", "JavaScript", "Beginner"],
+      "categories": ["web", "html", "css", "javascript", "beginner"],
+      "searchTerms": "web development html css javascript",
+      "url": "web-dev-basics/",
+      "ctaText": "Start Learning"
+    },
+    {
+      "id": "qiscus-adopt-stack",
+      "title": "Qiscus Adopt Stack - Learning Path",
+      "icon": "🎯",
+      "summary": "Comprehensive full-stack backend development journey. Master Go, PostgreSQL, Redis, Docker, CI/CD, Frontend, Testing, dan Capstone Project. Structured learning dengan 6 Phases dan 19 sub-phases.",
+      "duration": null,
+      "sections": 19,
+      "sectionLabel": "Sub-phases",
+      "phases": 6,
+      "tags": ["Backend", "Go", "PostgreSQL", "Redis", "Docker", "Full-Stack", "Indonesia"],
+      "categories": ["qiscus", "backend", "fullstack", "go", "postgresql", "redis", "docker"],
+      "searchTerms": "qiscus adopt stack learning path backend fullstack",
+      "url": "./learning-path.html",
+      "ctaText": "Mulai Learning Path"
+    },
+    {
+      "id": "qiscus-multichannel-widget",
+      "title": "Qiscus Multichannel Widget Integration",
+      "icon": "💬",
+      "summary": "Integrate Qiscus Multichannel Widget into your website. Learn session management, event handling, customization, and production deployment.",
+      "duration": 39,
+      "sections": 12,
+      "tags": ["Web Development", "JavaScript", "Chat Integration", "Customer Support", "Qiscus"],
+      "categories": ["qiscus", "javascript", "widget", "chat", "multichannel", "customer-support"],
+      "searchTerms": "qiscus multichannel widget integration chat javascript",
+      "url": "qiscus-multichannel-widget-integration/",
+      "ctaText": "Start Learning"
+    },
+    {
+      "id": "career-overcome-imposter-syndrome",
+      "title": "Mengatasi Imposter Syndrome Saat Melamar Pekerjaan",
+      "icon": "💼",
+      "summary": "Panduan praktis untuk mobile developer yang merasa tidak PD saat melamar kerja. Pelajari strategi \"Learn While Applying\", gap analysis, dan mindset shift untuk meningkatkan confidence Anda.",
+      "duration": 73,
+      "sections": 11,
+      "tags": ["Career Advice", "Mobile Development", "Job Search", "Confidence Building", "Indonesia"],
+      "categories": ["career", "advice", "mobile-development", "job-search", "confidence", "imposter-syndrome"],
+      "searchTerms": "career advice imposter syndrome job application mobile developer",
+      "url": "career-overcome-imposter-syndrome/",
+      "ctaText": "Mulai Belajar"
+    }
+  ],
+  "stats": {
+    "totalTutorials": 5,
+    "totalSubPhases": 24,
+    "totalMajorPhases": 6
+  }
+}
