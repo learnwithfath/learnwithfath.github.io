@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-10-30T10:46:16+07:00",
+  "id": "career-overcome-imposter-syndrome",
+  "duration": 83,
+  "title": "Mengatasi Imposter Syndrome Saat Melamar Pekerjaan",
+  "summary": "Mengatasi Imposter Syndrome Saat Melamar Pekerjaan - Panduan Praktis untuk Mobile Developer",
+  "source": "career-overcome-imposter-syndrome.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "career",
+    "advice",
+    "mobile-development"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/feedback",
+  "ga": "0",
+  "url": "career-overcome-imposter-syndrome"
+}
