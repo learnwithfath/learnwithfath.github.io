@@ -1215,22 +1215,81 @@ try {
 
 ### Media Message Rendering
 
-Media messages are automatically rendered in the chat:
+Media messages are automatically rendered in the chat with smart type detection:
 
 **Images:**
 - Displayed as clickable thumbnails (max 250x250px)
 - Click to open full size in new tab
 - Shows filename below image
+- Auto-detected from extensions: jpg, jpeg, png, gif, webp, bmp, svg
 
 **Videos:**
 - Embedded video player with controls
 - Supports common formats (mp4, webm)
 - Shows filename below video
+- Auto-detected from extensions: mp4, webm, mov, avi, mkv, flv
 
 **Documents:**
 - File icon with filename and size
 - Clickable link to download/view
 - Different icons for different file types (📄 PDF, 📊 Excel, etc.)
+- All other file types default to document rendering
+
+#### Smart Type Detection
+
+The widget automatically detects file types using two methods:
+
+1. **Extension-based detection** (Primary): Analyzes the filename extension
+2. **Payload type field** (Fallback): Uses explicit type if provided
+
+This ensures compatibility with both:
+- SDK's `generateFileAttachmentMessage()` (type: `file_attachment`)
+- Custom media messages (type: `custom`)
+
+**Example Detection Logic:**
+
+```javascript
+// File: unnamed.png
+// Extension: .png → Detected as 'image' → Renders as image thumbnail
+
+// File: video.mp4
+// Extension: .mp4 → Detected as 'video' → Renders as video player
+
+// File: document.pdf
+// Extension: .pdf → Detected as 'file' → Renders as download link
+```
+
+#### Supported Message Types
+
+**1. File Attachment (SDK Generated):**
+```javascript
+{
+    type: 'file_attachment',
+    payload: {
+        url: 'https://cdn.qiscus.com/.../unnamed.png',
+        file_name: 'unnamed.png',
+        size: 1399901,
+        caption: ''
+    }
+}
+// ✅ Automatically detected as image from .png extension
+```
+
+**2. Custom Type (Manual):**
+```javascript
+{
+    type: 'custom',
+    payload: {
+        type: 'image',
+        content: {
+            url: 'https://cdn.qiscus.com/.../photo.jpg',
+            file_name: 'photo.jpg',
+            size: 500000
+        }
+    }
+}
+// ✅ Uses explicit type 'image' or falls back to extension
+```
 
 ### Widget Integration
 
@@ -1247,6 +1306,73 @@ The widget automatically handles media upload through the UI:
 // 4. Message sending
 // 5. Rendering in chat
 ```
+
+### Technical Implementation
+
+#### Rendering Logic (UIService.js)
+
+The widget uses a smart rendering system that handles both message types:
+
+```javascript
+renderMediaContent(message) {
+    // Support both 'custom' and 'file_attachment' types
+    if (message.type !== 'custom' && message.type !== 'file_attachment') {
+        return null;
+    }
+
+    // Parse payload
+    const payload = typeof message.payload === 'string' 
+        ? JSON.parse(message.payload) 
+        : message.payload;
+    
+    // Handle both payload structures
+    const content = payload.content || payload; // ✅ Works for both types
+    
+    // Get filename (supports both field names)
+    const fileName = content.file_name || content.filename || '';
+    
+    // Detect type from extension
+    const fileType = this.getFileTypeFromExtension(fileName);
+    const mediaType = payload.type || fileType; // Fallback to extension
+    
+    // Render based on detected type
+    if (mediaType === 'image') {
+        // Render image thumbnail
+    } else if (mediaType === 'video') {
+        // Render video player
+    } else {
+        // Render file download link
+    }
+}
+
+getFileTypeFromExtension(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    
+    const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+    const videoExts = ['mp4', 'webm', 'mov', 'avi', 'mkv', 'flv'];
+    
+    if (imageExts.includes(ext)) return 'image';
+    if (videoExts.includes(ext)) return 'video';
+    return 'file';
+}
+```
+
+#### Message State Management
+
+After successful upload, the message is automatically added to the state:
+
+```javascript
+// In ChatService.uploadAndSendMedia()
+const sentMessage = await this.sendMediaMessage(roomId, mediaOrDocs, fileURL, tempMessage);
+this.stateManager.addMessage(sentMessage); // ✅ Auto-added to state
+this.eventEmitter.emit('media:uploaded', { message: sentMessage, fileURL });
+```
+
+This ensures:
+- ✅ Message appears immediately in chat
+- ✅ No duplicate messages
+- ✅ Proper message ordering
+- ✅ State consistency
 
 ### Best Practices
 

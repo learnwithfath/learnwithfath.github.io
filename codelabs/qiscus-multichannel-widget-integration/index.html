@@ -1132,25 +1132,76 @@ setupMediaEvents();
 }
 </code></pre>
 <h2 is-upgraded>Media Message Rendering</h2>
-<p>Media messages are automatically rendered in the chat:</p>
+<p>Media messages are automatically rendered in the chat with smart type detection:</p>
 <p><strong>Images:</strong></p>
 <ul>
 <li>Displayed as clickable thumbnails (max 250x250px)</li>
 <li>Click to open full size in new tab</li>
 <li>Shows filename below image</li>
+<li>Auto-detected from extensions: jpg, jpeg, png, gif, webp, bmp, svg</li>
 </ul>
 <p><strong>Videos:</strong></p>
 <ul>
 <li>Embedded video player with controls</li>
 <li>Supports common formats (mp4, webm)</li>
 <li>Shows filename below video</li>
+<li>Auto-detected from extensions: mp4, webm, mov, avi, mkv, flv</li>
 </ul>
 <p><strong>Documents:</strong></p>
 <ul>
 <li>File icon with filename and size</li>
 <li>Clickable link to download/view</li>
 <li>Different icons for different file types (📄 PDF, 📊 Excel, etc.)</li>
+<li>All other file types default to document rendering</li>
 </ul>
+<h3 is-upgraded>Smart Type Detection</h3>
+<p>The widget automatically detects file types using two methods:</p>
+<ol type="1">
+<li><strong>Extension-based detection</strong> (Primary): Analyzes the filename extension</li>
+<li><strong>Payload type field</strong> (Fallback): Uses explicit type if provided</li>
+</ol>
+<p>This ensures compatibility with both:</p>
+<ul>
+<li>SDK&#39;s <code>generateFileAttachmentMessage()</code> (type: <code>file_attachment</code>)</li>
+<li>Custom media messages (type: <code>custom</code>)</li>
+</ul>
+<p><strong>Example Detection Logic:</strong></p>
+<pre><code language="language-javascript" class="language-javascript">// File: unnamed.png
+// Extension: .png → Detected as &#39;image&#39; → Renders as image thumbnail
+
+// File: video.mp4
+// Extension: .mp4 → Detected as &#39;video&#39; → Renders as video player
+
+// File: document.pdf
+// Extension: .pdf → Detected as &#39;file&#39; → Renders as download link
+</code></pre>
+<h3 is-upgraded>Supported Message Types</h3>
+<p><strong>1. File Attachment (SDK Generated):</strong></p>
+<pre><code language="language-javascript" class="language-javascript">{
+    type: &#39;file_attachment&#39;,
+    payload: {
+        url: &#39;https://cdn.qiscus.com/.../unnamed.png&#39;,
+        file_name: &#39;unnamed.png&#39;,
+        size: 1399901,
+        caption: &#39;&#39;
+    }
+}
+// ✅ Automatically detected as image from .png extension
+</code></pre>
+<p><strong>2. Custom Type (Manual):</strong></p>
+<pre><code language="language-javascript" class="language-javascript">{
+    type: &#39;custom&#39;,
+    payload: {
+        type: &#39;image&#39;,
+        content: {
+            url: &#39;https://cdn.qiscus.com/.../photo.jpg&#39;,
+            file_name: &#39;photo.jpg&#39;,
+            size: 500000
+        }
+    }
+}
+// ✅ Uses explicit type &#39;image&#39; or falls back to extension
+</code></pre>
 <h2 is-upgraded>Widget Integration</h2>
 <p>The widget automatically handles media upload through the UI:</p>
 <pre><code language="language-javascript" class="language-javascript">// File input is already integrated in the widget
@@ -1163,6 +1214,65 @@ setupMediaEvents();
 // 4. Message sending
 // 5. Rendering in chat
 </code></pre>
+<h2 is-upgraded>Technical Implementation</h2>
+<h3 is-upgraded>Rendering Logic (UIService.js)</h3>
+<p>The widget uses a smart rendering system that handles both message types:</p>
+<pre><code language="language-javascript" class="language-javascript">renderMediaContent(message) {
+    // Support both &#39;custom&#39; and &#39;file_attachment&#39; types
+    if (message.type !== &#39;custom&#39; &amp;&amp; message.type !== &#39;file_attachment&#39;) {
+        return null;
+    }
+
+    // Parse payload
+    const payload = typeof message.payload === &#39;string&#39; 
+        ? JSON.parse(message.payload) 
+        : message.payload;
+    
+    // Handle both payload structures
+    const content = payload.content || payload; // ✅ Works for both types
+    
+    // Get filename (supports both field names)
+    const fileName = content.file_name || content.filename || &#39;&#39;;
+    
+    // Detect type from extension
+    const fileType = this.getFileTypeFromExtension(fileName);
+    const mediaType = payload.type || fileType; // Fallback to extension
+    
+    // Render based on detected type
+    if (mediaType === &#39;image&#39;) {
+        // Render image thumbnail
+    } else if (mediaType === &#39;video&#39;) {
+        // Render video player
+    } else {
+        // Render file download link
+    }
+}
+
+getFileTypeFromExtension(filename) {
+    const ext = filename.split(&#39;.&#39;).pop().toLowerCase();
+    
+    const imageExts = [&#39;jpg&#39;, &#39;jpeg&#39;, &#39;png&#39;, &#39;gif&#39;, &#39;webp&#39;, &#39;bmp&#39;, &#39;svg&#39;];
+    const videoExts = [&#39;mp4&#39;, &#39;webm&#39;, &#39;mov&#39;, &#39;avi&#39;, &#39;mkv&#39;, &#39;flv&#39;];
+    
+    if (imageExts.includes(ext)) return &#39;image&#39;;
+    if (videoExts.includes(ext)) return &#39;video&#39;;
+    return &#39;file&#39;;
+}
+</code></pre>
+<h3 is-upgraded>Message State Management</h3>
+<p>After successful upload, the message is automatically added to the state:</p>
+<pre><code language="language-javascript" class="language-javascript">// In ChatService.uploadAndSendMedia()
+const sentMessage = await this.sendMediaMessage(roomId, mediaOrDocs, fileURL, tempMessage);
+this.stateManager.addMessage(sentMessage); // ✅ Auto-added to state
+this.eventEmitter.emit(&#39;media:uploaded&#39;, { message: sentMessage, fileURL });
+</code></pre>
+<p>This ensures:</p>
+<ul>
+<li>✅ Message appears immediately in chat</li>
+<li>✅ No duplicate messages</li>
+<li>✅ Proper message ordering</li>
+<li>✅ State consistency</li>
+</ul>
 <h2 is-upgraded>Best Practices</h2>
 <p>positive : <strong>File Validation:</strong> Always validate files before upload to prevent errors and improve UX</p>
 <p>positive : <strong>Progress Feedback:</strong> Show upload progress to keep users informed, especially for large files</p>
