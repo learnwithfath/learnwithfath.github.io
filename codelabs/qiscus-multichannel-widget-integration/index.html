@@ -30,10 +30,8 @@
     
       <google-codelab-step label="Overview" duration="2">
         <h2 is-upgraded>⚠️ Disclaimer / Penafian</h2>
-<aside class="warning"><p><strong>English:</strong><br>This is an <strong>unofficial</strong> open-source project. Any consequences or issues arising from the use of this project are <strong>not the responsibility of Qiscus</strong>. As this is open-source software, you are free to modify it as extensively as you wish.</p>
-</aside>
-<aside class="warning"><p><strong>Bahasa Indonesia:</strong><br>Project ini bersifat <strong>unofficial</strong> artinya segala apapun akibat yang akan timbul <strong>bukan tanggung jawab dari sisi Qiscus</strong>, dan karena sifatnya open source boleh dimodifikasi semaksimal mungkin.</p>
-</aside>
+<p>negative : <strong>English:</strong> This is an <strong>unofficial</strong> open-source project. Any consequences or issues arising from the use of this project are <strong>not the responsibility of Qiscus</strong>. As this is open-source software, you are free to modify it as extensively as you wish.</p>
+<p>negative : <strong>Bahasa Indonesia:</strong> Project ini bersifat <strong>unofficial</strong> artinya segala apapun akibat yang akan timbul <strong>bukan tanggung jawab dari sisi Qiscus</strong>, dan karena sifatnya open source boleh dimodifikasi semaksimal mungkin.</p>
 <h2 class="checklist" is-upgraded>What You&#39;ll Learn</h2>
 <ul class="checklist">
 <li>How to integrate Qiscus Multichannel Widget into your website</li>
@@ -41,6 +39,8 @@
 <li>Customize the widget appearance</li>
 <li>Handle user sessions with smart restoration</li>
 <li>Manage resolved conversations intelligently</li>
+<li>Implement media upload with progress tracking</li>
+<li>Render images, videos, and documents in chat</li>
 <li>Implement advanced features and event handling</li>
 </ul>
 <h2 is-upgraded>What You&#39;ll Need</h2>
@@ -54,6 +54,9 @@
 <p>A fully functional customer support chat widget integrated into your website with:</p>
 <ul>
 <li>Real-time messaging</li>
+<li>Media upload (images, videos, documents)</li>
+<li>Upload progress tracking</li>
+<li>Automatic media rendering in chat</li>
 <li>Smart session restoration with error handling</li>
 <li>Resolved room detection and management</li>
 <li>Custom styling</li>
@@ -970,6 +973,224 @@ widget.loadMoreMessages(20); // Limit to 20 messages
 &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Media Upload Integration" duration="10">
+        <h2 is-upgraded>Overview</h2>
+<p>The widget supports uploading and sending media files (images, videos, and documents) with real-time progress tracking and automatic message rendering.</p>
+<h2 is-upgraded>Supported File Types</h2>
+<p><strong>Images:</strong></p>
+<ul>
+<li>jpg, jpeg, png, gif, webp, bmp, svg</li>
+</ul>
+<p><strong>Videos:</strong></p>
+<ul>
+<li>mp4, webm, mov, avi, mkv, flv</li>
+</ul>
+<p><strong>Documents:</strong></p>
+<ul>
+<li>pdf, doc, docx, xls, xlsx, ppt, pptx, txt, csv</li>
+</ul>
+<p><strong>File Size Limit:</strong> 25MB per file</p>
+<h2 is-upgraded>Implementation</h2>
+<h3 is-upgraded>Step 1: Add File Input UI</h3>
+<p>Add a file input and upload button to your HTML:</p>
+<pre><code language="language-html" class="language-html">&lt;div class=&#34;demo-section&#34;&gt;
+    &lt;h2&gt;Media Upload&lt;/h2&gt;
+    &lt;input type=&#34;file&#34; id=&#34;fileInput&#34; 
+           accept=&#34;image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx&#34; 
+           style=&#34;margin: 10px 0;&#34;&gt;
+    &lt;button onclick=&#34;uploadMedia()&#34;&gt;Upload &amp; Send Media&lt;/button&gt;
+    
+    &lt;!-- Progress indicator --&gt;
+    &lt;div id=&#34;uploadProgress&#34; style=&#34;display: none; margin-top: 10px;&#34;&gt;
+        &lt;p&gt;Uploading: &lt;span id=&#34;uploadFileName&#34;&gt;&lt;/span&gt;&lt;/p&gt;
+        &lt;div style=&#34;width: 100%; height: 4px; background: #f0f0f0; border-radius: 2px;&#34;&gt;
+            &lt;div id=&#34;progressFill&#34; 
+                 style=&#34;height: 100%; background: #55B29A; width: 0%; transition: width 0.3s;&#34;&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;p&gt;&lt;span id=&#34;progressPercent&#34;&gt;0&lt;/span&gt;%&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+<h3 is-upgraded>Step 2: Implement Upload Function</h3>
+<p>Add the upload function to handle file selection and upload:</p>
+<pre><code language="language-javascript" class="language-javascript">async function uploadMedia() {
+    if (!widget) {
+        console.error(&#39;Please initialize widget first&#39;);
+        return;
+    }
+
+    const fileInput = document.getElementById(&#39;fileInput&#39;);
+    const file = fileInput.files[0];
+
+    if (!file) {
+        console.error(&#39;Please select a file first&#39;);
+        return;
+    }
+
+    const roomId = widget.stateManager.get(&#39;roomId&#39;);
+    if (!roomId) {
+        console.error(&#39;No active room. Please start chat first.&#39;);
+        return;
+    }
+
+    try {
+        console.log(`📤 Preparing to upload: ${file.name}`);
+
+        // Prepare and validate file (validates type and size)
+        const mediaOrDocs = widget.chatService.prepareFileForUpload(file);
+
+        // Upload and send
+        await widget.chatService.uploadAndSendMedia(mediaOrDocs, roomId);
+
+        console.log(`✅ Media sent successfully: ${file.name}`);
+        fileInput.value = &#39;&#39;; // Clear input
+
+    } catch (error) {
+        console.error(`❌ Upload error: ${error.message}`);
+    }
+}
+</code></pre>
+<h3 is-upgraded>Step 3: Setup Progress Event Listeners</h3>
+<p>Listen to upload progress events:</p>
+<pre><code language="language-javascript" class="language-javascript">function setupMediaEvents() {
+    if (!widget || !widget.eventEmitter) return;
+
+    // Upload progress
+    widget.eventEmitter.on(&#39;media:progress&#39;, (data) =&gt; {
+        const progressDiv = document.getElementById(&#39;uploadProgress&#39;);
+        const fileNameSpan = document.getElementById(&#39;uploadFileName&#39;);
+        const progressFill = document.getElementById(&#39;progressFill&#39;);
+        const progressPercent = document.getElementById(&#39;progressPercent&#39;);
+
+        progressDiv.style.display = &#39;block&#39;;
+        fileNameSpan.textContent = data.filename;
+        progressFill.style.width = data.percent + &#39;%&#39;;
+        progressPercent.textContent = data.percent;
+
+        console.log(`Upload progress: ${data.percent}%`);
+    });
+
+    // Upload complete
+    widget.eventEmitter.on(&#39;media:uploaded&#39;, (data) =&gt; {
+        const progressDiv = document.getElementById(&#39;uploadProgress&#39;);
+        progressDiv.style.display = &#39;none&#39;;
+        console.log(&#39;✅ Media uploaded successfully!&#39;, data);
+    });
+
+    // Upload error
+    widget.eventEmitter.on(&#39;media:error&#39;, (data) =&gt; {
+        const progressDiv = document.getElementById(&#39;uploadProgress&#39;);
+        progressDiv.style.display = &#39;none&#39;;
+        console.error(`❌ Media upload failed: ${data.error.message}`);
+    });
+}
+
+// Call this after widget initialization
+setupMediaEvents();
+</code></pre>
+<h2 is-upgraded>Upload Flow</h2>
+<p>The media upload process follows these steps:</p>
+<pre><code>1. User selects file
+   ↓
+2. prepareFileForUpload(file)
+   - Validates file type
+   - Validates file size (&lt; 25MB)
+   - Returns { uri: File, type, name, size }
+   ↓
+3. uploadAndSendMedia(mediaOrDocs, roomId)
+   ↓
+   ├─ Step 1: Upload to Qiscus CDN
+   │  - sdk.upload(File, callback)
+   │  - Emits &#39;media:progress&#39; (0-100%)
+   │  - Returns fileURL
+   │
+   └─ Step 2: Send message with file URL
+      - generateFileAttachmentMessage()
+      - sendComment()
+      - Emits &#39;media:uploaded&#39;
+</code></pre>
+<h2 is-upgraded>Error Handling</h2>
+<p>The upload process includes comprehensive error handling:</p>
+<pre><code language="language-javascript" class="language-javascript">try {
+    const mediaOrDocs = widget.chatService.prepareFileForUpload(file);
+    await widget.chatService.uploadAndSendMedia(mediaOrDocs, roomId);
+} catch (error) {
+    // Possible errors:
+    // - &#34;File type .exe is not supported&#34;
+    // - &#34;File size exceeds 25MB limit (30MB)&#34;
+    // - &#34;SDK not initialized&#34;
+    // - &#34;Room ID is required&#34;
+    // - &#34;Upload failed: No URL returned&#34;
+    
+    console.error(&#39;Upload failed:&#39;, error.message);
+    alert(error.message); // Show user-friendly message
+}
+</code></pre>
+<h2 is-upgraded>Media Message Rendering</h2>
+<p>Media messages are automatically rendered in the chat:</p>
+<p><strong>Images:</strong></p>
+<ul>
+<li>Displayed as clickable thumbnails (max 250x250px)</li>
+<li>Click to open full size in new tab</li>
+<li>Shows filename below image</li>
+</ul>
+<p><strong>Videos:</strong></p>
+<ul>
+<li>Embedded video player with controls</li>
+<li>Supports common formats (mp4, webm)</li>
+<li>Shows filename below video</li>
+</ul>
+<p><strong>Documents:</strong></p>
+<ul>
+<li>File icon with filename and size</li>
+<li>Clickable link to download/view</li>
+<li>Different icons for different file types (📄 PDF, 📊 Excel, etc.)</li>
+</ul>
+<h2 is-upgraded>Widget Integration</h2>
+<p>The widget automatically handles media upload through the UI:</p>
+<pre><code language="language-javascript" class="language-javascript">// File input is already integrated in the widget
+// User clicks attach button (📎) → selects file → auto uploads
+
+// The widget handles:
+// 1. File selection via attach button
+// 2. Validation
+// 3. Upload with progress
+// 4. Message sending
+// 5. Rendering in chat
+</code></pre>
+<h2 is-upgraded>Best Practices</h2>
+<p>positive : <strong>File Validation:</strong> Always validate files before upload to prevent errors and improve UX</p>
+<p>positive : <strong>Progress Feedback:</strong> Show upload progress to keep users informed, especially for large files</p>
+<p>positive : <strong>Error Messages:</strong> Display clear, user-friendly error messages</p>
+<p>positive : <strong>File Size:</strong> Keep files under 25MB for optimal performance</p>
+<p>negative : <strong>Security:</strong> Never trust client-side validation alone. Qiscus server also validates uploads.</p>
+<h2 is-upgraded>Troubleshooting</h2>
+<p><strong>Upload fails with &#34;SDK not initialized&#34;:</strong></p>
+<ul>
+<li>Ensure widget is initialized before attempting upload</li>
+<li>Check that <code>widget.chatService</code> exists</li>
+</ul>
+<p><strong>Upload fails with &#34;No active room&#34;:</strong></p>
+<ul>
+<li>User must start a chat before uploading files</li>
+<li>Check <code>widget.stateManager.get('roomId')</code> returns a valid ID</li>
+</ul>
+<p><strong>File type not supported:</strong></p>
+<ul>
+<li>Check the file extension is in the allowed list</li>
+<li>Update <code>ALLOWED_EXTENSIONS</code> in ChatService if needed</li>
+</ul>
+<p><strong>Upload progress not showing:</strong></p>
+<ul>
+<li>Verify event listeners are set up correctly</li>
+<li>Check browser console for errors</li>
+<li>Ensure progress UI elements exist in DOM</li>
+</ul>
 
 
       </google-codelab-step>
