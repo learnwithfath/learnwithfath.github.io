@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-11-13T15:54:21+07:00",
+  "id": "belajar-mobil-manual",
+  "duration": 57,
+  "title": "Belajar Mobil Manual: Dari Nol Sampai Mahir",
+  "summary": "Panduan lengkap belajar mengemudi mobil manual dari nol sampai mahir",
+  "source": "codelabs/belajar-mobil-manual/belajar-mobil-manual.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "lifestyle",
+    "automotive",
+    "tutorial"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/fathullahqiscus",
+  "ga": "UA-49880327-14",
+  "url": "belajar-mobil-manual"
+}

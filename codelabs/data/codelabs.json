@@ -66,10 +66,36 @@
       "searchTerms": "career advice imposter syndrome job application mobile developer",
       "url": "career-overcome-imposter-syndrome/",
       "ctaText": "Mulai Belajar"
+    },
+    {
+      "id": "belajar-mobil-manual",
+      "title": "Belajar Mobil Manual: Dari Nol Sampai Mahir",
+      "icon": "🚗",
+      "summary": "Panduan lengkap belajar mengemudi mobil manual dari nol sampai mahir. Pelajari teknik starting, perpindahan gigi, tanjakan, dan tips berkendara di berbagai kondisi.",
+      "duration": 50,
+      "sections": 11,
+      "tags": ["Lifestyle", "Automotive", "Tutorial", "Driving", "Manual Transmission", "Indonesia"],
+      "categories": ["lifestyle", "automotive", "tutorial", "driving", "manual-car"],
+      "searchTerms": "belajar mobil manual mengemudi kopling transmisi manual nyetir",
+      "url": "belajar-mobil-manual/",
+      "ctaText": "Mulai Belajar"
+    },
+    {
+      "id": "tips-membeli-mobil-bekas",
+      "title": "Tips Membeli Mobil Bekas: Panduan Lengkap",
+      "icon": "🔍",
+      "summary": "Panduan lengkap membeli mobil bekas pertama dengan cerdas dan aman. Pelajari cara inspeksi, negosiasi harga, cek surat-surat, dan proses balik nama.",
+      "duration": 55,
+      "sections": 11,
+      "tags": ["Lifestyle", "Automotive", "Shopping", "Used Car", "Inspection", "Indonesia"],
+      "categories": ["lifestyle", "automotive", "shopping", "used-car", "inspection"],
+      "searchTerms": "tips membeli mobil bekas second hand car inspeksi negosiasi balik nama",
+      "url": "tips-membeli-mobil-bekas/",
+      "ctaText": "Mulai Belajar"
     }
   ],
   "stats": {
-    "totalTutorials": 5,
+    "totalTutorials": 7,
     "totalSubPhases": 24,
     "totalMajorPhases": 6
   }

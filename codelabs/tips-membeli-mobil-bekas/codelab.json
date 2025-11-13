@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-11-13T16:03:39+07:00",
+  "id": "tips-membeli-mobil-bekas",
+  "duration": 76,
+  "title": "Tips Membeli Mobil Bekas: Panduan Lengkap",
+  "summary": "Panduan lengkap membeli mobil bekas pertama dengan cerdas dan aman",
+  "source": "codelabs/tips-membeli-mobil-bekas/tips-membeli-mobil-bekas.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "lifestyle",
+    "automotive",
+    "shopping"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/fathullahqiscus",
+  "ga": "UA-49880327-14",
+  "url": "tips-membeli-mobil-bekas"
+}
