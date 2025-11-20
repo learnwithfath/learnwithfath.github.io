@@ -109,6 +109,10 @@ Pindah gigi saat RPM 2500-3000. Jangan sampai 4000+!
 Duration: 8
 
 ### Metode 3-Step Magic
+<!-- TODO: Embed YouTube tutorial: cari di YouTube dengan keyword "cara start mobil manual untuk pemula bahasa indonesia" -->
+<div class="video-embed">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID_STARTING" title="Tutorial start mobil manual - 3 step magic" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 **Step 1: Persiapan**
 1. Gigi di Netral (N)
@@ -164,6 +168,10 @@ Duration: 7
 **Pakai RPM:** Pindah saat 2500-3000 RPM
 
 ### Teknik Smooth Shifting
+<!-- TODO: Embed YouTube tutorial: cari di YouTube dengan keyword "cara pindah gigi mobil manual halus tanpa hentakan" -->
+<div class="video-embed">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID_SMOOTH_SHIFT" title="Tutorial perpindahan gigi mobil manual yang halus" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 **Naik Gigi:**
 1. Angkat kaki dari gas
@@ -196,6 +204,10 @@ Duration: 7
 Duration: 10
 
 ### Metode 1: Handbrake (Pemula)
+<!-- TODO: Embed YouTube tutorial: cari di YouTube dengan keyword "cara start mobil manual di tanjakan pakai rem tangan / handbrake" -->
+<div class="video-embed">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID_HANDBRAKE_HILL" title="Tutorial start mobil manual di tanjakan dengan rem tangan" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 **Step by Step:**
 1. Berhenti: Rem + kopling + handbrake
@@ -208,6 +220,10 @@ Lepas handbrake dan kopling BERSAMAAN!
 </aside>
 
 ### Metode 2: Tanpa Handbrake (Advanced)
+<!-- TODO: Embed YouTube tutorial: cari di YouTube dengan keyword "latihan tanjakan mobil manual tanpa rem tangan untuk pemula" -->
+<div class="video-embed">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID_NO_HANDBRAKE_HILL" title="Latihan tanjakan mobil manual tanpa rem tangan" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 1. Kaki kanan di rem
 2. Kaki kiri kopling ke bite point
@@ -273,6 +289,10 @@ Duration: 8
 Duration: 5
 
 ### Engine Brake
+<!-- TODO: Embed YouTube tutorial: cari di YouTube dengan keyword "tutorial engine brake mobil manual untuk pemula" -->
+<div class="video-embed">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID_ENGINE_BRAKE" title="Tutorial engine brake mobil manual untuk pemula" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 Teknik mengurangi kecepatan dengan turun gigi.
 
@@ -282,6 +302,10 @@ Teknik mengurangi kecepatan dengan turun gigi.
 3. Biarkan mesin yang ngerem
 
 ### Rev Matching
+<!-- TODO: Embed YouTube tutorial: cari di YouTube dengan keyword "rev matching mobil manual bahasa indonesia" -->
+<div class="video-embed">
+  <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID_REV_MATCHING" title="Rev matching mobil manual bahasa Indonesia" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
 
 **Untuk Downshift Smooth:**
 1. Injak kopling

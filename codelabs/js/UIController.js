@@ -46,12 +46,20 @@ class UIController {
         // Update buttons state
         if (this.elements.prevButton) {
             this.elements.prevButton.disabled = !hasPrevious;
-            this.elements.prevButton.classList.toggle('disabled', !hasPrevious);
+            if (!hasPrevious) {
+                this.elements.prevButton.classList.add('disabled');
+            } else {
+                this.elements.prevButton.classList.remove('disabled');
+            }
         }
 
         if (this.elements.nextButton) {
             this.elements.nextButton.disabled = !hasNext;
-            this.elements.nextButton.classList.toggle('disabled', !hasNext);
+            if (!hasNext) {
+                this.elements.nextButton.classList.add('disabled');
+            } else {
+                this.elements.nextButton.classList.remove('disabled');
+            }
         }
 
         // Show/hide pagination if only one page

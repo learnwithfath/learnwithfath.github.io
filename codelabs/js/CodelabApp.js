@@ -12,6 +12,7 @@ class CodelabApp {
         this.searchController = null;
         this.uiController = null;
         this.currentSearchQuery = '';
+        this.currentCodelabs = [];
     }
 
     async init() {
@@ -39,6 +40,8 @@ class CodelabApp {
 
             // Initial render
             this.updateStats();
+            this.currentCodelabs = this.dataService.getCodelabs();
+            this.paginationController.setItems(this.currentCodelabs);
             this.renderCodelabs();
             
             this.uiController.showLoading(false);
@@ -57,26 +60,27 @@ class CodelabApp {
 
     handleSearch(query) {
         this.currentSearchQuery = query;
+        const filteredCodelabs = query
+            ? this.dataService.searchCodelabs(query)
+            : this.dataService.getCodelabs();
+
+        this.currentCodelabs = filteredCodelabs;
+        this.paginationController.setItems(this.currentCodelabs);
         this.renderCodelabs();
     }
 
     renderCodelabs() {
-        // Get filtered codelabs based on search
-        const codelabs = this.currentSearchQuery 
-            ? this.dataService.searchCodelabs(this.currentSearchQuery)
-            : this.dataService.getCodelabs();
+        // Ensure current codelabs dataset is available
+        const codelabs = this.currentCodelabs;
 
         // Check if no results
-        if (codelabs.length === 0) {
+        if (!codelabs || codelabs.length === 0) {
             this.uiController.showNoResults(true);
             this.uiController.showPagination(false);
             return;
         }
 
         this.uiController.showNoResults(false);
-
-        // Setup pagination
-        this.paginationController.setItems(codelabs);
         const currentPageItems = this.paginationController.getCurrentPageItems();
 
         // Render cards
@@ -107,7 +111,8 @@ class CodelabApp {
 
         if (nextButton) {
             nextButton.addEventListener('click', () => {
-                if (this.paginationController.nextPage()) {
+                const success = this.paginationController.nextPage();
+                if (success) {
                     this.renderCodelabs();
                     this.uiController.scrollToTop();
                 }
