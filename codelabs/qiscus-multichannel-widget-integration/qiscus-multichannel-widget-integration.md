@@ -28,6 +28,10 @@ negative
 - Implement media upload with progress tracking
 - Render images, videos, and documents in chat
 - Implement advanced features and event handling
+- **Monitor SDK configuration in real-time**
+- **Persist configuration with localStorage**
+- **Control FAB visibility programmatically**
+- **Prevent double SDK initialization**
 
 ### What You'll Need
 
@@ -49,6 +53,10 @@ A fully functional customer support chat widget integrated into your website wit
 - Custom styling
 - Comprehensive event handling
 - User management
+- **Real-time SDK configuration monitoring dashboard**
+- **localStorage-based configuration persistence**
+- **Smart FAB visibility control**
+- **Optimized SDK initialization**
 
 ## Getting Your Qiscus Credentials
 Duration: 3
@@ -1410,6 +1418,476 @@ negative
 - Check browser console for errors
 - Ensure progress UI elements exist in DOM
 
+## SDK Config Monitoring
+Duration: 6
+
+### Overview
+
+The widget now includes a powerful SDK configuration monitoring tool (`index-simple.html`) that provides real-time insights into your Qiscus SDK setup and operation.
+
+### Features
+
+**Real-time Monitoring Dashboard:**
+- SDK Status (loaded, initialized, logged in, debug mode)
+- User Information (ID, username, email, token)
+- Room Information (ID, name, message count, participants)
+- App Configuration (App ID, Channel ID, Base URL, primary color)
+- Full SDK Config (JSON viewer with syntax highlighting)
+- Event Log with timestamps and color-coded entries
+
+### Using the SDK Monitor
+
+**Step 1: Access the Monitor**
+
+Open `index-simple.html` in your browser:
+
+```bash
+# Using local server
+python -m http.server 8000
+# Then open http://localhost:8000/index-simple.html
+```
+
+**Step 2: Setup Configuration**
+
+The monitor uses a 3-page flow:
+
+```
+Setup Page → Login Page → Main Monitoring Page
+```
+
+1. **Setup Page**: Enter your App ID and Channel ID
+2. **Login Page**: Enter user credentials (User ID, Display Name, Avatar URL)
+3. **Main Page**: View real-time SDK monitoring dashboard
+
+**Step 3: Monitor SDK Status**
+
+The dashboard displays:
+
+```javascript
+// SDK Status Card
+{
+  "SDK Loaded": true,
+  "SDK Initialized": true,
+  "User Logged In": true,
+  "Debug Mode": true
+}
+
+// User Information Card
+{
+  "User ID": "user@example.com",
+  "Username": "John Doe",
+  "Email": "user@example.com",
+  "Token": "eyJhbGciOiJIUzI1NiIs..."
+}
+
+// Room Information Card
+{
+  "Room ID": "123456",
+  "Room Name": "Customer Support",
+  "Messages Count": 15,
+  "Participants": 2
+}
+```
+
+### Auto-Refresh Feature
+
+The monitoring dashboard automatically refreshes every 2 seconds:
+
+```javascript
+// Auto-refresh configuration
+setInterval(() => {
+    if (widget) {
+        updateSDKStatus();
+        updateUserInfo();
+        updateRoomInfo();
+    }
+}, 2000);
+```
+
+### Event Logging
+
+All SDK events are logged in real-time with color coding:
+
+- **Blue (Info)**: General information
+- **Green (Success)**: Successful operations
+- **Red (Error)**: Errors and failures
+
+```javascript
+// Example log entries
+[10:30:45] 🔄 Setting up Qiscus SDK...
+[10:30:46] ✅ SDK loaded successfully
+[10:30:46] ✅ SDK initialized with App ID: your-app-id
+[10:30:47] ✅ Chat initiated successfully
+```
+
+### JSON Config Viewer
+
+View the complete SDK configuration in formatted JSON:
+
+```javascript
+{
+  "sdk": {
+    "loaded": true,
+    "initialized": true,
+    "loggedIn": true,
+    "debugMode": true
+  },
+  "user": {
+    "id": "user@example.com",
+    "username": "John Doe",
+    "email": "user@example.com"
+  },
+  "room": {
+    "id": 123456,
+    "name": "Customer Support",
+    "participants": [...]
+  },
+  "config": {
+    "appId": "your-app-id",
+    "channelId": "127590",
+    "primaryColor": "#3b82f6"
+  }
+}
+```
+
+positive
+: The SDK monitor is perfect for debugging and understanding how the widget works!
+
+## localStorage Integration
+Duration: 5
+
+### Overview
+
+The widget now includes smart localStorage integration that persists your App ID and Channel ID across page refreshes, eliminating the need to re-enter configuration every time.
+
+### How It Works
+
+**Automatic Save:**
+
+When you submit the setup form, your configuration is automatically saved:
+
+```javascript
+// Save to localStorage
+function saveConfigToLocalStorage() {
+    localStorage.setItem('qiscus_app_id', appConfig.appId);
+    localStorage.setItem('qiscus_channel_id', appConfig.channelId);
+    log('💾 Config saved to localStorage', 'success');
+}
+```
+
+**Automatic Load:**
+
+On page load, the widget checks for saved configuration:
+
+```javascript
+// Load from localStorage
+async function loadSavedConfig() {
+    const savedAppId = localStorage.getItem('qiscus_app_id');
+    const savedChannelId = localStorage.getItem('qiscus_channel_id');
+
+    if (savedAppId) {
+        appConfig.appId = savedAppId;
+        appConfig.channelId = savedChannelId || '0';
+        
+        // Auto-fill form
+        document.getElementById('app-id-input').value = savedAppId;
+        document.getElementById('channel-id-input').value = savedChannelId || '0';
+        
+        // Setup SDK with saved config
+        await setupQiscusSDK();
+        
+        // Skip to login page
+        showPage('login');
+    } else {
+        // Show setup page
+        showPage('setup');
+    }
+}
+```
+
+### User Flow
+
+**First Visit:**
+1. User enters App ID & Channel ID
+2. Config saved to localStorage
+3. SDK initialized
+4. Proceed to login page
+
+**Subsequent Visits:**
+1. Config loaded from localStorage
+2. SDK auto-initialized
+3. **Setup page skipped** → Direct to login page
+4. User only needs to enter login credentials
+
+### Benefits
+
+✅ **Better UX**: No need to re-enter App ID every time  
+✅ **Faster Setup**: Skip setup page on subsequent visits  
+✅ **Persistent Config**: Survives page refreshes  
+✅ **Easy Reset**: Clear button to start fresh  
+
+### Reset Configuration
+
+To clear saved configuration and start over:
+
+```javascript
+// Reset button handler
+function resetApp() {
+    if (confirm('Reset aplikasi dan logout?')) {
+        // Clear localStorage
+        localStorage.removeItem('qiscus_app_id');
+        localStorage.removeItem('qiscus_channel_id');
+        
+        // Reset state
+        widget = null;
+        appConfig = {};
+        isSDKSetup = false;
+        
+        // Return to setup page
+        showPage('setup');
+    }
+}
+```
+
+### Storage Keys
+
+The widget uses these localStorage keys:
+
+| Key | Description | Example Value |
+|-----|-------------|---------------|
+| `qiscus_app_id` | Your Qiscus App ID | `"ramo-29lun8b1ulepsaio"` |
+| `qiscus_channel_id` | Channel ID (optional) | `"127590"` or `"0"` |
+
+positive
+: localStorage makes the development experience much smoother!
+
+## Enhanced UIService Methods
+Duration: 4
+
+### New Methods
+
+The UIService has been enhanced with new methods for controlling FAB (Floating Action Button) visibility:
+
+#### showChatButton()
+
+Shows the chat button (FAB):
+
+```javascript
+/**
+ * Show chat button (FAB)
+ */
+showChatButton() {
+    const chatButton = document.getElementById('qiscus-chat-button');
+    if (chatButton) {
+        chatButton.classList.remove('hidden');
+    }
+}
+```
+
+**Usage:**
+
+```javascript
+// Show FAB after successful login
+widget.initiateChat()
+    .then(() => {
+        widget.uiService.showChatButton();
+        console.log('FAB displayed');
+    });
+```
+
+#### hideChatButton()
+
+Hides the chat button (FAB):
+
+```javascript
+/**
+ * Hide chat button (FAB)
+ */
+hideChatButton() {
+    const chatButton = document.getElementById('qiscus-chat-button');
+    if (chatButton) {
+        chatButton.classList.add('hidden');
+    }
+}
+```
+
+**Usage:**
+
+```javascript
+// Hide FAB temporarily
+widget.uiService.hideChatButton();
+
+// Show again when needed
+widget.uiService.showChatButton();
+```
+
+### FAB Visibility Control
+
+**Default State:**
+
+The FAB is now hidden by default:
+
+```html
+<div class="qiscus-chat-button hidden" id="qiscus-chat-button">
+    <img src="..." alt="Chat" />
+    <span class="qiscus-unread-badge">0</span>
+</div>
+```
+
+**CSS:**
+
+```css
+.qiscus-chat-button.hidden { 
+    display: none !important; 
+}
+```
+
+### Use Cases
+
+**1. Show FAB After Login:**
+
+```javascript
+widget.setUser({
+    userId: 'user@example.com',
+    displayName: 'John Doe'
+});
+
+widget.initiateChat()
+    .then(() => {
+        // Show FAB only after successful login
+        widget.uiService.showChatButton();
+    })
+    .catch(error => {
+        console.error('Login failed, FAB remains hidden');
+    });
+```
+
+**2. Conditional FAB Display:**
+
+```javascript
+// Show FAB only for logged-in users
+if (userIsLoggedIn) {
+    widget.uiService.showChatButton();
+} else {
+    widget.uiService.hideChatButton();
+}
+```
+
+**3. Hide FAB During Maintenance:**
+
+```javascript
+// Hide FAB during maintenance
+if (isMaintenanceMode) {
+    widget.uiService.hideChatButton();
+    showMaintenanceMessage();
+}
+```
+
+**4. Toggle FAB Based on Page:**
+
+```javascript
+// Hide FAB on certain pages
+if (window.location.pathname === '/checkout') {
+    widget.uiService.hideChatButton();
+} else {
+    widget.uiService.showChatButton();
+}
+```
+
+### Benefits
+
+✅ **Better UX**: FAB only appears when chat is ready  
+✅ **Cleaner UI**: No premature FAB display  
+✅ **Flexible Control**: Show/hide based on your logic  
+✅ **Professional**: Prevents confusion for users  
+
+positive
+: FAB visibility control gives you complete control over when users can access chat!
+
+## Double SDK Initialization Prevention
+Duration: 3
+
+### Problem
+
+Previously, the SDK could be initialized multiple times, causing:
+- Duplicate network requests
+- Performance issues
+- Confusing logs
+- Potential state conflicts
+
+### Solution
+
+Implemented a flag-based prevention system:
+
+```javascript
+let isSDKSetup = false; // Flag to prevent double setup
+
+async function setupQiscusSDK() {
+    // Prevent double setup
+    if (isSDKSetup && widget) {
+        log('⚠️ SDK already setup, skipping...', 'info');
+        return true;
+    }
+
+    try {
+        // Create widget (auto-loads and initializes SDK)
+        widget = new QiscusMultichannelWidget({
+            appId: appConfig.appId,
+            channelId: appConfig.channelId || undefined,
+            primaryColor: '#3b82f6',
+            debugMode: true,
+            onReady: (w) => {
+                log('✅ Qiscus SDK setup complete!', 'success');
+                isSDKSetup = true; // Mark as setup when ready
+            }
+        });
+
+        return true;
+    } catch (error) {
+        log('❌ SDK setup error: ' + error.message, 'error');
+        isSDKSetup = false; // Reset on error
+        return false;
+    }
+}
+```
+
+### How It Works
+
+**1. Flag Check:**
+- Before setup, check if `isSDKSetup` is true
+- If true and widget exists, skip setup
+
+**2. Flag Set:**
+- Set `isSDKSetup = true` in `onReady` callback
+- Ensures flag is only set when SDK is fully ready
+
+**3. Flag Reset:**
+- Reset to `false` on error
+- Reset to `false` when user logs out/resets
+
+### Benefits
+
+✅ **No Duplicate Requests**: SDK initialized only once  
+✅ **Better Performance**: Reduced network overhead  
+✅ **Cleaner Logs**: No duplicate initialization logs  
+✅ **Predictable Behavior**: Consistent SDK state  
+
+### Verification
+
+Check the network tab - you should see only **one** config request:
+
+```
+Before: 
+- config (1st call)
+- config (2nd call) ❌
+
+After:
+- config (single call) ✅
+```
+
+negative
+: Always ensure the flag is reset when clearing user session!
+
 ## Next Steps
 Duration: 1
 
@@ -1450,5 +1928,7 @@ positive
 - [API Documentation](./API_DOCUMENTATION.md)
 - [GitHub Repository](https://github.com/fathullahqiscus/support-multichannel-widget-embed-version)
 - [Example Implementation](./index.html)
+- [SDK Config Monitor](./index-simple.html) - **New!**
+- [Changelog](./CHANGELOG-2025-12-31.md) - **Latest Updates**
 
 ---
