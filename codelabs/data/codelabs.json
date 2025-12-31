@@ -92,11 +92,24 @@
       "searchTerms": "tips membeli mobil bekas second hand car inspeksi negosiasi balik nama",
       "url": "tips-membeli-mobil-bekas/",
       "ctaText": "Mulai Belajar"
+    },
+    {
+      "id": "dartz-functional-programming",
+      "title": "Pemrograman Fungsional dengan dartz",
+      "icon": "⚙️",
+      "summary": "Pelajari cara menerapkan pendekatan functional programming di proyek Dart/Flutter menggunakan paket dartz: Option, Either, TaskEither, koleksi immutable, hingga studi kasus validasi + API.",
+      "duration": 52,
+      "sections": 9,
+      "tags": ["Dart", "Flutter", "Functional Programming", "Option", "Either", "TaskEither", "Indonesia"],
+      "categories": ["dart", "flutter", "functional-programming", "backend", "mobile"],
+      "searchTerms": "dartz functional programming option either task either flutter dart",
+      "url": "dartz-functional-programming/",
+      "ctaText": "Mulai Belajar"
     }
   ],
   "stats": {
-    "totalTutorials": 7,
-    "totalSubPhases": 24,
+    "totalTutorials": 8,
+    "totalSubPhases": 33,
     "totalMajorPhases": 6
   }
 }

@@ -1,0 +1,277 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Membangun Aplikasi Dart/Flutter yang Lebih Terukur dengan dartz</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid="0"
+                  codelab-ga4id=""
+                  id="dartz-functional-programming"
+                  title="Membangun Aplikasi Dart/Flutter yang Lebih Terukur dengan dartz"
+                  environment="web"
+                  feedback-link="https://github.com/yourusername/feedback">
+    
+      <google-codelab-step label="Overview" duration="3">
+        <p>Codelab ini membimbing Anda memahami pendekatan pemrograman fungsional (FP) di ekosistem Dart/Flutter menggunakan paket <a href="https://github.com/spebbe/dartz" target="_blank">dartz</a>. Anda akan mempelajari cara memasang dependensi, mengenal tipe-tipe inti (Option, Either, Task/Evaluation), menggunakan koleksi immutable, hingga membuat studi kasus validasi dan pemanggilan API.</p>
+<h2 is-upgraded>Apa yang Akan Anda Pelajari</h2>
+<ul>
+<li>Konsep dasar FP yang diterjemahkan ke dalam idiom Dart</li>
+<li>Menambah dan mengatur paket dartz pada proyek CLI maupun Flutter</li>
+<li>Menggunakan Option/Either untuk mengelola nilai nullable dan error</li>
+<li>Mengorkestrasi operasi asynchronous secara aman menggunakan Task/Evaluation</li>
+<li>Memanfaatkan koleksi immutable dan type class untuk pipeline data</li>
+<li>Menerapkan studi kasus validasi formulir + pemanggilan API</li>
+</ul>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Dart SDK ≥ 2.17 atau Flutter ≥ 3.0</li>
+<li>Pemahaman dasar tentang async/await dan struktur proyek Dart</li>
+<li>Sudah menginstall Git serta editor favorit (VS Code, IntelliJ, dll)</li>
+</ul>
+<p>Positive : dartz kompatibel dengan proyek Dart murni maupun Flutter sehingga mudah dipakai lintas platform.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Persiapan Lingkungan" duration="5">
+        <h2 is-upgraded>1. Verifikasi Instalasi Dart / Flutter</h2>
+<p>Pastikan salah satu tersetup:</p>
+<pre><code language="language-bash" class="language-bash"># Untuk pengguna Dart CLI
+dart --version
+
+# Untuk pengguna Flutter
+flutter --version
+</code></pre>
+<p>Jika belum terpasang, ikuti dokumentasi resmi:</p>
+<ul>
+<li>Dart SDK: https://dart.dev/get-dart</li>
+<li>Flutter SDK: https://docs.flutter.dev/get-started/install</li>
+</ul>
+<p>Negative : Gunakan versi stable. Artefak beta mungkin belum mendukung Null Safety penuh yang dibutuhkan dartz ≥0.10.0.</p>
+<h2 is-upgraded>2. Siapkan Workspace Proyek</h2>
+<pre><code language="language-bash" class="language-bash">mkdir dartz-lab &amp;&amp; cd dartz-lab
+</code></pre>
+<p>Anda dapat memilih membuat aplikasi CLI (<code>dart create dartz_demo</code>) atau modul Flutter (<code>flutter create dartz_demo_app</code>).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Menambahkan dartz ke Proyek" duration="4">
+        <h2 is-upgraded>1. Tambahkan Dependensi</h2>
+<pre><code language="language-bash" class="language-bash">cd dartz_demo
+# Dart CLI
+dart pub add dartz
+
+# Flutter
+flutter pub add dartz
+</code></pre>
+<p><code>pubspec.yaml</code> Anda kini berisi entri:</p>
+<pre><code language="language-yaml" class="language-yaml">dependencies:
+  dartz: ^0.10.1
+</code></pre>
+<h2 is-upgraded>2. Import di Kode</h2>
+<pre><code language="language-dart" class="language-dart">import &#39;package:dartz/dartz.dart&#39;;
+</code></pre>
+<p>Positive : Semua tipe berada di namespace <code>dartz</code>, sehingga satu import sudah mencakup Option, Either, koleksi, dan type class.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mengenal Tipe Fungsional Utama" duration="12">
+        <h2 is-upgraded>Option: Pengganti Nullable</h2>
+<pre><code language="language-dart" class="language-dart">import &#39;package:dartz/dartz.dart&#39;;
+
+Option&lt;int&gt; parseInt(String raw) {
+  final value = int.tryParse(raw);
+  return optionOf(value); // Some(value) atau None()
+}
+
+void main() {
+  final result = parseInt(&#39;42&#39;).map((n) =&gt; n * 2).getOrElse(() =&gt; 0);
+  print(result); // 84
+}
+</code></pre>
+<ul>
+<li><code>Some(value)</code> menyatakan nilai valid.</li>
+<li><code>None()</code> menggantikan <code>null</code>, memaksa Anda memberi default lewat <code>getOrElse</code>.</li>
+</ul>
+<h2 is-upgraded>Either: Sukses atau Error yang Eksplisit</h2>
+<pre><code language="language-dart" class="language-dart">Either&lt;String, double&gt; safeDivide(double a, double b) {
+  return b == 0
+      ? left(&#39;Penyebut tidak boleh 0&#39;)
+      : right(a / b);
+}
+
+void main() {
+  final message = safeDivide(10, 0)
+      .map((value) =&gt; &#39;Hasil: $value&#39;)
+      .getOrElse((err) =&gt; &#39;Gagal: $err&#39;);
+  print(message);
+}
+</code></pre>
+<ul>
+<li>Sisi kiri (<code>Left</code>) menampung error atau pesan kegagalan.</li>
+<li>Sisi kanan (<code>Right</code>) berisi nilai sukses.</li>
+</ul>
+<h2 is-upgraded>Task / TaskEither / Evaluation: Abstraksi Async</h2>
+<p><code>Task</code> setara Future yang lazy, sedangkan <code>TaskEither<L, R></code> memadukan async + error handling.</p>
+<pre><code language="language-dart" class="language-dart">TaskEither&lt;String, String&gt; fetchUserProfile() {
+  return TaskEither(() async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    return right(&#39;Profil lengkap pengguna&#39;);
+  });
+}
+
+Future&lt;void&gt; main() async {
+  final response = await fetchUserProfile().run();
+  response.fold(
+    (err) =&gt; print(&#39;Error: $err&#39;),
+    (data) =&gt; print(&#39;Sukses: $data&#39;),
+  );
+}
+</code></pre>
+<p><code>Evaluation</code> menyediakan memoization dan kontrol eksekusi (call-by-need). Gunakan ketika perhitungan mahal ingin ditunda namun tetap deterministik.</p>
+<p>Negative : Hindari mencampur <code>try/catch</code> di dalam <code>TaskEither</code>. Gunakan <code>TaskEither.tryCatch</code> agar stack trace tetap konsisten.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Koleksi Immutable &amp; Type Class" duration="8">
+        <p>dartz meliputi struktur data persisten: <code>IList</code>, <code>IVector</code>, <code>IMap</code>, <code>ISet</code>, serta AVLTree. Semua mendukung operasi logaritmik dan cocok untuk state management berbasis referensi.</p>
+<pre><code language="language-dart" class="language-dart">final IList&lt;int&gt; numbers = ilist([1, 2, 3]);
+final IList&lt;int&gt; doubled = numbers.map((n) =&gt; n * 2); // IList baru
+
+final IMap&lt;String, int&gt; scores = imap({&#39;alice&#39;: 87, &#39;budi&#39;: 92});
+final updated = scores.put(&#39;cici&#39;, 95);
+</code></pre>
+<p>Type class bawaan (Functor, Monad, Applicative, Foldable) memungkinkan komposisi universal.</p>
+<pre><code language="language-dart" class="language-dart">final IList&lt;int&gt; data = ilist([1, 2, 3, 4]);
+final sum = data.foldLeft(0, (acc, value) =&gt; acc + value); // 10
+</code></pre>
+<p>Positive : Koleksi immutable membantu Anda menghindari state shared yang sulit dilacak, terutama pada aplikasi Flutter dengan state management berbasis stream atau Riverpod.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Studi Kasus: Validasi Form &amp; Pemanggilan API" duration="12">
+        <p>Kita akan memverifikasi data registrasi dan memanggil API secara aman.</p>
+<pre><code language="language-dart" class="language-dart">import &#39;package:dartz/dartz.dart&#39;;
+
+typealias Validation&lt;T&gt; = Either&lt;String, T&gt;;
+
+Validation&lt;String&gt; validateEmail(String value) {
+  return value.contains(&#39;@&#39;) ? right(value) : left(&#39;Format email tidak valid&#39;);
+}
+
+Validation&lt;String&gt; validatePassword(String value) {
+  return value.length &gt;= 8 ? right(value) : left(&#39;Password minimal 8 karakter&#39;);
+}
+
+TaskEither&lt;String, String&gt; submitSignup({
+  required String email,
+  required String password,
+}) {
+  return TaskEither.tryCatch(
+    () async {
+      await Future.delayed(const Duration(milliseconds: 500));
+      return &#39;Token-123&#39;;
+    },
+    (error, stackTrace) =&gt; &#39;Gagal koneksi: $error&#39;,
+  );
+}
+
+Future&lt;void&gt; main() async {
+  final result = validateEmail(&#39;user@email.com&#39;).flatMap(
+    (email) =&gt; validatePassword(&#39;Rahasia123&#39;).flatMap(
+      (password) =&gt; submitSignup(email: email, password: password),
+    ),
+  );
+
+  final output = await result.run();
+  output.fold(print, (token) =&gt; print(&#39;Berhasil, token: $token&#39;));
+}
+</code></pre>
+<p>Langkah penting:</p>
+<ol type="1">
+<li>Validasi setiap field mengembalikan <code>Either</code>. Gunakan <code>flatMap</code> untuk menghentikan alur ketika ditemukan error.</li>
+<li><code>TaskEither</code> menjalankan call async hanya jika validasi sukses.</li>
+<li><code>fold</code> di akhir menyatukan jalur sukses &amp; gagal, cocok untuk UI toast/snackbar.</li>
+</ol>
+<p>Negative : Jangan mencampur <code>await</code> di tengah chain <code>flatMap</code>. Balut operasi async di <code>Task</code> agar tetap lazy dan testable.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Testing &amp; Observability" duration="5">
+        <p>Gunakan paket <code>test</code> bawaan Dart. Karena <code>Task</code>/<code>Evaluation</code> lazy, Anda bisa men-trigger secara eksplisit pada skenario uji.</p>
+<pre><code language="language-dart" class="language-dart">import &#39;package:dartz/dartz.dart&#39;;
+import &#39;package:test/test.dart&#39;;
+
+void main() {
+  test(&#39;validateEmail mengembalikan Left ketika invalid&#39;, () {
+    final result = validateEmail(&#39;invalid&#39;);
+    expect(result.isLeft(), isTrue);
+  });
+
+  test(&#39;TaskEither berhasil&#39;, () async {
+    final value = await submitSignup(email: &#39;a@a.com&#39;, password: &#39;12345678&#39;).run();
+    expect(value.isRight(), isTrue);
+  });
+}
+</code></pre>
+<p>Positive : Struktur pure function memudahkan membuat unit test deterministic tanpa perlu mocking kompleks.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Next Steps" duration="2">
+        <ul>
+<li>Jelajahi modul lanjutan seperti <code>Free</code>, <code>Lens</code>, dan <code>Conveyor</code> di repo dartz.</li>
+<li>Integrasikan dengan state management favorit (Bloc, Riverpod) menggunakan <code>TaskEither</code> untuk layer repository.</li>
+<li>Eksperimen membuat helper extension untuk menghubungkan dartz ke UI (misalnya <code>toSnackbarMessage</code>).</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Summary" duration="1">
+        <h2 is-upgraded>Yang Sudah Anda Pelajari</h2>
+<ul>
+<li>✅ Cara memasang dan mengimport dartz</li>
+<li>✅ Teknik praktis memakai Option, Either, Task/Evaluation</li>
+<li>✅ Penggunaan koleksi immutable + type class</li>
+<li>✅ Studi kasus validasi + pemanggilan API secara deklaratif</li>
+<li>✅ Tips testing agar pipeline FP tetap terjaga</li>
+</ul>
+<p>Selamat! Anda kini siap menerapkan pendekatan FP dengan dartz untuk membuat kode Dart/Flutter yang lebih aman, modular, dan mudah diuji.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

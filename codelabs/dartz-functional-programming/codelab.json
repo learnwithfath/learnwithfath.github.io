@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-11-24T15:19:29+07:00",
+  "id": "dartz-functional-programming",
+  "duration": 52,
+  "title": "Membangun Aplikasi Dart/Flutter yang Lebih Terukur dengan dartz",
+  "summary": "Panduan lengkap memanfaatkan paket dartz untuk pemrograman fungsional di Dart dan Flutter",
+  "source": "dartz-functional-programming.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "dart",
+    "functional-programming"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/yourusername/feedback",
+  "ga": "0",
+  "url": "dartz-functional-programming"
+}
