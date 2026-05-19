@@ -149,31 +149,18 @@
       "id": "python-dasar",
       "title": "Memulai Pemrograman dengan Python",
       "icon": "🐍",
-      "summary": "Panduan lengkap dan interaktif untuk memulai belajar pemrograman menggunakan bahasa Python dari nol. Cocok untuk pemula yang ingin belajar variabel, perulangan, kondisi, fungsi, unit testing (unittest), dan mini-game logika.",
-      "duration": 96,
-      "sections": 13,
-      "tags": ["Python", "Beginner", "Programming", "Indonesia"],
+      "summary": "Panduan lengkap dan interaktif dari nol. Menguasai variabel, kondisi, fungsi, unit testing, hingga eksplorasi ekosistem Library Populer Python (Data Science, Web Scraping, ML, dll).",
+      "duration": 162,
+      "sections": 24,
+      "tags": ["Python", "Beginner", "Programming", "Indonesia", "Library", "Ecosystem"],
       "categories": ["python", "beginner", "programming"],
-      "searchTerms": "memulai pemrograman dengan python dasar tutorial beginner unit testing unittest",
+      "searchTerms": "memulai pemrograman dengan python dasar tutorial beginner unit testing unittest library populer pandas numpy web scraping machine learning",
       "url": "python-dasar/",
       "ctaText": "Mulai Belajar"
-    },
-    {
-      "id": "python-library",
-      "title": "Library Populer pada Python",
-      "icon": "📚",
-      "summary": "Panduan komprehensif mengenai berbagai library populer di ekosistem Python, mulai dari manipulasi string, analisis data, web scraping, hingga machine learning dan web development.",
-      "duration": 66,
-      "sections": 11,
-      "tags": ["Python", "Library", "Ecosystem", "Data Science", "Web Development"],
-      "categories": ["python", "beginner", "ecosystem"],
-      "searchTerms": "library populer python pandas numpy requests django flask machine learning",
-      "url": "python-library/",
-      "ctaText": "Pelajari Library"
     }
   ],
   "stats": {
-    "totalTutorials": 13,
+    "totalTutorials": 12,
     "totalSubPhases": 33,
     "totalMajorPhases": 6
   }
