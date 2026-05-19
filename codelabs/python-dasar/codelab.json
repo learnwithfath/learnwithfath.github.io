@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-05-19T11:27:48+07:00",
+  "id": "python-dasar",
+  "duration": 80,
+  "title": "Memulai Pemrograman dengan Python",
+  "summary": "Panduan lengkap dan interaktif untuk memulai belajar pemrograman menggunakan bahasa Python dari nol. Sangat cocok untuk pemula!",
+  "source": "python-dasar.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "python",
+    "beginner",
+    "programming"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "python-dasar"
+}

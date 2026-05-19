@@ -144,10 +144,23 @@
       "searchTerms": "mastering github ssh multiple accounts git config alias identitiesonly",
       "url": "github-ssh-multiple-accounts/",
       "ctaText": "Mulai Belajar"
+    },
+    {
+      "id": "python-dasar",
+      "title": "Memulai Pemrograman dengan Python",
+      "icon": "🐍",
+      "summary": "Panduan lengkap dan interaktif untuk memulai belajar pemrograman menggunakan bahasa Python dari nol. Cocok untuk pemula yang ingin belajar variabel, perulangan, kondisi, fungsi, dan mini-game logika.",
+      "duration": 60,
+      "sections": 9,
+      "tags": ["Python", "Beginner", "Programming", "Indonesia"],
+      "categories": ["python", "beginner", "programming"],
+      "searchTerms": "memulai pemrograman dengan python dasar tutorial beginner",
+      "url": "python-dasar/",
+      "ctaText": "Mulai Belajar"
     }
   ],
   "stats": {
-    "totalTutorials": 11,
+    "totalTutorials": 12,
     "totalSubPhases": 33,
     "totalMajorPhases": 6
   }

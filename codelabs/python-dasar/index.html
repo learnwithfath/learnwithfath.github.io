@@ -1,0 +1,264 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Memulai Pemrograman dengan Python</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="python-dasar"
+                  title="Memulai Pemrograman dengan Python"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="1. Pendahuluan" duration="5">
+        <p>Selamat datang di dunia pemrograman! Jika ini adalah pertama kalinya kamu belajar menulis kode, kamu memilih bahasa yang sangat tepat. <strong>Python</strong> adalah salah satu bahasa pemrograman paling populer di dunia karena sintaksnya yang sangat sederhana, bersih, dan menyerupai bahasa Inggris sehari-hari.</p>
+<h2 is-upgraded>Kenapa Belajar Python?</h2>
+<ol type="1">
+<li><strong>Mudah Dipelajari:</strong> Tidak banyak sintaks rumit seperti titik koma (<code>;</code>) atau tanda kurung kurawal (<code>{}</code>) yang membingungkan.</li>
+<li><strong>Multi-fungsi:</strong> Python digunakan untuk web development, data science, artificial intelligence (AI), otomasi script, hingga pembuatan game.</li>
+<li><strong>Komunitas Besar:</strong> Sangat banyak tutorial dan library gratis yang siap membantu perjalanan belajarmu.</li>
+</ol>
+<h2 is-upgraded>Apa yang Akan Kamu Pelajari?</h2>
+<p>Di codelab ini, kamu akan diajarkan konsep dasar pemrograman secara praktikal menggunakan Python. Di akhir sesi, kamu akan membuat sebuah mini-game interaktif sendiri!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="2. Setup Environment &amp; Instalasi" duration="8">
+        <p>Sebelum mulai menulis kode, mari kita persiapkan peralatan tempur kita.</p>
+<h2 is-upgraded>Langkah 1: Install Python</h2>
+<ol type="1">
+<li>Buka browser dan pergi ke situs resmi <a href="https://www.python.org/downloads/" target="_blank">python.org/downloads</a>.</li>
+<li>Unduh versi Python terbaru untuk sistem operasimu (Windows, macOS, atau Linux).</li>
+<li><strong>PENTING (Windows):</strong> Saat menjalankan installer, pastikan kamu mencentang opsi <strong>&#34;Add Python to PATH&#34;</strong> sebelum mengklik <em>Install Now</em>.</li>
+</ol>
+<h2 is-upgraded>Langkah 2: Verifikasi Instalasi</h2>
+<p>Buka Terminal (macOS/Linux) atau Command Prompt (Windows), lalu jalankan perintah:</p>
+<pre><code language="language-bash" class="language-bash">python --version
+</code></pre>
+<p><em>(Di beberapa sistem, kamu mungkin perlu mengetik </em></p>
+<p><em><code>python3 --version</code></em></p>
+<p><em>)</em></p>
+<p>Jika keluar angka versi (misal: <code>Python 3.12.x</code>), selamat! Python sudah terinstall dengan benar.</p>
+<h2 is-upgraded>Langkah 3: Gunakan Code Editor</h2>
+<p>Kami merekomendasikan <strong>VS Code</strong> (Visual Studio Code). Kamu bisa mengunduhnya gratis di <a href="https://code.visualstudio.com/" target="_blank">code.visualstudio.com</a>. Setelah terinstall, pasang extension bernama <strong>&#34;Python&#34;</strong> buatan Microsoft di dalam VS Code.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="3. Sintaks Dasar &amp; Variabel" duration="10">
+        <p>Mari kita buat instruksi pertama kita kepada komputer. Di dunia pemrograman, program pertama biasanya adalah menampilkan tulisan &#34;Hello World&#34;.</p>
+<h2 is-upgraded>Langkah 1: Tulis Kode Pertama</h2>
+<p>Buat folder baru bernama <code>belajar-python</code>, buka di VS Code, lalu buat file baru bernama <code>main.py</code>. Masukkan kode berikut:</p>
+<pre><code language="language-python" class="language-python">print(&#34;Halo dunia! Saya sedang belajar Python.&#34;)
+</code></pre>
+<p>Jalankan program dengan mengklik tombol <em>Run</em> di pojok kanan atas VS Code, atau ketik di terminal:</p>
+<pre><code language="language-bash" class="language-bash">python main.py
+</code></pre>
+<p>Komputer akan menampilkan teks tersebut di terminal. Selamat! Kamu resmi menjadi seorang programmer Python.</p>
+<h2 is-upgraded>Langkah 2: Memahami Variabel</h2>
+<p>Variabel adalah wadah penyimpanan sementara untuk data di memori komputer. Bayangkan variabel seperti kotak yang diberi label.</p>
+<p>Ubah isi <code>main.py</code> menjadi seperti ini:</p>
+<pre><code language="language-python" class="language-python"># Membuat variabel nama dan umur
+nama = &#34;Fath&#34;
+umur = 20
+
+# Menampilkan isi variabel
+print(&#34;Nama saya adalah &#34; + nama)
+print(&#34;Tahun depan umur saya adalah:&#34;, umur + 1)
+</code></pre>
+<p>Positive : <strong>Aturan Variabel:</strong> Nama variabel tidak boleh diawali angka dan tidak boleh mengandung spasi (gunakan underscore, misal: <code>nama_lengkap</code>). Python bersifat <em>case-sensitive</em> (<code>Nama</code> dan <code>nama</code> dianggap berbeda).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="4. Tipe Data Dasar" duration="10">
+        <p>Setiap data yang kita simpan memiliki jenis atau &#34;tipe data&#34;. Di Python, tipe data dasar terbagi menjadi beberapa jenis:</p>
+<h2 is-upgraded>1. String (Teks)</h2>
+<p>Ditulis di dalam tanda kutip tunggal (<code>'</code>) atau ganda (<code>"</code>).</p>
+<pre><code language="language-python" class="language-python">alamat = &#34;Jalan Merdeka No. 10&#34;
+</code></pre>
+<h2 is-upgraded>2. Integer (Angka Bulat)</h2>
+<p>Angka tanpa pecahan desimal.</p>
+<pre><code language="language-python" class="language-python">jumlah_siswa = 35
+</code></pre>
+<h2 is-upgraded>3. Float (Angka Desimal)</h2>
+<p>Angka dengan titik pecahan desimal.</p>
+<pre><code language="language-python" class="language-python">ipk = 3.85
+</code></pre>
+<h2 is-upgraded>4. Boolean (Kebenaran)</h2>
+<p>Hanya bernilai <code>True</code> (Benar) atau <code>False</code> (Salah). Sangat berguna untuk logika kondisi.</p>
+<pre><code language="language-python" class="language-python">sedang_belajar = True
+</code></pre>
+<h2 is-upgraded>5. List (Kumpulan Data Terurut)</h2>
+<p>Digunakan untuk menyimpan banyak data dalam satu variabel. Ditulis menggunakan kurung siku <code>[]</code>.</p>
+<pre><code language="language-python" class="language-python">buah_favorit = [&#34;Apel&#34;, &#34;Mangga&#34;, &#34;Pisang&#34;]
+print(buah_favorit[0]) # Output: Apel (Index dimulai dari 0)
+</code></pre>
+<h2 is-upgraded>6. Dictionary (Pasangan Key-Value)</h2>
+<p>Menyimpan data dengan format label dan nilai. Ditulis dengan kurung kurawal <code>{}</code>.</p>
+<pre><code language="language-python" class="language-python">kontak = {
+    &#34;nama&#34;: &#34;Budi&#34;,
+    &#34;nomor&#34;: &#34;0812345678&#34;
+}
+print(kontak[&#34;nama&#34;]) # Output: Budi
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="5. Logika Kondisi (If, Elif, Else)" duration="12">
+        <p>Program yang pintar harus bisa mengambil keputusan. Di Python, kita menggunakan instruksi <code>if</code> (jika), <code>elif</code> (singkatan dari <em>else if</em>), dan <code>else</code> (jika tidak).</p>
+<p>Ubah file <code>main.py</code> menjadi seperti ini:</p>
+<pre><code language="language-python" class="language-python">nilai = 78
+
+if nilai &gt;= 80:
+    print(&#34;Selamat! Kamu mendapatkan nilai A.&#34;)
+elif nilai &gt;= 60:
+    print(&#34;Bagus! Kamu lulus dengan nilai B.&#34;)
+else:
+    print(&#34;Maaf, kamu harus belajar lebih giat lagi.&#34;)
+</code></pre>
+<p>Negative : <strong>PENTING! Perhatikan Indentasi:</strong> Di Python, setelah tanda titik dua (<code>:</code>), baris kode berikutnya harus menjorok masuk ke dalam (biasanya menggunakan 4 spasi atau 1 kali tombol Tab). Indentasi ini mendefinisikan blok kode. Jika tidak menjorok, Python akan error!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="6. Perulangan (Looping)" duration="10">
+        <p>Bagaimana jika kita ingin menulis perintah yang sama berulang kali? Daripada menulis manual 100 kali, kita gunakan <strong>Loops</strong>. Ada dua jenis looping utama di Python:</p>
+<h2 is-upgraded>1. For Loop</h2>
+<p>Berguna untuk mengulangi sesuatu sebanyak jumlah yang ditentukan, atau mengitari isi dari sebuah list.</p>
+<pre><code language="language-python" class="language-python"># Mengulang angka 1 sampai 5
+for i in range(1, 6):
+    print(&#34;Angka ke-&#34;, i)
+
+# Mengitari isi list
+nama_siswa = [&#34;Ani&#34;, &#34;Budi&#34;, &#34;Cici&#34;]
+for siswa in nama_siswa:
+    print(&#34;Halo,&#34;, siswa)
+</code></pre>
+<h2 is-upgraded>2. While Loop</h2>
+<p>Melakukan perulangan terus-menerus selama suatu kondisi bernilai <code>True</code>.</p>
+<pre><code language="language-python" class="language-python">hitungan = 1
+while hitungan &lt;= 3:
+    print(&#34;Hitungan ke-&#34;, hitungan)
+    hitungan = hitungan + 1 # Menambah nilai hitungan agar tidak perulangan selamanya (infinite loop)
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="7. Fungsi (Function)" duration="8">
+        <p>Fungsi adalah blok kode terorganisir yang dapat digunakan kembali untuk melakukan satu tugas tertentu. Membuat fungsi menghindari penulisan kode yang berulang-ulang (<em>Don&#39;t Repeat Yourself</em>).</p>
+<p>Di Python, kita membuat fungsi menggunakan kata kunci <code>def</code>.</p>
+<p>Ubah <code>main.py</code> menjadi:</p>
+<pre><code language="language-python" class="language-python"># Mendefinisikan fungsi bernama sapa
+def sapa_user(nama):
+    print(&#34;Halo &#34; + nama + &#34;, selamat belajar Python!&#34;)
+
+# Memanggil fungsi
+sapa_user(&#34;Ahmad&#34;)
+sapa_user(&#34;Riana&#34;)
+</code></pre>
+<p>Kita juga bisa membuat fungsi yang mengembalikan nilai (<em>return value</em>):</p>
+<pre><code language="language-python" class="language-python">def hitung_luas_segitiga(alas, tinggi):
+    luas = 0.5 * alas * tinggi
+    return luas
+
+hasil = hitung_luas_segitiga(10, 5)
+print(&#34;Luas segitiga adalah:&#34;, hasil)
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="8. Challenge: Game Tebak Angka!" duration="15">
+        <p>Saatnya mempraktekkan semua ilmu yang sudah kamu dapatkan! Kita akan membuat mini-game interaktif bernama <strong>Game Tebak Angka</strong>.</p>
+<p>Komputer akan memilih angka acak antara 1 sampai 10, lalu kamu harus menebaknya. Program akan memberi petunjuk apakah tebakanmu terlalu besar atau terlalu kecil.</p>
+<h2 is-upgraded>Langkah 1: Tulis Kode Game</h2>
+<p>Tulis kode lengkap berikut di file <code>main.py</code> kamu:</p>
+<pre><code language="language-python" class="language-python">import random # Mengimpor library bawaan untuk angka acak
+
+def main_game():
+    print(&#34;================================&#34;)
+    print(&#34;    GAME TEBAK ANGKA PYTHON    &#34;)
+    print(&#34;================================&#34;)
+    
+    # Komputer memilih angka acak 1 sampai 10
+    angka_rahasia = random.randint(1, 10)
+    tebakan_salah = True
+    percobaan = 0
+    
+    print(&#34;Saya memikirkan angka antara 1 sampai 10.&#34;)
+    
+    while tebakan_salah:
+        # Mengambil input dari user dan mengubahnya menjadi angka bulat (int)
+        tebakan = int(input(&#34;Masukkan tebakanmu: &#34;))
+        percobaan = percobaan + 1
+        
+        if tebakan == angka_rahasia:
+            print(f&#34;Luar biasa! Tebakanmu BENAR setelah {percobaan} kali mencoba! 🎉&#34;)
+            tebakan_salah = False
+        elif tebakan &lt; angka_rahasia:
+            print(&#34;Terlalu KECIL! Coba tebak angka yang lebih besar.&#34;)
+        else:
+            print(&#34;Terlalu BESAR! Coba tebak angka yang lebih kecil.&#34;)
+
+# Menjalankan game
+main_game()
+</code></pre>
+<h2 is-upgraded>Langkah 2: Mainkan Game-mu!</h2>
+<p>Jalankan file <code>main.py</code> di terminal VS Code:</p>
+<pre><code language="language-bash" class="language-bash">python main.py
+</code></pre>
+<p>Masukkan tebakan angka di terminal dan rasakan keajaiban dari program Python buatanmu sendiri!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="9. Selamat!" duration="2">
+        <p>Kamu telah berhasil menyelesaikan Codelab fundamental Python ini! 🎉</p>
+<h2 is-upgraded>Rangkuman yang Telah Kamu Kuasai:</h2>
+<ul>
+<li>✅ Instalasi Python dan setup VS Code editor.</li>
+<li>✅ Menggunakan variabel dan mengenali tipe data dasar (String, Integer, List, dsb).</li>
+<li>✅ Membuat logika keputusan dengan <code>if-elif-else</code>.</li>
+<li>✅ Menggunakan perulangan (<code>for</code> dan <code>while</code> loops).</li>
+<li>✅ Membuat fungsi dinamis (<code>def</code>).</li>
+<li>✅ Mengimpor modul bawaan (<code>random</code>) dan membuat mini-game logika interaktif.</li>
+</ul>
+<h2 is-upgraded>Langkah Selanjutnya:</h2>
+<p>Cobalah memodifikasi game Tebak Angka buatanmu agar memiliki batas maksimal nyawa/nyoba (misalnya maksimal hanya boleh salah 3 kali, jika lebih maka game over).</p>
+<p>Teruslah belajar, eksplorasi library baru, dan <em>Happy Coding</em> dengan Python!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
