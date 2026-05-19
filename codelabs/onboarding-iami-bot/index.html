@@ -1,0 +1,193 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Onboarding: IAMI Bot Backend Mastery</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="onboarding-iami-bot"
+                  title="Onboarding: IAMI Bot Backend Mastery"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="1. Pendahuluan" duration="5">
+        <p>Selamat datang di tim Backend <strong>IAMI Bot</strong>! Codelab ini adalah panduan <em>onboarding</em> komprehensif yang dirancang agar kamu—walaupun masih pemula—bisa langsung memahami cara kerja proyek ini dan siap mengerjakan <em>task</em> pertamamu dengan percaya diri.</p>
+<h2 is-upgraded>Apa itu IAMI Bot?</h2>
+<p>IAMI Bot adalah custom bot routing service untuk <strong>Isuzu Astra Motor Indonesia (IAMI)</strong>. Bot ini menangani pesan chatbot WhatsApp melalui integrasi kompleks antara:</p>
+<ul>
+<li><strong>Qiscus Multichannel</strong> (Inbox Customer Service)</li>
+<li><strong>Google Dialogflow</strong> (Mesin NLP / AI Chatbot)</li>
+<li><strong>WhatsApp Flow</strong> (Formulir terenkripsi di dalam WhatsApp)</li>
+<li><strong>Third-party APIs</strong> lainnya (ICCS, QTicketing, MyZ)</li>
+</ul>
+<h2 is-upgraded>Tech Stack Utama</h2>
+<ul>
+<li><strong>Bahasa:</strong> Go 1.22</li>
+<li><strong>Framework:</strong> Echo v4</li>
+<li><strong>Database &amp; ORM:</strong> PostgreSQL + GORM</li>
+<li><strong>Cache:</strong> Redis</li>
+<li><strong>Arsitektur:</strong> Clean Architecture</li>
+</ul>
+<p>Negative : <strong>Penting!</strong> Project ini berurusan dengan integrasi banyak <em>third-party API</em>. Selalu baca dokumentasi pihak ketiga jika menemui error integrasi!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="2. Arsitektur Project (Clean Architecture)" duration="10">
+        <p>Project ini menggunakan <strong>Clean Architecture</strong>. Tujuannya agar kode mudah dites, dirawat, dan komponennya tidak saling terikat erat (<em>loosely coupled</em>).</p>
+<h2 is-upgraded>Alur Request Standard</h2>
+<pre><code language="language-text" class="language-text">Request HTTP 
+  → Middleware (Check API Key, CID Logger) 
+  → Delivery (Handler / Controller) 
+  → UseCase (Business Logic Utama) 
+  → Repository (Akses DB) ATAU Third-party API
+</code></pre>
+<h2 is-upgraded>Struktur Folder yang Wajib Kamu Tahu</h2>
+<p>Buka VS Code-mu di folder proyek <code>iami-bot</code>, perhatikan folder berikut:</p>
+<ul>
+<li><code>src/delivery/</code>: Tempat kamu menerima HTTP request dari luar (misal: webhook Dialogflow).</li>
+<li><code>src/usecase/</code>: Tempat kamu menulis <strong>logika bisnis</strong>. Di sinilah ‘otak&#39; aplikasi berada.</li>
+<li><code>src/repository/</code>: Tempat kamu menulis query database (Postgres via GORM).</li>
+<li><code>thirdparty/</code>: Tempat fungsi untuk memanggil API luar (seperti Qiscus, Dialogflow).</li>
+<li><code>registry/</code>: Tempat semua komponen di-<em>inject</em> (Dependency Injection).</li>
+</ul>
+<p>Positive : <strong>Aturan Emas: </strong><em>Delivery</em> tidak boleh memanggil <em>Repository</em> langsung. <em>Delivery</em> harus memanggil <em>UseCase</em>, dan <em>UseCase</em> lah yang memanggil <em>Repository</em> atau <em>Third-party</em>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="3. Setup Lingkungan Lokal" duration="15">
+        <p>Mari kita buat aplikasi ini menyala di komputermu!</p>
+<h2 is-upgraded>Langkah 1: Persiapan Environment</h2>
+<pre><code language="language-bash" class="language-bash"># Clone repo jika belum
+git clone &lt;repo-iami-bot&gt;
+cd iami-bot
+
+# Salin template environment variables
+cp config/.env.example .env
+</code></pre>
+<p>Minta value dari <code>.env</code> yang rahasia (seperti <code>API_KEY_SECRET</code>, kredensial Qiscus, dll) kepada Tech Lead atau sesama backend dev.</p>
+<h2 is-upgraded>Langkah 2: Menjalankan DB &amp; Redis via Docker</h2>
+<p>Aplikasi butuh Postgres dan Redis. Cara paling aman agar tidak bentrok dengan databasemu yang lain adalah dengan Docker.</p>
+<pre><code language="language-bash" class="language-bash"># Jalankan Postgres (di port 5433 host)
+docker run --name iami-postgres -e POSTGRES_PASSWORD=secret -e POSTGRES_USER=default -e POSTGRES_DB=iami-bot-stag -p 5433:5432 -d postgres
+
+# Jalankan Redis (di port 6379 host)
+docker run --name iami-redis -p 6379:6379 -d redis
+</code></pre>
+<p>Pastikan di <code>.env</code> kamu:</p>
+<pre><code language="language-env" class="language-env">DATABASE_URL=postgres://default:secret@127.0.0.1:5433/iami-bot-stag
+REDIS_URL=redis://:@127.0.0.1:6379
+</code></pre>
+<h2 is-upgraded>Langkah 3: Install &amp; Jalankan</h2>
+<pre><code language="language-bash" class="language-bash">go mod tidy
+go mod vendor
+go run main.go
+</code></pre>
+<p>Jika sukses, server akan berjalan di port <code>1213</code>. Buka terminal baru dan tes: <code>curl http://localhost:1213/health</code></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="4. Seeding Data Master" duration="10">
+        <p>Aplikasi butuh data awal agar berjalan lancar (data outlet, kota, kendaraan, dll). Data ini ada di folder <code>misc/migration/</code>.</p>
+<p>Pastikan server Go kamu sedang berjalan, lalu buka terminal baru dan jalankan command ini berurutan:</p>
+<pre><code language="language-bash" class="language-bash">curl -X POST http://localhost:1213/seed/outlet_types
+curl -X POST http://localhost:1213/seed/province
+curl -X POST http://localhost:1213/seed/city
+curl -X POST http://localhost:1213/seed/outlet
+curl -X POST http://localhost:1213/seed/series
+curl -X POST http://localhost:1213/seed/vehicle
+curl -X POST http://localhost:1213/seed/booking
+</code></pre>
+<p>Jika sukses, databasemu kini sudah terisi dan siap melayani skenario <em>chatbot</em> secara penuh!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="5. Fitur Penting: Bot Proxy &amp; CSAT" duration="10">
+        <p>Sebagai developer IAMI Bot, kamu harus paham dua fitur khusus ini:</p>
+<h2 is-upgraded>Bot Proxy (Special Event)</h2>
+<p>Terkadang saat hari libur panjang atau maintenance, bot harus mati dan otomatis membalas &#34;Mohon maaf layanan sedang tutup&#34;. Fitur ini diatur via <code>.env</code>:</p>
+<pre><code language="language-env" class="language-env">BOT_PROXY_SPECIAL_EVENT_START=2026-04-17T00:00:00+07:00
+BOT_PROXY_SPECIAL_EVENT_END=2026-04-20T06:00:00+07:00
+BOT_PROXY_SPECIAL_EVENT_MESSAGE=Mohon maaf, layanan sedang tidak tersedia.
+</code></pre>
+<h2 is-upgraded>CSAT (Customer Satisfaction)</h2>
+<p>Aplikasi ini menangani survei kepuasan pelanggan.</p>
+<ul>
+<li>Saat agen selesai melayani customer (<code>/csat/resolve</code>), bot akan mengirimkan form CSAT.</li>
+<li>Jika customer <em>idle</em> lama (<code>/csat/idle</code>), bot akan melakukan follow-up atau auto-resolve room tersebut (di-handle oleh <em>background job</em> menggunakan <code>gocron</code>).</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="6. Prosedur Development &amp; Deployment" duration="10">
+        <p>Tim ini menggunakan <strong>Conventional Commits</strong> dan <strong>Bitbucket Pipelines</strong> (CI/CD). Jangan sembarangan nge-push kode!</p>
+<h2 is-upgraded>Alur Kerja (SOP):</h2>
+<ol type="1">
+<li><strong>Branching:</strong> Selalu buat branch baru dari <code>main</code> dengan format <code>feature/nama-fitur</code> atau <code>bugfix/nama-bug</code>.</li>
+<li><strong>Coding &amp; Testing:</strong> Kerjakan task kamu di lokal, jalankan <code>go test ./...</code>.</li>
+<li><strong>Commiting:</strong> Gunakan prefix standard seperti <code>feat:</code>, <code>fix:</code>, atau <code>chore:</code>. <pre><code language="language-bash" class="language-bash">git commit -m &#34;feat: tambah endpoint baru untuk pengecekan agent&#34;
+</code></pre>
+</li>
+<li><strong>Pull Request (PR):</strong> Buat PR ke branch <code>staging</code> atau <code>main</code> sesuai instruksi Lead. Minta <em>code review</em>.</li>
+<li><strong>CI/CD:</strong> Setelah di-merge, pipeline akan otomatis membuat <em>Docker Image</em> baru dan men-deploy-nya ke server staging/production.</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="7. Challenge: Tugas Pertamamu!" duration="10">
+        <p>Sekarang kamu sudah paham aplikasinya. Coba lakukan <em>task</em> simulasi ini di lokalmu untuk membuktikan kamu siap:</p>
+<ol type="1">
+<li><strong>Tambahkan Endpoint Baru:</strong><ul>
+<li>Masuk ke <code>src/delivery/</code> dan buat endpoint baru <code>GET /ping-agent</code>.</li>
+<li>Buat <em>UseCase</em> sederhana yang mengembalikan teks <code>"Agent System is Online"</code>.</li>
+<li>Daftarkan route-nya di <code>src/app.go</code>.</li>
+</ul>
+</li>
+<li><strong>Testing:</strong><ul>
+<li>Jalankan <code>go run main.go</code>.</li>
+<li>Lakukan <code>curl http://localhost:1213/ping-agent</code>.</li>
+</ul>
+</li>
+<li><strong>Explore Middleware:</strong><ul>
+<li>Temukan di mana <code>api-key</code> dicek. Cobalah mengirim request tanpa <code>api-key</code> dan lihat bagaimana middleware menolaknya.</li>
+</ul>
+</li>
+</ol>
+<p>Selamat! Kamu sudah lulus <em>onboarding</em> IAMI Bot Backend. Tanyakan <em>task</em> sebenarnya ke Tech Lead atau Project Manager-mu sekarang juga!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

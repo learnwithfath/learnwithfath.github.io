@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-05-19T10:32:27+07:00",
+  "id": "onboarding-iami-bot",
+  "duration": 70,
+  "title": "Onboarding: IAMI Bot Backend Mastery",
+  "summary": "Panduan onboarding komprehensif untuk project iami-bot. Dirancang khusus agar Backend Engineer pemula (junior) dapat langsung paham arsitektur dan siap mengerjakan task.",
+  "source": "onboarding-iami-bot.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "go",
+    "backend",
+    "onboarding",
+    "architecture"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "onboarding-iami-bot"
+}
