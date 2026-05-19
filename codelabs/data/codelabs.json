@@ -30,11 +30,11 @@
       "id": "qiscus-adopt-stack",
       "title": "Qiscus Adopt Stack - Learning Path",
       "icon": "🎯",
-      "summary": "Comprehensive full-stack backend development journey. Master Go, PostgreSQL, Redis, Docker, CI/CD, Frontend, Testing, dan Capstone Project. Structured learning dengan 6 Phases dan 19 sub-phases.",
+      "summary": "Comprehensive full-stack backend development journey. Master Go, PostgreSQL, Redis, Docker, CI/CD, Frontend, Testing, dan Capstone Project. Structured learning dengan 7 Phases dan 20 sub-phases.",
       "duration": null,
-      "sections": 19,
+      "sections": 20,
       "sectionLabel": "Sub-phases",
-      "phases": 6,
+      "phases": 7,
       "tags": ["Backend", "Go", "PostgreSQL", "Redis", "Docker", "Full-Stack", "Indonesia"],
       "categories": ["qiscus", "backend", "fullstack", "go", "postgresql", "redis", "docker"],
       "searchTerms": "qiscus adopt stack learning path backend fullstack",
@@ -133,19 +133,6 @@
       "ctaText": "Mulai Codelab"
     },
     {
-      "id": "onboarding-iami-bot",
-      "title": "Onboarding: IAMI Bot Backend Mastery",
-      "icon": "🤖",
-      "summary": "Panduan onboarding backend engineer untuk proyek IAMI Bot. Pahami Clean Architecture, integrasi Qiscus, Dialogflow, WhatsApp Flow, dan pengerjaan task pertama.",
-      "duration": 60,
-      "sections": 7,
-      "tags": ["Go", "Onboarding", "Clean Architecture", "Qiscus", "Dialogflow", "Indonesia"],
-      "categories": ["go", "onboarding", "qiscus", "dialogflow", "backend"],
-      "searchTerms": "onboarding iami bot backend clean architecture go qiscus multichannel",
-      "url": "onboarding-iami-bot/",
-      "ctaText": "Mulai Onboarding"
-    },
-    {
       "id": "github-ssh-multiple-accounts",
       "title": "Mastering GitHub SSH: Multiple Accounts",
       "icon": "🔑",
@@ -160,7 +147,7 @@
     }
   ],
   "stats": {
-    "totalTutorials": 12,
+    "totalTutorials": 11,
     "totalSubPhases": 33,
     "totalMajorPhases": 6
   }
