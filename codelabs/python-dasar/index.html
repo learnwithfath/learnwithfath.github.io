@@ -190,7 +190,157 @@ print(&#34;Luas segitiga adalah:&#34;, hasil)
 
       </google-codelab-step>
     
-      <google-codelab-step label="8. Challenge: Game Tebak Angka!" duration="15">
+      <google-codelab-step label="8. Pengantar Unit Testing" duration="8">
+        <p>Bayangkan kamu sedang membangun aplikasi kalkulator besar. Ketika kamu mengubah sebuah fungsi di baris 500, bagaimana kamu bisa yakin perubahan itu tidak merusak fungsi lain di baris 10?</p>
+<p>Disitulah <strong>Unit Testing</strong> bertindak sebagai penyelamat!</p>
+<h2 is-upgraded>Apa itu Unit Testing?</h2>
+<p><strong>Unit Testing</strong> adalah proses pengujian otomatis terhadap bagian terkecil dari kode program kita—biasanya berupa sebuah fungsi (<em>function</em>) atau metode (<em>method</em>)—secara terisolasi.</p>
+<p>Tujuannya adalah memastikan bahwa untuk input tertentu, fungsi tersebut selalu menghasilkan output yang kita harapkan.</p>
+<h2 is-upgraded>Mengapa Unit Testing Sangat Penting?</h2>
+<ol type="1">
+<li><strong>Mencegah Regresi (Bug Baru):</strong> Saat kamu menambahkan fitur baru, unit test memastikan fitur lama tidak rusak.</li>
+<li><strong>Mempermudah Refactoring:</strong> Kamu bisa merapikan kodemu dengan percaya diri. Jika test tetap berwarna hijau (pass), artinya perilakunya tidak berubah.</li>
+<li><strong>Dokumentasi Hidup:</strong> Kode unit test berfungsi sebagai contoh nyata bagaimana cara memanggil dan menggunakan fungsi tersebut.</li>
+</ol>
+<h2 is-upgraded>Konsep Assertion (Pernyataan)</h2>
+<p>Inti dari testing adalah <strong>Assertion</strong>. Komputer akan membandingkan:</p>
+<ul>
+<li><strong>Actual Result:</strong> Hasil yang dikeluarkan oleh fungsi aslimu saat dijalankan.</li>
+<li><strong>Expected Result:</strong> Hasil yang seharusnya (kamu tentukan sendiri).</li>
+</ul>
+<p>Jika <code>Actual == Expected</code>, tes dinyatakan <strong>Lolos (Pass)</strong>. Jika tidak, tes <strong>Gagal (Fail)</strong>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="9. Penerapan Unit Test dengan unittest" duration="15">
+        <p>Python sudah dibekali dengan library bawaan yang sangat powerful untuk urusan testing bernama <strong><code>unittest</code></strong>. Mari kita praktekkan langsung!</p>
+<h2 is-upgraded>Langkah 1: Buat Kode yang Akan Diuji</h2>
+<p>Buat file baru di folder VS Code-mu bernama <code>kalkulator.py</code> dan tulis kode fungsi matematika sederhana ini:</p>
+<pre><code language="language-python" class="language-python">def tambah(a, b):
+    return a + b
+
+def bagi(a, b):
+    if b == 0:
+        raise ValueError(&#34;Tidak dapat membagi dengan nol!&#34;)
+    return a / b
+</code></pre>
+<h2 is-upgraded>Langkah 2: Tulis File Test-nya</h2>
+<p>Buat file baru berdampingan bernama <code>test_kalkulator.py</code>. Import library <code>unittest</code> dan modul <code>kalkulator</code> yang baru kita buat:</p>
+<pre><code language="language-python" class="language-python">import unittest
+import kalkulator
+
+# Membuat Class Test yang mewarisi TestCase dari unittest
+class TestKalkulator(unittest.TestCase):
+
+    # Setiap method test WAJIB diawali dengan kata &#34;test_&#34;
+    def test_tambah_positif(self):
+        hasil = kalkulator.tambah(3, 5)
+        self.assertEqual(hasil, 8) # Memastikan 3 + 5 = 8
+
+    def test_tambah_negatif(self):
+        hasil = kalkulator.tambah(-1, -1)
+        self.assertEqual(hasil, -2) # Memastikan -1 + -1 = -2
+
+    def test_bagi_normal(self):
+        hasil = kalkulator.bagi(10, 2)
+        self.assertEqual(hasil, 5.0)
+
+    def test_bagi_nol(self):
+        # Memastikan pemanggilan bagi(10, 0) menghasilkan ValueError
+        with self.assertRaises(ValueError):
+            kalkulator.bagi(10, 0)
+
+if __name__ == &#39;__main__&#39;:
+    unittest.main()
+</code></pre>
+<h2 is-upgraded>Langkah 3: Jalankan Tes-nya!</h2>
+<p>Buka terminal VS Code-mu, lalu jalankan perintah berikut:</p>
+<pre><code language="language-bash" class="language-bash">python -m unittest test_kalkulator.py
+</code></pre>
+<p>Jika semuanya benar, terminal akan menampilkan output sukses seperti ini:</p>
+<pre><code language="language-text" class="language-text">....
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+OK
+</code></pre>
+<p>Tanda titik (<code>.</code>) merepresentasikan setiap test yang lolos. Jika ada tes yang gagal, terminal akan menampilkan tanda <code>F</code> (Fail) beserta letak baris kodenya agar kamu bisa langsung memperbaikinya!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="10. Rangkuman Unit Testing" duration="5">
+        <p>Hebat! Kamu sekarang sudah memahami dasar pengujian otomatis. Mari kita rangkum poin-poin penting dari Unit Testing di Python:</p>
+<h2 is-upgraded>Aturan Emas Menulis Unit Test</h2>
+<ol type="1">
+<li><strong>Nama Method Harus Diawali </strong><strong><code>test_</code></strong><strong>:</strong> Library <code>unittest</code> hanya akan mendeteksi dan menjalankan method yang namanya berawalan <code>test_</code> (misalnya <code>test_hitung_luas</code>).</li>
+<li><strong>Tes Harus Independen:</strong> Satu test tidak boleh bergantung pada hasil dari test lainnya. Urutan eksekusi test bersifat acak.</li>
+<li><strong>Fokus Satu Hal:</strong> Pastikan tiap method test hanya menguji satu skenario spesifik agar jika terjadi kegagalan, kamu tahu persis bagian mana yang bermasalah.</li>
+</ol>
+<h2 is-upgraded>Macam-Macam Assertion yang Sering Digunakan</h2>
+<p>Di dalam <code>unittest.TestCase</code>, ada beberapa asersi bawaan yang bisa kamu pakai:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Method Assertion</p>
+</td><td colspan="1" rowspan="1"><p>Kegunaan</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>assertEqual(a, b)</code></p>
+</td><td colspan="1" rowspan="1"><p>Memastikan <code>a == b</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>assertNotEqual(a, b)</code></p>
+</td><td colspan="1" rowspan="1"><p>Memastikan <code>a != b</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>assertTrue(x)</code></p>
+</td><td colspan="1" rowspan="1"><p>Memastikan nilai <code>x</code> adalah <code>True</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>assertFalse(x)</code></p>
+</td><td colspan="1" rowspan="1"><p>Memastikan nilai <code>x</code> adalah <code>False</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>assertIn(item, list)</code></p>
+</td><td colspan="1" rowspan="1"><p>Memastikan <code>item</code> ada di dalam koleksi/list</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>assertRaises(Error)</code></p>
+</td><td colspan="1" rowspan="1"><p>Memastikan fungsi melempar <em>exception</em> error tertentu</p>
+</td></tr>
+</table>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="11. Kuis Unit Testing" duration="8">
+        <p>Ayo uji pemahamanmu tentang Unit Testing dengan menjawab kuis singkat berikut!</p>
+<h2 is-upgraded>Pertanyaan 1</h2>
+<p>Di bawah ini, manakah penulisan nama fungsi unit test yang <strong>benar</strong> agar otomatis dijalankan oleh library <code>unittest</code>?</p>
+<ul>
+<li>A. <code>def hitung_luas_test(self):</code></li>
+<li>B. <code>def test_hitung_luas(self):</code></li>
+<li>C. <code>def pengujian_hitung_luas(self):</code></li>
+<li>D. <code>def assert_hitung_luas(self):</code></li>
+</ul>
+<p>🔑 Klik untuk melihat Jawaban Benar<strong>Jawaban Benar: B<br>Penjelasan:</strong> Library <code>unittest</code> secara default hanya mencari dan mengeksekusi metode yang namanya diawali secara eksplisit dengan kata <code>test_</code>. </p>
+<h2 is-upgraded>Pertanyaan 2</h2>
+<p>Asersi (assertion) manakah yang digunakan untuk memastikan bahwa sebuah fungsi melempar/menghasilkan error (Exception) yang kita harapkan saat diberi input yang salah?</p>
+<ul>
+<li>A. <code>self.assertEqual()</code></li>
+<li>B. <code>self.assertError()</code></li>
+<li>C. <code>self.assertRaises()</code></li>
+<li>D. <code>self.assertFail()</code></li>
+</ul>
+<p>🔑 Klik untuk melihat Jawaban Benar<strong>Jawaban Benar: C<br>Penjelasan:</strong> Kita menggunakan context manager <code>with self.assertRaises(ErrorType):</code> untuk memverifikasi bahwa potongan kode tertentu memicu error/exception yang diharapkan. </p>
+<h2 is-upgraded>Pertanyaan 3</h2>
+<p>Apakah unit test yang baik diperbolehkan saling bergantung satu sama lain (misal: Test B hanya bisa jalan jika Test A berhasil)?</p>
+<ul>
+<li>A. Ya, agar menghemat baris kode.</li>
+<li>B. Ya, karena urutan tes selalu berurutan dari atas ke bawah.</li>
+<li>C. Tidak, semua test harus independen dan terisolasi agar dapat dijalankan secara acak dan fokus pada satu tanggung jawab saja.</li>
+<li>D. Tidak, kecuali jika menggunakan database eksternal.</li>
+</ul>
+<p>🔑 Klik untuk melihat Jawaban Benar<strong>Jawaban Benar: C<br>Penjelasan:</strong> Sifat unit test wajib independen dan terisolasi. Ketergantungan antar-test akan mempersulit debugging saat terjadi error. </p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="12. Challenge: Game Tebak Angka!" duration="15">
         <p>Saatnya mempraktekkan semua ilmu yang sudah kamu dapatkan! Kita akan membuat mini-game interaktif bernama <strong>Game Tebak Angka</strong>.</p>
 <p>Komputer akan memilih angka acak antara 1 sampai 10, lalu kamu harus menebaknya. Program akan memberi petunjuk apakah tebakanmu terlalu besar atau terlalu kecil.</p>
 <h2 is-upgraded>Langkah 1: Tulis Kode Game</h2>
@@ -234,7 +384,7 @@ main_game()
 
       </google-codelab-step>
     
-      <google-codelab-step label="9. Selamat!" duration="2">
+      <google-codelab-step label="13. Selamat!" duration="2">
         <p>Kamu telah berhasil menyelesaikan Codelab fundamental Python ini! 🎉</p>
 <h2 is-upgraded>Rangkuman yang Telah Kamu Kuasai:</h2>
 <ul>
@@ -244,9 +394,10 @@ main_game()
 <li>✅ Menggunakan perulangan (<code>for</code> dan <code>while</code> loops).</li>
 <li>✅ Membuat fungsi dinamis (<code>def</code>).</li>
 <li>✅ Mengimpor modul bawaan (<code>random</code>) dan membuat mini-game logika interaktif.</li>
+<li>✅ <strong>Menerapkan konsep Unit Testing menggunakan library bawaan </strong><strong><code>unittest</code></strong><strong> untuk menguji fungsionalitas kode secara otomatis!</strong></li>
 </ul>
 <h2 is-upgraded>Langkah Selanjutnya:</h2>
-<p>Cobalah memodifikasi game Tebak Angka buatanmu agar memiliki batas maksimal nyawa/nyoba (misalnya maksimal hanya boleh salah 3 kali, jika lebih maka game over).</p>
+<p>Cobalah memodifikasi game Tebak Angka buatanmu agar memiliki batas maksimal nyawa/nyoba (misalnya maksimal hanya boleh salah 3 kali, jika lebih maka game over), lalu buatlah <strong>unit test</strong> sederhana untuk memverifikasi logika pengurangan nyawa pemain tersebut!</p>
 <p>Teruslah belajar, eksplorasi library baru, dan <em>Happy Coding</em> dengan Python!</p>
 
 

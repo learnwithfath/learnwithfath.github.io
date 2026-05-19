@@ -205,7 +205,175 @@ hasil = hitung_luas_segitiga(10, 5)
 print("Luas segitiga adalah:", hasil)
 ```
 
-## 8. Challenge: Game Tebak Angka!
+## 8. Pengantar Unit Testing
+Duration: 0:08:00
+
+Bayangkan kamu sedang membangun aplikasi kalkulator besar. Ketika kamu mengubah sebuah fungsi di baris 500, bagaimana kamu bisa yakin perubahan itu tidak merusak fungsi lain di baris 10? 
+
+Disitulah **Unit Testing** bertindak sebagai penyelamat!
+
+### Apa itu Unit Testing?
+**Unit Testing** adalah proses pengujian otomatis terhadap bagian terkecil dari kode program kita—biasanya berupa sebuah fungsi (*function*) atau metode (*method*)—secara terisolasi. 
+
+Tujuannya adalah memastikan bahwa untuk input tertentu, fungsi tersebut selalu menghasilkan output yang kita harapkan.
+
+### Mengapa Unit Testing Sangat Penting?
+1. **Mencegah Regresi (Bug Baru):** Saat kamu menambahkan fitur baru, unit test memastikan fitur lama tidak rusak.
+2. **Mempermudah Refactoring:** Kamu bisa merapikan kodemu dengan percaya diri. Jika test tetap berwarna hijau (pass), artinya perilakunya tidak berubah.
+3. **Dokumentasi Hidup:** Kode unit test berfungsi sebagai contoh nyata bagaimana cara memanggil dan menggunakan fungsi tersebut.
+
+### Konsep Assertion (Pernyataan)
+Inti dari testing adalah **Assertion**. Komputer akan membandingkan:
+* **Actual Result:** Hasil yang dikeluarkan oleh fungsi aslimu saat dijalankan.
+* **Expected Result:** Hasil yang seharusnya (kamu tentukan sendiri).
+
+Jika `Actual == Expected`, tes dinyatakan **Lolos (Pass)**. Jika tidak, tes **Gagal (Fail)**.
+
+---
+
+## 9. Penerapan Unit Test dengan unittest
+Duration: 0:15:00
+
+Python sudah dibekali dengan library bawaan yang sangat powerful untuk urusan testing bernama **`unittest`**. Mari kita praktekkan langsung!
+
+### Langkah 1: Buat Kode yang Akan Diuji
+Buat file baru di folder VS Code-mu bernama `kalkulator.py` dan tulis kode fungsi matematika sederhana ini:
+
+```python
+def tambah(a, b):
+    return a + b
+
+def bagi(a, b):
+    if b == 0:
+        raise ValueError("Tidak dapat membagi dengan nol!")
+    return a / b
+```
+
+### Langkah 2: Tulis File Test-nya
+Buat file baru berdampingan bernama `test_kalkulator.py`. Import library `unittest` dan modul `kalkulator` yang baru kita buat:
+
+```python
+import unittest
+import kalkulator
+
+# Membuat Class Test yang mewarisi TestCase dari unittest
+class TestKalkulator(unittest.TestCase):
+
+    # Setiap method test WAJIB diawali dengan kata "test_"
+    def test_tambah_positif(self):
+        hasil = kalkulator.tambah(3, 5)
+        self.assertEqual(hasil, 8) # Memastikan 3 + 5 = 8
+
+    def test_tambah_negatif(self):
+        hasil = kalkulator.tambah(-1, -1)
+        self.assertEqual(hasil, -2) # Memastikan -1 + -1 = -2
+
+    def test_bagi_normal(self):
+        hasil = kalkulator.bagi(10, 2)
+        self.assertEqual(hasil, 5.0)
+
+    def test_bagi_nol(self):
+        # Memastikan pemanggilan bagi(10, 0) menghasilkan ValueError
+        with self.assertRaises(ValueError):
+            kalkulator.bagi(10, 0)
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+### Langkah 3: Jalankan Tes-nya!
+Buka terminal VS Code-mu, lalu jalankan perintah berikut:
+
+```bash
+python -m unittest test_kalkulator.py
+```
+
+Jika semuanya benar, terminal akan menampilkan output sukses seperti ini:
+```text
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+OK
+```
+Tanda titik (`.`) merepresentasikan setiap test yang lolos. Jika ada tes yang gagal, terminal akan menampilkan tanda `F` (Fail) beserta letak baris kodenya agar kamu bisa langsung memperbaikinya!
+
+---
+
+## 10. Rangkuman Unit Testing
+Duration: 0:05:00
+
+Hebat! Kamu sekarang sudah memahami dasar pengujian otomatis. Mari kita rangkum poin-poin penting dari Unit Testing di Python:
+
+### Aturan Emas Menulis Unit Test
+1. **Nama Method Harus Diawali `test_`:** Library `unittest` hanya akan mendeteksi dan menjalankan method yang namanya berawalan `test_` (misalnya `test_hitung_luas`).
+2. **Tes Harus Independen:** Satu test tidak boleh bergantung pada hasil dari test lainnya. Urutan eksekusi test bersifat acak.
+3. **Fokus Satu Hal:** Pastikan tiap method test hanya menguji satu skenario spesifik agar jika terjadi kegagalan, kamu tahu persis bagian mana yang bermasalah.
+
+### Macam-Macam Assertion yang Sering Digunakan
+Di dalam `unittest.TestCase`, ada beberapa asersi bawaan yang bisa kamu pakai:
+
+| Method Assertion | Kegunaan |
+|---|---|
+| `assertEqual(a, b)` | Memastikan `a == b` |
+| `assertNotEqual(a, b)` | Memastikan `a != b` |
+| `assertTrue(x)` | Memastikan nilai `x` adalah `True` |
+| `assertFalse(x)` | Memastikan nilai `x` adalah `False` |
+| `assertIn(item, list)` | Memastikan `item` ada di dalam koleksi/list |
+| `assertRaises(Error)` | Memastikan fungsi melempar *exception* error tertentu |
+
+---
+
+## 11. Kuis Unit Testing
+Duration: 0:08:00
+
+Ayo uji pemahamanmu tentang Unit Testing dengan menjawab kuis singkat berikut!
+
+### Pertanyaan 1
+Di bawah ini, manakah penulisan nama fungsi unit test yang **benar** agar otomatis dijalankan oleh library `unittest`?
+* A. `def hitung_luas_test(self):`
+* B. `def test_hitung_luas(self):`
+* C. `def pengujian_hitung_luas(self):`
+* D. `def assert_hitung_luas(self):`
+
+<details>
+<summary>🔑 Klik untuk melihat Jawaban Benar</summary>
+<strong>Jawaban Benar: B</strong>
+<br>
+<strong>Penjelasan:</strong> Library <code>unittest</code> secara default hanya mencari dan mengeksekusi metode yang namanya diawali secara eksplisit dengan kata <code>test_</code>.
+</details>
+
+### Pertanyaan 2
+Asersi (assertion) manakah yang digunakan untuk memastikan bahwa sebuah fungsi melempar/menghasilkan error (Exception) yang kita harapkan saat diberi input yang salah?
+* A. `self.assertEqual()`
+* B. `self.assertError()`
+* C. `self.assertRaises()`
+* D. `self.assertFail()`
+
+<details>
+<summary>🔑 Klik untuk melihat Jawaban Benar</summary>
+<strong>Jawaban Benar: C</strong>
+<br>
+<strong>Penjelasan:</strong> Kita menggunakan context manager <code>with self.assertRaises(ErrorType):</code> untuk memverifikasi bahwa potongan kode tertentu memicu error/exception yang diharapkan.
+</details>
+
+### Pertanyaan 3
+Apakah unit test yang baik diperbolehkan saling bergantung satu sama lain (misal: Test B hanya bisa jalan jika Test A berhasil)?
+* A. Ya, agar menghemat baris kode.
+* B. Ya, karena urutan tes selalu berurutan dari atas ke bawah.
+* C. Tidak, semua test harus independen dan terisolasi agar dapat dijalankan secara acak dan fokus pada satu tanggung jawab saja.
+* D. Tidak, kecuali jika menggunakan database eksternal.
+
+<details>
+<summary>🔑 Klik untuk melihat Jawaban Benar</summary>
+<strong>Jawaban Benar: C</strong>
+<br>
+<strong>Penjelasan:</strong> Sifat unit test wajib independen dan terisolasi. Ketergantungan antar-test akan mempersulit debugging saat terjadi error.
+</details>
+
+---
+
+## 12. Challenge: Game Tebak Angka!
 Duration: 0:15:00
 
 Saatnya mempraktekkan semua ilmu yang sudah kamu dapatkan! Kita akan membuat mini-game interaktif bernama **Game Tebak Angka**.
@@ -254,7 +422,9 @@ python main.py
 ```
 Masukkan tebakan angka di terminal dan rasakan keajaiban dari program Python buatanmu sendiri!
 
-## 9. Selamat!
+---
+
+## 13. Selamat!
 Duration: 0:02:00
 
 Kamu telah berhasil menyelesaikan Codelab fundamental Python ini! 🎉
@@ -266,8 +436,10 @@ Kamu telah berhasil menyelesaikan Codelab fundamental Python ini! 🎉
 * ✅ Menggunakan perulangan (`for` dan `while` loops).
 * ✅ Membuat fungsi dinamis (`def`).
 * ✅ Mengimpor modul bawaan (`random`) dan membuat mini-game logika interaktif.
+* ✅ **Menerapkan konsep Unit Testing menggunakan library bawaan `unittest` untuk menguji fungsionalitas kode secara otomatis!**
 
 ### Langkah Selanjutnya:
-Cobalah memodifikasi game Tebak Angka buatanmu agar memiliki batas maksimal nyawa/nyoba (misalnya maksimal hanya boleh salah 3 kali, jika lebih maka game over).
+Cobalah memodifikasi game Tebak Angka buatanmu agar memiliki batas maksimal nyawa/nyoba (misalnya maksimal hanya boleh salah 3 kali, jika lebih maka game over), lalu buatlah **unit test** sederhana untuk memverifikasi logika pengurangan nyawa pemain tersebut!
 
 Teruslah belajar, eksplorasi library baru, dan *Happy Coding* dengan Python!
+
