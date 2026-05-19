@@ -1,0 +1,239 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Mastering GitHub SSH: Mengelola Multiple Akun &amp; Project</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="github-ssh-multiple-accounts"
+                  title="Mastering GitHub SSH: Mengelola Multiple Akun &amp; Project"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="1. Pendahuluan" duration="5">
+        <p>Pernahkah kamu mengalami error seperti ini saat bekerja dengan Git?</p>
+<pre><code language="language-bash" class="language-bash">ERROR: Permission to user/repo.git denied to other_user.
+fatal: Could not read from remote repository.
+</code></pre>
+<p>Sebagai seorang developer, sangat wajar jika kita memiliki <strong>lebih dari satu akun GitHub</strong>. Misalnya:</p>
+<ol type="1">
+<li>Akun <strong>Personal</strong> untuk proyek open-source atau portofolio pribadi.</li>
+<li>Akun <strong>Kantor / Qiscus</strong> untuk mengerjakan proyek perusahaan.</li>
+<li>Akun <strong>Klien</strong> khusus untuk proyek <em>freelance</em> tertentu.</li>
+</ol>
+<p>Secara default, komputer kita (macOS/Linux) akan kesulitan membedakan kapan harus menggunakan kunci SSH personal dan kapan harus menggunakan kunci SSH kantor jika keduanya mengarah ke domain yang sama: <code>github.com</code>.</p>
+<p>Di codelab ini, kamu akan belajar cara mengonfigurasi banyak akun GitHub di satu komputer secara <strong>rapi, aman, dan anti-bentrok</strong>!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="2. Membuat SSH Key Spesifik" duration="8">
+        <p>Langkah pertama adalah membuat kunci SSH (<em>SSH Key pair</em>) yang berbeda untuk masing-masing akun. Jangan pernah menggunakan satu kunci SSH untuk semua akun demi alasan keamanan dan manajemen.</p>
+<h2 is-upgraded>Membuat SSH Key Baru</h2>
+<p>Buka terminal dan jalankan perintah berikut (sesuaikan nama file dengan nama akunmu):</p>
+<pre><code language="language-bash" class="language-bash"># SSH Key untuk akun Personal (contoh: id_ed25519_personal)
+ssh-keygen -t ed25519 -C &#34;email_personal@gmail.com&#34; -f ~/.ssh/id_ed25519_personal
+
+# SSH Key untuk akun Kantor (contoh: id_ed25519_qiscus)
+ssh-keygen -t ed25519 -C &#34;email_kantor@qiscus.com&#34; -f ~/.ssh/id_ed25519_qiscus
+</code></pre>
+<ul>
+<li><code>-t ed25519</code>: Menggunakan algoritma enkripsi Ed25519 (sangat direkomendasikan karena cepat dan aman).</li>
+<li><code>-C</code>: Memberikan komentar (biasanya email pemilik akun).</li>
+<li><code>-f</code>: Lokasi dan nama file kunci yang dihasilkan.</li>
+</ul>
+<h2 is-upgraded>Daftarkan ke GitHub</h2>
+<p>Copy isi dari file <em>public key</em> (<code>.pub</code>) yang baru dibuat ke pengaturan GitHub masing-masing akun:</p>
+<pre><code language="language-bash" class="language-bash"># Copy key personal ke clipboard (macOS)
+pbcopy &lt; ~/.ssh/id_ed25519_personal.pub
+
+# Copy key kantor ke clipboard (macOS)
+pbcopy &lt; ~/.ssh/id_ed25519_qiscus.pub
+</code></pre>
+<p><em>(Untuk Windows/Linux, kamu bisa membukanya dengan teks editor biasa lalu meng-copy isinya secara manual).</em></p>
+<p>Buka GitHub ➔ <strong>Settings</strong> ➔ <strong>SSH and GPG keys</strong> ➔ <strong>New SSH Key</strong>, lalu paste isinya di sana.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="3. Konfigurasi ~/.ssh/config" duration="10">
+        <p>Ini adalah <strong>&#34;otak&#34;</strong> dari trik <em>multiple account</em>. Kita akan menggunakan file konfigurasi SSH untuk membuat <em>alias host</em> yang unik untuk setiap akun.</p>
+<h2 is-upgraded>Edit File Config</h2>
+<p>Buat atau buka file konfigurasi SSH di <code>~/.ssh/config</code>:</p>
+<pre><code language="language-bash" class="language-bash">nano ~/.ssh/config
+</code></pre>
+<p>Masukkan konfigurasi berikut:</p>
+<pre><code language="language-text" class="language-text"># ==========================================
+# Akun GitHub PERSONAL
+# ==========================================
+Host github-personal
+  HostName github.com
+  User git
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519_personal
+  IdentitiesOnly yes
+
+# ==========================================
+# Akun GitHub KANTOR (Qiscus)
+# ==========================================
+Host github-qiscus
+  HostName github.com
+  User git
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519_qiscus
+  IdentitiesOnly yes
+</code></pre>
+<h2 is-upgraded>Parameter Penting yang Wajib Ada:</h2>
+<ul>
+<li><strong><code>Host [alias]</code></strong>: Ini adalah nama samaran yang akan kita panggil di URL Git remote. Bebas dinamai apa saja (misal: <code>github-personal</code>, <code>github-qiscus</code>).</li>
+<li><strong><code>HostName github.com</code></strong>: Domain asli tujuan koneksi kita.</li>
+<li><strong><code>IdentityFile ~/.ssh/...</code></strong>: Jalur absolut ke kunci privat spesifik yang digunakan untuk host ini.</li>
+<li><strong><code>IdentitiesOnly yes</code></strong> (CRITICAL!): Memaksa SSH hanya menawarkan kunci yang tertera di konfigurasi ini. Jika diabaikan, SSH Agent akan menawarkan kunci sembarangan yang sudah termuat di memori, menyebabkan problem <em>wrong identity</em>.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="4. Cara Menggunakan Alias pada Proyek" duration="7">
+        <p>Setelah konfigurasi SSH siap, kita harus menggunakannya pada proyek lokal kita.</p>
+<h2 is-upgraded>Skenario 1: Clone Proyek Baru</h2>
+<p>Saat melakukan <code>git clone</code>, ganti domain asli <code>github.com</code> dengan <em>Alias Host</em> yang sudah kita definisikan.</p>
+<pre><code language="language-bash" class="language-bash"># Menggunakan SSH Asli (Akan bentrok dengan default key)
+git clone git@github.com:username/personal-repo.git
+
+# MENGGUNAKAN ALIAS (Benar &amp; Aman)
+git clone git@github-personal:username/personal-repo.git
+
+# Contoh untuk akun Kantor
+git clone git@github-qiscus:qiscus/work-repo.git
+</code></pre>
+<h2 is-upgraded>Skenario 2: Update Proyek yang Sudah Ada</h2>
+<p>Jika proyekmu sudah terlanjur di-clone sebelumnya dan gagal di-push, kamu cukup mengubah URL remote git-nya:</p>
+<pre><code language="language-bash" class="language-bash"># Ubah URL remote untuk menggunakan alias github-personal
+git remote set-url origin git@github-personal:username/personal-repo.git
+
+# Atau ubah URL remote untuk menggunakan alias github-qiscus
+git remote set-url origin git@github-qiscus:qiscus/work-repo.git
+</code></pre>
+<p>Verifikasi perubahan dengan perintah:</p>
+<pre><code language="language-bash" class="language-bash">git remote -v
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="5. Masalah Umum dan Cara Mengatasinya" duration="10">
+        <p>Berikut adalah <em>troubleshooting</em> atas error-error yang paling sering terjadi saat mengelola banyak akun SSH.</p>
+<h2 is-upgraded>1. Masalah: IdentitiesOnly Terlewat (Salah Akun)</h2>
+<p><strong>Gejala:</strong> Kamu mencoba nge-push ke akun personal, tapi ditolak dengan pesan: <code>Permission denied to [akun_kantor]</code>. <strong>Penyebab:</strong> Kunci kantor kamu sedang aktif di <em>SSH Agent</em> dan ditawarkan otomatis sebelum kunci personal dibaca. <strong>Solusi:</strong> Pastikan parameter <code>IdentitiesOnly yes</code> sudah terpasang di bawah masing-masing konfigurasi Host di <code>~/.ssh/config</code>.</p>
+<h2 is-upgraded>2. Masalah: Menghapus Cache Kunci di Agent</h2>
+<p>Terkadang, SSH Agent menimbun terlalu banyak kunci lama di memori komputer Anda. Bersihkan cache dengan cara:</p>
+<pre><code language="language-bash" class="language-bash"># Melihat kunci yang terdaftar aktif di memori
+ssh-add -l
+
+# Menghapus semua kunci aktif dari memori agent
+ssh-add -D
+
+# Memasukkan kembali kunci spesifik Anda ke agent
+ssh-add -K ~/.ssh/id_ed25519_personal
+</code></pre>
+<h2 is-upgraded>3. Masalah: Menguji Koneksi (Validasi)</h2>
+<p>Bagaimana cara tahu konfigurasi alias SSH kita sudah benar? Jalankan perintah ini:</p>
+<pre><code language="language-bash" class="language-bash"># Tes koneksi alias personal
+ssh -T git@github-personal
+
+# Tes koneksi alias kantor
+ssh -T git@github-qiscus
+</code></pre>
+<ul>
+<li><strong>Output Benar: </strong><code>Hi [Username_Personal]! You've successfully authenticated...</code></li>
+</ul>
+<p>Negative : Jika output <code>ssh -T</code> masih mengembalikan <em>username</em> akun kantor Anda saat dipanggil dengan alias personal, periksa kembali penulisan file <code>~/.ssh/config</code> Anda, atau jalankan <code>ssh-add -D</code> untuk membersihkan cache memory.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="6. Tips Tambahan: Manajemen Folder dan Git Config" duration="8">
+        <p>Jika kamu memiliki puluhan proyek, mengubah URL remote satu per satu secara manual sangat melelahkan. Gunakan teknik tingkat lanjut ini!</p>
+<h2 is-upgraded>1. Buat Struktur Folder yang Rapi</h2>
+<p>Pisahkan folder kerja berdasarkan tujuan akun:</p>
+<pre><code language="language-text" class="language-text">~/Documents/
+├── personal/          # Semua repo personal kamu
+│   ├── web-portfolio/
+│   └── side-project/
+└── qiscus/            # Semua repo pekerjaan kantor kamu
+    ├── iami-bot/
+    └── another-app/
+</code></pre>
+<h2 is-upgraded>2. Gunakan Conditional Includes di Git Config</h2>
+<p>Kamu bisa mengatur nama dan email Git secara otomatis berdasarkan folder proyek tempat repo tersebut berada.</p>
+<p>Buka file global git config kamu (<code>~/.gitconfig</code>):</p>
+<pre><code language="language-bash" class="language-bash">nano ~/.gitconfig
+</code></pre>
+<p>Isi dengan konfigurasi dinamis berikut:</p>
+<pre><code language="language-text" class="language-text">[user]
+  name = Fath (Personal)
+  email = personal@gmail.com
+
+# Jika lokasi folder ada di dalam ~/Documents/qiscus/, gunakan config khusus qiscus
+[includeIf &#34;gitdir:~/Documents/qiscus/&#34;]
+  path = ~/.gitconfig-qiscus
+</code></pre>
+<p>Lalu, buat file konfigurasi khusus tersebut (<code>~/.gitconfig-qiscus</code>):</p>
+<pre><code language="language-bash" class="language-bash">nano ~/.gitconfig-qiscus
+</code></pre>
+<p>Isi dengan kredensial kantormu:</p>
+<pre><code language="language-text" class="language-text">[user]
+  name = Fathullah Qiscus
+  email = fathullah@qiscus.com
+</code></pre>
+<p>Sekarang, setiap kali kamu membuat repo atau melakukan <em>commit</em> di dalam folder <code>~/Documents/qiscus/</code>, Git akan otomatis menggunakan nama dan email Qiscus Anda tanpa Anda perlu mengetik <code>git config user.email</code> secara manual lagi!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="7. Kesimpulan" duration="2">
+        <p>Selamat! Kamu sekarang sudah menguasai cara mengelola beberapa akun GitHub secara efisien di satu perangkat!</p>
+<h2 is-upgraded>Rangkuman yang Telah Kamu Pelajari:</h2>
+<ul>
+<li>✅ Cara membuat kunci SSH unik menggunakan algoritma <code>ed25519</code>.</li>
+<li>✅ Konfigurasi alias host di <code>~/.ssh/config</code> dengan <code>IdentitiesOnly yes</code> agar tidak terjadi <em>identity hijacking</em>.</li>
+<li>✅ Menggunakan URL remote kustom untuk clone atau update proyek.</li>
+<li>✅ Teknik troubleshooting SSH Agent (<code>ssh-add -D</code> dan <code>ssh -T</code>).</li>
+<li>✅ Automatisasi identitas Git menggunakan <em>Conditional Includes</em> berdasarkan struktur folder.</li>
+</ul>
+<p>Lacak terus portofoliomu di akun personal dan berikan performa terbaikmu di repo pekerjaan kantor dengan konfigurasi yang super rapi ini! <em>Happy coding!</em></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

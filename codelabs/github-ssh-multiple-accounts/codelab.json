@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-05-19T10:39:56+07:00",
+  "id": "github-ssh-multiple-accounts",
+  "duration": 50,
+  "title": "Mastering GitHub SSH: Mengelola Multiple Akun \u0026 Project",
+  "summary": "Panduan mengelola banyak akun GitHub menggunakan SSH Key di satu komputer (macOS/Linux), mengatasi problem izin ditolak (Permission Denied), dan tips merapikannya.",
+  "source": "github-ssh-multiple-accounts.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "git",
+    "ssh",
+    "devops",
+    "tips"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "github-ssh-multiple-accounts"
+}
