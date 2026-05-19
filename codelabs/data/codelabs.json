@@ -157,10 +157,23 @@
       "searchTerms": "memulai pemrograman dengan python dasar tutorial beginner unit testing unittest",
       "url": "python-dasar/",
       "ctaText": "Mulai Belajar"
+    },
+    {
+      "id": "python-library",
+      "title": "Library Populer pada Python",
+      "icon": "📚",
+      "summary": "Panduan komprehensif mengenai berbagai library populer di ekosistem Python, mulai dari manipulasi string, analisis data, web scraping, hingga machine learning dan web development.",
+      "duration": 66,
+      "sections": 11,
+      "tags": ["Python", "Library", "Ecosystem", "Data Science", "Web Development"],
+      "categories": ["python", "beginner", "ecosystem"],
+      "searchTerms": "library populer python pandas numpy requests django flask machine learning",
+      "url": "python-library/",
+      "ctaText": "Pelajari Library"
     }
   ],
   "stats": {
-    "totalTutorials": 12,
+    "totalTutorials": 13,
     "totalSubPhases": 33,
     "totalMajorPhases": 6
   }

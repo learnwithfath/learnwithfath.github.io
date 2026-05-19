@@ -1,0 +1,247 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Library Populer pada Python</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="python-library"
+                  title="Library Populer pada Python"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="1. Pengenalan Library" duration="5">
+        <p>Salah satu alasan terbesar mengapa Python sangat populer adalah ekosistem <strong>Library</strong> (pustaka) dan <strong>Framework</strong>-nya yang sangat masif. Alih-alih menulis kode dari nol untuk setiap tugas, kamu bisa &#34;meminjam&#34; kode yang sudah ditulis oleh programmer lain di seluruh dunia.</p>
+<h2 is-upgraded>Apa itu Library?</h2>
+<p>Library adalah kumpulan modul atau kode program yang sudah jadi dan siap pakai untuk tujuan tertentu. Dengan menggunakan library, proses pengembangan perangkat lunak (development) menjadi jauh lebih cepat dan efisien.</p>
+<h2 is-upgraded>Cara Menginstal Library</h2>
+<p>Python memiliki <em>package manager</em> bawaan bernama <strong>pip</strong>. Untuk menginstal library eksternal, kamu cukup membuka terminal/command prompt dan mengetik:</p>
+<pre><code language="language-bash" class="language-bash">pip install nama_library
+</code></pre>
+<p>Di codelab ini, kita akan menjelajahi berbagai kategori library paling populer yang sering digunakan di industri!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="2. Library Text Processing" duration="6">
+        <p>Memproses dan memanipulasi teks adalah tugas yang sangat umum. Python menyediakan library bawaan maupun eksternal yang tangguh untuk urusan ini.</p>
+<h2 is-upgraded>1. <code>re</code> (Regular Expressions)</h2>
+<p>Library bawaan Python untuk pencarian dan manipulasi string tingkat lanjut menggunakan pola (pattern). Sangat berguna untuk validasi email, password, atau ekstraksi teks.</p>
+<pre><code language="language-python" class="language-python">import re
+
+teks = &#34;Hubungi saya di email budi@gmail.com atau andi@yahoo.com&#34;
+# Mencari semua format email dalam teks
+emails = re.findall(r&#39;[\w\.-]+@[\w\.-]+&#39;, teks)
+print(emails) # Output: [&#39;budi@gmail.com&#39;, &#39;andi@yahoo.com&#39;]
+</code></pre>
+<h2 is-upgraded>2. <code>string</code></h2>
+<p>Modul bawaan yang berisi konstanta string umum seperti huruf alfabet, angka, dan tanda baca. Sangat berguna untuk pembersihan teks (text cleaning).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="3. Library Matematika" duration="5">
+        <p>Untuk kalkulasi matematis yang lebih kompleks, Python menyediakan fungsi bawaan yang sangat teroptimasi.</p>
+<h2 is-upgraded>1. <code>math</code></h2>
+<p>Library standar untuk operasi matematika dasar seperti trigonometri, logaritma, faktorial, dan konstanta (<code>pi</code>, <code>e</code>).</p>
+<pre><code language="language-python" class="language-python">import math
+
+akar = math.sqrt(64) # Akar kuadrat
+print(akar) # Output: 8.0
+
+print(math.pi) # Output: 3.141592653589793
+</code></pre>
+<h2 is-upgraded>2. <code>random</code></h2>
+<p>Digunakan untuk menghasilkan angka acak, memilih elemen acak dari sebuah list, atau mengacak urutan (shuffle).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="4. Library Parser" duration="7">
+        <p>Di dunia nyata, program sering kali perlu membaca dan menulis data dalam berbagai format standar seperti JSON, CSV, atau XML.</p>
+<h2 is-upgraded>1. <code>json</code></h2>
+<p>Format pertukaran data yang paling umum di internet (terutama untuk API).</p>
+<pre><code language="language-python" class="language-python">import json
+
+# Mengubah dictionary Python menjadi JSON string (serialization)
+data = {&#34;nama&#34;: &#34;Budi&#34;, &#34;umur&#34;: 25}
+json_string = json.dumps(data)
+
+# Mengubah JSON string kembali menjadi dictionary Python (deserialization)
+parsed_data = json.loads(&#39;{&#34;kota&#34;: &#34;Jakarta&#34;, &#34;suhu&#34;: 30}&#39;)
+print(parsed_data[&#34;kota&#34;]) # Output: Jakarta
+</code></pre>
+<h2 is-upgraded>2. <code>csv</code></h2>
+<p>Digunakan untuk membaca dan menulis file berekstensi <code>.csv</code> (Comma Separated Values) yang sering digunakan di Microsoft Excel atau Google Sheets.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="5. Library Pengolahan Data" duration="10">
+        <p>Ini adalah &#34;senjata rahasia&#34; mengapa Python menjadi raja di bidang Data Science dan Analisis Data!</p>
+<h2 is-upgraded>1. <code>pandas</code></h2>
+<p>Library eksternal yang paling kuat untuk analisis data relasional (tabel). Pandas menyediakan struktur data bernama <strong>DataFrame</strong> (mirip tabel Excel).</p>
+<pre><code language="language-python" class="language-python"># pip install pandas
+import pandas as pd
+
+# Membuat DataFrame
+data = {
+    &#39;Nama&#39;: [&#39;Budi&#39;, &#39;Ani&#39;, &#39;Cici&#39;],
+    &#39;Nilai&#39;: [80, 95, 88]
+}
+df = pd.DataFrame(data)
+
+# Menghitung rata-rata nilai
+print(&#34;Rata-rata:&#34;, df[&#39;Nilai&#39;].mean())
+</code></pre>
+<h2 is-upgraded>2. <code>numpy</code></h2>
+<p>Library dasar untuk komputasi numerik. Numpy sangat cepat untuk operasi matriks dan array multi-dimensi karena ditulis dalam bahasa C.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="6. Library File Management" duration="6">
+        <p>Sering kali program kita perlu berinteraksi dengan sistem operasi untuk membuat folder, menghapus file, atau memindahkan data.</p>
+<h2 is-upgraded>1. <code>os</code></h2>
+<p>Library bawaan untuk berinteraksi dengan sistem operasi, seperti membaca variabel environment, mengubah direktori, atau menjalankan command shell.</p>
+<pre><code language="language-python" class="language-python">import os
+
+# Mendapatkan direktori saat ini
+current_dir = os.getcwd()
+print(&#34;Saya berada di:&#34;, current_dir)
+
+# Membuat folder baru
+if not os.path.exists(&#34;folder_baru&#34;):
+    os.mkdir(&#34;folder_baru&#34;)
+</code></pre>
+<h2 is-upgraded>2. <code>pathlib</code></h2>
+<p>Pendekatan modern dan berbasis objek (OOP) untuk menangani jalur (path) file, lebih elegan dibandingkan <code>os.path</code>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="7. Library Web Scraping" duration="8">
+        <p>Ingin mengambil data dari sebuah website secara otomatis? Python adalah ahlinya!</p>
+<h2 is-upgraded>1. <code>requests</code></h2>
+<p>Library HTTP paling populer di Python. Sangat intuitif untuk melakukan request GET/POST ke sebuah API atau website.</p>
+<pre><code language="language-python" class="language-python"># pip install requests
+import requests
+
+response = requests.get(&#39;https://api.github.com&#39;)
+print(response.status_code) # Output: 200 (OK)
+</code></pre>
+<h2 is-upgraded>2. <code>BeautifulSoup</code> (dari library <code>bs4</code>)</h2>
+<p>Sangat powerful untuk mengambil spesifik tag HTML dari sebuah halaman web.</p>
+<pre><code language="language-python" class="language-python"># pip install beautifulsoup4
+from bs4 import BeautifulSoup
+
+html_doc = &#34;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Berita Utama hari ini&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&#34;
+soup = BeautifulSoup(html_doc, &#39;html.parser&#39;)
+
+print(soup.h1.text) # Output: Berita Utama hari ini
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="8. Library Machine Learning" duration="7">
+        <p>Kecerdasan Buatan (AI) berkembang pesat berkat library Python yang kuat dan <em>open-source</em>.</p>
+<h2 is-upgraded>1. <code>scikit-learn</code></h2>
+<p>Pilihan terbaik untuk algoritma machine learning tradisional seperti regresi linier, klasifikasi (Decision Tree, SVM), dan clustering (K-Means).</p>
+<h2 is-upgraded>2. <code>TensorFlow</code> &amp; <code>PyTorch</code></h2>
+<p>Dua raksasa di bidang <strong>Deep Learning</strong> dan Jaringan Saraf Tiruan (Neural Networks). TensorFlow didukung oleh Google, sementara PyTorch didukung oleh Meta (Facebook).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="9. Library Web Development" duration="8">
+        <p>Python juga sangat handal untuk membuat server dan backend aplikasi web!</p>
+<h2 is-upgraded>1. <code>Django</code></h2>
+<p>Framework <em>full-stack</em> tingkat tinggi yang mengikuti filosofi &#34;Batteries Included&#34;. Sudah dilengkapi dengan panel admin, ORM database, dan fitur keamanan bawaan. Sangat cocok untuk proyek skala besar (seperti Instagram dan Pinterest).</p>
+<h2 is-upgraded>2. <code>Flask</code></h2>
+<p>Framework <em>micro</em> yang sangat ringan, minimalis, dan fleksibel. Sangat cocok untuk membuat layanan REST API sederhana atau aplikasi kecil.</p>
+<h2 is-upgraded>3. <code>FastAPI</code></h2>
+<p>Bintang baru yang sedang naik daun! Sangat cepat (mendekati performa Go dan NodeJS), modern, dan secara otomatis menghasilkan dokumentasi API interaktif (Swagger UI).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="10. Rangkuman Library Populer pada Python" duration="4">
+        <p>Ekosistem Python sangat kaya dan serbaguna. Mari kita ingat kembali alat-alat andalan kita:</p>
+<ol type="1">
+<li><strong>Text Processing: </strong><code>re</code></li>
+<li><strong>Matematika: </strong><code>math</code>, <code>random</code></li>
+<li><strong>Parsing: </strong><code>json</code>, <code>csv</code></li>
+<li><strong>Data Science: </strong><code>pandas</code>, <code>numpy</code></li>
+<li><strong>Sistem File: </strong><code>os</code>, <code>pathlib</code></li>
+<li><strong>Web Scraping: </strong><code>requests</code>, <code>BeautifulSoup</code></li>
+<li><strong>Machine/Deep Learning: </strong><code>scikit-learn</code>, <code>TensorFlow</code>, <code>PyTorch</code></li>
+<li><strong>Web Development: </strong><code>Django</code>, <code>Flask</code>, <code>FastAPI</code></li>
+</ol>
+<p>Tips: Jangan mencoba menghafal semua isi dari sebuah library. Cukup ketahui bahwa <em>&#34;library X bisa melakukan tugas Y&#34;</em>. Jika suatu saat kamu membutuhkannya, kamu tinggal membaca dokumentasi resminya!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="11. Kuis Library Populer pada Python" duration="6">
+        <p>Uji pengetahuanmu tentang ekosistem Python!</p>
+<h2 is-upgraded>Pertanyaan 1</h2>
+<p>Library manakah yang paling ideal digunakan untuk mengambil, membersihkan, dan menganalisis data dalam bentuk tabel (seperti format Excel)?</p>
+<ul>
+<li>A. <code>requests</code></li>
+<li>B. <code>pandas</code></li>
+<li>C. <code>Django</code></li>
+<li>D. <code>re</code></li>
+</ul>
+<p>🔑 Klik untuk melihat Jawaban Benar<strong>Jawaban Benar: B<br>Penjelasan: </strong><code>pandas</code> menggunakan struktur data DataFrame yang khusus dirancang untuk manipulasi dan analisis data tabular. </p>
+<h2 is-upgraded>Pertanyaan 2</h2>
+<p>Jika kamu ingin membuat aplikasi web modern berbasis REST API yang menuntut performa tinggi secara asynchronous, manakah library yang paling tepat digunakan?</p>
+<ul>
+<li>A. <code>FastAPI</code></li>
+<li>B. <code>BeautifulSoup</code></li>
+<li>C. <code>numpy</code></li>
+<li>D. <code>json</code></li>
+</ul>
+<p>🔑 Klik untuk melihat Jawaban Benar<strong>Jawaban Benar: A<br>Penjelasan: </strong><code>FastAPI</code> didesain untuk menjadi web framework modern dan berkinerja tinggi, dilengkapi dengan validasi otomatis. </p>
+<h2 is-upgraded>Pertanyaan 3</h2>
+<p>Library bawaan Python apa yang akan kamu gunakan untuk mengekstrak alamat email dari tumpukan teks yang berantakan?</p>
+<ul>
+<li>A. <code>math</code></li>
+<li>B. <code>os</code></li>
+<li>C. <code>re</code></li>
+<li>D. <code>scikit-learn</code></li>
+</ul>
+<p>🔑 Klik untuk melihat Jawaban Benar<strong>Jawaban Benar: C<br>Penjelasan: </strong><code>re</code> (Regular Expressions) digunakan untuk mencocokkan pola string yang kompleks seperti format penulisan email. </p>
+<p>Selamat! Kamu telah menguasai peta ekosistem library Python. Terus asah kreativitasmu dan mulailah membangun project luar biasa!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
