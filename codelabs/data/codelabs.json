@@ -105,10 +105,62 @@
       "searchTerms": "dartz functional programming option either task either flutter dart",
       "url": "dartz-functional-programming/",
       "ctaText": "Mulai Belajar"
+    },
+    {
+      "id": "docker-masterclass",
+      "title": "Docker Masterclass: Dari Pemula ke Mahir",
+      "icon": "🐳",
+      "summary": "Panduan terlengkap menguasai Docker dari konsep dasar, arsitektur, perintah CLI, Dockerfile, hingga Docker Compose dan best-practices untuk production.",
+      "duration": 45,
+      "sections": 8,
+      "tags": ["Docker", "DevOps", "Backend", "Containerization", "Indonesia"],
+      "categories": ["docker", "devops", "backend", "beginner", "advanced"],
+      "searchTerms": "docker masterclass containerization devops container",
+      "url": "docker-masterclass/",
+      "ctaText": "Mulai Belajar"
+    },
+    {
+      "id": "docker-go-project",
+      "title": "Hands-on Docker: Containerisasi Go + Postgres + Redis",
+      "icon": "🐳",
+      "summary": "Praktek langsung (hands-on) membangun microservices dengan Docker Compose, menggunakan database PostgreSQL, Redis Cache, dan optimasi Multi-stage builds.",
+      "duration": 75,
+      "sections": 8,
+      "tags": ["Docker", "Go", "PostgreSQL", "Redis", "DevOps", "Indonesia"],
+      "categories": ["docker", "go", "postgresql", "redis", "devops", "hands-on"],
+      "searchTerms": "hands-on docker containerisasi go postgres redis compose multi-stage",
+      "url": "docker-go-project/",
+      "ctaText": "Mulai Codelab"
+    },
+    {
+      "id": "onboarding-iami-bot",
+      "title": "Onboarding: IAMI Bot Backend Mastery",
+      "icon": "🤖",
+      "summary": "Panduan onboarding backend engineer untuk proyek IAMI Bot. Pahami Clean Architecture, integrasi Qiscus, Dialogflow, WhatsApp Flow, dan pengerjaan task pertama.",
+      "duration": 60,
+      "sections": 7,
+      "tags": ["Go", "Onboarding", "Clean Architecture", "Qiscus", "Dialogflow", "Indonesia"],
+      "categories": ["go", "onboarding", "qiscus", "dialogflow", "backend"],
+      "searchTerms": "onboarding iami bot backend clean architecture go qiscus multichannel",
+      "url": "onboarding-iami-bot/",
+      "ctaText": "Mulai Onboarding"
+    },
+    {
+      "id": "github-ssh-multiple-accounts",
+      "title": "Mastering GitHub SSH: Multiple Accounts",
+      "icon": "🔑",
+      "summary": "Pelajari cara mengelola banyak akun GitHub (personal & kantor) di satu perangkat menggunakan SSH Key dan config alias host tanpa bentrok identitas.",
+      "duration": 45,
+      "sections": 7,
+      "tags": ["Git", "SSH", "GitHub", "DevOps", "Tips", "Indonesia"],
+      "categories": ["git", "ssh", "github", "devops", "tips"],
+      "searchTerms": "mastering github ssh multiple accounts git config alias identitiesonly",
+      "url": "github-ssh-multiple-accounts/",
+      "ctaText": "Mulai Belajar"
     }
   ],
   "stats": {
-    "totalTutorials": 8,
+    "totalTutorials": 12,
     "totalSubPhases": 33,
     "totalMajorPhases": 6
   }
