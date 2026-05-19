@@ -1,0 +1,321 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Docker Masterclass: Dari Pemula ke Mahir</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="docker-masterclass"
+                  title="Docker Masterclass: Dari Pemula ke Mahir"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Pengenalan Docker" duration="5">
+        <p>Welcome to Docker Masterclass! Di codelab ini, kamu akan belajar Docker secara komprehensif mulai dari konsep dasar hingga teknik lanjutan.</p>
+<h2 is-upgraded>Apa itu Docker?</h2>
+<p>Docker adalah platform open-source yang memungkinkan developer untuk membangun, mendeploy, dan menjalankan aplikasi di dalam container.</p>
+<p>Container adalah unit standar perangkat lunak yang mengemas kode dan semua dependensinya sehingga aplikasi berjalan dengan cepat dan andal dari satu lingkungan komputasi ke lingkungan komputasi lainnya.</p>
+<h2 is-upgraded>Container vs Virtual Machine (VM)</h2>
+<ul>
+<li><strong>Virtual Machine</strong>: Mengemas aplikasi, dependensi, dan seluruh sistem operasi (Guest OS) di atas Hypervisor. Lebih berat dan lambat.</li>
+<li><strong>Container</strong>: Hanya mengemas aplikasi dan dependensinya. Container berbagi kernel dari Host OS. Jauh lebih ringan, cepat, dan efisien dalam penggunaan resource.</li>
+</ul>
+<h2 is-upgraded>Kenapa menggunakan Docker?</h2>
+<ol type="1">
+<li><strong>Konsistensi Lingkungan</strong>: &#34;It works on my machine&#34; tidak lagi menjadi masalah. Lingkungan development, testing, dan production akan selalu identik.</li>
+<li><strong>Efisiensi Resource</strong>: Container jauh lebih ringan dari VM.</li>
+<li><strong>Isolasi</strong>: Aplikasi berjalan di environment yang terisolasi, sehingga tidak akan ada konflik dependensi.</li>
+<li><strong>Skalabilitas</strong>: Sangat mudah untuk men-scale aplikasi dengan menambah container.</li>
+</ol>
+<p>Positive : Docker telah menjadi standar industri untuk modern deployment dan arsitektur microservices.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Instalasi dan Setup" duration="5">
+        <h2 is-upgraded>Instalasi Docker Desktop</h2>
+<p>Untuk pengguna Windows dan Mac, cara termudah adalah menggunakan Docker Desktop.</p>
+<ol type="1">
+<li>Kunjungi <a href="https://www.docker.com/products/docker-desktop" target="_blank">Docker Desktop Download Page</a>.</li>
+<li>Unduh installer sesuai OS kamu.</li>
+<li>Jalankan installer dan ikuti instruksinya.</li>
+</ol>
+<p>Untuk Linux (Ubuntu), kamu bisa menggunakan script instalasi resmi:</p>
+<pre><code language="language-bash" class="language-bash">curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+</code></pre>
+<h2 is-upgraded>Verifikasi Instalasi</h2>
+<p>Buka terminal dan jalankan perintah berikut untuk memastikan Docker sudah terinstall dengan benar:</p>
+<pre><code language="language-bash" class="language-bash">docker --version
+</code></pre>
+<p>Lalu coba jalankan container pertama kamu:</p>
+<pre><code language="language-bash" class="language-bash">docker run hello-world
+</code></pre>
+<p>Jika berhasil, kamu akan melihat pesan &#34;Hello from Docker!&#34;.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Konsep Dasar dan Perintah Utama" duration="10">
+        <p>Di bagian ini kita akan mempelajari komponen utama Docker dan perintah (commands) yang paling sering digunakan.</p>
+<h2 is-upgraded>Komponen Utama</h2>
+<ul>
+<li><strong>Image</strong>: Blueprint atau template read-only dengan instruksi untuk membuat Docker container.</li>
+<li><strong>Container</strong>: Instance yang berjalan dari sebuah image.</li>
+<li><strong>Registry</strong>: Tempat penyimpanan Docker images (contoh: Docker Hub).</li>
+</ul>
+<h2 is-upgraded>Perintah Dasar Docker</h2>
+<p>Berikut adalah perintah-perintah yang akan kamu jalankan setiap hari:</p>
+<h3 is-upgraded>1. Manajemen Image</h3>
+<pre><code language="language-bash" class="language-bash"># Mencari image di Docker Hub
+docker search nginx
+
+# Mendownload image dari registry
+docker pull nginx:latest
+
+# Melihat daftar image yang ada di lokal
+docker images
+
+# Menghapus image
+docker rmi nginx
+</code></pre>
+<h3 is-upgraded>2. Manajemen Container</h3>
+<pre><code language="language-bash" class="language-bash"># Menjalankan container baru dari image (berjalan di foreground)
+docker run nginx
+
+# Menjalankan container di background (Detached mode) dan mapping port (Host:Container)
+docker run -d -p 8080:80 --name web-server nginx
+
+# Melihat container yang sedang berjalan
+docker ps
+
+# Melihat semua container (termasuk yang sudah stop)
+docker ps -a
+
+# Menghentikan container
+docker stop web-server
+
+# Menjalankan kembali container yang berhenti
+docker start web-server
+
+# Menghapus container
+docker rm web-server
+</code></pre>
+<h3 is-upgraded>3. Interaksi dengan Container</h3>
+<pre><code language="language-bash" class="language-bash"># Melihat log dari container
+docker logs web-server
+
+# Masuk ke dalam terminal container yang sedang berjalan
+docker exec -it web-server bash
+# (Gunakan &#39;sh&#39; jika &#39;bash&#39; tidak tersedia di dalam container)
+</code></pre>
+<p>Negative : Jangan pernah menyimpan data penting secara langsung di dalam container. Ketika container dihapus, semua data di dalamnya juga akan ikut terhapus!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Membuat Custom Image (Dockerfile)" duration="15">
+        <p>Seringkali kita perlu membuat image untuk aplikasi kita sendiri. Kita melakukannya dengan membuat file bernama <code>Dockerfile</code>.</p>
+<h2 is-upgraded>Apa itu Dockerfile?</h2>
+<p><code>Dockerfile</code> adalah file teks berisi serangkaian instruksi untuk membangun sebuah Docker image.</p>
+<h2 is-upgraded>Struktur Dockerfile</h2>
+<p>Mari kita buat contoh aplikasi Go sederhana. Buat file <code>main.go</code>:</p>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;fmt&#34;
+    &#34;net/http&#34;
+)
+
+func main() {
+    http.HandleFunc(&#34;/&#34;, func(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintf(w, &#34;Hello from custom Docker container!&#34;)
+    })
+    fmt.Println(&#34;Server running on port 8080...&#34;)
+    http.ListenAndServe(&#34;:8080&#34;, nil)
+}
+</code></pre>
+<p>Sekarang buat file bernama <code>Dockerfile</code> di direktori yang sama:</p>
+<pre><code language="language-dockerfile" class="language-dockerfile"># Menggunakan base image golang versi terbaru
+FROM golang:1.21-alpine
+
+# Set working directory di dalam container
+WORKDIR /app
+
+# Copy source code ke dalam container
+COPY main.go .
+
+# Build aplikasi Go
+RUN go build -o main .
+
+# Expose port yang digunakan aplikasi
+EXPOSE 8080
+
+# Command untuk menjalankan aplikasi
+CMD [&#34;./main&#34;]
+</code></pre>
+<h2 is-upgraded>Membangun (Build) dan Menjalankan Image</h2>
+<pre><code language="language-bash" class="language-bash"># Build image dengan nama &#39;my-go-app&#39; dan tag &#39;v1&#39;
+docker build -t my-go-app:v1 .
+
+# Jalankan image yang baru dibuat
+docker run -d -p 8080:8080 --name go-app my-go-app:v1
+</code></pre>
+<p>Buka browser dan akses <code>http://localhost:8080</code>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Docker Volumes dan Networks" duration="10">
+        <h2 is-upgraded>Docker Volumes (Persistensi Data)</h2>
+<p>Secara default, semua data yang dibuat di dalam container akan hilang saat container dihapus. Untuk menyimpan data secara permanen, kita menggunakan <strong>Volumes</strong>.</p>
+<pre><code language="language-bash" class="language-bash"># Membuat volume
+docker volume create my-data
+
+# Menjalankan container dengan mount volume
+docker run -d -v my-data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=secret mysql:8
+</code></pre>
+<p>Sekarang, meskipun container MySQL dihapus, data database akan tetap aman di dalam volume <code>my-data</code>.</p>
+<h2 is-upgraded>Docker Networks</h2>
+<p>Container dalam satu network bisa saling berkomunikasi. Secara default, Docker menyediakan network <code>bridge</code>, tapi disarankan membuat custom network.</p>
+<pre><code language="language-bash" class="language-bash"># Membuat custom network
+docker network create my-network
+
+# Menjalankan dua container dalam network yang sama
+docker run -d --name backend-api --network my-network my-go-app:v1
+docker run -d --name frontend-web --network my-network nginx
+</code></pre>
+<p>Di dalam container <code>frontend-web</code>, kita bisa memanggil API backend dengan alamat <code>http://backend-api:8080</code>. Docker menyediakan fitur DNS resolution otomatis berdasarkan nama container!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Docker Compose (Multi-Container)" duration="15">
+        <p>Menjalankan banyak perintah <code>docker run</code> sangat merepotkan. <strong>Docker Compose</strong> adalah tool untuk mendefinisikan dan menjalankan aplikasi Docker yang terdiri dari beberapa container menggunakan satu file YAML.</p>
+<h2 is-upgraded>Contoh docker-compose.yml</h2>
+<p>Buat file <code>docker-compose.yml</code> untuk menjalankan aplikasi Go kita bersama dengan Redis.</p>
+<pre><code language="language-yaml" class="language-yaml">version: &#39;3.8&#39;
+
+services:
+  web-api:
+    build: .
+    ports:
+      - &#34;8080:8080&#34;
+    environment:
+      - REDIS_URL=redis:6379
+    depends_on:
+      - redis
+    networks:
+      - app-network
+
+  redis:
+    image: redis:alpine
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+
+volumes:
+  redis-data:
+</code></pre>
+<h2 is-upgraded>Perintah Docker Compose</h2>
+<pre><code language="language-bash" class="language-bash"># Menjalankan seluruh aplikasi di background
+docker-compose up -d
+
+# Melihat log seluruh layanan
+docker-compose logs -f
+
+# Menghentikan dan menghapus semua container, network, dll
+docker-compose down
+</code></pre>
+<p>Positive : Docker Compose sangat ideal untuk lingkungan development dan testing! Di production, tool seperti Kubernetes atau Docker Swarm lebih umum digunakan untuk orkestrasi container.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Best Practices dan Tingkat Mahir" duration="10">
+        <p>Untuk mencapai tingkat mahir, perhatikan best practices berikut dalam membangun Docker image, terutama untuk environment production.</p>
+<h2 is-upgraded>1. Multi-stage Builds (Sangat Penting!)</h2>
+<p>Image yang kita buat di bagian sebelumnya masih menyertakan tools Go compiler, yang membuat ukurannya besar dan tidak aman untuk production. Gunakan multi-stage build untuk mengatasinya.</p>
+<pre><code language="language-dockerfile" class="language-dockerfile"># Stage 1: Build (Ukuran besar, berisi compiler)
+FROM golang:1.21-alpine AS builder
+WORKDIR /app
+COPY main.go .
+RUN go build -o main .
+
+# Stage 2: Production (Sangat kecil dan ringan)
+FROM alpine:latest
+WORKDIR /app
+# Hanya copy hasil binary dari stage builder
+COPY --from=builder /app/main .
+
+EXPOSE 8080
+CMD [&#34;./main&#34;]
+</code></pre>
+<p>Dengan multi-stage build, ukuran image akhir bisa menyusut dari ~300MB menjadi ~10MB!</p>
+<h2 is-upgraded>2. Gunakan .dockerignore</h2>
+<p>Sama seperti <code>.gitignore</code>, file <code>.dockerignore</code> mencegah file yang tidak perlu (seperti <code>node_modules</code>, <code>.git</code>, file log) masuk ke dalam container saat proses <code>COPY</code>.</p>
+<pre><code language="language-text" class="language-text"># Contoh .dockerignore
+.git
+node_modules
+*.md
+</code></pre>
+<h2 is-upgraded>3. Jangan Menjalankan Container sebagai Root</h2>
+<p>Demi keamanan, selalu gunakan user non-root jika memungkinkan.</p>
+<pre><code language="language-dockerfile" class="language-dockerfile"># ... (setelah build)
+RUN adduser -D myuser
+USER myuser
+CMD [&#34;./main&#34;]
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Summary" duration="2">
+        <h2 is-upgraded>Apa yang Telah Kamu Pelajari</h2>
+<ul>
+<li>✅ Konsep dasar Docker (Container, Image, Registry)</li>
+<li>✅ Manajemen container dan image dengan Docker CLI</li>
+<li>✅ Membuat custom image menggunakan Dockerfile</li>
+<li>✅ Persistensi data dengan Volumes dan komunikasi antar container dengan Networks</li>
+<li>✅ Orkestrasi multi-container di environment lokal dengan Docker Compose</li>
+<li>✅ Optimasi image untuk production dengan Multi-stage builds</li>
+</ul>
+<h2 is-upgraded>What&#39;s Next?</h2>
+<p>Setelah menguasai Docker, langkah selanjutnya dalam karir Backend Engineer adalah mempelajari orkestrasi container di skala cloud, yaitu <strong>Kubernetes</strong>.</p>
+<p>Teruslah berlatih dengan meng-containerisasi proyek-proyek aplikasi kamu yang sudah ada!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

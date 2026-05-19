@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-05-19T10:20:09+07:00",
+  "id": "docker-go-project",
+  "duration": 83,
+  "title": "Hands-on Docker: Containerisasi Go + Postgres + Redis",
+  "summary": "Belajar Docker secara praktikal (Hands-on)! Containerisasi aplikasi Go, setup PostgreSQL \u0026 Redis dengan Docker Compose, dan teknik Multi-stage build.",
+  "source": "docker-hands-on.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "go",
+    "docker",
+    "backend",
+    "devops"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "docker-go-project"
+}

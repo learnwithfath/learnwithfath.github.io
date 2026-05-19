@@ -1,0 +1,391 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Hands-on Docker: Containerisasi Go &#43; Postgres &#43; Redis</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="docker-go-project"
+                  title="Hands-on Docker: Containerisasi Go &#43; Postgres &#43; Redis"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="1. Pendahuluan" duration="5">
+        <p>Selamat datang di Codelab Hands-on Docker! Jika sebelumnya kamu sudah mempelajari teori dasar Docker, sekarang saatnya <strong>praktek langsung</strong>!</p>
+<p>Di codelab ini, kamu tidak hanya sekadar menjalankan container, tapi kamu akan mensimulasikan alur kerja <em>Backend Engineer</em> profesional di industri: mulai dari membuat kode aplikasi, mengemasnya ke dalam container, menyambungkannya dengan database (PostgreSQL &amp; Redis), hingga mengoptimasinya untuk <em>Production</em>.</p>
+<h2 is-upgraded>Apa yang akan kamu buat?</h2>
+<p>Kamu akan membuat dan men-dockerisasi sebuah aplikasi <em>Tracker Pengunjung</em> menggunakan <strong>Go (Golang)</strong>. Aplikasi ini akan:</p>
+<ol type="1">
+<li>Menampilkan pesan <em>Hello World</em> di web browser.</li>
+<li>Menggunakan <strong>Redis</strong> untuk menghitung jumlah pengunjung.</li>
+<li>Menggunakan <strong>PostgreSQL</strong> untuk menyimpan log history.</li>
+</ol>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Sudah menginstall Docker Desktop (atau Docker Engine di Linux).</li>
+<li>Sudah menginstall Go (Golang) di komputer lokal (opsional, karena kita akan menggunakan Docker sepenuhnya!).</li>
+<li>Memiliki code editor seperti VS Code.</li>
+</ul>
+<p>Positive : <strong>Tips:</strong> Buka terminal dan code editor-mu bersebelahan agar mudah mengikuti panduan ini. Mari kita mulai!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="2. Inisialisasi Project Go" duration="10">
+        <p>Mari kita mulai dengan membuat folder proyek dan kode Go yang sangat sederhana.</p>
+<h2 is-upgraded>Langkah 1: Buat Folder Proyek</h2>
+<p>Buka terminalmu dan jalankan perintah berikut:</p>
+<pre><code language="language-bash" class="language-bash">mkdir docker-go-tracker
+cd docker-go-tracker
+</code></pre>
+<h2 is-upgraded>Langkah 2: Inisialisasi Go Module</h2>
+<p>Kita perlu membuat module Go untuk mengelola dependensi.</p>
+<pre><code language="language-bash" class="language-bash">go mod init tracker-app
+</code></pre>
+<p><em>(Perintah ini akan membuat file </em></p>
+<p><em><code>go.mod</code></em></p>
+<p><em>)</em></p>
+<h2 is-upgraded>Langkah 3: Buat File main.go</h2>
+<p>Buat file baru bernama <code>main.go</code> dan masukkan kode berikut. Ini adalah web server HTTP dasar yang mengembalikan pesan teks sederhana.</p>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+	&#34;fmt&#34;
+	&#34;log&#34;
+	&#34;net/http&#34;
+)
+
+func main() {
+	http.HandleFunc(&#34;/&#34;, func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, &#34;Halo! Selamat datang di Codelab Docker Hands-on!\n&#34;)
+	})
+
+	fmt.Println(&#34;Server Go berjalan di port 8080...&#34;)
+	if err := http.ListenAndServe(&#34;:8080&#34;, nil); err != nil {
+		log.Fatal(err)
+	}
+}
+</code></pre>
+<p>Jika kamu memiliki Go yang terinstall di komputermu, kamu bisa mengetesnya dengan perintah <code>go run main.go</code> lalu buka <code>http://localhost:8080</code>. Namun, tujuan kita adalah menjalankannya <strong>di dalam Docker</strong>!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="3. Dockerfile Pertamamu" duration="15">
+        <p>Sekarang kita akan membuat blueprint atau &#34;resep&#34; agar aplikasi Go ini bisa berjalan di dalam Docker. File ini bernama <code>Dockerfile</code>.</p>
+<h2 is-upgraded>Langkah 1: Buat Dockerfile</h2>
+<p>Buat file baru dengan nama <strong>tepat </strong><code>Dockerfile</code> (tanpa ekstensi apapun) di dalam folder <code>docker-go-tracker</code> dan isi dengan:</p>
+<pre><code language="language-dockerfile" class="language-dockerfile"># 1. Tentukan Base Image
+# Kita menggunakan image resmi Go berbasis Alpine Linux (sangat ringan)
+FROM golang:1.21-alpine
+
+# 2. Tentukan direktori kerja di dalam container
+WORKDIR /app
+
+# 3. Salin file go.mod (dan go.sum jika ada) untuk install dependensi
+COPY go.mod ./
+# Jika nanti ada dependensi, jalankan: RUN go mod download
+
+# 4. Salin seluruh source code kita ke dalam direktori kerja container
+COPY . .
+
+# 5. Build aplikasi Go menjadi file binary bernama &#39;server&#39;
+RUN go build -o server .
+
+# 6. Informasikan bahwa container ini akan mendengarkan port 8080
+EXPOSE 8080
+
+# 7. Perintah yang dijalankan saat container start
+CMD [&#34;./server&#34;]
+</code></pre>
+<h2 is-upgraded>Langkah 2: Build Docker Image</h2>
+<p>Buka terminal, pastikan kamu berada di direktori yang sama dengan <code>Dockerfile</code>, lalu jalankan:</p>
+<pre><code language="language-bash" class="language-bash">docker build -t my-go-tracker:v1 .
+</code></pre>
+<ul>
+<li><code>-t my-go-tracker:v1</code> memberikan nama (tag) pada image kita.</li>
+<li><code>.</code> (titik) di akhir perintah memberitahu Docker untuk mencari <code>Dockerfile</code> di folder saat ini.</li>
+</ul>
+<p>Tunggu hingga proses selesai. Docker akan mendownload base image Golang dan meng-compile kodemu.</p>
+<h2 is-upgraded>Langkah 3: Jalankan Container</h2>
+<p>Setelah image berhasil dibuat, jalankan container-nya:</p>
+<pre><code language="language-bash" class="language-bash">docker run -d -p 8080:8080 --name tracker-app my-go-tracker:v1
+</code></pre>
+<ul>
+<li><code>-d</code> (detached): Container berjalan di background.</li>
+<li><code>-p 8080:8080</code>: Memetakan port 8080 di komputermu (kiri) ke port 8080 di dalam container (kanan).</li>
+<li><code>--name</code>: Memberi nama container.</li>
+</ul>
+<h2 is-upgraded>Langkah 4: Tes Aplikasi</h2>
+<p>Buka browser dan akses <strong><code>http://localhost:8080</code></strong>. Kamu akan melihat tulisan &#34;Halo! Selamat datang di Codelab Docker Hands-on!&#34;.</p>
+<p>Hebat! Kamu telah berhasil men-dockerisasi aplikasi Go!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="4. Menambahkan Redis via Docker Compose" duration="15">
+        <p>Di dunia nyata, aplikasi tidak berdiri sendiri. Ia butuh database atau cache. Mari kita tambahkan <strong>Redis</strong> untuk menghitung berapa kali halaman kita dikunjungi.</p>
+<p>Daripada menjalankan container Redis dan Go secara terpisah dan repot menyambungkannya, kita akan menggunakan <strong>Docker Compose</strong>.</p>
+<h2 is-upgraded>Langkah 1: Install Driver Redis untuk Go</h2>
+<p>Di terminal komputermu, jalankan:</p>
+<pre><code language="language-bash" class="language-bash">go get github.com/go-redis/redis/v8
+</code></pre>
+<h2 is-upgraded>Langkah 2: Update main.go</h2>
+<p>Ubah <code>main.go</code> kamu untuk menggunakan Redis:</p>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+	&#34;context&#34;
+	&#34;fmt&#34;
+	&#34;log&#34;
+	&#34;net/http&#34;
+	&#34;os&#34;
+
+	&#34;github.com/go-redis/redis/v8&#34;
+)
+
+var ctx = context.Background()
+
+func main() {
+	// Ambil host Redis dari Environment Variable (default: localhost)
+	redisHost := os.Getenv(&#34;REDIS_HOST&#34;)
+	if redisHost == &#34;&#34; {
+		redisHost = &#34;localhost:6379&#34;
+	}
+
+	// Inisialisasi koneksi Redis
+	rdb := redis.NewClient(&amp;redis.Options{
+		Addr: redisHost,
+	})
+
+	http.HandleFunc(&#34;/&#34;, func(w http.ResponseWriter, r *http.Request) {
+		// Increment nilai &#39;visits&#39; di Redis
+		visits, err := rdb.Incr(ctx, &#34;visits&#34;).Result()
+		if err != nil {
+			http.Error(w, &#34;Gagal terhubung ke Redis&#34;, http.StatusInternalServerError)
+			return
+		}
+
+		fmt.Fprintf(w, &#34;Halo! Kamu adalah pengunjung ke-%d\n&#34;, visits)
+	})
+
+	fmt.Println(&#34;Server Go berjalan di port 8080...&#34;)
+	if err := http.ListenAndServe(&#34;:8080&#34;, nil); err != nil {
+		log.Fatal(err)
+	}
+}
+</code></pre>
+<h2 is-upgraded>Langkah 3: Buat file docker-compose.yml</h2>
+<p>Di folder proyek yang sama, buat file <code>docker-compose.yml</code>:</p>
+<pre><code language="language-yaml" class="language-yaml">version: &#39;3.8&#39;
+
+services:
+  # Service untuk aplikasi Go kita
+  api:
+    build: .
+    ports:
+      - &#34;8080:8080&#34;
+    environment:
+      # Nama &#39;redis-db&#39; ini merujuk ke nama service redis di bawah
+      - REDIS_HOST=redis-db:6379
+    depends_on:
+      - redis-db
+
+  # Service untuk Redis
+  redis-db:
+    image: redis:alpine
+    ports:
+      - &#34;6379:6379&#34;
+</code></pre>
+<h2 is-upgraded>Langkah 4: Jalankan Docker Compose</h2>
+<p>Sebelum menjalankan, pastikan kita matikan container lama yang berjalan di port 8080:</p>
+<pre><code language="language-bash" class="language-bash">docker stop tracker-app
+docker rm tracker-app
+</code></pre>
+<p>Sekarang, jalankan semua layanan sekaligus dengan ajaib:</p>
+<pre><code language="language-bash" class="language-bash">docker-compose up -d --build
+</code></pre>
+<p><em>(</em></p>
+<p><em><code>--build</code></em></p>
+<p><em> memaksa Docker untuk mem-build ulang image Go kita karena kode </em></p>
+<p><em><code>main.go</code></em></p>
+<p><em> sudah berubah).</em></p>
+<h2 is-upgraded>Langkah 5: Tes Redis</h2>
+<p>Buka <strong><code>http://localhost:8080</code></strong> dan <em>refresh</em> berkali-kali. Kamu akan melihat angka pengunjung bertambah! Aplikasi Go di dalam container berhasil berbicara dengan Redis di dalam container lainnya!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="5. Menambahkan PostgreSQL &amp; Persistensi Data" duration="20">
+        <p>Data di Redis disimpan di memori dan akan hilang jika container direstart. Mari kita tambahkan <strong>PostgreSQL</strong> untuk data permanen, dan pelajari tentang <strong>Docker Volumes</strong>.</p>
+<h2 is-upgraded>Langkah 1: Buat Volume di Docker Compose</h2>
+<p>Update file <code>docker-compose.yml</code> milikmu menjadi seperti ini:</p>
+<pre><code language="language-yaml" class="language-yaml">version: &#39;3.8&#39;
+
+services:
+  api:
+    build: .
+    ports:
+      - &#34;8080:8080&#34;
+    environment:
+      - REDIS_HOST=redis-db:6379
+      # Konfigurasi Database Postgres
+      - DB_HOST=postgres-db
+      - DB_USER=admin
+      - DB_PASSWORD=rahasia
+      - DB_NAME=tracker_db
+    depends_on:
+      - redis-db
+      - postgres-db
+
+  redis-db:
+    image: redis:alpine
+    ports:
+      - &#34;6379:6379&#34;
+
+  postgres-db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=rahasia
+      - POSTGRES_DB=tracker_db
+    ports:
+      - &#34;5432:5432&#34;
+    volumes:
+      # Memasang (Mount) Docker Volume agar data tidak hilang!
+      - pg-data:/var/lib/postgresql/data
+
+# Deklarasi nama volume
+volumes:
+  pg-data:
+</code></pre>
+<p>Negative : <strong>Penting! </strong><code>volumes: - pg-data:/var/lib/postgresql/data</code> adalah kunci agar data PostgreSQL kamu tidak hilang (persistent) ketika container dihentikan atau dihapus.</p>
+<h2 is-upgraded>Langkah 2: Jalankan kembali Compose</h2>
+<p>Kamu tidak perlu mematikan aplikasi, cukup jalankan perintah ini lagi:</p>
+<pre><code language="language-bash" class="language-bash">docker-compose up -d
+</code></pre>
+<p>Docker Compose cukup cerdas untuk mengetahui bahwa service <code>postgres-db</code> baru ditambahkan dan akan langsung men-download image PostgreSQL serta membuat databasenya.</p>
+<h2 is-upgraded>Langkah 3: Verifikasi Database</h2>
+<p>Mari kita masuk ke dalam container PostgreSQL untuk memastikan database sudah siap:</p>
+<pre><code language="language-bash" class="language-bash"># Mengeksekusi psql di dalam container postgres-db
+docker-compose exec postgres-db psql -U admin -d tracker_db
+</code></pre>
+<p>Jika berhasil, prompt akan berubah menjadi <code>tracker_db=#</code>. Ketik <code>\q</code> lalu tekan Enter untuk keluar.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="6. Multi-Stage Build untuk Production" duration="15">
+        <p>Sekarang aplikasi kita sudah jalan. Namun, mari kita lihat ukuran image aplikasi Go kita:</p>
+<pre><code language="language-bash" class="language-bash">docker images | grep tracker-app
+</code></pre>
+<p>Kamu mungkin melihat ukurannya sekitar <strong>300 MB - 500 MB</strong>! Ini karena image tersebut memuat kompiler Go, tools OS lengkap, dll. Di <em>Production</em>, kita hanya butuh file <em>binary</em> jadinya saja.</p>
+<h2 is-upgraded>Konsep Multi-Stage Build</h2>
+<p>Kita akan membagi <code>Dockerfile</code> menjadi dua tahap (<em>stages</em>):</p>
+<ol type="1">
+<li><strong>Builder Stage</strong>: Mendownload dependensi dan meng-compile kode Go.</li>
+<li><strong>Production Stage</strong>: Menggunakan OS super kecil (Alpine), mengambil file binary dari Builder, dan menjalankannya.</li>
+</ol>
+<h2 is-upgraded>Langkah 1: Ubah Dockerfile</h2>
+<p>Ubah isi <code>Dockerfile</code> kamu secara total menjadi seperti ini:</p>
+<pre><code language="language-dockerfile" class="language-dockerfile"># ==========================================
+# STAGE 1: Builder
+# ==========================================
+FROM golang:1.21-alpine AS builder
+
+WORKDIR /app
+
+# Install dependensi (bisa dicache oleh Docker)
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Salin source code dan compile
+COPY . .
+# CGO_ENABLED=0 memastikan binary murni statis, tanpa dependensi C library luar
+RUN CGO_ENABLED=0 GOOS=linux go build -o server .
+
+# ==========================================
+# STAGE 2: Production Minimalist
+# ==========================================
+FROM alpine:latest
+
+WORKDIR /app
+
+# Copy HANYA file &#39;server&#39; dari STAGE 1
+COPY --from=builder /app/server .
+
+# Berikan label port
+EXPOSE 8080
+
+CMD [&#34;./server&#34;]
+</code></pre>
+<h2 is-upgraded>Langkah 2: Build Ulang dan Bandingkan Ukuran</h2>
+<p>Jalankan Docker Compose untuk mem-build ulang dengan Dockerfile baru:</p>
+<pre><code language="language-bash" class="language-bash">docker-compose build api
+</code></pre>
+<p>Lalu cek lagi ukuran image-nya:</p>
+<pre><code language="language-bash" class="language-bash">docker images
+</code></pre>
+<p>Luar biasa! Image barumu (<em>alpine-based</em>) sekarang kemungkinan berukuran <strong>di bawah 20 MB</strong>! Ini membuatnya sangat cepat untuk didownload (pull) dan sangat aman dari sisi keamanan (attack surface kecil).</p>
+<p>Positive : <strong>Multi-stage builds</strong> adalah <em>best practice</em> paling penting yang membedakan antara developer pemula dan mahir dalam meracik Docker!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="7. Membersihkan Environment" duration="2">
+        <p>Penting untuk selalu &#34;membersihkan&#34; hasil eksperimen agar tidak memenuhi storage laptop kamu.</p>
+<p>Untuk mematikan aplikasi dan <strong>sekaligus menghapus</strong> container dan network yang dibuat:</p>
+<pre><code language="language-bash" class="language-bash">docker-compose down
+</code></pre>
+<p>Jika kamu juga ingin menghapus volume (Artinya: Semua data di database PostgreSQL akan musnah selamanya), tambahkan <code>-v</code>:</p>
+<pre><code language="language-bash" class="language-bash">docker-compose down -v
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="8. Selamat!" duration="1">
+        <p>Kamu telah berhasil menyelesaikan Codelab yang komprehensif ini!</p>
+<h2 is-upgraded>Apa yang telah kamu kuasai:</h2>
+<ul>
+<li>✅ Menulis <code>Dockerfile</code> dari nol untuk proyek nyata.</li>
+<li>✅ Menggunakan <em>Docker CLI</em> untuk <em>build</em> dan <em>run</em>.</li>
+<li>✅ Membuat arsitektur Microservices (Go API, Redis, Postgres) menggunakan <code>docker-compose.yml</code>.</li>
+<li>✅ Menjamin persistensi data database dengan <em>Docker Volumes</em>.</li>
+<li>✅ Menerapkan <em>Multi-Stage Builds</em> untuk mengecilkan ukuran image Go hingga 95% untuk <em>Production</em>.</li>
+</ul>
+<h2 is-upgraded>Langkah Selanjutnya</h2>
+<p>Tantangan untukmu: Coba dockerisasi salah satu aplikasi yang sedang kamu kerjakan, buat <code>docker-compose.yml</code> agar <em>local development</em> tim kamu seragam tanpa pusing install database!</p>
+<p>Teruslah berkarya dan <em>Happy Coding</em>!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

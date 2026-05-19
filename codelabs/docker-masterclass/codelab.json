@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-05-19T10:16:23+07:00",
+  "id": "docker-masterclass",
+  "duration": 72,
+  "title": "Docker Masterclass: Dari Pemula ke Mahir",
+  "summary": "Panduan lengkap Docker dari nol sampai tingkat mahir. Pelajari konsep container, Dockerfile, Docker Compose, hingga best practices untuk production.",
+  "source": "docker-masterclass.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "backend",
+    "docker",
+    "devops"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "docker-masterclass"
+}
