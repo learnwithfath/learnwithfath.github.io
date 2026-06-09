@@ -1,0 +1,389 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Cline AI Coding Agent - Tutorial Lengkap</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="cline-ai-coding-agent-tutorial"
+                  title="Cline AI Coding Agent - Tutorial Lengkap"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Overview" duration="2">
+        <h2 is-upgraded>Apa itu Cline?</h2>
+<p><strong>Cline</strong> (sebelumnya Claude Dev) adalah <em>autonomous AI coding agent</em> yang open-source dan dirancang untuk membantu developer dalam membangun aplikasi, memperbaiki bug, dan mengeksplorasi codebase. Tidak seperti sekadar autocomplete (seperti GitHub Copilot), Cline beroperasi secara mandiri (autonomous) dengan kemampuan:</p>
+<ul>
+<li>Membuat dan mengedit file</li>
+<li>Menjalankan command di terminal</li>
+<li>Mengotomatisasi interaksi browser untuk testing</li>
+<li>Menggunakan Model Context Protocol (MCP) untuk terhubung dengan tools kustom</li>
+</ul>
+<p>Dipercaya oleh lebih dari <strong>8 juta developer</strong> di seluruh dunia dan memiliki <strong>63k+ GitHub stars</strong>, Cline memberikan pengalaman <em>pair-programming</em> yang luar biasa.</p>
+<h2 is-upgraded>Apa yang Akan Anda Pelajari</h2>
+<p>Dalam codelab komprehensif ini, Anda akan mempelajari cara menggunakan ekosistem Cline secara penuh, mulai dari instalasi hingga penggunaan tingkat lanjut:</p>
+<ol type="1">
+<li>Instalasi dan Setup Extension di VS Code</li>
+<li>Konfigurasi API Provider (Anthropic, OpenAI, OpenRouter, dll)</li>
+<li>Menggunakan <strong>Plan Mode</strong> dan <strong>Act Mode</strong></li>
+<li>Kemampuan editing file, menjalankan command, dan browser automation</li>
+<li>Ekstensibilitas melalui <strong>Model Context Protocol (MCP)</strong></li>
+<li>Menggunakan <strong>Cline CLI</strong> untuk automation</li>
+<li>Memanfaatkan <strong>Cline SDK</strong> untuk embed agent</li>
+<li>Menggunakan fitur <strong>SpecDriven</strong> development</li>
+<li>Menentukan <em>custom rules</em> (<code>.clinerules</code>)</li>
+</ol>
+<p>Mari kita mulai perjalanan menjelajahi masa depan coding dengan AI!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Prerequisites &amp; Installation" duration="3">
+        <h2 is-upgraded>Persiapan Sistem</h2>
+<p>Sebelum menggunakan Cline, pastikan sistem Anda memenuhi beberapa persyaratan berikut:</p>
+<ol type="1">
+<li><strong>Visual Studio Code (VS Code)</strong><ul>
+<li>Download dan install dari <a href="https://code.visualstudio.com/" target="_blank">code.visualstudio.com</a></li>
+<li>Disarankan menggunakan versi terbaru</li>
+</ul>
+</li>
+<li><strong>Node.js (Opsional tapi direkomendasikan)</strong><ul>
+<li>Beberapa fitur lanjutan (seperti CLI dan MCP tools tertentu) membutuhkan Node.js.</li>
+<li>Download dari <a href="https://nodejs.org/" target="_blank">nodejs.org</a></li>
+</ul>
+</li>
+<li><strong>Akun API Provider</strong><ul>
+<li>Cline membutuhkan akses ke model LLM. Anda membutuhkan API key dari salah satu provider:</li>
+<li><strong>Anthropic</strong> (Rekomendasi utama, sangat dioptimalkan untuk Claude 3.5 Sonnet)</li>
+<li><strong>OpenAI</strong> (Untuk model GPT-4o, dll)</li>
+<li><strong>OpenRouter</strong> (Untuk akses ke ratusan model berbeda)</li>
+<li><strong>Google Gemini</strong></li>
+<li><strong>Ollama</strong> (Untuk menjalankan model secara lokal secara gratis)</li>
+</ul>
+</li>
+</ol>
+<h2 is-upgraded>Instalasi Cline di VS Code</h2>
+<p>Instalasi extension sangatlah mudah:</p>
+<ol type="1">
+<li>Buka <strong>Visual Studio Code</strong></li>
+<li>Pergi ke tab <strong>Extensions</strong> (<code>Ctrl+Shift+X</code> atau <code>Cmd+Shift+X</code> di Mac)</li>
+<li>Cari <strong>&#34;Cline&#34;</strong> di kolom pencarian</li>
+<li>Pilih extension yang dipublish oleh <strong>Cline Bot Inc.</strong></li>
+<li>Klik <strong>Install</strong></li>
+</ol>
+<p>Atau, jika Anda ingin menginstalnya via command palette (<code>Ctrl+P</code> / <code>Cmd+P</code>):</p>
+<pre><code language="language-bash" class="language-bash">ext install saoudrizwan.claude-dev
+</code></pre>
+<p>Setelah terinstal, Anda akan melihat icon Cline (robot) di <em>Activity Bar</em> sebelah kiri (atau kanan, tergantung pengaturan Anda). Klik icon tersebut untuk membuka panel Cline.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Konfigurasi API Provider" duration="5">
+        <p>Setelah panel Cline terbuka untuk pertama kalinya, hal pertama yang harus dilakukan adalah mengatur API Provider.</p>
+<h2 is-upgraded>Langkah-langkah Setup API Provider</h2>
+<ol type="1">
+<li>Buka panel Cline</li>
+<li>Klik tombol gerigi (⚙️) untuk masuk ke <strong>Settings</strong></li>
+<li>Pada bagian <strong>API Provider</strong>, pilih provider yang Anda miliki (contoh: Anthropic)</li>
+<li>Masukkan <strong>API Key</strong> yang Anda dapatkan dari dashboard provider (misal: <code>https://console.anthropic.com/</code>)</li>
+<li>Pilih model yang ingin digunakan. Untuk performa coding terbaik, pilih <strong>Claude 3.5 Sonnet (New)</strong>.</li>
+</ol>
+<h2 is-upgraded>Mengapa Pemilihan Model Penting?</h2>
+<p>Model AI memiliki kemampuan berbeda-beda:</p>
+<ul>
+<li><strong>Claude 3.5 Sonnet</strong>: Merupakan <em>state-of-the-art</em> untuk tugas-tugas coding dan merupakan model default/rekomendasi untuk Cline.</li>
+<li><strong>GPT-4o / Gemini 1.5 Pro</strong>: Alternatif solid dengan kecepatan dan context window yang baik.</li>
+<li><strong>Ollama / Local Models</strong>: Cocok jika data perusahaan sangat sensitif dan Anda tidak bisa menggunakan cloud API, namun Anda membutuhkan hardware (GPU) yang kuat.</li>
+</ul>
+<p>positive : Anda tidak terikat (no vendor lock-in). Anda bisa berpindah provider kapan saja melalui menu Settings, sehingga Anda selalu bisa menggunakan model terbaik yang tersedia di pasaran.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Plan Mode &amp; Act Mode" duration="5">
+        <p>Fitur unggulan Cline adalah pemisahan <em>mode operasi</em> menjadi <strong>Plan Mode</strong> dan <strong>Act Mode</strong>. Memahami perbedaan keduanya adalah kunci keberhasilan menggunakan Cline.</p>
+<h2 is-upgraded>Plan Mode (Arsitek)</h2>
+<p><strong>Plan Mode</strong> ibarat Anda sedang berkonsultasi dengan seorang arsitek software.</p>
+<ul>
+<li><strong>Tujuan</strong>: Mengumpulkan informasi, membaca codebase, menganalisis struktur, dan membuat rencana implementasi.</li>
+<li><strong>Kemampuan</strong>: Dapat membaca file, men-search keyword/regex dalam codebase, membaca struktur direktori.</li>
+<li><strong>Batasan</strong>: <strong>Tidak akan</strong> mengubah source code, membuat file, atau menjalankan command terminal yang memodifikasi sistem.</li>
+</ul>
+<p>Gunakan Plan Mode ketika Anda:</p>
+<ul>
+<li>Ingin memahami bagaimana suatu fitur saat ini bekerja</li>
+<li>Meminta saran refactoring</li>
+<li>Merancang arsitektur sebelum mulai menulis kode</li>
+</ul>
+<h2 is-upgraded>Act Mode (Developer)</h2>
+<p><strong>Act Mode</strong> ibarat Anda memberi izin kepada developer untuk mulai bekerja dan mengubah codebase.</p>
+<ul>
+<li><strong>Tujuan</strong>: Mengeksekusi rencana, menulis kode, membuat file, menginstal dependensi.</li>
+<li><strong>Kemampuan</strong>: Menggunakan seluruh <em>tools</em> yang ada (Create/Edit file, Run Commands, Browser, dll).</li>
+</ul>
+<p>Gunakan Act Mode ketika Anda:</p>
+<ul>
+<li>Ingin menambahkan fitur baru</li>
+<li>Menulis unit tests</li>
+<li>Memperbaiki bug (fixing errors)</li>
+</ul>
+<p>positive : <strong>Alur Kerja Terbaik</strong>: Mulailah dengan meminta Cline (di <strong>Plan Mode</strong>) untuk meninjau codebase Anda dan membuat rencana implementasi. Setelah Anda dan Cline sepakat, klik <strong>Switch to Act Mode</strong> agar Cline mengeksekusi rencana tersebut dengan akurat.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="File Editing &amp; Creation" duration="5">
+        <p>Saat berada dalam <strong>Act Mode</strong>, Cline dapat melakukan perubahan pada file Anda secara otonom.</p>
+<h2 is-upgraded>Cara Kerja File Editing</h2>
+<p>Ketika Anda memberikan instruksi seperti <em>&#34;Buat komponen Button di React dan gunakan TailwindCSS&#34;</em>:</p>
+<ol type="1">
+<li>Cline akan memikirkan (reasoning) di mana lokasi file yang tepat</li>
+<li>Cline akan menggunakan tools internal (<code>write_to_file</code> atau <code>replace_in_file</code>)</li>
+<li>Anda akan melihat proposal perubahan di panel Cline!</li>
+</ol>
+<h2 is-upgraded>Diff View (Tinjauan Perubahan)</h2>
+<p>Ini adalah fitur keamanan utama Cline. <strong>Setiap perubahan file harus mendapat persetujuan (approval) dari Anda</strong>.</p>
+<p>Ketika Cline ingin mengubah file, panel akan menampilkan <strong>Diff View</strong> (perbedaan antara file lama dan usulan file baru):</p>
+<ul>
+<li>Baris warna hijau: Kode yang ditambahkan</li>
+<li>Baris warna merah: Kode yang dihapus</li>
+</ul>
+<p>Anda memiliki kontrol penuh:</p>
+<ul>
+<li>Klik <strong>Accept</strong> untuk mengizinkan perubahan</li>
+<li>Klik <strong>Reject</strong> untuk menolak dan memberikan feedback (misal: &#34;Jangan gunakan flexbox, gunakan grid saja&#34;)</li>
+</ul>
+<p>Gunakan instruksi yang spesifik untuk mempermudah:</p>
+<p>&#34;Tolong refactor fungsi <code>calculateTotal</code> di <code>cart.js</code>. Pisahkan logic perhitungan pajak ke fungsi terpisah di <code>utils.js</code>&#34;</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Terminal Command Execution" duration="4">
+        <p>Cline memiliki keunggulan yang tidak dimiliki banyak AI assistant lain: ia dapat menjalankan perintah (command) langsung di terminal Anda!</p>
+<h2 is-upgraded>Eksekusi Command secara Otonom</h2>
+<p>Jika Anda meminta: <em>&#34;Install library axios dan tambahkan ke project ini&#34;</em>, Cline akan:</p>
+<ol type="1">
+<li>Membuat proposal command: <code>npm install axios</code></li>
+<li>Menunggu persetujuan Anda</li>
+<li>Menjalankan perintah tersebut di background terminal</li>
+<li><strong>Membaca output terminal</strong> untuk memastikan perintah berhasil atau menangani error jika gagal.</li>
+</ol>
+<h2 is-upgraded>Contoh Kasus Penggunaan:</h2>
+<ol type="1">
+<li><strong>Menjalankan Linter / Tests</strong>&#34;Tolong jalankan <code>npm run lint</code> dan perbaiki semua error yang muncul.&#34;Cline akan mengeksekusi linter, membaca output error, pergi ke file yang bermasalah, dan memperbaikinya.</li>
+<li><strong>Memperbaiki Build Error</strong> Jika terjadi build error, salin error tersebut ke prompt Cline dan minta ia memperbaikinya. Cline bahkan bisa menjalankan command build ulang untuk memverifikasi perbaikannya!</li>
+</ol>
+<p>negative : <strong>Keamanan</strong>: Cline SELALU meminta izin Anda (klik <strong>Approve</strong>) sebelum menjalankan terminal command apapun. Jangan pernah menyetujui perintah yang terlihat berbahaya atau tidak relevan dengan tugas.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Browser Automation" duration="4">
+        <p>Cline tidak hanya bisa membaca file, tapi bisa membaca website secara langsung layaknya user!</p>
+<h2 is-upgraded>Cara Kerja Browser Automation</h2>
+<p>Cline menggunakan puppeteer/browser automation untuk:</p>
+<ul>
+<li>Membuka URL</li>
+<li>Mengambil screenshot</li>
+<li>Membaca console logs browser</li>
+<li>Mengklik elemen di halaman</li>
+</ul>
+<h2 is-upgraded>Contoh Penggunaan</h2>
+<ol type="1">
+<li><strong>Mengecek UI Website Anda</strong> Setelah Cline menulis kode HTML/CSS, Anda bisa meminta:&#34;Coba buka http://localhost:3000 dan lihat apakah tombol login sudah berada di pojok kanan atas.&#34;Cline akan membuka browser background, mengambil screenshot, menganalisis screenshot dengan kemampuan vision dari model (misal Claude 3.5 Sonnet), dan memperbaikinya jika salah.</li>
+<li><strong>Membaca Dokumentasi API</strong>&#34;Tolong baca dokumentasi di https://api.stripe.com/docs dan implementasikan payment gateway berdasarkan petunjuk terbaru.&#34;Cline akan mengunjungi halaman tersebut, membaca isi dokumentasinya, dan menulis kode berdasarkan informasi terbaru.</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="MCP (Model Context Protocol)" duration="5">
+        <p>Ini adalah fitur <em>paling revolusioner</em> di dalam Cline. <strong>Model Context Protocol (MCP)</strong> adalah standar open-source buatan Anthropic yang memungkinkan AI model mengakses data dan tools dari aplikasi eksternal dengan cara yang aman.</p>
+<h2 is-upgraded>Mengapa MCP Penting?</h2>
+<p>Secara default, Cline hanya tahu tentang file di project Anda. Dengan MCP, Anda bisa menambahkan &#34;plugin&#34; atau &#34;skill&#34; baru ke Cline, seperti:</p>
+<ul>
+<li>Menghubungkan Cline ke database Postgres lokal Anda</li>
+<li>Menghubungkan Cline ke Slack / GitHub / Jira</li>
+<li>Menghubungkan Cline ke Puppeteer/Browser</li>
+</ul>
+<h2 is-upgraded>Cara Menambahkan MCP Server</h2>
+<ol type="1">
+<li>Buka panel Cline</li>
+<li>Klik tab icon <strong>Server/Plug</strong> (MCP Servers)</li>
+<li>Di sini Anda dapat melihat file konfigurasi <code>cline_mcp_settings.json</code></li>
+<li>Anda bisa menambahkan server baru. Contoh menambahkan server SQLite:</li>
+</ol>
+<pre><code language="language-json" class="language-json">{
+  &#34;mcpServers&#34;: {
+    &#34;sqlite&#34;: {
+      &#34;command&#34;: &#34;uvx&#34;,
+      &#34;args&#34;: [
+        &#34;mcp-server-sqlite&#34;,
+        &#34;--db-path&#34;,
+        &#34;/Users/username/my-database.db&#34;
+      ]
+    }
+  }
+}
+</code></pre>
+<p>Setelah server aktif, Cline akan tiba-tiba memiliki ‘tools&#39; baru (seperti <code>read_query</code>, <code>execute_query</code>) dan Anda bisa memberinya prompt:</p>
+<p>&#34;Tolong query database kita dan buat file laporan CSV dari daftar user yang mendaftar bulan ini.&#34;</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Install &amp; Gunakan Cline CLI" duration="5">
+        <p>Jika Anda lebih menyukai lingkungan terminal dibandingkan GUI VS Code, Anda bisa menggunakan <strong>Cline CLI</strong>.</p>
+<h2 is-upgraded>Instalasi CLI</h2>
+<p>Buka terminal dan jalankan:</p>
+<pre><code language="language-bash" class="language-bash">npm i -g @cline/cli
+</code></pre>
+<p><em>(Catatan: pastikan Anda sudah menginstall Node.js)</em></p>
+<h2 is-upgraded>Menggunakan CLI</h2>
+<p>Jalankan perintah ini di dalam direktori project Anda:</p>
+<pre><code language="language-bash" class="language-bash">cline &#34;Tolong buatkan script python untuk mengambil data harga saham dari Yahoo Finance&#34;
+</code></pre>
+<p>Cline akan menampilkan output langsung di terminal Anda dengan format interaktif.</p>
+<h2 is-upgraded>Keuntungan menggunakan CLI:</h2>
+<ol type="1">
+<li><strong>Kecepatan</strong>: Sangat cepat jika Anda sedang berada di terminal (misal saat SSH ke server).</li>
+<li><strong>Otomatisasi</strong>: Anda dapat mengintegrasikan perintah Cline ke dalam skrip bash, pipeline CI/CD (GitHub Actions), atau cron jobs.</li>
+</ol>
+<p>Contoh pipeline otomatisasi:</p>
+<pre><code language="language-bash" class="language-bash"># Menjalankan Cline untuk meresolve error log
+cline --task &#34;Read error.log and apply fixes to src/app.js to resolve the crashes&#34;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Cline SDK (Embed Agent)" duration="5">
+        <p>Bagi Anda yang ingin membuat aplikasi AI sendiri, Cline kini menyediakan SDK agar Anda dapat me-<em>embed</em> (menyematkan) kecerdasan Cline ke dalam produk Anda sendiri.</p>
+<h2 is-upgraded>Instalasi SDK</h2>
+<pre><code language="language-bash" class="language-bash">npm install @cline/sdk
+</code></pre>
+<h2 is-upgraded>Konsep Dasar SDK</h2>
+<p>Dengan SDK, Anda mendapatkan seluruh <em>engine</em> agentic Cline (penggunaan tools, file system, reasoning loop) namun Anda memiliki kontrol atas antarmukanya.</p>
+<p>Contoh sederhana penggunaan SDK dalam Node.js:</p>
+<pre><code language="language-javascript" class="language-javascript">import { ClineSDK } from &#39;@cline/sdk&#39;;
+
+async function runMyAgent() {
+  const agent = new ClineSDK({
+    provider: &#39;anthropic&#39;,
+    apiKey: process.env.ANTHROPIC_API_KEY,
+    workspaceDir: &#39;./my-project&#39;,
+  });
+
+  console.log(&#34;Memulai tugas...&#34;);
+  
+  // Memberikan instruksi ke agent
+  await agent.executeTask(&#34;Buat file README.md yang bagus untuk folder ini&#34;);
+  
+  console.log(&#34;Tugas selesai!&#34;);
+}
+
+runMyAgent();
+</code></pre>
+<p>Fitur ini membuka peluang tak terbatas: Anda bisa membuat slack bot otomatis yang memperbaiki PR (Pull Request), atau portal internal kantor untuk auto-generating boilerplate code!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="SpecDriven Development" duration="4">
+        <p><strong>SpecDriven</strong> adalah pendekatan inovatif yang didukung Cline di mana Anda menulis <em>Specification</em> (Spesifikasi/Dokumen Perencanaan) terlebih dahulu, lalu AI akan menghasilkan kode secara terukur.</p>
+<h2 is-upgraded>Masalah dengan Chat Bot Biasa</h2>
+<p>Chatbot konvensional (seperti ChatGPT) cenderung melupakan konteks seiring panjangnya percakapan, menghasilkan kode yang &#34;menyimpang&#34; dari instruksi awal.</p>
+<h2 is-upgraded>Solusi SpecDriven</h2>
+<ol type="1">
+<li><strong>Buat file </strong><strong><code>.clinespec</code></strong><strong> (atau file Markdown biasa)</strong> Tuliskan detail aplikasi secara mendalam (Arsitektur, UI, Database schema, Routing).</li>
+<li><strong>Jalankan Cline dengan merujuk ke Spec</strong>&#34;Implementasikan fitur Authentication berdasarkan dokumen <code>auth-spec.md</code>.&#34;</li>
+<li><strong>Konsistensi</strong> Cline akan secara reguler membaca ulang file spesifikasi tersebut untuk memastikan kodenya 100% selaras dengan permintaan Anda, menghasilkan project skala besar yang stabil dan tidak error.</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Custom Instructions &amp; .clinerules" duration="4">
+        <p>Agar Cline dapat beradaptasi dengan gaya coding tim Anda, Anda bisa menggunakan <strong>Custom Instructions</strong>.</p>
+<h2 is-upgraded>Cara Mengatur Aturan Project</h2>
+<p>Buat file bernama <code>.clinerules</code> (atau <code>.cursorrules</code> karena Cline mendukung format tersebut) di root/folder utama project Anda.</p>
+<p>Contoh isi <code>.clinerules</code>:</p>
+<pre><code language="language-markdown" class="language-markdown"># Front-End Rules
+- Kami menggunakan React (Next.js App Router).
+- Jangan gunakan CSS modules, selalu gunakan TailwindCSS.
+- Setiap membuat komponen baru, pastikan diletakkan di `src/components/ui`.
+- Tambahkan TypeScript interfaces untuk semua props.
+
+# Testing
+- Gunakan Jest dan React Testing Library.
+- Cakupan test harus mencakup interaksi user dasar.
+</code></pre>
+<p>Setiap kali Anda memberikan task di project tersebut, Cline akan membaca file <code>.clinerules</code> terlebih dahulu dan mematuhi panduan tersebut saat menulis kode!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Best Practices &amp; Tips" duration="3">
+        <p>Untuk memaksimalkan Cline dan menjaga kreditan (cost) API Anda tetap hemat, ikuti tips berikut:</p>
+<ol type="1">
+<li><strong>Jelaskan Konteks, Bukan Hanya Perintah</strong> ❌ &#34;Buat tombol submit&#34; ✅ &#34;Buat tombol submit hijau di halaman cart.js yang akan memanggil fungsi prosesPayment() saat diklik&#34;</li>
+<li><strong>Pecah Tugas Besar</strong> Jangan minta &#34;Buat aplikasi e-commerce&#34;. Minta:<ul>
+<li>&#34;Setup Next.js dan Tailwind&#34;</li>
+<li>&#34;Buat halaman Home dengan dummy produk&#34;</li>
+<li>&#34;Buat sistem cart menggunakan React Context&#34;</li>
+</ul>
+</li>
+<li><strong>Gunakan Plan Mode</strong> Biasakan menyuruh Cline merencanakan terlebih dahulu sebelum mengubah kode. Ini mengurangi bug dan revisi berulang yang memakan biaya token API.</li>
+<li><strong>Waspadai Cost (Biaya)</strong> Cline memberikan ringkasan penggunaan token dan biaya. Ingat bahwa memberikan konteks file yang teramat besar akan menghabiskan banyak token.</li>
+<li><strong>Gunakan </strong><strong><code>--slim</code></strong><strong> mode (MCP)</strong> Jika sistem berjalan lambat karena file sistem yang terlalu banyak, optimasi MCP atau gunakan file <code>.clineignore</code> untuk menyembunyikan folder berat (seperti <code>node_modules</code>).</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Next Steps &amp; Resources" duration="1">
+        <h2 is-upgraded>Selamat! 🎉</h2>
+<p>Anda telah menguasai Cline AI Coding Agent! Anda kini memiliki developer assistant canggih yang siap membantu di IDE, Terminal, dan dalam integrasi custom Anda.</p>
+<h2 is-upgraded>Sumber Belajar Lebih Lanjut</h2>
+<ul>
+<li><strong>Website Resmi</strong>: <a href="https://cline.bot/" target="_blank">https://cline.bot/</a></li>
+<li><strong>Dokumentasi Resmi</strong>: <a href="https://docs.cline.bot/" target="_blank">https://docs.cline.bot/</a></li>
+<li><strong>GitHub Repository</strong>: <a href="https://github.com/cline/cline" target="_blank">https://github.com/cline/cline</a></li>
+<li><strong>Discord Community</strong>: Join Discord Cline (dapat ditemukan di website resmi) untuk bertanya dan berbagi MCP server baru.</li>
+<li><strong>MCP Marketplace</strong>: Telusuri plugin/server MCP baru untuk menambah kemampuan Cline Anda.</li>
+</ul>
+<p>Selamat coding dan berkolaborasi dengan AI Agent Anda! 🚀</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

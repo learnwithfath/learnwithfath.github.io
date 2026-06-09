@@ -1,0 +1,189 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Panduan Lengkap Hermes Agent &amp; Use Casenya</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="hermes-agent-guide"
+                  title="Panduan Lengkap Hermes Agent &amp; Use Casenya"
+                  environment="web"
+                  feedback-link="https://github.com/NousResearch/hermes-agent">
+    
+      <google-codelab-step label="Pendahuluan" duration="5">
+        <p>Selamat datang di Codelab Hermes Agent! Pada codelab ini, Anda akan mempelajari tentang Hermes Agent, agen AI <em>open-source</em> buatan Nous Research, serta bagaimana agen ini dapat diintegrasikan dan digunakan di berbagai <em>use case</em> dunia nyata.</p>
+<h2 is-upgraded>Apa itu Hermes Agent?</h2>
+<p>Hermes Agent bukanlah sekadar <em>coding copilot</em> yang terikat pada IDE tertentu atau <em>chatbot wrapper</em> sederhana. Hermes adalah agen otonom yang:</p>
+<ul>
+<li>Hidup di server atau mesin lokal Anda.</li>
+<li>Mengingat apa yang dipelajarinya (<em>Persistent Memory</em>).</li>
+<li>Menjadi semakin cerdas dan mumpuni seiring berjalannya waktu.</li>
+<li>Memiliki <em>learning loop</em> yang secara otomatis membuat dan menyempurnakan <em>skill</em>-nya sendiri (dalam bentuk prosedur Markdown) dari pengalaman sebelumnya.</li>
+</ul>
+<p>Agen ini dirancang untuk beroperasi dalam jangka panjang dan secara bertahap mempelajari proyek, terminologi industri, preferensi, dan alur kerja Anda.</p>
+<h2 is-upgraded>Yang akan Anda pelajari:</h2>
+<ul>
+<li>Karakteristik utama Hermes Agent.</li>
+<li>Posibilitas dan skenario <em>use case</em> dari Hermes Agent.</li>
+<li>Konsep dasar instalasi dan integrasi.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Fitur Unggulan Hermes Agent" duration="5">
+        <p>Sebelum kita membahas <em>use case</em>, mari kita pahami beberapa fitur inti yang menjadikan Hermes Agent unik dan berbeda dari asisten AI konvensional.</p>
+<h2 is-upgraded>1. Lives Where You Do (Multi-Platform)</h2>
+<p>Alih-alih memaksa Anda menggunakan <em>dashboard</em> web terpisah, Hermes dapat diintegrasikan langsung ke tempat Anda bekerja dan berkomunikasi:</p>
+<ul>
+<li>Telegram</li>
+<li>Discord</li>
+<li>Slack</li>
+<li>WhatsApp</li>
+<li>Signal</li>
+<li>Email</li>
+<li>Command Line Interface (CLI)</li>
+</ul>
+<p>Anda dapat memulai percakapan di satu platform dan melanjutkannya di platform lain karena <em>memory</em>-nya tersentralisasi.</p>
+<h2 is-upgraded>2. Grows the Longer It Runs</h2>
+<p>Melalui memori yang persisten dan kemampuannya untuk meng-generate <em>skill</em> baru secara otomatis, Hermes mempelajari seluk-beluk proyek Anda dan tidak pernah lupa bagaimana cara menyelesaikan sebuah masalah yang pernah diselesaikannya di masa lalu.</p>
+<h2 is-upgraded>3. Scheduled Automations</h2>
+<p>Mendukung <em>cron scheduling</em> secara <em>natural language</em>. Anda bisa meminta Hermes untuk menjalankan laporan, melakukan <em>backup</em>, atau membuat ringkasan singkat (<em>briefing</em>) harian secara otomatis tanpa intervensi manusia.</p>
+<h2 is-upgraded>4. Real Sandboxing</h2>
+<p>Dukungan terhadap isolasi <em>environment</em> sangat baik. Hermes dapat menjalankan kode dalam:</p>
+<ul>
+<li>Local</li>
+<li>Docker</li>
+<li>SSH</li>
+<li>Singularity</li>
+<li>Modal</li>
+</ul>
+<h2 is-upgraded>5. Full Web &amp; Browser Control</h2>
+<p>Mendukung pencarian web, otomatisasi browser, visi, pembuatan gambar, <em>text-to-speech</em>, dan penalaran <em>multi-model</em> menggunakan berbagai LLM.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Use Case 1: Asisten Otonom Personal &amp; Profesional (Always-On Assistant)" duration="10">
+        <p>Berkat kemampuannya berjalan di server secara persisten dan terhubung dengan berbagai aplikasi <em>messaging</em>, Hermes Agent adalah asisten selalu-aktif (<em>always-on</em>) yang sempurna.</p>
+<h2 is-upgraded>Skenario Penggunaan:</h2>
+<ol type="1">
+<li><strong>Developer Support:</strong> Anda dapat me-mention Hermes di grup Telegram/Slack tim Anda untuk meminta analisis <em>log error</em> yang dikirimkan oleh sistem <em>monitoring</em>.</li>
+<li><strong>Contextual Recall:</strong> Karena Hermes memiliki memori persisten, Anda tidak perlu lagi menjelaskan konteks berulang-ulang. Anda cukup berkata, <em>&#34;Hermes, tolong buatkan ringkasan proyek X berdasarkan diskusi kita minggu lalu&#34;</em>.</li>
+<li><strong>Daily Executive Briefing:</strong> Anda dapat menggunakan fitur penjadwalan (cron) untuk meminta Hermes: <em>&#34;Setiap jam 8 pagi, kirimkan saya ringkasan email terbaru dan jadwal hari ini via WhatsApp.&#34;</em></li>
+</ol>
+<h2 is-upgraded>Kelebihan Utama:</h2>
+<p>Asisten biasa mereset konteksnya setiap kali sesi berakhir. Hermes menjaga <em>state</em> secara terus-menerus, membuatnya lebih mirip &#34;karyawan digital&#34; ketimbang &#34;alat bantu sementara&#34;.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Use Case 2: Otomatisasi Alur Kerja Khusus (Skill Development)" duration="10">
+        <p>Sifat unik dari Hermes adalah kemampuannya membangun <em>library</em> &#34;skills&#34;. Saat Hermes memecahkan masalah yang kompleks, ia membuat catatan terstruktur mengenai prosedur tersebut.</p>
+<h2 is-upgraded>Skenario Penggunaan:</h2>
+<ol type="1">
+<li><strong>Onboarding dan Dokumentasi:</strong> Saat Anda mengajarkan cara men-<em>deploy</em> aplikasi ke infrastruktur spesifik perusahaan Anda, Hermes akan mencatat langkah-langkahnya. Di masa depan, anggota tim lain dapat meminta Hermes untuk melakukan <em>deployment</em> yang sama.</li>
+<li><strong>Review Kode Otomatis:</strong> Hermes dapat dikonfigurasi untuk menjalankan <em>code review</em> pada setiap <em>Pull Request</em> yang dibuka di repositori GitHub tim Anda, dengan mempertimbangkan pedoman (<em>guidelines</em>) spesifik perusahaan yang telah dipelajarinya sebelumnya.</li>
+<li><strong>Data Pipeline Maintenance:</strong> Jika terjadi anomali pada <em>pipeline</em> data yang sering rusak, Hermes dapat mengingat bagaimana memperbaiki masalah tersebut dari pengalaman (interaksi terminal) sebelumnya, dan Anda dapat memintanya melakukan perbaikan prosedur tanpa perlu panduan <em>step-by-step</em> lagi.</li>
+</ol>
+<h2 is-upgraded>Kelebihan Utama:</h2>
+<p>Peralihan dari <em>AI chat</em> sederhana menjadi agen eksekutor yang memfasilitasi otomatisasi yang benar-benar prosedural.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Use Case 3: Advanced Task Execution &amp; Multi-Agent Delegation" duration="10">
+        <p>Hermes Agent terintegrasi dengan 40+ <em>built-in tools</em> yang memberinya kendali komprehensif atas ekosistem teknis. Lebih jauh lagi, untuk pekerjaan raksasa, ia dapat mendelegasikan tugas.</p>
+<h2 is-upgraded>Skenario Penggunaan:</h2>
+<ol type="1">
+<li><strong>Pembuatan MVP atau Proyek Besar:</strong> Saat Anda meminta Hermes untuk membuat sebuah <em>website</em> lengkap yang terintegrasi dengan <em>database</em>, Hermes dapat memecah dirinya menjadi beberapa &#34;Sub-Agent&#34; terisolasi.<ul>
+<li>Sub-agen 1: Mengerjakan desain dan CSS.</li>
+<li>Sub-agen 2: Mengerjakan logika <em>backend</em>.</li>
+<li>Sub-agen 3: Menyiapkan skema <em>database</em>. Masing-masing bekerja dengan <em>terminal</em> dan percakapannya sendiri tanpa menyita kapasitas memori satu sama lain.</li>
+</ul>
+</li>
+<li><strong>Eksekusi Serverless (Modal) dan Sandboxing:</strong> Saat memproses file CSV atau dataset raksasa, Hermes dapat mengirim pekerjaan komputasinya secara instan ke <em>cloud backend</em> (seperti Modal) agar tidak membebani mesin lokal Anda.</li>
+<li><strong>Integrasi MCP (Model Context Protocol):</strong> Jika perusahaan Anda menggunakan <em>software</em> internal, Anda dapat menghubungkan API Anda melalui protokol MCP, memberikan Hermes kapabilitas ekstra untuk mengakses database privat dengan aman.</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Use Case 4: AI Research &amp; Data Generation" duration="10">
+        <p>Arsitektur Hermes yang stabil dan modular membuatnya menjadi perangkat favorit di kalangan <em>AI Researcher</em> dan praktisi MLOps.</p>
+<h2 is-upgraded>Skenario Penggunaan:</h2>
+<ol type="1">
+<li><strong>Pembuatan Synthetic Data:</strong> Peneliti sering kali membutuhkan data pelatihan berupa <em>tool-calling trajectories</em> (langkah-langkah saat AI menggunakan <em>tool</em>). Hermes dapat diarahkan untuk menyelesaikan ribuan <em>task</em> di <em>environment</em> Docker yang terisolasi dan mengekspor hasilnya dalam format seperti <em>ShareGPT</em>. Hasil ini kemudian dapat digunakan untuk melatih atau melakukan <em>fine-tuning</em> pada model baru.</li>
+<li><strong>Reinforcement Learning:</strong> Ekspor percakapan dan riwayat pengambilan keputusannya sangat kompatibel dengan <em>pipeline reinforcement learning</em> modern (misalnya untuk melatih model via <em>Atropos</em>).</li>
+</ol>
+<h2 is-upgraded>Kelebihan Utama:</h2>
+<p>Mempercepat penemuan AI dan riset MLOps karena Hermes sudah mengatasi kerumitan <em>sandboxing</em>, <em>routing</em> LLM, dan manipulasi <em>tool</em>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Menginstal Hermes Agent" duration="5">
+        <p>Jika Anda tertarik untuk mencoba Hermes, instalasinya sangat sederhana.</p>
+<p><strong>Catatan:</strong> Anda membutuhkan <em>environment</em> berbasis Unix (macOS / Linux). Dukungan Windows sedang dalam pengembangan (atau via WSL).</p>
+<h2 is-upgraded>Langkah 1: Instalasi</h2>
+<p>Anda dapat menginstal Hermes menggunakan script resmi mereka dengan mengeksekusi perintah berikut di terminal Anda:</p>
+<pre><code language="language-bash" class="language-bash">curl -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+</code></pre>
+<h2 is-upgraded>Langkah 2: Konfigurasi</h2>
+<p>Setelah berhasil terinstal, Anda dapat mengonfigurasi Hermes dan mendaftarkan kunci API (OpenRouter, OpenAI, dll) dengan perintah:</p>
+<pre><code language="language-bash" class="language-bash">hermes setup
+</code></pre>
+<p>Hermes dapat menggunakan lebih dari 200 model LLM yang berbeda, sehingga Anda tidak terkunci pada satu <em>provider</em> saja (Vendor Agnostic). Anda bebas memakai model Claude, Gemini, Llama, atau model open-source lokal lainnya.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kesimpulan" duration="2">
+        <p>Selamat! Anda telah menyelesaikan codelab pengenalan Hermes Agent dari Nous Research.</p>
+<h2 is-upgraded>Rangkuman:</h2>
+<ul>
+<li><strong>Hermes Agent</strong> adalah asisten yang menetap dan terus belajar, tidak seperti chatbot sekali pakai.</li>
+<li><strong>Memiliki memori persisten</strong> dan kemampuan <em>scheduling</em>.</li>
+<li><strong>Posibilitas Use Case sangat luas</strong>: dari sekadar asisten grup Telegram, alat untuk <em>onboarding</em> tim, orkestrator agen (Multi-Agent), hingga generator data <em>machine learning</em>.</li>
+<li>Hermes terintegrasi langsung dengan tempat Anda bekerja melalui berbagai <em>backend</em> yang aman.</li>
+</ul>
+<h2 is-upgraded>Langkah Selanjutnya:</h2>
+<p>Cobalah untuk menginstal Hermes di server atau <em>local environment</em> Anda dan bereksperimenlah memintanya untuk membuat satu otomatisasi sederhana.</p>
+<p>Untuk referensi lebih lanjut, Anda dapat mengunjungi:</p>
+<ul>
+<li><a href="https://portal.nousresearch.com/" target="_blank">Hermes Agent Portal</a></li>
+<li><a href="https://github.com/NousResearch/hermes-agent" target="_blank">Hermes Agent GitHub</a></li>
+</ul>
+<p>Terima kasih telah mengikuti Codelab ini!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

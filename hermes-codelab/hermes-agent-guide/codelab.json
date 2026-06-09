@@ -1,0 +1,26 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-06-05T16:47:47+07:00",
+  "id": "hermes-agent-guide",
+  "duration": 57,
+  "title": "Panduan Lengkap Hermes Agent \u0026 Use Casenya",
+  "summary": "Panduan Lengkap Hermes Agent dan Berbagai Macam Use Casenya",
+  "source": "hermes-agent-guide.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "automation",
+    "agents"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/NousResearch/hermes-agent",
+  "url": "hermes-agent-guide"
+}

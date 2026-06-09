@@ -1,0 +1,34 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-06-09T17:04:19+07:00",
+  "id": "cline-ai-coding-agent-tutorial",
+  "duration": 55,
+  "title": "Cline AI Coding Agent - Tutorial Lengkap",
+  "authors": "LearnWithFath Team",
+  "summary": "Cline AI Coding Agent - Tutorial Lengkap",
+  "source": "cline-ai-coding-agent-tutorial.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "vscode",
+    "cli"
+  ],
+  "tags": [
+    "ai-coding",
+    "cli",
+    "cline",
+    "mcp",
+    "open-source",
+    "sdk",
+    "vscode"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "cline-ai-coding-agent-tutorial"
+}

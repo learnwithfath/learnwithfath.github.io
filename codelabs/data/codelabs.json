@@ -14,6 +14,19 @@
       "ctaText": "Start Learning"
     },
     {
+      "id": "cline-ai-coding-agent-tutorial",
+      "title": "Cline AI Coding Agent - Tutorial Lengkap",
+      "icon": "🤖",
+      "summary": "Tutorial lengkap menggunakan Cline (autonomous AI coding agent) dari setup, Plan/Act mode, penggunaan tools, MCP, CLI, SDK, hingga SpecDriven development.",
+      "duration": 60,
+      "sections": 15,
+      "tags": ["AI", "Developer Tools", "VS Code", "CLI", "MCP", "SDK"],
+      "categories": ["ai", "developer-tools", "vscode", "cli", "mcp", "sdk"],
+      "searchTerms": "cline claude dev ai coding agent mcp cli sdk specdriven tutorial",
+      "url": "cline-ai-coding-agent-tutorial/",
+      "ctaText": "Mulai Tutorial"
+    },
+    {
       "id": "web-dev-basics",
       "title": "Web Development Basics",
       "icon": "💻",
@@ -160,7 +173,7 @@
     }
   ],
   "stats": {
-    "totalTutorials": 12,
+    "totalTutorials": 13,
     "totalSubPhases": 33,
     "totalMajorPhases": 6
   }
