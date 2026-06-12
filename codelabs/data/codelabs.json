@@ -27,6 +27,19 @@
       "ctaText": "Mulai Tutorial"
     },
     {
+      "id": "wick-framework-agent-tutorial",
+      "title": "Wick: AI-First Go Framework & Agent Host - Tutorial Lengkap",
+      "icon": "🔥",
+      "summary": "Tutorial lengkap menguasai Wick: AI-first framework & agent host di Go. Pelajari setup, CLI, konfigurasi provider, custom app manifest (wick.yml), command gate, dan deployment.",
+      "duration": 65,
+      "sections": 7,
+      "tags": ["Go", "AI", "Backend", "Developer Tools", "Slack", "Telegram", "SQLite"],
+      "categories": ["go", "ai", "backend", "developer-tools"],
+      "searchTerms": "wick go framework agent host slack telegram sqlite command gate build dev deploy tutorial",
+      "url": "wick-framework-agent-tutorial/",
+      "ctaText": "Mulai Tutorial"
+    },
+    {
       "id": "web-dev-basics",
       "title": "Web Development Basics",
       "icon": "💻",
@@ -173,7 +186,7 @@
     }
   ],
   "stats": {
-    "totalTutorials": 13,
+    "totalTutorials": 14,
     "totalSubPhases": 33,
     "totalMajorPhases": 6
   }

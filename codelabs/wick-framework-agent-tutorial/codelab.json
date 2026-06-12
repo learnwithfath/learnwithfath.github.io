@@ -1,0 +1,36 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-06-12T15:22:48+07:00",
+  "id": "wick-framework-agent-tutorial",
+  "duration": 65,
+  "title": "Wick: AI-First Go Framework \u0026 Agent Host - Tutorial Lengkap",
+  "authors": "LearnWithFath Team",
+  "summary": "Tutorial lengkap menguasai Wick: AI-first framework \u0026 agent host di Go. Pelajari setup, CLI, konfigurasi provider, custom app manifest (wick.yml), command gate, dan deployment.",
+  "source": "wick-framework-agent-tutorial.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "go",
+    "ai",
+    "backend",
+    "developertools"
+  ],
+  "tags": [
+    "ai-agent",
+    "cli",
+    "go",
+    "htmx",
+    "mcp",
+    "slack-bot",
+    "sqlite",
+    "tailwind",
+    "telegram-bot"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "wick-framework-agent-tutorial"
+}

@@ -1,0 +1,374 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Wick: AI-First Go Framework &amp; Agent Host - Tutorial Lengkap</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="wick-framework-agent-tutorial"
+                  title="Wick: AI-First Go Framework &amp; Agent Host - Tutorial Lengkap"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Overview &amp; Arsitektur Wick" duration="5">
+        <h2 is-upgraded>Apa itu Wick?</h2>
+<p><strong>Wick</strong> adalah sebuah <em>AI-first framework</em> modern yang dirancang untuk membangun aplikasi internal (<em>internal tools</em>) dan mengelola <em>background jobs</em> menggunakan bahasa pemrograman Go. Selain sebagai framework pengembangan, Wick juga berfungsi sebagai <strong>AI Agent Host</strong> siap pakai yang dapat menghubungkan model kecerdasan buatan terkemuka (seperti Claude, GPT, Gemini, dan Ollama) ke saluran komunikasi populer seperti Slack, Telegram, dan Web UI tanpa perlu menulis kode tambahan.</p>
+<p>Secara garis besar, Wick adalah Go mono-repo yang menghasilkan <strong>satu binary</strong> dengan tiga kemampuan/produk utama:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Produk</p>
+</td><td colspan="1" rowspan="1"><p>Path / Peran</p>
+</td><td colspan="1" rowspan="1"><p>Deskripsi</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>wick CLI</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>cmd/wick/</code></p>
+</td><td colspan="1" rowspan="1"><p>Scaffolding, pengembangan (<code>dev</code>), build, dan deployment proyek aplikasi internal berbasis Go.</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>wick-agent</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>cmd/wick-agent/</code></p>
+</td><td colspan="1" rowspan="1"><p>Runtime hosting AI agent yang terintegrasi dengan chat channels dan scheduler (cron).</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>wick runtime</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>app/</code>, <code>pkg/</code></p>
+</td><td colspan="1" rowspan="1"><p>Kumpulan shared library (router, database SQLite, queue, auth, SSE, WebSocket, TOTP).</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Filosofi Desain &amp; Aturan Arsitektur</h2>
+<p>Jika Anda ingin memahami cara kerja Wick secara mendalam atau tertarik berkontribusi pada codebase-nya, berikut beberapa aturan arsitektur utamanya:</p>
+<ol type="1">
+<li><strong>Single Binary Dispatcher</strong>: File <code>main.go</code> di root repo mendeteksi nama binary yang dieksekusi atau parameter pertama untuk menentukan apakah ia akan bertindak sebagai <code>wick</code> CLI atau <code>wick-agent</code> runtime.</li>
+<li><strong>No Global State</strong>: Setiap komponen di dalam Wick menerima ketergantungannya (<em>dependencies</em>) melalui konstruktor atau struct konfigurasi untuk mempermudah unit testing.</li>
+<li><strong>Server-Side Rendering (SSR)</strong>: Interface admin/web UI Wick dibangun menggunakan teknologi modern yang minimalis: Go HTML templates, <strong>HTMX</strong>, <strong>Tailwind CSS</strong>, dan <strong>Alpine.js</strong>. Tidak menggunakan framework SPA kompleks seperti React, Vue, atau Next.js.</li>
+<li><strong>SQLite Database</strong>: Wick menggunakan SQLite sebagai database internal default. Migrasi database didefinisikan secara langsung di dekat skema kode.</li>
+<li><strong>Command Gate (Sandbox)</strong>: Setiap perintah terminal/shell yang ingin dieksekusi oleh AI Agent harus melalui sistem pengaman bernama <em>Command Gate</em> yang diaudit ke file JSONL.</li>
+</ol>
+<h2 is-upgraded>Apa yang Akan Anda Pelajari?</h2>
+<p>Dalam tutorial lengkap ini, kita akan membahas ekosistem Wick secara tuntas:</p>
+<ul>
+<li>Cara instalasi instan Wick Agent &amp; Wick CLI.</li>
+<li>Konfigurasi AI Provider (Claude, OpenAI, Gemini, Ollama).</li>
+<li>Integrasi chat channel (Slack Socket Mode, Telegram, Web).</li>
+<li>Keamanan eksekusi shell via <em>Command Gate</em>.</li>
+<li>Membuat aplikasi internal Go menggunakan manifest <code>wick.yml</code>.</li>
+<li>Mengonfigurasi Halaman, Komponen, dan Background Jobs (Cron).</li>
+<li>Menjalankan mode development (<code>wick dev</code>) dan kompilasi production (<code>wick build</code>).</li>
+</ul>
+<p>Mari kita lanjut ke bagian berikutnya untuk instalasi!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Instalasi &amp; Quick Start" duration="8">
+        <p>Wick menyediakan dua cara penggunaan utama: menjalankan AI Agent instan menggunakan binary pre-built (<code>wick-agent</code>), atau memasang toolkit developer (<code>wick</code> CLI) untuk memprogram aplikasi internal Anda sendiri.</p>
+<h2 is-upgraded>Metode A: Menjalankan AI Agent Tanpa Go (Pre-built Binary)</h2>
+<p>Jika Anda hanya ingin menggunakan Wick sebagai host untuk AI Agent (menghubungkan Claude/Gemini ke Slack/Telegram Anda), Anda tidak perlu menginstal Go. Cukup unduh binary resminya.</p>
+<h3 is-upgraded>1. macOS, Linux, atau Termux</h3>
+<p>Gunakan script instalasi otomatis yang akan mendeteksi sistem operasi dan arsitektur CPU Anda:</p>
+<pre><code language="language-bash" class="language-bash">curl -fsSL https://yogasw.github.io/wick/install.sh | sh
+</code></pre>
+<h3 is-upgraded>2. Windows (PowerShell)</h3>
+<p>Jalankan perintah berikut pada terminal PowerShell dengan hak akses Administrator:</p>
+<pre><code language="language-powershell" class="language-powershell">iwr -useb https://yogasw.github.io/wick/install.ps1 | iex
+</code></pre>
+<h3 is-upgraded>3. Menggunakan Docker</h3>
+<p>Jika Anda menyukai kontainerisasi, Anda dapat menjalankan host agen dalam satu container Docker yang menggabungkan HTTP server dan cron job manager sekaligus:</p>
+<pre><code language="language-bash" class="language-bash">docker run -d \
+  -p 9425:9425 \
+  -v wick-agent-data:/root/.wick-agent \
+  ghcr.io/yogasw/wick-agent:latest all
+</code></pre>
+<p>Setelah terpasang, jalankan perintah berikut untuk mengaktifkan UI web admin:</p>
+<pre><code language="language-bash" class="language-bash">wick-agent server
+</code></pre>
+<p>Buka peramban Anda dan akses <strong><code>http://localhost:9425</code></strong>. Kredensial masuk (admin username &amp; password) akan dibuat secara otomatis pada eksekusi pertama di terminal Anda. Simpan kredensial tersebut!</p>
+<h2 is-upgraded>Metode B: Instalasi Wick CLI untuk Go Developer</h2>
+<p>Jika tujuan Anda adalah membangun aplikasi backend internal, dasbor, dan API kustom, Anda memerlukan Go (versi 1.22 ke atas) terinstal di komputer Anda.</p>
+<p>Pasang <code>wick</code> CLI secara global dengan perintah:</p>
+<pre><code language="language-bash" class="language-bash">go install github.com/yogasw/wick@latest
+</code></pre>
+<p>Pastikan folder <code>$GOPATH/bin</code> (biasanya <code>~/go/bin</code>) sudah masuk ke dalam konfigurasi <code>PATH</code> sistem operasi Anda agar terminal mengenali command <code>wick</code>. Anda bisa memverifikasinya dengan mengetik:</p>
+<pre><code language="language-bash" class="language-bash">wick --help
+</code></pre>
+<p>Jika perintah tersebut merespons dengan petunjuk penggunaan CLI, Anda siap melangkah ke tahap berikutnya!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Menggunakan Wick-Agent (AI Agent Host)" duration="12">
+        <p>Wick-Agent adalah host yang tangguh untuk menjalankan agen AI secara mandiri. Ia bertindak sebagai jembatan yang menghubungkan model LLM ke workspace lokal Anda dan mendistribusikan chat ke berbagai channel.</p>
+<h2 is-upgraded>1. Menentukan Mode Eksekusi Binary</h2>
+<p>Binary <code>wick-agent</code> mendukung dua mode utama saat dijalankan:</p>
+<ul>
+<li><strong>System Tray Mode</strong> (Desktop): Cukup ketik <code>wick-agent</code> tanpa argumen di komputer lokal Anda. Aplikasi akan berjalan di latar belakang, menampilkan ikon kecil di system tray menu Anda untuk memantau status sistem, dan mengizinkan fitur autostart saat login komputer.</li>
+<li><strong>Headless Mode</strong> (Server/Docker): Jalankan <code>wick-agent server</code> untuk dijalankan di server jarak jauh atau di dalam container. Log sistem akan ditulis ke <em>stdout</em> secara real-time.</li>
+</ul>
+<h2 is-upgraded>2. Mengatur File <code>.env</code> Konfigurasi</h2>
+<p>Untuk mengatur API Key LLM dan channel integrasi secara permanen, buat file <code>.env</code> di folder kerja Anda. Berikut adalah template konfigurasi penting yang didukung oleh Wick-Agent:</p>
+<pre><code language="language-env" class="language-env">PORT=9425
+BASE_URL=http://localhost:9425
+
+# Kredensial Admin Awal
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=ganti-dengan-password-aman
+
+# API Keys AI Provider
+CLAUDE_API_KEY=sk-ant-api03-...
+CLAUDE_MODEL=claude-sonnet-4-20250514
+
+OPENAI_API_KEY=sk-proj-...
+OPENAI_MODEL=gpt-4o
+
+GEMINI_API_KEY=AIzaSy...
+GEMINI_MODEL=gemini-2.5-pro
+
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3
+
+# Konfigurasi Default Workspace Agen
+AGENT_DEFAULT_PROVIDER=claude
+AGENT_WORKSPACE_PATH=./workspaces
+</code></pre>
+<h2 is-upgraded>3. Setup Melalui Web Admin UI</h2>
+<p>Setelah server menyala, Anda dapat mengonfigurasi Agen dengan mudah melalui dashboard admin visual di menu <code>/tools/agents</code>:</p>
+<ol type="1">
+<li><strong>Providers</strong>: Daftarkan API Key Anda. Anda dapat menentukan model default yang digunakan untuk memproses instruksi. Ollama didukung penuh jika Anda ingin meminimalkan biaya menggunakan model open-source lokal.</li>
+<li><strong>Workspaces</strong>: Tentukan folder di harddisk Anda yang akan dijadikan area kerja (<em>sandbox</em>) bagi agen. Agen dapat membaca, mengedit, dan membuat file di dalam direktori ini berdasarkan permintaan Anda.</li>
+<li><strong>Channels</strong>: Hubungkan agen Anda dengan antarmuka pengguna: <ul>
+<li><strong>Web Chat</strong>: Antarmuka chat bawaan di panel admin.</li>
+<li><strong>Telegram</strong>: Masukkan token dari BotFather untuk mulai mengobrol dengan bot Anda.</li>
+<li><strong>Slack (Socket Mode)</strong>: Masukkan bot token (<code>xoxb-</code>) dan app token (<code>xapp-</code>) agar bot Slack Anda dapat merespons pesan secara real-time langsung dari workspace Anda.</li>
+</ul>
+</li>
+</ol>
+<p>Positive : Slack Socket Mode sangat direkomendasikan karena tidak membutuhkan konfigurasi webhook public URL HTTPS, sehingga aman dicoba dari localhost Anda!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Command Gate &amp; Keamanan Agent" duration="10">
+        <p>Ketika Anda memberikan instruksi kepada agen AI di Slack atau Telegram seperti: <em>&#34;Tolong deploy aplikasi ini ke server staging dan hapus folder cache&#34;</em>, agen tersebut akan mencoba menulis script bash dan mengeksekusinya di mesin host Anda.</p>
+<p>Memberikan akses penuh eksekusi shell ke model AI adalah tindakan berisiko tinggi. Oleh karena itu, Wick menerapkan sistem pengaman berlapis yang dinamakan <strong>Command Gate</strong>.</p>
+<h2 is-upgraded>Cara Kerja Command Gate</h2>
+<p>Setiap kali LLM memanggil tool untuk mengeksekusi perintah bash (<code>run_command</code>), request tersebut dicegat oleh modul <code>app/agent/commandgate/</code> sebelum dijalankan di sistem operasi.</p>
+<pre><code>[User Chat] -&gt; [AI Agent] -&gt; [Request: run_command &#34;rm -rf /&#34;]
+                                    |
+                                    v
+                          [   Command Gate   ]
+                                    |
+            +-----------------------+-----------------------+
+            | (Whitelisted?)                                | (Requires Review?)
+            v                                               v
+       [  ALLOW  ]                                     [  PROMPT  ]
+            |                                               |
+            v                                               v
+   (Eksekusi di Host)                            (Tanya Persetujuan User)
+                                                            |
+                                           +----------------+----------------+
+                                           v                                 v
+                                      [ APPROVE ]                       [  BLOCK  ]
+</code></pre>
+<h2 is-upgraded>4 Mode Persetujuan Interaktif</h2>
+<p>Wick menyediakan antarmuka persetujuan (melalui Web Admin UI atau langsung di Slack/Telegram) dengan 4 opsi keputusan untuk setiap eksekusi perintah shell:</p>
+<ol type="1">
+<li><strong>Approve once</strong>: Izinkan perintah spesifik tersebut dieksekusi satu kali saja. Jika agen memanggilnya lagi, ia akan meminta persetujuan kembali.</li>
+<li><strong>This session</strong>: Izinkan perintah tersebut dijalankan berulang kali selama sesi chat aktif saat ini.</li>
+<li><strong>Always (Whitelist)</strong>: Masukkan pola perintah tersebut ke dalam daftar whitelist permanen. Agen dapat menjalankannya di masa depan secara otomatis tanpa konfirmasi.</li>
+<li><strong>Block</strong>: Tolak perintah tersebut. Agen akan menerima error feedback di context window-nya sehingga ia tahu perintah tersebut dilarang oleh administrator.</li>
+</ol>
+<h2 is-upgraded>Konfigurasi Aturan Whitelist</h2>
+<p>Anda dapat mengatur aksi default untuk Command Gate di file <code>.env</code> Anda:</p>
+<pre><code language="language-env" class="language-env"># Pilihan default: allow | deny | prompt
+COMMAND_GATE_DEFAULT=prompt
+</code></pre>
+<p>Aturan pencocokan whitelist menggunakan pola glob sederhana di database SQLite internal. Misalnya, Anda dapat mengizinkan agen menjalankan operasi baca aman seperti <code>cat</code>, <code>git status</code>, atau <code>ls</code> secara bebas, tetapi selalu meminta konfirmasi untuk perintah destruktif seperti <code>rm</code> atau modifikasi infrastruktur seperti <code>docker compose up</code>.</p>
+<p>Semua aktivitas eksekusi perintah (siapa pengirimnya, teks perintah, hasil eksekusi, status persetujuan, waktu eksekusi) direkam secara terperinci ke audit logs berformat JSONL untuk keperluan forensik keamanan.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Membangun Aplikasi Internal dengan Wick CLI" duration="15">
+        <p>Selain sebagai AI Agent, Wick adalah sebuah web framework Go berkinerja tinggi yang mengutamakan pendekatan deklaratif. Dengan Wick, Anda mendefinisikan struktur aplikasi web internal Anda lewat file konfigurasi YAML, dan Wick CLI akan membantu menghasilkan kode Go, skema database, antarmuka admin, hingga program penjadwal kerja.</p>
+<h2 is-upgraded>1. Inisialisasi Proyek Baru</h2>
+<p>Buka terminal Anda, masuk ke direktori tempat Anda menyimpan proyek, lalu jalankan perintah scaffolding berikut:</p>
+<pre><code language="language-bash" class="language-bash">wick init inventory-app
+</code></pre>
+<p>Perintah di atas akan membuat folder baru bernama <code>inventory-app/</code> dengan struktur template sebagai berikut:</p>
+<pre><code>inventory-app/
+├── data/
+│   └── app.db           # SQLite DB file
+├── jobs/
+│   └── daily_report.go  # Template background job
+├── main.go              # Entrypoint aplikasi
+├── go.mod               # File modul Go
+└── wick.yml             # File konfigurasi manifest utama (CRITICAL)
+</code></pre>
+<p>Masuk ke folder proyek baru tersebut:</p>
+<pre><code language="language-bash" class="language-bash">cd inventory-app
+</code></pre>
+<h2 is-upgraded>2. Bedah Manifest wick.yml</h2>
+<p>File <code>wick.yml</code> adalah pusat kendali aplikasi internal Anda. Di sini Anda mendefinisikan server, database, otentikasi, tampilan halaman beserta komponennya, background job, dan API routing.</p>
+<p>Mari kita pelajari contoh struktur konfigurasi <code>wick.yml</code> yang komprehensif:</p>
+<pre><code language="language-yaml" class="language-yaml">app:
+  name: inventory-app
+  version: 1.0.0
+  description: &#34;Sistem Manajemen Gudang &amp; Laporan Harian&#34;
+
+server:
+  port: 9425
+  host: 0.0.0.0
+
+database:
+  driver: sqlite
+  path: data/app.db
+
+auth:
+  enabled: true
+  method: password        # Opsi: password | totp | ldap
+  session_ttl: 24h
+
+# Konfigurasi Rendering Halaman Dashboard Visual
+pages:
+  - path: /
+    title: Ringkasan Gudang
+    layout: sidebar
+    components:
+      - type: stats
+        title: Total Stok Barang
+        query: &#34;SELECT SUM(quantity) as total FROM items&#34;
+      - type: chart
+        title: Grafik Pendaftaran Barang Baru
+        query: &#34;SELECT date(created_at) as date, COUNT(*) as count FROM items GROUP BY date(created_at)&#34;
+        chart_type: line
+
+  - path: /items
+    title: Daftar Barang
+    layout: table
+    source: items         # Menghubungkan langsung dengan tabel &#39;items&#39; di database
+    columns:
+      - name: id
+        label: SKU ID
+      - name: name
+        label: Nama Barang
+      - name: quantity
+        label: Stok Tersedia
+      - name: price
+        label: Harga Satuan
+    actions:
+      - type: create      # Auto-generate form tambah data
+      - type: edit        # Auto-generate form edit data
+      - type: delete      # Tombol hapus dengan konfirmasi
+
+# Konfigurasi Penjadwalan Background Tasks
+jobs:
+  - name: generate-daily-pdf
+    schedule: &#34;0 18 * * *&#34;  # Dijalankan otomatis setiap hari jam 6 sore
+    handler: jobs/daily_report.go
+
+# Konfigurasi Custom REST API Endpoints
+api:
+  prefix: /api/v1
+  routes:
+    - method: GET
+      path: /status
+      handler: health
+</code></pre>
+<p>Dengan mendeklarasikan manifest di atas, Wick runtime secara cerdas akan membuat rute HTTP, meng-compile template admin HTML, menyiapkan database SQLite, merender grafik dinamis menggunakan Javascript (di balik layar), dan melakukan <em>binding</em> form CRUD secara otomatis tanpa Anda perlu menulis baris kode Go yang panjang!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Development, Build &amp; Deployment" duration="10">
+        <p>Setelah struktur aplikasi internal Anda didefinisikan di dalam <code>wick.yml</code>, Anda dapat mulai menjalankan, menguji, dan merilis aplikasi Anda ke lingkungan production.</p>
+<h2 is-upgraded>1. Menjalankan Aplikasi di Lokal (Development Mode)</h2>
+<p>Gunakan perintah <code>wick dev</code> untuk menyalakan server lokal khusus untuk tahap pengembangan:</p>
+<pre><code language="language-bash" class="language-bash">wick dev
+</code></pre>
+<p>Perintah <code>wick dev</code> memiliki fitur <strong>Hot Reload</strong>. Setiap kali Anda mengubah file manifest <code>wick.yml</code>, mengubah query SQL, atau mengedit logic di file handler Go, server Wick secara otomatis akan memuat ulang konfigurasi baru tersebut tanpa perlu mematikan dan menyalakan kembali server secara manual.</p>
+<p>Akses dashboard aplikasi Anda di <strong><code>http://localhost:9425</code></strong> untuk melihat perubahan layout halaman secara instan!</p>
+<h2 is-upgraded>2. Melakukan Kompilasi (Production Build)</h2>
+<p>Jika aplikasi Anda sudah siap digunakan oleh pengguna di kantor atau tim internal Anda, saatnya mengompilasi kode tersebut menjadi satu file binary executable tunggal yang tidak bergantung pada dependensi luar.</p>
+<p>Jalankan perintah build:</p>
+<pre><code language="language-bash" class="language-bash">wick build
+</code></pre>
+<p>Wick compiler akan memproses manifest, menghasilkan file binding Go yang efisien, mengoptimalkan aset front-end (meminimalkan ukuran Tailwind CSS dan Javascript), menggabungkan database migrations, lalu memanggil compiler Go untuk menghasilkan satu binary file portabel (misal: <code>./inventory-app</code>).</p>
+<p>Binary mandiri ini sangat ringan dan dapat disalin ke server VPS Linux Anda dan dijalankan langsung tanpa perlu menginstal runtime Go di server target!</p>
+<h2 is-upgraded>3. Deploying ke Server Production (Docker Flow)</h2>
+<p>Cara termudah dan paling aman untuk men-deploy aplikasi internal Wick Anda di server cloud adalah menggunakan kontainerisasi Docker. Anda bisa menggunakan template Dockerfile bawaan di bawah ini:</p>
+<pre><code language="language-dockerfile" class="language-dockerfile"># Tahap Kompilasi
+FROM golang:1.22-alpine AS builder
+RUN apk add --no-cache build-base sqlite-dev
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=1 go build -o /app/my-app .
+
+# Tahap Produksi
+FROM alpine:3.19
+RUN apk add --no-cache sqlite-libs ca-certificates
+WORKDIR /app
+COPY --from=builder /app/my-app /app/my-app
+COPY --from=builder /app/wick.yml /app/wick.yml
+
+EXPOSE 9425
+ENTRYPOINT [&#34;/app/my-app&#34;]
+</code></pre>
+<p>Build image Docker Anda dan jalankan di VPS target:</p>
+<pre><code language="language-bash" class="language-bash">docker build -t company/my-app:1.0 .
+docker run -d -p 80:9425 -v /var/data/app:/app/data company/my-app:1.0
+</code></pre>
+<p>Jangan lupa untuk me-mount folder database <code>/app/data</code> ke storage lokal VPS agar data inventaris Anda tetap tersimpan (<em>persistent</em>) walaupun kontainer Docker di-restart.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kesimpulan &amp; Sesi Berikutnya" duration="5">
+        <p>Selamat! Anda telah mempelajari dasar-dasar Wick secara komprehensif, mulai dari pemahaman konsep monorepo, setup AI Agent Host, pengamanan terminal via Command Gate, hingga pembuatan aplikasi database internal secara deklaratif menggunakan manifest <code>wick.yml</code>.</p>
+<h2 is-upgraded>Rangkuman yang Telah Kita Pelajari</h2>
+<ol type="1">
+<li><strong>Arsitektur Monorepo</strong>: Satu binary Wick dapat berfungsi sebagai CLI developer, AI Agent host, atau aplikasi web terkompilasi.</li>
+<li><strong>AI Agent Hosting</strong>: <code>wick-agent</code> memudahkan konfigurasi LLM (Claude, Gemini, OpenAI, Ollama) untuk merespons chat di Slack &amp; Telegram dengan akses shell berkeamanan Command Gate.</li>
+<li><strong>Wick CLI &amp; manifest</strong>: Scaffolding instan dengan <code>wick init</code>, setup visual dashboard dan database CRUD deklaratif di <code>wick.yml</code>.</li>
+<li><strong>DevOps &amp; Deployment</strong>: Menjalankan mode reload cepat via <code>wick dev</code>, kompilasi bertenaga penuh lewat <code>wick build</code>, serta panduan deploy container Docker.</li>
+</ol>
+<h2 is-upgraded>Topik di Sesi Selanjutnya (Next Session Preview)</h2>
+<p>Karena cakupan ekosistem Go dan AI Agent sangat luas, untuk menjaga agar proses belajar tetap terfokus, topik tingkat lanjut berikut akan kita bahas secara mendalam di sesi tutorial berikutnya:</p>
+<ul>
+<li><strong>Custom Handler &amp; API logic di Go</strong>: Menulis code Go khusus untuk memproses data dinamis di component form dan routing custom API.</li>
+<li><strong>Model Context Protocol (MCP)</strong>: Memperluas kapabilitas agen AI agar dapat membaca schema database eksternal Anda atau memanggil API pihak ketiga (seperti GitHub, Jira, dsb).</li>
+<li><strong>Keamanan Lanjutan (TOTP &amp; LDAP)</strong>: Mengintegrasikan otentikasi login sistem internal menggunakan Authenticator App (Google/Microsoft Authenticator) dan Active Directory kantor Anda.</li>
+<li><strong>Cron Jobs Kompleks</strong>: Membuat background jobs bertingkat dengan antrian job queue (<code>pkg/queue/</code>) untuk menangani kegagalan tugas berat.</li>
+</ul>
+<p>Ada pertanyaan seputar konfigurasi atau langkah setup yang telah kita jalankan? Buka <a href="https://github.com/learnwithfath/learnwithfath.github.io/issues" target="_blank">feedback link</a> atau diskusikan bersama tim Anda!</p>
+<p><strong>Selamat Berkreasi dengan Wick! 🚀</strong></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
