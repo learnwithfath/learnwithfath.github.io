@@ -1,0 +1,596 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Zed Editor Pro: Panduan Lengkap untuk Full Stack Mobile Developer</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="zed-editor-pro-tutorial"
+                  title="Zed Editor Pro: Panduan Lengkap untuk Full Stack Mobile Developer"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Overview" duration="5">
+        <h2 is-upgraded>Apa itu Zed?</h2>
+<p><strong>Zed</strong> adalah code editor generasi baru yang dibangun dari nol menggunakan <strong>Rust</strong> oleh tim yang sama yang menciptakan Atom dan Tree-sitter (Zed Industries). Berbeda dari editor berbasis Electron seperti VS Code, Zed dirancang untuk <strong>kecepatan ekstrem</strong> dengan rendering berbasis GPU, arsitektur multi-threaded penuh, dan startup time yang hampir instan.</p>
+<p>Bagi seorang <strong>full stack mobile developer</strong> — yang setiap hari berpindah antara kode Flutter/Dart, native Android (Kotlin), native iOS (Swift), backend (Go/TypeScript), dan konfigurasi build yang berat — performa dan efisiensi workflow adalah segalanya. Zed menjawab kebutuhan ini dengan:</p>
+<ul>
+<li><strong>Rendering GPU-accelerated</strong> — scrolling dan multi-cursor editing terasa instan bahkan di file besar (generated code Dart/Kotlin sering sangat panjang)</li>
+<li><strong>Native multiplayer collaboration</strong> — pair programming real-time tanpa plugin tambahan</li>
+<li><strong>AI-native dari awal</strong> — Agent Panel, inline assist, dan edit predictions terintegrasi langsung di core editor, bukan sekadar ekstensi</li>
+<li><strong>Model Context Protocol (MCP)</strong> — menghubungkan AI ke tools eksternal (database, API, design system)</li>
+<li><strong>Remote Development via SSH</strong> — coding langsung ke build server/CI machine tanpa lag</li>
+</ul>
+<h2 is-upgraded>Perbandingan Singkat: Zed vs VS Code</h2>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Aspek</p>
+</td><td colspan="1" rowspan="1"><p>Zed</p>
+</td><td colspan="1" rowspan="1"><p>VS Code</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Basis teknologi</p>
+</td><td colspan="1" rowspan="1"><p>Rust, GPUI (native GPU renderer)</p>
+</td><td colspan="1" rowspan="1"><p>Electron + TypeScript</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Startup time</p>
+</td><td colspan="1" rowspan="1"><p>&lt; 1 detik</p>
+</td><td colspan="1" rowspan="1"><p>2-5 detik</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Kolaborasi real-time</p>
+</td><td colspan="1" rowspan="1"><p>Native, built-in</p>
+</td><td colspan="1" rowspan="1"><p>Perlu ekstensi Live Share</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>AI Agent</p>
+</td><td colspan="1" rowspan="1"><p>Built-in Agent Panel + inline assist</p>
+</td><td colspan="1" rowspan="1"><p>Perlu ekstensi (Copilot, Cline, dll)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Konsumsi memori</p>
+</td><td colspan="1" rowspan="1"><p>Rendah (native)</p>
+</td><td colspan="1" rowspan="1"><p>Lebih tinggi (Electron overhead)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Ekstensi ekosistem</p>
+</td><td colspan="1" rowspan="1"><p>Berkembang, fokus LSP/tema</p>
+</td><td colspan="1" rowspan="1"><p>Sangat besar &amp; matang</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Apa yang Akan Anda Pelajari</h2>
+<p>Dalam codelab komprehensif ini, kita akan menjelajahi Zed dari instalasi hingga workflow tingkat lanjut khusus untuk pengembangan full stack mobile:</p>
+<ol type="1">
+<li>Instalasi &amp; setup awal di macOS/Linux</li>
+<li>Navigasi dan interface inti (command palette, multibuffers, panes)</li>
+<li>Keybindings &amp; Vim mode untuk kecepatan maksimal</li>
+<li>AI features tingkat lanjut (Agent Panel, inline assist, MCP)</li>
+<li>Konfigurasi multi-bahasa untuk Flutter, Kotlin, Swift, TypeScript, Go</li>
+<li>Tasks, terminal terintegrasi, dan debugging (DAP) untuk mobile</li>
+<li>Git, remote development (SSH), dan kolaborasi real-time</li>
+<li>Ekstensi dan kustomisasi lanjutan</li>
+<li>Kesimpulan dan rekomendasi workflow harian</li>
+</ol>
+<p>Positive : Codelab ini mengasumsikan Anda sudah familiar dengan konsep dasar IDE/editor (file explorer, terminal, debugging). Fokus kita adalah efisiensi dan fitur-fitur pro Zed.</p>
+<p>Mari kita mulai perjalanan menguasai Zed!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Instalasi &amp; Setup Awal" duration="8">
+        <h2 is-upgraded>Instalasi di macOS</h2>
+<p>Cara tercepat menginstal Zed di macOS adalah lewat script resmi:</p>
+<pre><code language="language-bash" class="language-bash">curl -f https://zed.dev/install.sh | sh
+</code></pre>
+<p>Atau unduh langsung dari <a href="https://zed.dev/download" target="_blank">zed.dev/download</a> dan drag ke folder <code>Applications</code>.</p>
+<p>Jika menggunakan Homebrew:</p>
+<pre><code language="language-bash" class="language-bash">brew install --cask zed
+</code></pre>
+<h2 is-upgraded>Instalasi di Linux</h2>
+<pre><code language="language-bash" class="language-bash">curl -f https://zed.dev/install.sh | sh
+</code></pre>
+<p>Zed juga tersedia sebagai Flatpak dan paket distro tertentu (Arch: <code>zed</code> di AUR/extra).</p>
+<h2 is-upgraded>Instalasi CLI (<code>zed</code> command)</h2>
+<p>Setelah instalasi, pastikan CLI <code>zed</code> tersedia di PATH agar bisa membuka project langsung dari terminal:</p>
+<pre><code language="language-bash" class="language-bash"># Cek apakah CLI sudah terpasang
+which zed
+
+# Jika belum, buka Zed lalu jalankan dari Command Palette:
+# &#34;cli: install&#34;
+</code></pre>
+<p>Setelah terpasang, Anda bisa membuka project seperti membuka VS Code:</p>
+<pre><code language="language-bash" class="language-bash">cd ~/projects/flutter-app
+zed .
+</code></pre>
+<h2 is-upgraded>First-Run Setup</h2>
+<p>Saat pertama kali membuka Zed:</p>
+<ol type="1">
+<li><strong>Sign in</strong> dengan akun Zed (GitHub OAuth) — diperlukan untuk fitur AI dan kolaborasi</li>
+<li>Pilih <strong>tema</strong> (dark/light) dan <strong>base keymap</strong> (Zed default, VS Code, Vim, Sublime Text, Atom, JetBrains)</li>
+<li>Zed akan otomatis mendeteksi file konfigurasi project (<code>.zed/settings.json</code> jika ada)</li>
+</ol>
+<p>Negative : Jika base keymap dipilih &#34;VS Code&#34; saat first-run tapi Anda ingin beralih ke Vim mode nanti, cukup ubah <code>"vim_mode": true</code> di <code>settings.json</code> — tidak perlu instal ulang.</p>
+<h2 is-upgraded>Struktur File Konfigurasi</h2>
+<p>Zed menyimpan konfigurasi di dua level:</p>
+<pre><code>~/.config/zed/settings.json    # Global settings (semua project)
+~/.config/zed/keymap.json      # Global keybindings
+&lt;project-root&gt;/.zed/settings.json  # Settings khusus project (override global)
+</code></pre>
+<p>Buka global settings langsung lewat Command Palette: <code>zed: open settings</code> (<code>Cmd+,</code> di macOS).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Navigasi &amp; Interface Inti" duration="7">
+        <h2 is-upgraded>Command Palette — Pusat Kendali Segalanya</h2>
+<p>Tekan <code>Cmd+Shift+P</code> (macOS) atau <code>Ctrl+Shift+P</code> (Linux) untuk membuka <strong>Command Palette</strong> — titik masuk untuk hampir semua aksi di Zed: membuka file, mengubah setting, menjalankan task, toggle panel, dsb.</p>
+<h2 is-upgraded>Quick File Open &amp; Navigasi Project</h2>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Aksi</p>
+</td><td colspan="1" rowspan="1"><p>Shortcut (macOS)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Quick Open (fuzzy file finder)</p>
+</td><td colspan="1" rowspan="1"><p><code>Cmd+P</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Go to Symbol dalam file</p>
+</td><td colspan="1" rowspan="1"><p><code>Cmd+Shift+O</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Go to Line</p>
+</td><td colspan="1" rowspan="1"><p><code>Ctrl+G</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Go to Definition</p>
+</td><td colspan="1" rowspan="1"><p><code>F12</code> / <code>Cmd+Click</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Find in Project</p>
+</td><td colspan="1" rowspan="1"><p><code>Cmd+Shift+F</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Toggle Project Panel</p>
+</td><td colspan="1" rowspan="1"><p><code>Cmd+B</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Multibuffers — Fitur Unggulan Zed</h2>
+<p><strong>Multibuffer</strong> memungkinkan Anda melihat dan mengedit banyak potongan kode dari file berbeda dalam <strong>satu buffer tunggal</strong>. Ini sangat berguna saat:</p>
+<ul>
+<li>Melihat semua hasil pencarian &#34;Find in Project&#34; sebagai satu buffer yang bisa diedit langsung</li>
+<li>Melihat semua pemanggilan sebuah function (references) dalam satu tampilan</li>
+<li>Melakukan refactor lintas file tanpa berpindah-pindah tab</li>
+</ul>
+<p>Coba: <code>Cmd+Shift+F</code> untuk mencari sebuah string di seluruh project Flutter Anda (misalnya nama widget), lalu edit langsung hasilnya di multibuffer — perubahan otomatis tersinkron ke file aslinya.</p>
+<h2 is-upgraded>Panes &amp; Split Layout</h2>
+<p>Zed mendukung split layout fleksibel — berguna untuk melihat kode Dart di satu sisi dan file <code>pubspec.yaml</code> atau test file di sisi lain:</p>
+<ul>
+<li><code>Cmd+K</code> lalu <code>Cmd+Right/Left/Up/Down</code> — split pane ke arah tertentu</li>
+<li><code>Cmd+K</code> lalu <code>Cmd+Right</code> diikuti drag tab — memindahkan file ke pane baru</li>
+</ul>
+<h2 is-upgraded>Outline Panel</h2>
+<p>Untuk file besar (misalnya generated code <code>*.g.dart</code> dari <code>json_serializable</code> atau <code>freezed</code>), gunakan <strong>Outline</strong> (<code>Cmd+Shift+O</code>) untuk lompat langsung ke class/method tanpa scroll manual.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Keybindings &amp; Vim Mode untuk Efisiensi" duration="8">
+        <h2 is-upgraded>Mengaktifkan Vim Mode</h2>
+<p>Bagi developer yang terbiasa navigasi tanpa mouse, Zed memiliki implementasi <strong>Vim mode</strong> kelas satu (bukan sekadar emulasi dasar). Aktifkan lewat <code>settings.json</code>:</p>
+<pre><code language="language-json" class="language-json">{
+  &#34;vim_mode&#34;: true,
+  &#34;relative_line_numbers&#34;: true,
+  &#34;cursor_blink&#34;: false
+}
+</code></pre>
+<p>Vim mode di Zed mendukung mode Normal/Insert/Visual seperti biasa, plus terintegrasi penuh dengan fitur native Zed seperti multibuffer, multi-cursor, dan LSP actions (<code>gd</code> untuk go-to-definition, <code>gr</code> untuk find references).</p>
+<h2 is-upgraded>Custom Keymap</h2>
+<p>Untuk menyesuaikan keybinding, edit <code>~/.config/zed/keymap.json</code>. Contoh menambahkan shortcut cepat untuk membuka terminal dan menjalankan task Flutter:</p>
+<pre><code language="language-json" class="language-json">[
+  {
+    &#34;context&#34;: &#34;Workspace&#34;,
+    &#34;bindings&#34;: {
+      &#34;cmd-shift-r&#34;: &#34;task::Spawn&#34;,
+      &#34;cmd-j&#34;: &#34;workspace::ToggleBottomDock&#34;
+    }
+  },
+  {
+    &#34;context&#34;: &#34;Editor &amp;&amp; vim_mode == normal&#34;,
+    &#34;bindings&#34;: {
+      &#34;space f f&#34;: &#34;file_finder::Toggle&#34;,
+      &#34;space g g&#34;: &#34;pane::RevealInProjectPanel&#34;
+    }
+  }
+]
+</code></pre>
+<p>Positive : Gunakan Command Palette <code>zed: open keymap</code> untuk melihat seluruh default keybinding aktif berdasarkan konteks (context-aware) sebelum menimpanya.</p>
+<h2 is-upgraded>Multi-Cursor &amp; Selection Power Tools</h2>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Aksi</p>
+</td><td colspan="1" rowspan="1"><p>Shortcut</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Add cursor di atas/bawah</p>
+</td><td colspan="1" rowspan="1"><p><code>Cmd+Alt+Up/Down</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Select next occurrence</p>
+</td><td colspan="1" rowspan="1"><p><code>Cmd+D</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Select all occurrences</p>
+</td><td colspan="1" rowspan="1"><p><code>Cmd+Shift+L</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Expand selection (syntax-aware)</p>
+</td><td colspan="1" rowspan="1"><p><code>Ctrl+Shift+Right</code></p>
+</td></tr>
+</table>
+<p>Fitur <strong>syntax-aware selection expansion</strong> sangat membantu saat bekerja dengan widget tree Flutter yang bersarang dalam — tekan berulang kali untuk memperluas seleksi dari expression → statement → block → method.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="AI Features Tingkat Lanjut" duration="10">
+        <h2 is-upgraded>Agent Panel</h2>
+<p>Zed memiliki <strong>Agent Panel</strong> bawaan (bukan ekstensi) yang berfungsi seperti asisten coding otonom. Buka lewat <code>Cmd+?</code> atau Command Palette <code>agent: toggle panel</code>.</p>
+<p>Agent Panel bisa:</p>
+<ul>
+<li>Membaca dan mengedit banyak file sekaligus dalam satu percakapan</li>
+<li>Menjalankan command terminal (dengan konfirmasi)</li>
+<li>Menggunakan tools eksternal lewat MCP (Model Context Protocol)</li>
+</ul>
+<h2 is-upgraded>Konfigurasi AI Provider</h2>
+<p>Zed mendukung banyak provider AI. Konfigurasi di <code>settings.json</code>:</p>
+<pre><code language="language-json" class="language-json">{
+  &#34;agent&#34;: {
+    &#34;default_model&#34;: {
+      &#34;provider&#34;: &#34;anthropic&#34;,
+      &#34;model&#34;: &#34;claude-sonnet-5&#34;
+    },
+    &#34;inline_assistant_model&#34;: {
+      &#34;provider&#34;: &#34;anthropic&#34;,
+      &#34;model&#34;: &#34;claude-haiku-4-5&#34;
+    }
+  },
+  &#34;language_models&#34;: {
+    &#34;anthropic&#34;: {
+      &#34;api_url&#34;: &#34;https://api.anthropic.com&#34;
+    },
+    &#34;ollama&#34;: {
+      &#34;api_url&#34;: &#34;http://localhost:11434&#34;
+    }
+  }
+}
+</code></pre>
+<p>Untuk provider lokal (privasi penuh untuk kode proprietary), gunakan <strong>Ollama</strong>:</p>
+<pre><code language="language-bash" class="language-bash">ollama pull qwen2.5-coder:14b
+</code></pre>
+<p>Lalu pilih model tersebut sebagai default di panel Agent.</p>
+<h2 is-upgraded>Inline Assist</h2>
+<p>Tekan <code>Cmd+I</code> di dalam editor untuk memicu <strong>Inline Assist</strong> — meminta AI mengubah/menghasilkan kode langsung di posisi kursor tanpa membuka panel terpisah. Sangat efektif untuk:</p>
+<ul>
+<li>Mengubah satu widget Flutter menjadi <code>StatefulWidget</code> lengkap dengan boilerplate</li>
+<li>Menulis unit test untuk sebuah function Go/Kotlin yang sedang di-highlight</li>
+<li>Menerjemahkan model data dari JSON contoh menjadi class Dart/Kotlin/Swift</li>
+</ul>
+<h2 is-upgraded>Edit Predictions</h2>
+<p>Zed menyediakan <strong>Edit Predictions</strong> (mirip GitHub Copilot) yang memprediksi perubahan multi-baris berikutnya berdasarkan konteks edit Anda saat ini, bukan hanya autocomplete satu baris. Aktifkan/nonaktifkan lewat <code>settings.json</code>:</p>
+<pre><code language="language-json" class="language-json">{
+  &#34;features&#34;: {
+    &#34;edit_prediction_provider&#34;: &#34;zed&#34;
+  }
+}
+</code></pre>
+<h2 is-upgraded>Model Context Protocol (MCP)</h2>
+<p>MCP memungkinkan Agent Panel terhubung ke tools eksternal — misalnya server MCP untuk database, Figma, atau dokumentasi internal. Tambahkan MCP server lewat Command Palette <code>agent: add context server</code>, lalu isi konfigurasi:</p>
+<pre><code language="language-json" class="language-json">{
+  &#34;context_servers&#34;: {
+    &#34;postgres&#34;: {
+      &#34;command&#34;: {
+        &#34;path&#34;: &#34;npx&#34;,
+        &#34;args&#34;: [&#34;-y&#34;, &#34;@modelcontextprotocol/server-postgres&#34;, &#34;postgresql://localhost/mydb&#34;]
+      }
+    }
+  }
+}
+</code></pre>
+<p>Negative : Selalu tinjau permission scope MCP server sebelum menghubungkannya ke database produksi — Agent Panel bisa mengeksekusi query berdasarkan tools yang tersedia.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Konfigurasi Multi-Bahasa untuk Full Stack Mobile" duration="10">
+        <h2 is-upgraded>Bahasa Wajib untuk Full Stack Mobile Developer</h2>
+<p>Seorang full stack mobile developer biasanya bekerja dengan kombinasi:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Layer</p>
+</td><td colspan="1" rowspan="1"><p>Bahasa</p>
+</td><td colspan="1" rowspan="1"><p>LSP Server</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Cross-platform mobile</p>
+</td><td colspan="1" rowspan="1"><p>Dart (Flutter)</p>
+</td><td colspan="1" rowspan="1"><p><code>dart</code> (built-in analysis server)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Native Android</p>
+</td><td colspan="1" rowspan="1"><p>Kotlin</p>
+</td><td colspan="1" rowspan="1"><p><code>kotlin-language-server</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Native iOS</p>
+</td><td colspan="1" rowspan="1"><p>Swift</p>
+</td><td colspan="1" rowspan="1"><p><code>sourcekit-lsp</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Backend/API</p>
+</td><td colspan="1" rowspan="1"><p>Go</p>
+</td><td colspan="1" rowspan="1"><p><code>gopls</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Web/Admin panel</p>
+</td><td colspan="1" rowspan="1"><p>TypeScript/JS</p>
+</td><td colspan="1" rowspan="1"><p><code>typescript-language-server</code></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Setup Flutter/Dart</h2>
+<p>Zed mendeteksi Dart SDK otomatis jika <code>flutter</code> ada di PATH. Verifikasi dan install ekstensi Dart dari Extensions panel (<code>Cmd+Shift+X</code> → cari &#34;Dart&#34;). Konfigurasi tambahan di <code>settings.json</code>:</p>
+<pre><code language="language-json" class="language-json">{
+  &#34;languages&#34;: {
+    &#34;Dart&#34;: {
+      &#34;tab_size&#34;: 2,
+      &#34;format_on_save&#34;: &#34;on&#34;,
+      &#34;formatter&#34;: {
+        &#34;external&#34;: {
+          &#34;command&#34;: &#34;dart&#34;,
+          &#34;arguments&#34;: [&#34;format&#34;, &#34;--output=show&#34;, &#34;-&#34;]
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<h2 is-upgraded>Setup Kotlin (Android Native)</h2>
+<pre><code language="language-json" class="language-json">{
+  &#34;languages&#34;: {
+    &#34;Kotlin&#34;: {
+      &#34;tab_size&#34;: 4,
+      &#34;format_on_save&#34;: &#34;on&#34;
+    }
+  },
+  &#34;lsp&#34;: {
+    &#34;kotlin-language-server&#34;: {
+      &#34;initialization_options&#34;: {
+        &#34;compilerOptions&#34;: {
+          &#34;jvmTarget&#34;: &#34;17&#34;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<h2 is-upgraded>Setup Swift (iOS Native)</h2>
+<p>Swift LSP (<code>sourcekit-lsp</code>) sudah termasuk dalam Xcode Command Line Tools:</p>
+<pre><code language="language-bash" class="language-bash">xcode-select --install
+</code></pre>
+<p>Zed akan otomatis menggunakan <code>sourcekit-lsp</code> untuk file <code>.swift</code> begitu ekstensi Swift diaktifkan.</p>
+<h2 is-upgraded>Setup Go (Backend)</h2>
+<pre><code language="language-json" class="language-json">{
+  &#34;languages&#34;: {
+    &#34;Go&#34;: {
+      &#34;format_on_save&#34;: &#34;on&#34;,
+      &#34;formatter&#34;: &#34;language_server&#34;
+    }
+  },
+  &#34;lsp&#34;: {
+    &#34;gopls&#34;: {
+      &#34;initialization_options&#34;: {
+        &#34;gofumpt&#34;: true,
+        &#34;staticcheck&#34;: true
+      }
+    }
+  }
+}
+</code></pre>
+<h2 is-upgraded>Setup TypeScript/JavaScript</h2>
+<pre><code language="language-json" class="language-json">{
+  &#34;languages&#34;: {
+    &#34;TypeScript&#34;: {
+      &#34;format_on_save&#34;: &#34;on&#34;,
+      &#34;formatter&#34;: &#34;prettier&#34;
+    }
+  },
+  &#34;prettier&#34;: {
+    &#34;allowed&#34;: true
+  }
+}
+</code></pre>
+<p>Positive : Anda bisa menimpa setting ini per-project dengan membuat <code>.zed/settings.json</code> di root repository — cocok untuk tim yang punya konvensi formatting berbeda antar-project (misalnya monorepo dengan <code>apps/mobile</code> dan <code>apps/backend</code>).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Tasks, Terminal Terintegrasi &amp; Debugging" duration="9">
+        <h2 is-upgraded>Terminal Terintegrasi</h2>
+<p>Buka terminal built-in dengan <code>Ctrl+`</code> (backtick). Zed mendukung multiple terminal panes, split terminal, dan terminal per-worktree — berguna untuk menjalankan <code>flutter run</code> di satu terminal sambil <code>flutter logs</code> atau <code>adb logcat</code> di terminal lain.</p>
+<h2 is-upgraded>Tasks — Otomatisasi Command Berulang</h2>
+<p>Zed memiliki sistem <strong>Tasks</strong> (<code>.zed/tasks.json</code>) untuk menyimpan command yang sering dipakai, bisa dijalankan lewat Command Palette (<code>task: spawn</code>) tanpa mengetik ulang di terminal.</p>
+<p>Contoh <code>tasks.json</code> untuk project Flutter full stack:</p>
+<pre><code language="language-json" class="language-json">[
+  {
+    &#34;label&#34;: &#34;Flutter: Run (Debug)&#34;,
+    &#34;command&#34;: &#34;flutter run&#34;,
+    &#34;use_new_terminal&#34;: true
+  },
+  {
+    &#34;label&#34;: &#34;Flutter: Run Tests&#34;,
+    &#34;command&#34;: &#34;flutter test&#34;,
+    &#34;reveal&#34;: &#34;always&#34;
+  },
+  {
+    &#34;label&#34;: &#34;Android: Build APK Release&#34;,
+    &#34;command&#34;: &#34;cd android &amp;&amp; ./gradlew assembleRelease&#34;
+  },
+  {
+    &#34;label&#34;: &#34;iOS: Build (Xcode)&#34;,
+    &#34;command&#34;: &#34;xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner -configuration Release&#34;
+  },
+  {
+    &#34;label&#34;: &#34;Backend: Run Go Server&#34;,
+    &#34;command&#34;: &#34;go run ./cmd/server&#34;
+  }
+]
+</code></pre>
+<p>Cukup tekan <code>Cmd+Shift+P</code> → <code>task: spawn</code> → pilih task yang diinginkan.</p>
+<h2 is-upgraded>Debugging dengan DAP (Debug Adapter Protocol)</h2>
+<p>Zed mendukung debugging native melalui <strong>DAP</strong>, termasuk untuk aplikasi mobile. Konfigurasi contoh untuk debug Flutter di <code>.zed/debug.json</code>:</p>
+<pre><code language="language-json" class="language-json">[
+  {
+    &#34;label&#34;: &#34;Debug Flutter App&#34;,
+    &#34;adapter&#34;: &#34;Dart&#34;,
+    &#34;request&#34;: &#34;launch&#34;,
+    &#34;program&#34;: &#34;lib/main.dart&#34;,
+    &#34;cwd&#34;: &#34;.&#34;
+  }
+]
+</code></pre>
+<p>Jalankan lewat Command Palette <code>debugger: start</code> atau tombol Run/Debug di Project Panel. Breakpoint bisa diset langsung dengan klik di gutter sebelah nomor baris.</p>
+<p>Negative : Debugging native Kotlin/Swift lewat DAP di Zed masih bergantung pada ekosistem ekstensi yang terus berkembang — untuk debugging Android/iOS yang sangat kompleks (misalnya native crash), tetap gunakan Android Studio/Xcode sebagai pelengkap.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Git, Remote Development &amp; Kolaborasi" duration="8">
+        <h2 is-upgraded>Git Terintegrasi</h2>
+<p>Zed menampilkan <strong>git blame inline</strong>, diff gutter (garis hijau/merah di sebelah nomor baris), dan staging hunk langsung dari editor tanpa membuka panel terpisah:</p>
+<ul>
+<li>Klik ikon diff di gutter untuk melihat perubahan per-hunk</li>
+<li><code>Cmd+Shift+G</code> — buka Git Panel penuh (staged/unstaged changes, commit)</li>
+<li>Hover di atas baris kode untuk melihat blame info (commit, author, waktu)</li>
+</ul>
+<h2 is-upgraded>Remote Development via SSH</h2>
+<p>Salah satu fitur pro Zed adalah <strong>Remote Development</strong> — membuka project yang berada di server remote (misalnya CI build machine atau server macOS untuk build iOS) seolah-olah lokal, dengan performa native (bukan tunneling berat seperti VS Code Remote-SSH).</p>
+<pre><code language="language-bash" class="language-bash"># Command Palette: &#34;projects: open remote&#34;
+# Lalu masukkan host, contoh:
+ssh build-server.internal
+</code></pre>
+<p>Konfigurasi host di <code>~/.ssh/config</code> seperti biasa:</p>
+<pre><code>Host build-server
+  HostName 10.0.0.5
+  User devops
+  IdentityFile ~/.ssh/id_ed25519
+</code></pre>
+<p>Ini sangat berguna untuk full stack mobile developer yang perlu build iOS di Mac mini CI server dari laptop Linux/Windows, atau menjalankan test suite berat di server yang lebih kuat.</p>
+<h2 is-upgraded>Kolaborasi Real-Time (Multiplayer)</h2>
+<p>Zed mendukung <strong>multiplayer editing</strong> native — mengundang rekan tim untuk melihat dan mengedit buffer yang sama secara real-time, lengkap dengan voice call terintegrasi, tanpa ekstensi tambahan:</p>
+<ol type="1">
+<li>Klik ikon <strong>Share</strong> di pojok kanan atas</li>
+<li>Bagikan link project ke rekan tim</li>
+<li>Kolaborator melihat cursor Anda secara live dan bisa ikut mengedit</li>
+</ol>
+<p>Positive : Fitur ini sangat berguna untuk pair programming saat debugging masalah lintas platform — misalnya satu orang di kode Dart, satu lagi memeriksa native code Android, dalam satu sesi yang sama.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ekstensi &amp; Kustomisasi Lanjutan" duration="6">
+        <h2 is-upgraded>Extension Marketplace</h2>
+<p>Buka Extensions panel dengan <code>Cmd+Shift+X</code>. Ekstensi populer untuk workflow full stack mobile:</p>
+<ul>
+<li><strong>Dart</strong> — syntax highlighting &amp; LSP untuk Flutter</li>
+<li><strong>Kotlin</strong> — dukungan bahasa Kotlin</li>
+<li><strong>Docker</strong> — syntax highlighting untuk Dockerfile (backend deployment)</li>
+<li><strong>TOML</strong> / <strong>YAML</strong> — untuk file konfigurasi (<code>pubspec.yaml</code>, CI config)</li>
+<li><strong>Theme packs</strong> — misalnya One Dark Pro, Catppuccin</li>
+</ul>
+<h2 is-upgraded>Membuat Ekstensi Sendiri</h2>
+<p>Ekstensi Zed ditulis dalam Rust dan dikompilasi ke WebAssembly. Struktur dasar:</p>
+<pre><code>my-extension/
+├── extension.toml
+├── src/
+│   └── lib.rs
+└── languages/
+    └── my-lang/
+        ├── config.toml
+        └── highlights.scm
+</code></pre>
+<p>Untuk kebutuhan sehari-hari (menambah snippet, theme, atau grammar sederhana), biasanya tidak perlu membuat ekstensi penuh — cukup gunakan <strong>Snippets</strong> bawaan:</p>
+<pre><code language="language-json" class="language-json">// ~/.config/zed/snippets/dart.json
+{
+  &#34;StatefulWidget Boilerplate&#34;: {
+    &#34;prefix&#34;: &#34;stful&#34;,
+    &#34;body&#34;: [
+      &#34;class ${1:WidgetName} extends StatefulWidget {&#34;,
+      &#34;  const ${1:WidgetName}({super.key});&#34;,
+      &#34;&#34;,
+      &#34;  @override&#34;,
+      &#34;  State&lt;${1:WidgetName}&gt; createState() =&gt; _${1:WidgetName}State();&#34;,
+      &#34;}&#34;,
+      &#34;&#34;,
+      &#34;class _${1:WidgetName}State extends State&lt;${1:WidgetName}&gt; {&#34;,
+      &#34;  @override&#34;,
+      &#34;  Widget build(BuildContext context) {&#34;,
+      &#34;    return $0;&#34;,
+      &#34;  }&#34;,
+      &#34;}&#34;
+    ]
+  }
+}
+</code></pre>
+<h2 is-upgraded>Tema &amp; Ikon Kustom</h2>
+<p>Sesuaikan tampilan lewat <code>settings.json</code>:</p>
+<pre><code language="language-json" class="language-json">{
+  &#34;theme&#34;: {
+    &#34;mode&#34;: &#34;dark&#34;,
+    &#34;dark&#34;: &#34;One Dark&#34;,
+    &#34;light&#34;: &#34;One Light&#34;
+  },
+  &#34;icon_theme&#34;: &#34;Material Icon Theme&#34;,
+  &#34;buffer_font_family&#34;: &#34;JetBrains Mono&#34;,
+  &#34;buffer_font_size&#34;: 14,
+  &#34;ui_font_size&#34;: 15
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kesimpulan &amp; Next Steps" duration="3">
+        <h2 is-upgraded>Apa yang Anda Pelajari</h2>
+<ul>
+<li>✅ Instalasi dan setup awal Zed di macOS/Linux beserta CLI</li>
+<li>✅ Navigasi inti: command palette, multibuffer, split panes, outline</li>
+<li>✅ Vim mode dan custom keybinding untuk kecepatan maksimal</li>
+<li>✅ AI features tingkat lanjut: Agent Panel, Inline Assist, Edit Predictions, MCP</li>
+<li>✅ Konfigurasi multi-bahasa untuk Flutter, Kotlin, Swift, Go, TypeScript</li>
+<li>✅ Tasks, terminal terintegrasi, dan debugging via DAP</li>
+<li>✅ Git inline, remote development SSH, dan kolaborasi real-time</li>
+<li>✅ Ekstensi, snippet, dan kustomisasi tema</li>
+</ul>
+<h2 is-upgraded>Rekomendasi Workflow Harian untuk Mobile Developer</h2>
+<ol type="1">
+<li>Mulai hari dengan <code>zed .</code> di root monorepo (mobile app + backend dalam satu window, dipisah lewat split pane)</li>
+<li>Gunakan <strong>Tasks</strong> untuk <code>flutter run</code>, <code>go run</code>, dan test suite — hindari mengetik command manual berulang kali</li>
+<li>Manfaatkan <strong>Agent Panel</strong> untuk boilerplate repetitif (model class, unit test, migrasi API)</li>
+<li>Gunakan <strong>Remote Development</strong> saat perlu build iOS di Mac CI server dari mesin lain</li>
+<li>Aktifkan <strong>git blame inline</strong> untuk memahami konteks kode legacy sebelum melakukan refactor</li>
+</ol>
+<h2 is-upgraded>Referensi Lanjutan</h2>
+<ul>
+<li><a href="https://zed.dev/docs" target="_blank">Dokumentasi resmi Zed</a></li>
+<li><a href="https://zed.dev/extensions" target="_blank">Zed Extensions Registry</a></li>
+<li><a href="https://github.com/zed-industries/zed" target="_blank">Zed GitHub Repository</a></li>
+</ul>
+<p>Thank you for completing this codelab! Selamat mencoba Zed di project full stack mobile Anda berikutnya.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

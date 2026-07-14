@@ -1,0 +1,36 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-07-15T05:11:03+07:00",
+  "id": "zed-editor-pro-tutorial",
+  "duration": 74,
+  "title": "Zed Editor Pro: Panduan Lengkap untuk Full Stack Mobile Developer",
+  "authors": "LearnWithFath Team",
+  "summary": "Panduan lengkap menguasai Zed editor secara profesional — instalasi, navigasi, AI features, konfigurasi multi-bahasa, tasks/debugging, dan workflow git khusus untuk full stack mobile developer (Flutter, Kotlin, Swift, TypeScript, Go).",
+  "source": "zed-editor-pro-tutorial.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "editor",
+    "developertools",
+    "mobile",
+    "ai"
+  ],
+  "tags": [
+    "ai-coding",
+    "editor",
+    "flutter",
+    "kotlin",
+    "mobile",
+    "productivity",
+    "swift",
+    "vim",
+    "zed"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "zed-editor-pro-tutorial"
+}

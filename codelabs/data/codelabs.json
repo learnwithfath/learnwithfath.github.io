@@ -40,6 +40,19 @@
       "ctaText": "Mulai Tutorial"
     },
     {
+      "id": "zed-editor-pro-tutorial",
+      "title": "Zed Editor Pro: Panduan Lengkap untuk Full Stack Mobile Developer",
+      "icon": "⚡",
+      "summary": "Panduan lengkap menguasai Zed editor secara profesional — instalasi, navigasi, AI features, konfigurasi multi-bahasa, tasks/debugging, dan workflow git khusus untuk full stack mobile developer (Flutter, Kotlin, Swift, TypeScript, Go).",
+      "duration": 74,
+      "sections": 9,
+      "tags": ["Editor", "Developer Tools", "Mobile", "AI", "Flutter", "Kotlin", "Swift", "Vim"],
+      "categories": ["editor", "developer-tools", "mobile", "ai"],
+      "searchTerms": "zed editor flutter kotlin swift mobile ai coding vim productivity full stack",
+      "url": "zed-editor-pro-tutorial/",
+      "ctaText": "Mulai Tutorial"
+    },
+    {
       "id": "web-dev-basics",
       "title": "Web Development Basics",
       "icon": "💻",
