@@ -1,0 +1,36 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-07-15T05:38:22+07:00",
+  "id": "claude-code-cli-pro-tutorial",
+  "duration": 73,
+  "title": "Claude Code CLI Pro: Panduan Lengkap untuk Full Stack Mobile Developer",
+  "authors": "LearnWithFath Team",
+  "summary": "Panduan lengkap menguasai Claude Code CLI secara profesional — instalasi, mode interaktif, slash commands, CLAUDE.md, MCP, subagents, hooks, automation, dan workflow git khusus untuk full stack mobile developer (Flutter, Kotlin, Swift, Go).",
+  "source": "claude-code-cli-pro-tutorial.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "cli",
+    "mobile"
+  ],
+  "tags": [
+    "ai-coding",
+    "claude-code",
+    "cli",
+    "flutter",
+    "hooks",
+    "kotlin",
+    "mcp",
+    "subagents",
+    "swift"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "claude-code-cli-pro-tutorial"
+}

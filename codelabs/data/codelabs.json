@@ -53,6 +53,19 @@
       "ctaText": "Mulai Tutorial"
     },
     {
+      "id": "claude-code-cli-pro-tutorial",
+      "title": "Claude Code CLI Pro: Panduan Lengkap untuk Full Stack Mobile Developer",
+      "icon": "🧠",
+      "summary": "Panduan lengkap menguasai Claude Code CLI secara profesional — instalasi, mode interaktif, slash commands, CLAUDE.md, MCP, subagents, hooks, automation, dan workflow git khusus untuk full stack mobile developer (Flutter, Kotlin, Swift, Go).",
+      "duration": 73,
+      "sections": 10,
+      "tags": ["AI", "Developer Tools", "CLI", "Mobile", "MCP", "Subagents", "Hooks", "Flutter"],
+      "categories": ["ai", "developer-tools", "cli", "mobile"],
+      "searchTerms": "claude code cli anthropic ai coding agent mcp subagents hooks flutter kotlin swift full stack mobile",
+      "url": "claude-code-cli-pro-tutorial/",
+      "ctaText": "Mulai Tutorial"
+    },
+    {
       "id": "web-dev-basics",
       "title": "Web Development Basics",
       "icon": "💻",

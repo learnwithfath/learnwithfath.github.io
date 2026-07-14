@@ -1,0 +1,432 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Claude Code CLI Pro: Panduan Lengkap untuk Full Stack Mobile Developer</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="claude-code-cli-pro-tutorial"
+                  title="Claude Code CLI Pro: Panduan Lengkap untuk Full Stack Mobile Developer"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Overview" duration="5">
+        <h2 is-upgraded>Apa itu Claude Code?</h2>
+<p><strong>Claude Code</strong> adalah <em>agentic coding CLI</em> resmi dari Anthropic yang berjalan langsung di terminal Anda. Berbeda dari chatbot AI biasa yang hanya menjawab pertanyaan, Claude Code beroperasi sebagai <strong>agent otonom</strong> yang bisa membaca codebase, mengedit banyak file sekaligus, menjalankan command, melakukan commit git, hingga mengorkestrasi sub-agent lain untuk menyelesaikan tugas kompleks.</p>
+<p>Bagi <strong>full stack mobile developer</strong> — yang harus berpindah konteks antara kode Flutter/Dart, native Android (Kotlin), native iOS (Swift), dan backend (Go/TypeScript) — Claude Code sangat bernilai karena mampu memahami <em>seluruh</em> codebase lintas platform dalam satu sesi, bukan hanya satu file yang sedang dibuka di editor.</p>
+<h2 is-upgraded>Mengapa Claude Code Berbeda</h2>
+<ul>
+<li><strong>Terminal-native</strong> — bekerja di mana pun Anda punya shell: laptop lokal, SSH ke build server, bahkan CI/CD pipeline</li>
+<li><strong>Agentic loop penuh</strong> — bisa membaca, menulis, menjalankan test, memperbaiki error, dan mengulang siklus itu sendiri tanpa campur tangan manual di setiap langkah</li>
+<li><strong>Context-aware lewat </strong><strong><code>CLAUDE.md</code></strong> — memahami konvensi project, arsitektur, dan instruksi khusus tim</li>
+<li><strong>Extensible lewat MCP (Model Context Protocol)</strong> — terhubung ke Jira, Figma, database, Slack, dan tools internal lainnya</li>
+<li><strong>Subagents &amp; orchestration</strong> — mendelegasikan tugas ke agent khusus (misalnya agent eksplorasi kode, agent code-review) untuk paralelisasi dan menjaga context window tetap bersih</li>
+<li><strong>Hooks</strong> — otomatisasi berbasis event (misalnya jalankan linter otomatis setiap kali file diedit)</li>
+</ul>
+<h2 is-upgraded>Apa yang Akan Anda Pelajari</h2>
+<p>Dalam codelab komprehensif ini, kita akan menjelajahi Claude Code CLI dari instalasi hingga workflow tingkat lanjut khusus untuk pengembangan full stack mobile:</p>
+<ol type="1">
+<li>Instalasi dan autentikasi</li>
+<li>Mode interaktif, navigasi, dan permission modes</li>
+<li>Slash commands bawaan dan custom slash commands</li>
+<li><code>CLAUDE.md</code> — memberi context project ke Claude</li>
+<li>Model Context Protocol (MCP) — menghubungkan tools eksternal</li>
+<li>Subagents &amp; orkestrasi multi-agent</li>
+<li>Hooks — automation berbasis event</li>
+<li>Workflow praktis untuk Flutter, Kotlin, Swift, dan backend Go</li>
+<li>Git, conventional commits, dan code review otomatis</li>
+<li>Kesimpulan dan rekomendasi workflow harian</li>
+</ol>
+<p>Positive : Codelab ini mengasumsikan Anda sudah familiar dengan terminal dasar dan konsep git. Fokus kita adalah efisiensi dan fitur-fitur pro Claude Code.</p>
+<p>Mari kita mulai perjalanan menguasai Claude Code CLI!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Instalasi &amp; Autentikasi" duration="6">
+        <h2 is-upgraded>Instalasi</h2>
+<p>Claude Code diinstal lewat npm (Node.js 18+ diperlukan):</p>
+<pre><code language="language-bash" class="language-bash">npm install -g @anthropic-ai/claude-code
+</code></pre>
+<p>Verifikasi instalasi:</p>
+<pre><code language="language-bash" class="language-bash">claude --version
+</code></pre>
+<h2 is-upgraded>Autentikasi</h2>
+<p>Jalankan <code>claude</code> pertama kali di dalam sebuah project untuk memulai alur login:</p>
+<pre><code language="language-bash" class="language-bash">cd ~/projects/flutter-app
+claude
+</code></pre>
+<p>Anda akan diarahkan untuk login lewat browser (akun Claude.ai/Anthropic Console) atau memasukkan API key langsung:</p>
+<pre><code language="language-bash" class="language-bash">export ANTHROPIC_API_KEY=&#34;sk-ant-...&#34;
+</code></pre>
+<p>Negative : Jangan pernah commit API key ke repository. Simpan di environment variable shell profile (<code>~/.zshrc</code>/<code>~/.bashrc</code>) atau secret manager, bukan di file project.</p>
+<h2 is-upgraded>Memilih Model</h2>
+<p>Gunakan <code>/model</code> di dalam sesi interaktif untuk berpindah model (misalnya Sonnet untuk kecepatan sehari-hari, Opus untuk tugas arsitektur kompleks):</p>
+<pre><code>/model claude-opus-4-8
+</code></pre>
+<h2 is-upgraded>Menjalankan di Direktori Project</h2>
+<p>Claude Code otomatis mendeteksi root project (lokasi <code>.git</code>). Untuk monorepo full stack mobile (<code>apps/mobile</code>, <code>apps/backend</code>), jalankan <code>claude</code> dari root repo agar ia memiliki visibilitas penuh lintas folder.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mode Interaktif &amp; Permission" duration="7">
+        <h2 is-upgraded>Menjalankan Sesi Interaktif</h2>
+<pre><code language="language-bash" class="language-bash">claude
+</code></pre>
+<p>Ini membuka REPL interaktif di mana Anda bisa memberi instruksi bahasa natural: &#34;perbaiki bug null pointer di <code>LoginViewModel.kt</code>&#34; atau &#34;tambahkan unit test untuk <code>UserRepository.dart</code>&#34;.</p>
+<h2 is-upgraded>Permission Modes</h2>
+<p>Claude Code memiliki beberapa mode izin untuk mengontrol seberapa otonom agent bertindak:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Mode</p>
+</td><td colspan="1" rowspan="1"><p>Deskripsi</p>
+</td><td colspan="1" rowspan="1"><p>Kapan Digunakan</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Default</strong></p>
+</td><td colspan="1" rowspan="1"><p>Meminta konfirmasi untuk setiap aksi berisiko (edit file, jalankan command)</p>
+</td><td colspan="1" rowspan="1"><p>Workflow harian, tugas sensitif</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Auto-accept edits</strong></p>
+</td><td colspan="1" rowspan="1"><p>Otomatis menerima edit file, tetap konfirmasi command shell</p>
+</td><td colspan="1" rowspan="1"><p>Refactor besar yang sudah direview polanya</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Plan Mode</strong></p>
+</td><td colspan="1" rowspan="1"><p>Hanya membaca &amp; merencanakan, tidak mengeksekusi apa pun sampai disetujui</p>
+</td><td colspan="1" rowspan="1"><p>Perubahan arsitektur besar, migrasi database</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Bypass permissions</strong></p>
+</td><td colspan="1" rowspan="1"><p>Menjalankan semua aksi tanpa konfirmasi</p>
+</td><td colspan="1" rowspan="1"><p>Sandbox/container terisolasi saja — <strong>berisiko tinggi</strong></p>
+</td></tr>
+</table>
+<p>Aktifkan Plan Mode dengan <code>Shift+Tab</code> dua kali, atau langsung dengan flag:</p>
+<pre><code language="language-bash" class="language-bash">claude --permission-mode plan
+</code></pre>
+<p>Negative : Jangan pernah menjalankan <code>bypass permissions</code> di mesin yang memiliki akses ke kredensial produksi atau database live — gunakan hanya di container/VM terisolasi.</p>
+<h2 is-upgraded>Mode Non-Interaktif (Headless)</h2>
+<p>Untuk otomasi CI/CD atau scripting, gunakan flag <code>-p</code> (print mode):</p>
+<pre><code language="language-bash" class="language-bash">claude -p &#34;jalankan flutter analyze dan perbaiki semua warning&#34; --output-format json
+</code></pre>
+<p>Ini sangat berguna untuk pipeline CI yang menjalankan Claude sebagai satu langkah non-interaktif.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Slash Commands &amp; Custom Commands" duration="8">
+        <h2 is-upgraded>Slash Commands Bawaan</h2>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Command</p>
+</td><td colspan="1" rowspan="1"><p>Fungsi</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>/clear</code></p>
+</td><td colspan="1" rowspan="1"><p>Reset context window (mulai percakapan baru)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>/compact</code></p>
+</td><td colspan="1" rowspan="1"><p>Ringkas riwayat percakapan agar hemat context</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>/model</code></p>
+</td><td colspan="1" rowspan="1"><p>Ganti model aktif</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>/agents</code></p>
+</td><td colspan="1" rowspan="1"><p>Kelola subagent kustom</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>/mcp</code></p>
+</td><td colspan="1" rowspan="1"><p>Kelola koneksi MCP server</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>/permissions</code></p>
+</td><td colspan="1" rowspan="1"><p>Atur permission per-tool</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>/review</code></p>
+</td><td colspan="1" rowspan="1"><p>Review pull request atau diff saat ini</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>/init</code></p>
+</td><td colspan="1" rowspan="1"><p>Membuat <code>CLAUDE.md</code> awal berdasarkan analisis codebase</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Membuat Custom Slash Command</h2>
+<p>Custom command disimpan sebagai file Markdown di <code>.claude/commands/</code>. Contoh command khusus untuk menjalankan test suite Flutter:</p>
+<pre><code language="language-markdown" class="language-markdown">&lt;!-- .claude/commands/flutter-test.md --&gt;
+---
+description: Jalankan flutter test dan ringkas hasilnya
+---
+
+Jalankan `flutter test --coverage` di root project mobile.
+Jika ada test yang gagal, analisis root cause dan usulkan perbaikan
+tanpa langsung mengubah kode kecuali diminta.
+</code></pre>
+<p>Panggil dengan <code>/flutter-test</code> di sesi interaktif.</p>
+<h2 is-upgraded>Command dengan Argumen</h2>
+<pre><code language="language-markdown" class="language-markdown">&lt;!-- .claude/commands/gen-model.md --&gt;
+---
+description: Generate model class dari contoh JSON
+argument-hint: [nama-file-json] [target-bahasa]
+---
+
+Baca file JSON di $1, lalu generate class model yang idiomatik
+untuk bahasa $2 (Dart/Kotlin/Swift/TypeScript) lengkap dengan
+serialization (json_serializable untuk Dart, kotlinx.serialization
+untuk Kotlin, Codable untuk Swift).
+</code></pre>
+<p>Panggil dengan <code>/gen-model sample-response.json dart</code>.</p>
+<p>Positive : Simpan custom command di <code>.claude/commands/</code> dalam repo agar bisa dipakai bersama seluruh tim (di-commit ke git), bukan hanya di <code>~/.claude/commands/</code> yang bersifat personal.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="CLAUDE.md — Memberi Context Project" duration="7">
+        <h2 is-upgraded>Apa itu <code>CLAUDE.md</code>?</h2>
+<p><code>CLAUDE.md</code> adalah file di root repository yang otomatis dibaca Claude Code di setiap sesi — berfungsi seperti &#34;onboarding doc&#34; permanen untuk agent. Buat otomatis dengan:</p>
+<pre><code>/init
+</code></pre>
+<p>Claude akan menganalisis struktur project dan menghasilkan draft awal.</p>
+<h2 is-upgraded>Contoh <code>CLAUDE.md</code> untuk Monorepo Full Stack Mobile</h2>
+<pre><code language="language-markdown" class="language-markdown"># Project: SuperApp Mobile &amp; Backend
+
+## Struktur Repo
+- `apps/mobile/` — Flutter app (iOS &amp; Android), state management: Riverpod
+- `apps/backend/` — Go REST API, Postgres, deployment via Docker
+- `apps/android-native/` — modul native Kotlin untuk fitur widget Android
+- `apps/ios-native/` — modul native Swift untuk fitur widget iOS/App Extension
+
+## Konvensi Kode
+- Dart: gunakan `very_good_analysis` lint rules, format dengan `dart format`
+- Go: wajib `gofumpt` dan `staticcheck` sebelum commit
+- Kotlin: ikuti Kotlin coding conventions resmi, `ktlint` untuk formatting
+
+## Command Penting
+- `flutter test` — jalankan test suite mobile
+- `cd apps/backend &amp;&amp; go test ./...` — jalankan test suite backend
+- `melos run analyze` — analisis lint seluruh monorepo (jika pakai Melos)
+
+## Aturan Penting
+- JANGAN pernah commit file `.env` atau kredensial API
+- Semua perubahan API contract harus disertai update di `apps/backend/openapi.yaml`
+- PR wajib menyertakan test untuk perubahan logic bisnis
+</code></pre>
+<h2 is-upgraded>CLAUDE.md Bertingkat</h2>
+<p>Claude Code mendukung <code>CLAUDE.md</code> di beberapa level folder — misalnya <code>apps/mobile/CLAUDE.md</code> khusus berisi konvensi Flutter, terpisah dari <code>CLAUDE.md</code> root yang berisi konteks keseluruhan monorepo. Claude akan membaca kombinasi keduanya sesuai file yang sedang dikerjakan.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Model Context Protocol (MCP)" duration="8">
+        <h2 is-upgraded>Apa itu MCP?</h2>
+<p><strong>Model Context Protocol</strong> adalah standar terbuka yang memungkinkan Claude Code terhubung ke tools dan data eksternal — database, issue tracker, design tool, API internal — sebagai <em>tools</em> tambahan yang bisa dipanggil agent selama percakapan.</p>
+<h2 is-upgraded>Menambahkan MCP Server</h2>
+<pre><code language="language-bash" class="language-bash"># MCP server untuk PostgreSQL (memeriksa skema database backend)
+claude mcp add postgres -- npx -y @modelcontextprotocol/server-postgres &#34;postgresql://localhost/mydb&#34;
+
+# MCP server untuk Figma (mengambil design spec komponen mobile)
+claude mcp add figma -- npx -y figma-mcp-server
+
+# Cek MCP server yang aktif
+claude mcp list
+</code></pre>
+<p>Atau konfigurasikan lewat <code>/mcp</code> di dalam sesi interaktif untuk melihat status koneksi dan tools yang tersedia dari tiap server.</p>
+<h2 is-upgraded>Contoh Penggunaan Praktis</h2>
+<ul>
+<li><strong>Figma MCP</strong> — &#34;ambil spesifikasi warna dan spacing dari komponen Button di Figma, lalu terapkan ke <code>AppButton.dart</code>&#34;</li>
+<li><strong>Postgres MCP</strong> — &#34;periksa skema tabel <code>orders</code>, lalu buatkan model Kotlin yang sesuai untuk response API&#34;</li>
+<li><strong>Jira/Linear MCP</strong> — &#34;baca detail tiket MOBILE-482 dan mulai implementasikan sesuai acceptance criteria&#34;</li>
+</ul>
+<p>Negative : Selalu tinjau <em>scope</em> dan permission MCP server sebelum menghubungkannya ke database produksi — agent bisa menjalankan query berdasarkan tools yang diekspos MCP server tersebut.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Subagents &amp; Orkestrasi Multi-Agent" duration="8">
+        <h2 is-upgraded>Kenapa Subagent?</h2>
+<p>Untuk tugas besar (misalnya audit seluruh codebase, atau riset lintas banyak file), menjalankan semuanya di satu context window utama akan cepat memenuhi context. <strong>Subagent</strong> memungkinkan Claude mendelegasikan pekerjaan ke agent terpisah dengan context window sendiri, lalu hanya mengembalikan ringkasan hasilnya.</p>
+<h2 is-upgraded>Subagent Bawaan</h2>
+<ul>
+<li><strong>Explore</strong> — pencarian read-only cepat di codebase (menemukan file, symbol, pola)</li>
+<li><strong>general-purpose</strong> — riset dan tugas multi-langkah kompleks</li>
+<li><strong>Plan</strong> — mendesain rencana implementasi tanpa mengeksekusi</li>
+</ul>
+<h2 is-upgraded>Membuat Custom Subagent</h2>
+<p>Simpan di <code>.claude/agents/nama-agent.md</code>:</p>
+<pre><code language="language-markdown" class="language-markdown">&lt;!-- .claude/agents/mobile-code-reviewer.md --&gt;
+---
+name: mobile-code-reviewer
+description: Review perubahan kode Flutter/Kotlin/Swift untuk best practice mobile (performance, memory leak, platform channel safety)
+tools: Read, Grep, Glob
+---
+
+Anda adalah reviewer kode mobile senior. Fokus pemeriksaan:
+1. Kebocoran memori (listener/stream yang tidak di-dispose)
+2. Penggunaan platform channel yang tidak aman (tidak ada error handling)
+3. Widget rebuild yang tidak perlu (missing const, key)
+4. Konvensi null-safety Dart / non-null Kotlin yang dilanggar
+</code></pre>
+<h2 is-upgraded>Menjalankan Task Paralel dengan Subagent</h2>
+<p>Contoh instruksi yang memicu paralelisasi otomatis:</p>
+<pre><code>Audit ketiga modul ini secara paralel dan laporkan temuan performa:
+1. apps/mobile/lib/features/checkout
+2. apps/android-native/widget
+3. apps/backend/internal/payment
+</code></pre>
+<p>Claude Code akan menjalankan beberapa subagent Explore/general-purpose secara bersamaan untuk masing-masing modul, lalu menyintesis hasilnya menjadi satu laporan.</p>
+<p>Positive : Gunakan subagent kustom untuk tugas berulang yang butuh persona/instruksi khusus (misalnya &#34;security-reviewer&#34; atau &#34;flutter-test-writer&#34;) agar konsisten setiap kali dipanggil oleh tim.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Hooks — Automation Berbasis Event" duration="6">
+        <h2 is-upgraded>Apa itu Hooks?</h2>
+<p><strong>Hooks</strong> adalah shell command yang otomatis dijalankan pada event tertentu dalam siklus hidup Claude Code — misalnya sebelum/sesudah tool dipanggil, atau saat sesi berakhir. Berguna untuk menegakkan aturan tim secara otomatis, bukan hanya lewat instruksi di <code>CLAUDE.md</code>.</p>
+<h2 is-upgraded>Konfigurasi Hooks</h2>
+<p>Disimpan di <code>.claude/settings.json</code>:</p>
+<pre><code language="language-json" class="language-json">{
+  &#34;hooks&#34;: {
+    &#34;PostToolUse&#34;: [
+      {
+        &#34;matcher&#34;: &#34;Edit|Write&#34;,
+        &#34;hooks&#34;: [
+          {
+            &#34;type&#34;: &#34;command&#34;,
+            &#34;command&#34;: &#34;if [[ \&#34;$CLAUDE_FILE_PATH\&#34; == *.dart ]]; then dart format \&#34;$CLAUDE_FILE_PATH\&#34;; fi&#34;
+          }
+        ]
+      }
+    ],
+    &#34;PreToolUse&#34;: [
+      {
+        &#34;matcher&#34;: &#34;Bash&#34;,
+        &#34;hooks&#34;: [
+          {
+            &#34;type&#34;: &#34;command&#34;,
+            &#34;command&#34;: &#34;echo \&#34;[hook] menjalankan command shell...\&#34; &gt;&gt; .claude/audit.log&#34;
+          }
+        ]
+      }
+    ]
+  }
+}
+</code></pre>
+<p>Contoh di atas: setiap kali Claude mengedit file <code>.dart</code>, hook otomatis menjalankan <code>dart format</code> — memastikan format kode selalu konsisten tanpa perlu diingatkan berulang kali.</p>
+<h2 is-upgraded>Use Case Lain untuk Mobile Workflow</h2>
+<ul>
+<li><strong>PostToolUse pada file Kotlin</strong> → jalankan <code>ktlint format</code> otomatis</li>
+<li><strong>PreToolUse pada </strong><strong><code>Bash</code></strong><strong> yang menjalankan </strong><strong><code>git push</code></strong> → cek branch protection sebelum izinkan push</li>
+<li><strong>SessionEnd</strong> → jalankan <code>flutter test</code> otomatis sebagai sanity check sebelum sesi ditutup</li>
+</ul>
+<p>Negative : Hooks dieksekusi dengan akses penuh shell Anda — audit isi <code>.claude/settings.json</code> dengan hati-hati sebelum menggunakan konfigurasi hooks dari sumber pihak ketiga.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Workflow Praktis untuk Full Stack Mobile" duration="9">
+        <h2 is-upgraded>Skenario 1: Implementasi Fitur Lintas Platform</h2>
+<p>Contoh instruksi end-to-end untuk fitur baru yang menyentuh backend dan mobile:</p>
+<pre><code>Tambahkan endpoint GET /api/v1/notifications di backend Go (apps/backend),
+lalu buat model Dart, repository, dan provider Riverpod yang
+mengonsumsi endpoint tersebut di apps/mobile. Sertakan unit test
+untuk kedua sisi.
+</code></pre>
+<p>Claude Code akan membaca konvensi dari <code>CLAUDE.md</code>, membuat perubahan di kedua modul secara konsisten, dan menjalankan test yang relevan.</p>
+<h2 is-upgraded>Skenario 2: Debugging Native Crash</h2>
+<pre><code>Aplikasi Android crash dengan stacktrace berikut: [paste stacktrace].
+Cari root cause di kode Kotlin, dan jika berkaitan dengan platform
+channel dari Flutter, periksa juga sisi Dart-nya.
+</code></pre>
+<h2 is-upgraded>Skenario 3: Menjalankan Task Build/Test lewat Bash Tool</h2>
+<p>Claude Code bisa langsung menjalankan command build/test yang biasa Anda ketik manual:</p>
+<pre><code language="language-bash" class="language-bash">flutter test --coverage
+cd android &amp;&amp; ./gradlew testDebugUnitTest
+cd ../../backend &amp;&amp; go test ./... -race
+</code></pre>
+<p>Cukup minta: &#34;jalankan seluruh test suite (mobile, android native, backend), analisis kegagalan, dan perbaiki.&#34;</p>
+<h2 is-upgraded>Skenario 4: Automasi lewat Headless Mode di CI</h2>
+<pre><code language="language-yaml" class="language-yaml"># .github/workflows/claude-review.yml
+- name: AI Code Review
+  run: |
+    claude -p &#34;review perubahan di PR ini, fokus pada null-safety Dart
+    dan potensi race condition Go&#34; --output-format json &gt; review.json
+</code></pre>
+<p>Positive : Gabungkan mode headless dengan hooks untuk membangun pipeline &#34;self-healing&#34; — misalnya otomatis memperbaiki lint error sebelum PR dibuka, tanpa developer perlu menjalankannya manual.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Git, Conventional Commits &amp; Code Review" duration="6">
+        <h2 is-upgraded>Commit Otomatis dengan Conventional Commits</h2>
+<p>Claude Code bisa langsung membuat commit dengan format <a href="https://www.conventionalcommits.org/" target="_blank">Conventional Commits</a> yang rapi:</p>
+<pre><code>Buatkan commit untuk perubahan ini mengikuti conventional commits,
+kelompokkan per tujuan jika ada beberapa perubahan berbeda
+</code></pre>
+<p>Ini sangat cocok dipasangkan dengan workflow tim yang memisahkan commit per-purpose (fitur, fix, docs, chore) alih-alih satu commit besar <code>git add .</code>.</p>
+<h2 is-upgraded><code>/review</code> — Review Pull Request</h2>
+<pre><code>/review 245
+</code></pre>
+<p>Claude akan mengambil diff dari PR #245 (via <code>gh</code> CLI), menganalisisnya, dan memberi ringkasan temuan — bug potensial, masalah keamanan, atau saran simplifikasi — sebelum Anda merge.</p>
+<h2 is-upgraded>Membuat Pull Request Langsung</h2>
+<pre><code>Buatkan PR untuk branch ini ke main, judul singkat, deskripsi
+mencakup summary perubahan dan test plan
+</code></pre>
+<p>Claude akan menjalankan <code>gh pr create</code> dengan body yang terstruktur (Summary + Test Plan), mengikuti konvensi tim.</p>
+<p>Negative : Selalu tinjau diff sebelum menyetujui commit/push otomatis — terutama untuk perubahan pada file konfigurasi sensitif (<code>.env.example</code>, <code>Info.plist</code>, <code>AndroidManifest.xml</code>) yang bisa berdampak pada permission aplikasi.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kesimpulan &amp; Next Steps" duration="3">
+        <h2 is-upgraded>Apa yang Anda Pelajari</h2>
+<ul>
+<li>✅ Instalasi, autentikasi, dan pemilihan model Claude Code</li>
+<li>✅ Mode interaktif, permission modes, dan mode headless untuk CI</li>
+<li>✅ Slash commands bawaan dan membuat custom slash command</li>
+<li>✅ <code>CLAUDE.md</code> untuk memberi context project secara permanen</li>
+<li>✅ Model Context Protocol (MCP) untuk menghubungkan tools eksternal</li>
+<li>✅ Subagents &amp; orkestrasi multi-agent untuk tugas besar</li>
+<li>✅ Hooks untuk automation berbasis event</li>
+<li>✅ Workflow praktis lintas Flutter, Kotlin, Swift, dan backend Go</li>
+<li>✅ Git, conventional commits, dan code review otomatis</li>
+</ul>
+<h2 is-upgraded>Rekomendasi Workflow Harian untuk Mobile Developer</h2>
+<ol type="1">
+<li>Mulai project baru dengan <code>/init</code> untuk membangun <code>CLAUDE.md</code> yang solid</li>
+<li>Simpan custom slash command tim (<code>.claude/commands/</code>) untuk task berulang: generate model, jalankan test suite, review PR</li>
+<li>Hubungkan MCP server yang relevan (Figma untuk design, Postgres untuk skema API) agar Claude punya konteks penuh</li>
+<li>Gunakan Plan Mode untuk perubahan besar/migrasi sebelum mengizinkan eksekusi penuh</li>
+<li>Aktifkan hooks untuk menegakkan formatting/lint otomatis di setiap edit</li>
+<li>Manfaatkan mode headless (<code>-p</code>) di CI untuk automated review setiap PR dibuka</li>
+</ol>
+<h2 is-upgraded>Referensi Lanjutan</h2>
+<ul>
+<li><a href="https://docs.claude.com/claude-code" target="_blank">Dokumentasi resmi Claude Code</a></li>
+<li><a href="https://modelcontextprotocol.io" target="_blank">Model Context Protocol</a></li>
+<li><a href="https://www.conventionalcommits.org/en/v1.0.0/" target="_blank">Conventional Commits v1.0.0</a></li>
+</ul>
+<p>Thank you for completing this codelab! Selamat mencoba Claude Code di project full stack mobile Anda berikutnya.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
