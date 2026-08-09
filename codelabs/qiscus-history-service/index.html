@@ -1,0 +1,325 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Building Qiscus Chat History Archive Service in Go</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="qiscus-history-service"
+                  title="Building Qiscus Chat History Archive Service in Go"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Overview" duration="2">
+        <p>Selamat datang di codelab ini! Di sini Anda akan belajar bagaimana membangun <strong>Chat History Archive Service</strong> menggunakan bahasa pemrograman <strong>Go (Golang)</strong>.</p>
+<p>Layanan backend mandiri ini berfungsi untuk mengarsipkan pesan-pesan dari ruang obrolan (chat room) Qiscus dan menyajikannya ke aplikasi klien (misal: Flutter) saat <em>session</em> Qiscus telah kedaluwarsa.</p>
+<h2 is-upgraded>Apa yang Akan Anda Pelajari</h2>
+<ul>
+<li>Menerima Webhook dari Qiscus secara aman menggunakan HMAC-SHA256 signature.</li>
+<li>Berinteraksi dengan Qiscus REST API menggunakan kredensial <em>Server-to-Server</em>.</li>
+<li>Menggunakan PostgreSQL untuk menyimpan data format JSONB.</li>
+<li>Membangun REST API aman yang dilindungi token otentikasi JWT menggunakan router <code>go-chi</code>.</li>
+</ul>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Instalasi Go 1.22+</li>
+<li>Instalasi PostgreSQL 15+</li>
+<li>Akun Qiscus Omnichannel dengan akses ke <em>App ID</em> dan <em>Secret Key</em></li>
+</ul>
+<p>Positive : Solusi ini ideal digunakan jika aplikasi klien Anda menggunakan <em>sessional mode</em> pada SDK Qiscus, di mana token akan kedaluwarsa beberapa saat setelah obrolan berstatus <em>resolved</em>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Inisialisasi Proyek &amp; Konfigurasi" duration="5">
+        <p>Mari mulai dengan menginisialisasi modul Go dan mengatur <em>environment variables</em>.</p>
+<h2 is-upgraded>1. Inisialisasi Go Module</h2>
+<p>Jalankan perintah ini di terminal Anda untuk menginisialisasi modul dan mengunduh dependensi:</p>
+<pre><code language="language-bash" class="language-bash">go mod init github.com/hellogod/chat-history-service
+go get github.com/go-chi/chi/v5
+go get github.com/golang-jwt/jwt/v5
+go get github.com/joho/godotenv
+go get github.com/lib/pq
+</code></pre>
+<h2 is-upgraded>2. Membuat File <code>.env</code></h2>
+<p>Buat file bernama <code>.env</code> di direktori utama Anda dan isikan konfigurasi berikut. Pastikan untuk mengisi kredensial Qiscus dan kunci rahasia Anda sendiri:</p>
+<pre><code language="language-env" class="language-env">PORT=8080
+DATABASE_URL=postgres://postgres:password@localhost:5432/chat_history?sslmode=disable
+
+# Qiscus credentials
+QISCUS_APP_ID=your_app_id
+QISCUS_SECRET_KEY=your_qiscus_secret_key
+QISCUS_BASE_URL=https://api3.qiscus.com
+WEBHOOK_SECRET=your_webhook_secret_from_dashboard
+
+# JWT Secret
+JWT_SECRET=your_super_secret_jwt_key
+JWT_EXPIRY_HOURS=720
+</code></pre>
+<h2 is-upgraded>3. Memuat Konfigurasi di Go</h2>
+<p>Buat folder <code>internal/config/</code> dan tambahkan file <code>config.go</code>:</p>
+<pre><code language="language-go" class="language-go">package config
+
+import (
+    &#34;log&#34;
+    &#34;os&#34;
+    &#34;strconv&#34;
+    &#34;github.com/joho/godotenv&#34;
+)
+
+type Config struct {
+    Port                  string
+    DatabaseURL           string
+    QiscusAppID           string
+    QiscusSecretKey       string
+    QiscusBaseURL         string
+    WebhookSecret         string
+    JWTSecret             string
+    JWTExpiryHours        int
+}
+
+func Load() Config {
+    _ = godotenv.Load() // Mengabaikan error jika file .env tidak ada di production
+
+    return Config{
+        Port:            getEnv(&#34;PORT&#34;, &#34;8080&#34;),
+        DatabaseURL:     requireEnv(&#34;DATABASE_URL&#34;),
+        QiscusAppID:     requireEnv(&#34;QISCUS_APP_ID&#34;),
+        QiscusSecretKey: requireEnv(&#34;QISCUS_SECRET_KEY&#34;),
+        QiscusBaseURL:   getEnv(&#34;QISCUS_BASE_URL&#34;, &#34;https://api3.qiscus.com&#34;),
+        WebhookSecret:   requireEnv(&#34;WEBHOOK_SECRET&#34;),
+        JWTSecret:       requireEnv(&#34;JWT_SECRET&#34;),
+        JWTExpiryHours:  getEnvInt(&#34;JWT_EXPIRY_HOURS&#34;, 720),
+    }
+}
+
+// Fungsi bantu (requireEnv, getEnv, getEnvInt) bisa ditambahkan di bawahnya.
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Konfigurasi Database PostgreSQL" duration="5">
+        <p>Kita akan menggunakan PostgreSQL dengan kolom berformat <code>JSONB</code> untuk kelenturan penyimpanan pesan tanpa perlu skema yang rumit.</p>
+<h2 is-upgraded>1. Eksekusi Skema Tabel</h2>
+<p>Jalankan query SQL berikut di dalam database Anda untuk membuat tabel utama:</p>
+<pre><code language="language-sql" class="language-sql">CREATE TABLE IF NOT EXISTS chat_archives (
+    id          BIGSERIAL PRIMARY KEY,
+    room_id     VARCHAR(50)  UNIQUE NOT NULL,
+    room_name   VARCHAR(255) NOT NULL DEFAULT &#39;&#39;,
+    app_id      VARCHAR(100) NOT NULL,
+    messages    JSONB        NOT NULL DEFAULT &#39;[]&#39;,
+    archived_at TIMESTAMPTZ  NOT NULL DEFAULT NOW(),
+    source      VARCHAR(20)  NOT NULL DEFAULT &#39;webhook&#39;,
+    updated_at  TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_chat_archives_room_id ON chat_archives (room_id);
+</code></pre>
+<h2 is-upgraded>2. Koneksi Database di Go</h2>
+<p>Buat folder <code>internal/database/</code> dan tambahkan file <code>db.go</code> untuk mengatur koneksi <em>pool</em>:</p>
+<pre><code language="language-go" class="language-go">package database
+
+import (
+    &#34;database/sql&#34;
+    &#34;log&#34;
+    _ &#34;github.com/lib/pq&#34;
+)
+
+func Open(databaseURL string) *sql.DB {
+    db, err := sql.Open(&#34;postgres&#34;, databaseURL)
+    if err != nil {
+        log.Fatalf(&#34;database: open failed: %v&#34;, err)
+    }
+
+    db.SetMaxOpenConns(25)
+    db.SetMaxIdleConns(5)
+
+    return db
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mengambil Data dari Qiscus" duration="7">
+        <p>Saat obrolan telah selesai (<em>resolved</em>), kita perlu menarik seluruh pesan ke dalam sistem kita dengan menggunakan REST API Qiscus.</p>
+<h2 is-upgraded>Qiscus HTTP Client</h2>
+<p>Buat folder <code>internal/qiscus/</code> dan tambahkan <code>client.go</code>. Client ini akan melakukan <em>request</em> HTTP dan menyertakan header otentikasi <em>server-to-server </em><code>QISCUS_SDK_APP_ID</code> dan <code>QISCUS_SDK_SECRET</code>.</p>
+<pre><code language="language-go" class="language-go">package qiscus
+
+import (
+    &#34;encoding/json&#34;
+    &#34;fmt&#34;
+    &#34;net/http&#34;
+    &#34;time&#34;
+)
+
+type Client struct {
+    appID     string
+    secretKey string
+    baseURL   string
+    http      *http.Client
+}
+
+func NewClient(appID, secretKey, baseURL string) *Client {
+    return &amp;Client{
+        appID: appID, secretKey: secretKey, baseURL: baseURL,
+        http: &amp;http.Client{Timeout: 30 * time.Second},
+    }
+}
+
+// ... Kode untuk GetRoomMessages() menggunakan endpoint /api/v2/rest/load_comments
+</code></pre>
+<p>Negative : Jangan pernah memaparkan (expose) <code>QISCUS_SECRET_KEY</code> ke sisi <em>frontend</em> klien. Client ini dirancang khusus untuk berjalan di backend dengan aman.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Webhook Handler &amp; Keamanan HMAC" duration="10">
+        <p>Qiscus akan memanggil endpoint webhook kita setiap kali obrolan diselesaikan. Untuk menjamin keamanannya, Qiscus mengirimkan <em>signature </em><strong>HMAC-SHA256</strong>.</p>
+<h2 is-upgraded>Implementasi Handler</h2>
+<p>Buat direktori <code>internal/handler/</code> dan file <code>webhook.go</code>:</p>
+<pre><code language="language-go" class="language-go">package handler
+
+import (
+    &#34;crypto/hmac&#34;
+    &#34;crypto/sha256&#34;
+    &#34;crypto/subtle&#34;
+    &#34;encoding/base64&#34;
+    &#34;encoding/json&#34;
+    &#34;io&#34;
+    &#34;net/http&#34;
+    &#34;github.com/hellogod/chat-history-service/internal/archive&#34;
+)
+
+type WebhookHandler struct {
+    secret  string // Qiscus Webhook Secret
+    service *archive.Service
+}
+
+func (h *WebhookHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    bodyBytes, _ := io.ReadAll(r.Body)
+
+    // 1. Verifikasi Signature dari header qiscus-signature-key
+    signature := r.Header.Get(&#34;qiscus-signature-key&#34;)
+    if !verifyHMACSignature(bodyBytes, h.secret, signature) {
+        http.Error(w, &#34;invalid signature&#34;, http.StatusUnauthorized)
+        return
+    }
+
+    // 2. Parsing Payload Qiscus Multichannel (&#34;Mark as Resolved&#34;)
+    var payload struct {
+        Service struct {
+            RoomID     string `json:&#34;room_id&#34;`
+            IsResolved bool   `json:&#34;is_resolved&#34;`
+        } `json:&#34;service&#34;`
+    }
+    json.Unmarshal(bodyBytes, &amp;payload)
+
+    // 3. Merespons segera (HTTP 200) agar Qiscus tidak retry
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte(`{&#34;status&#34;:&#34;accepted&#34;}`))
+
+    // 4. Lakukan arsip data secara asinkron (goroutine)
+    go func() {
+        h.service.FetchAndArchive(payload.Service.RoomID, &#34;webhook&#34;)
+    }()
+}
+
+func verifyHMACSignature(body []byte, secret, signatureHeader string) bool {
+    mac := hmac.New(sha256.New, []byte(secret))
+    mac.Write(body)
+    expectedMAC := mac.Sum(nil)
+    actualMAC, _ := base64.StdEncoding.DecodeString(signatureHeader)
+    
+    return subtle.ConstantTimeCompare(actualMAC, expectedMAC) == 1
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Menjalankan Server Utama" duration="5">
+        <p>Kini kita menyatukan seluruh komponen yang telah dibuat ke dalam server HTTP menggunakan <code>go-chi</code>.</p>
+<h2 is-upgraded>Entry Point (<code>main.go</code>)</h2>
+<p>Buat <code>cmd/server/main.go</code> yang akan menjadi <em>entry point</em> layanan Anda:</p>
+<pre><code language="language-go" class="language-go">package main
+
+import (
+    &#34;log&#34;
+    &#34;net/http&#34;
+    &#34;github.com/go-chi/chi/v5&#34;
+    &#34;github.com/hellogod/chat-history-service/internal/config&#34;
+    &#34;github.com/hellogod/chat-history-service/internal/database&#34;
+    &#34;github.com/hellogod/chat-history-service/internal/handler&#34;
+)
+
+func main() {
+    cfg := config.Load()
+    db := database.Open(cfg.DatabaseURL)
+    defer db.Close()
+
+    // Setup Dependencies &amp; Services...
+    
+    // Inisialisasi Router
+    r := chi.NewRouter()
+
+    // Mendaftarkan Endpoint Webhook
+    webhookHandler := handler.NewWebhookHandler(cfg.WebhookSecret, service)
+    r.Post(&#34;/webhook/resolve&#34;, webhookHandler.ServeHTTP)
+
+    log.Printf(&#34;Server berjalan di port :%s&#34;, cfg.Port)
+    http.ListenAndServe(&#34;:&#34;+cfg.Port, r)
+}
+</code></pre>
+<h2 is-upgraded>Menjalankan Aplikasi</h2>
+<p>Jalankan perintah berikut di terminal:</p>
+<pre><code language="language-bash" class="language-bash">go run ./cmd/server
+</code></pre>
+<p>Server backend arsip Anda kini telah berjalan dan siap menerima webhook dari Qiscus!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kesimpulan" duration="1">
+        <h2 is-upgraded>Apa yang Telah Anda Pelajari</h2>
+<ul>
+<li>✅ Menyusun arsitektur Go yang bersih (<em>Clean Architecture</em> dasar).</li>
+<li>✅ Memverifikasi keabsahan <em>request</em> webhook Qiscus menggunakan HMAC-SHA256 Base64.</li>
+<li>✅ Menggunakan Goroutine untuk memproses pengarsipan data secara asinkron (<em>non-blocking</em>).</li>
+<li>✅ Berinteraksi dengan database PostgreSQL langsung tanpa ORM menggunakan driver bawaan.</li>
+</ul>
+<p>Selamat, Anda telah berhasil membangun layanan backend tangguh untuk melengkapi fungsionalitas aplikasi percakapan Anda!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

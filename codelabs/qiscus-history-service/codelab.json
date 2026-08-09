@@ -1,0 +1,27 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-06-17T10:28:03+07:00",
+  "id": "qiscus-history-service",
+  "duration": 35,
+  "title": "Building Qiscus Chat History Archive Service in Go",
+  "summary": "Panduan membangun layanan arsip riwayat obrolan (Chat History Archive Service) untuk Qiscus menggunakan Golang.",
+  "source": "qiscus-history-service.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "golang",
+    "backend",
+    "qiscus",
+    "api"
+  ],
+  "tags": [
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "qiscus-history-service"
+}
