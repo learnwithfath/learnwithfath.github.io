@@ -1,0 +1,167 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Mengintegrasikan Chat History Archive di Flutter</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="qiscus-flutter-history"
+                  title="Mengintegrasikan Chat History Archive di Flutter"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Overview" duration="2">
+        <p>Selamat datang di codelab lanjutan! Pada tutorial sebelumnya, Anda telah membangun backend mandiri (<em>Golang</em>) untuk mengarsipkan pesan obrolan Qiscus. Di codelab ini, Anda akan belajar cara mengkonsumsi API arsip tersebut ke dalam aplikasi klien <strong>Flutter</strong> Anda.</p>
+<p>Codelab ini dikhususkan bagi aplikasi yang menggunakan fitur <em>sessional mode</em> (Token kadaluarsa setelah obrolan berstatus <em>resolved</em> / selesai). Kita akan menggunakan metode <strong><em>silent fallback</em></strong>: Jika <em>room</em> sudah tidak dapat diakses secara <em>live</em> melalui Qiscus SDK (mendapat error 403), aplikasi akan secara otomatis memanggil backend Anda dan menampilkannya pada UI <em>read-only</em>.</p>
+<h2 is-upgraded>Apa yang Akan Anda Pelajari</h2>
+<ul>
+<li>Mendeteksi <em>Exception</em> status 403 Unauthorized dari SDK Qiscus.</li>
+<li>Menyusun <code>Repository</code> untuk mengorkestrasi logika pemanggilan (SDK vs API).</li>
+<li>Membangun tampilan UI obrolan mode <em>read-only</em> murni di Flutter.</li>
+<li>Melakukan sinkronisasi data arsip dengan aman.</li>
+</ul>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Proyek Flutter yang sudah menggunakan <code>qiscus_multichannel_widget</code>.</li>
+<li><code>Chat History Archive Service</code> (Golang Backend) yang berjalan secara lokal atau <em>cloud</em>.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mengatur Konfigurasi &amp; Model Data" duration="5">
+        <h2 is-upgraded>1. Menambahkan Dependensi</h2>
+<p>Tambahkan dependensi berikut ke dalam file <code>pubspec.yaml</code> proyek Flutter Anda untuk keperluan pemanggilan HTTP dan penanggalan:</p>
+<pre><code language="language-yaml" class="language-yaml">dependencies:
+  http: ^1.2.1
+  shared_preferences: ^2.3.2
+  intl: ^0.19.0
+</code></pre>
+<p>Lalu jalankan perintah: <code>flutter pub get</code></p>
+<h2 is-upgraded>2. Konfigurasi Endpoint Backend</h2>
+<p>Buatlah file konfigurasi yang menunjuk ke backend arsip Anda.</p>
+<pre><code language="language-dart" class="language-dart">// lib/config/app_config.dart
+class AppConfig {
+  AppConfig._();
+  static const String backendBaseUrl = &#39;http://localhost:8080&#39;;
+  static const String qiscusAppId = &#39;vvmxt-mcz1gxflybkyeul&#39;; // Ganti dengan AppID Anda
+}
+</code></pre>
+<h2 is-upgraded>3. Model Data Pesan Arsip</h2>
+<p>Buat kelas <code>ArchivedMessage</code> untuk melakukan <em>parsing</em> JSON secara aman dari API backend Anda.</p>
+<pre><code language="language-dart" class="language-dart">// lib/features/chat_history/archived_message_model.dart
+class ArchivedMessage {
+  // Field: id, text, senderName, timestamp, dll.
+  // ...
+  
+  bool get isCustomer =&gt; !senderEmail.contains(&#39;@qismo.com&#39;) &amp;&amp;
+      !senderEmail.contains(&#39;@qiscus.com&#39;) &amp;&amp;
+      type != &#39;system&#39;;
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Membangun Service dan Repository" duration="8">
+        <h2 is-upgraded>1. Service API (HTTP Client)</h2>
+<p>Buat <code>ChatHistoryService</code> untuk mengabstraksikan pemanggilan GET HTTP menggunakan header <code>Authorization: Bearer <JWT></code>.</p>
+<pre><code language="language-dart" class="language-dart">// lib/features/chat_history/chat_history_service.dart
+Future&lt;ArchivedRoom&gt; fetchHistory({required String roomId, required String userJwt}) async {
+  final uri = Uri.parse(&#39;${AppConfig.backendBaseUrl}/api/v1/chat-history/$roomId&#39;);
+  final response = await http.get(uri, headers: {&#39;Authorization&#39;: &#39;Bearer $userJwt&#39;});
+  // Validasi dan return JSON
+}
+</code></pre>
+<h2 is-upgraded>2. The Repository (Logika Fallback)</h2>
+<p>Di sinilah letak keajaiban utama. <code>ChatHistoryRepository</code> akan mencoba mengambil data <em>live</em> dari Qiscus SDK terlebih dahulu. Jika SDK mengembalikan <em>Unauthorized</em>, ia akan menangkap kesalahan tersebut dan melakukan <em>fallback</em> ke API backend kita.</p>
+<pre><code language="language-dart" class="language-dart">// lib/features/chat_history/chat_history_repository.dart
+Future&lt;ChatHistoryResult&gt; getMessages(...) async {
+  try {
+    final qiscus = await multichannel.qiscus.future;
+    final room = await qiscus.getChatRoomWithMessages(roomId: roomId);
+    return LiveMessages(room); // Obrolan masih berjalan
+  } catch (e) {
+    if (!QiscusErrorHelper.isUnauthorized(e)) {
+      return FetchError(&#39;Unexpected error: $e&#39;);
+    }
+  }
+
+  // Jika sampai sini, berarti mendapat 403 (Sesi kedaluwarsa)
+  try {
+    final archive = await _service.fetchHistory(roomId: roomId.toString(), userJwt: userJwt);
+    return ArchivedMessages(archive); // Menampilkan histori arsip
+  } catch (e) {
+    return FetchError(&#39;Gagal memuat arsip.&#39;);
+  }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Membuat UI Read-Only &amp; Menghubungkan" duration="5">
+        <h2 is-upgraded>1. Layar History</h2>
+<p>Ketika kita mendapat <code>ArchivedMessages</code>, kita akan menampilkan <em>screen</em> baru yang khusus ditujukan hanya untuk membaca pesan tanpa adanya <code>TextField</code> (input text box). Gunakan <code>ListView.builder</code> standar dari material Flutter.</p>
+<h2 is-upgraded>2. Modifikasi Layar Login / Navigasi</h2>
+<p>Update alur navigasi aplikasi Anda ketika pengguna berhasil <em>login</em> atau menekan tombol obrolan.</p>
+<pre><code language="language-dart" class="language-dart">// lib/login_screen.dart
+final repo = ChatHistoryRepository(multichannel: multichannel);
+final result = await repo.getMessages(roomId: roomId, userJwt: tokenJWT);
+
+switch (result) {
+  case LiveMessages():
+    // Tampilkan Widget Asli Qiscus dengan input
+    Navigator.push(context, MaterialPageRoute(builder: (_) =&gt; QChatRoomScreen(...)));
+  case ArchivedMessages(:final archive):
+    // Tampilkan Screen khusus sejarah obrolan
+    Navigator.push(context, MaterialPageRoute(builder: (_) =&gt; ChatHistoryScreen(archive: archive)));
+  case FetchError(:final message):
+    // Tampilkan Snackbar gagal
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kesimpulan" duration="1">
+        <h2 is-upgraded>Selamat!</h2>
+<p>Anda telah berhasil melengkapi aplikasi pelayanan pelanggan Qiscus (<em>sessional mode</em>) dengan perlindungan <em>fallback</em> tingkat lanjut.</p>
+<p>Dengan cara ini:</p>
+<ul>
+<li>Server Qiscus akan otomatis <em>pruning</em> (membersihkan) sesi sesuai kuota Anda.</li>
+<li>Aplikasi klien Flutter Anda tetap sanggup menampilkan riwayat transaksi kepada pelanggan Anda secara apik tanpa terputus, ditenagai oleh database <em>PostgreSQL</em> lokal.</li>
+</ul>
+<p>Kini Anda dapat mencoba menguji aplikasi dengan cara <em>login</em> ke <em>room</em> yang telah ditutup (<em>resolved</em>)!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
