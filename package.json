@@ -6,9 +6,10 @@
     "serve": "./serve.sh",
     "stop": "./stop.sh",
     "new": "./new-codelab.sh",
-    "export": "cd codelabs && go run github.com/googlecodelabs/tools/claat@latest export *.md",
+    "export": "node scripts/export-codelabs.mjs",
     "export:single": "cd codelabs && go run github.com/googlecodelabs/tools/claat@latest export",
-    "build": "npm run export",
+    "validate:roadmap": "node scripts/validate-agentic-roadmap.mjs",
+    "build": "npm run export && npm run validate:roadmap",
     "dev": "npm run serve"
   },
   "keywords": [
