@@ -42,13 +42,16 @@ class AgenticRoadmap {
                     <a class="module-link" href="${phase.moduleUrl}">Buka modul fase ${phase.number} →</a>
                 </div>
                 <div class="week-grid">
-                    ${phase.weeks.map(week => this.weekCard(week)).join('')}
+                    ${phase.weeks.map(week => this.weekCard(week, phase)).join('')}
                 </div>
             </section>`).join('');
     }
 
-    weekCard(week) {
+    weekCard(week, phase) {
         const done = this.completed.has(week.week);
+        const step = ((week.week - 1) % 3) + 1;
+        const bundle = week.week <= 3 ? 'agentic-loop-lab' : 'taskforge-agentic';
+        const paddedWeek = String(week.week).padStart(2, '0');
         return `<article class="week-card${done ? ' done' : ''}" data-tracks="${week.tracks.join(' ')}">
             <div class="week-meta"><span>Minggu ${week.week}</span><span>${week.hours} jam</span></div>
             <h3>${week.title}</h3>
@@ -56,6 +59,10 @@ class AgenticRoadmap {
             <div class="week-section"><strong>Lab</strong><p>${week.lab}</p></div>
             <div class="week-section"><strong>Evidence</strong><p>${week.deliverable}</p></div>
             <div class="week-section"><strong>Lulus bila</strong><p>${week.rubric}</p></div>
+            <div class="lab-actions">
+                <a class="lab-link" href="${phase.moduleUrl}#${step}">Buka panduan lab →</a>
+                <a class="branch-link" href="downloads/${bundle}.bundle" download>Starter · week-${paddedWeek}-start</a>
+            </div>
             <label class="complete-label"><input type="checkbox" data-week="${week.week}" ${done ? 'checked' : ''}> Tandai selesai</label>
         </article>`;
     }
