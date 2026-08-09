@@ -1,0 +1,35 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-09T09:59:58+07:00",
+  "id": "agentic-phase-7-orchestration",
+  "duration": 1260,
+  "title": "Fase 7 — Loop Engineering Production-Shaped",
+  "authors": "LearnWithFath Team",
+  "summary": "Bangun loop engineering lokal ala Pang dengan vault state, scheduler, orchestrator, model router, isolation, CI governance, dan VPS opsional.",
+  "source": "agentic-phase-7-orchestration.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "orchestration",
+    "devops",
+    "security"
+  ],
+  "tags": [
+    "ci-cd",
+    "ghiath",
+    "governance",
+    "hermes",
+    "loop-engineering",
+    "model-gateway",
+    "obsidian",
+    "pang"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "agentic-phase-7-orchestration"
+}

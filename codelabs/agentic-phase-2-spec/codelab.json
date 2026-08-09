@@ -1,0 +1,31 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-09T09:59:57+07:00",
+  "id": "agentic-phase-2-spec",
+  "duration": 955,
+  "title": "Fase 2 — Context \u0026 Spec Engineering",
+  "authors": "LearnWithFath Team",
+  "summary": "Ubah ide produk menjadi product brief, ADR, OpenAPI, task graph, dan Definition of Done yang dapat dieksekusi agent.",
+  "source": "agentic-phase-2-spec.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "architecture",
+    "fullstack"
+  ],
+  "tags": [
+    "adr",
+    "context-engineering",
+    "openapi",
+    "spec-driven",
+    "task-graph"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "agentic-phase-2-spec"
+}

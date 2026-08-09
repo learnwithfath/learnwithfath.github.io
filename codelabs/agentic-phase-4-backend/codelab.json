@@ -1,0 +1,34 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-09T09:59:57+07:00",
+  "id": "agentic-phase-4-backend",
+  "duration": 1170,
+  "title": "Fase 4 — Dua Backend Paralel",
+  "authors": "LearnWithFath Team",
+  "summary": "Implementasi backend TaskForge paralel menggunakan Go dan NestJS dengan PostgreSQL, Redis, contract test, security, dan telemetry.",
+  "source": "agentic-phase-4-backend.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "backend",
+    "go",
+    "node.js",
+    "database"
+  ],
+  "tags": [
+    "contract-testing",
+    "go",
+    "nestjs",
+    "observability",
+    "openapi",
+    "postgresql",
+    "redis"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "agentic-phase-4-backend"
+}

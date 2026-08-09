@@ -1,0 +1,33 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-09T09:59:58+07:00",
+  "id": "agentic-phase-6-mobile",
+  "duration": 1255,
+  "title": "Fase 6 — Tiga Mobile Client",
+  "authors": "LearnWithFath Team",
+  "summary": "Implementasi TaskForge dengan Flutter, Jetpack Compose, dan SwiftUI termasuk offline sync, push contract, UI tests, dan release builds.",
+  "source": "agentic-phase-6-mobile.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "mobile",
+    "flutter",
+    "android",
+    "ios"
+  ],
+  "tags": [
+    "flutter",
+    "jetpack-compose",
+    "mobile-testing",
+    "offline-first",
+    "push-notification",
+    "swiftui"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "agentic-phase-6-mobile"
+}

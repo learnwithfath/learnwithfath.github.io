@@ -1,0 +1,100 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Fase 4 — Dua Backend Paralel</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="agentic-phase-4-backend"
+                  title="Fase 4 — Dua Backend Paralel"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Target Arsitektur" duration="30">
+        <p>Bangun <code>services/api-go</code> dan <code>services/api-nest</code> dari OpenAPI yang sama. Keduanya menggunakan PostgreSQL schema, seed dataset, error codes, dan contract fixtures yang sama. Redis dipakai untuk cache/read optimization, bukan source of truth.</p>
+<p>Direktori domain tidak boleh mengetahui HTTP framework. Adapter menerjemahkan transport ke use case; repository menerjemahkan domain ke database. Agent boleh mengusulkan struktur idiomatik berbeda untuk Go dan TypeScript selama boundary dan behavior setara.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 10 — Scaffold dan Domain Core" duration="360">
+        <p>Mulai dari health endpoint, config validation, graceful shutdown, structured error, dan request trace. Lalu implementasikan vertical slice:</p>
+<ol type="1">
+<li>login seed user;</li>
+<li>create/list project;</li>
+<li>create/list/update task;</li>
+<li>membership authorization.</li>
+</ol>
+<p>Perintahkan agent membaca OpenAPI dan membuat compliance checklist sebelum menulis. Larang perubahan contract. Generate stub hanya sebagai accelerant; review semua validation, default, dan error mapping.</p>
+<p>Test minimal: domain unit, HTTP integration, unauthorized/forbidden, invalid input, not found, dan conflict. Gunakan fixed clock/ID generator pada test.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 11 — Data dan Reliability" duration="390">
+        <p>Buat migration forward-only untuk users, projects, memberships, tasks, idempotency records, dan audit events. Terapkan:</p>
+<ul>
+<li>transaction untuk write yang melibatkan beberapa table;</li>
+<li>unique constraints sebagai pertahanan terakhir;</li>
+<li><code>version</code> pada task untuk optimistic concurrency;</li>
+<li>idempotency key + request fingerprint;</li>
+<li>cursor pagination stabil;</li>
+<li>cache-aside project summary dengan explicit invalidation;</li>
+<li>bounded timeout dan context cancellation.</li>
+</ul>
+<p>Jalankan dua request bersamaan untuk update version yang sama; tepat satu boleh berhasil. Ulangi create dengan idempotency key sama dan payload sama/berbeda. Matikan Redis: core write/read harus tetap benar meski lebih lambat.</p>
+<p>Negative : Jangan meminta agent &#34;menambahkan retry ke semua error.&#34; Retry hanya untuk operasi idempotent dan transient failure yang terklasifikasi.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 12 — Contract, Security, Telemetry" duration="360">
+        <p>Jalankan satu black-box contract suite terhadap base URL Go lalu NestJS. Suite harus menguji response schema, status, error code, auth matrix, pagination, idempotency, stale version, dan trace ID.</p>
+<p>Tambahkan structured log, latency/error metrics, serta spans untuk HTTP, database, dan cache. Redact Authorization, password, token, dan personal payload.</p>
+<p>Security lab:</p>
+<ul>
+<li>horizontal privilege escalation antar project;</li>
+<li>JWT invalid/expired;</li>
+<li>SQL injection dan mass assignment;</li>
+<li>oversized input/rate smoke;</li>
+<li>migration rollback melalui restore, bukan destructive guessing.</li>
+</ul>
+<p>Load smoke memakai workload dan dataset sama. Tujuannya mendeteksi regresi serta resource leak, bukan memenangkan benchmark bahasa.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Gate Kelulusan" duration="30">
+        <p>Kedua service harus dapat ditukar hanya dengan mengubah base URL. Contract suite hijau, race test terbukti, Redis outage terdegradasi aman, security finding kritis nol, logs dapat dikorelasikan melalui trace ID, dan clean checkout menghasilkan build yang sama.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

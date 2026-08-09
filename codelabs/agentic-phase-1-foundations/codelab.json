@@ -1,0 +1,34 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-09T09:59:57+07:00",
+  "id": "agentic-phase-1-foundations",
+  "duration": 860,
+  "title": "Fase 1 — Fondasi Agentic Engineering",
+  "authors": "LearnWithFath Team",
+  "summary": "Fondasi praktis agentic engineering, agent loop, model arena, context, tools, dan permission untuk software engineer lintas stack.",
+  "source": "agentic-phase-1-foundations.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "agenticengineering",
+    "developertools"
+  ],
+  "tags": [
+    "agentic-workflow",
+    "coding-agent",
+    "deepseek",
+    "glm",
+    "kimi",
+    "minimax",
+    "model-routing",
+    "qwen"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "agentic-phase-1-foundations"
+}

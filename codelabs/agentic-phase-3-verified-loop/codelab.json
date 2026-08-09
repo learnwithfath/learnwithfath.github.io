@@ -1,0 +1,34 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-09T09:59:57+07:00",
+  "id": "agentic-phase-3-verified-loop",
+  "duration": 985,
+  "title": "Fase 3 — Verified Local Engineering Loop",
+  "authors": "LearnWithFath Team",
+  "summary": "Bangun verified local loop dengan instructions, skills, worktree, parallel agent, retry budget, dan human approval gate.",
+  "source": "agentic-phase-3-verified-loop.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "git",
+    "testing",
+    "security"
+  ],
+  "tags": [
+    "coding-agent",
+    "hooks",
+    "human-in-the-loop",
+    "mcp",
+    "multi-agent",
+    "skills",
+    "worktree"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "agentic-phase-3-verified-loop"
+}

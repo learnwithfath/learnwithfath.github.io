@@ -1,0 +1,33 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-09T09:59:58+07:00",
+  "id": "agentic-phase-8-capstone",
+  "duration": 1285,
+  "title": "Fase 8 — Capstone, Release \u0026 Portfolio",
+  "authors": "LearnWithFath Team",
+  "summary": "Integrasikan tujuh implementasi TaskForge, red-team agentic workflow, release preview, dan hasilkan portfolio evidence yang reproducible.",
+  "source": "agentic-phase-8-capstone.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "capstone",
+    "fullstack",
+    "mobile",
+    "ai"
+  ],
+  "tags": [
+    "capstone",
+    "integration-testing",
+    "portfolio",
+    "red-team",
+    "release",
+    "retrospective"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "agentic-phase-8-capstone"
+}

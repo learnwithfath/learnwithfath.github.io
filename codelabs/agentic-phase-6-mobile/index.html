@@ -1,0 +1,98 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Fase 6 — Tiga Mobile Client</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="agentic-phase-6-mobile"
+                  title="Fase 6 — Tiga Mobile Client"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Prinsip Kesetaraan" duration="25">
+        <p>Flutter, Compose, dan SwiftUI berbagi behavior contract, bukan arsitektur paksa. Setiap app memakai navigation, lifecycle, secure storage, concurrency, dan testing idiomatik platform. Generated API client dibungkus agar UI tidak bergantung pada wire model.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 16 — Architecture dan API Clients" duration="390">
+        <p>Scaffold tiga app dengan environment <code>local-go</code> dan <code>local-nest</code>. Implementasikan login, project list, task list/detail, create task, assign, dan status update.</p>
+<p>Boundary minimum:</p>
+<ul>
+<li>presentation/view state;</li>
+<li>domain use case/model;</li>
+<li>repository sync policy;</li>
+<li>remote API adapter;</li>
+<li>local store dan secure token store.</li>
+</ul>
+<p>Minta agent menghasilkan mapping table sebelum kode. Review nullability, cancellation, lifecycle, main-thread work, back navigation, state restoration, dan error mapping. Jangan menerima abstraction Java/Kotlin yang diterjemahkan literal ke Swift/Dart.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 17 — Offline Sync dan Device Features" duration="420">
+        <p>Simpan normalized local entities dengan server version. Mutation queue berisi operation ID, entity ID, base version, payload, attempt count, dan timestamp. State UI membedakan local pending, synced, failed, serta conflict.</p>
+<p>Lab wajib:</p>
+<ol type="1">
+<li>online: load project dan tasks;</li>
+<li>airplane mode: create task dan ubah status;</li>
+<li>server diubah dari client lain;</li>
+<li>online kembali: flush queue;</li>
+<li>tampilkan conflict, pilih refresh atau reapply;</li>
+<li>kill/restart app di tengah queue dan pulihkan dengan idempotent operation.</li>
+</ol>
+<p>Tambahkan deep link ke task detail dan push payload contract yang hanya membawa identifier, bukan sensitive content. Simulasikan token refresh dan notification ketika logged out.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 18 — Tests dan Release Evidence" duration="390">
+        <p>Test pyramid per app:</p>
+<ul>
+<li>unit: reducer/view model, mapping, sync decision;</li>
+<li>repository: remote/local ordering, retry, conflict;</li>
+<li>UI: login dan task flow;</li>
+<li>integration: offline queue recovery;</li>
+<li>accessibility: labels, dynamic text, contrast, screen-reader order.</li>
+</ul>
+<p>Build Flutter release, Android signed sandbox APK/AAB, dan iOS simulator/archive evidence. Profil startup, list scroll, memory, network count, serta background sync budget. CI boleh memakai simulator/emulator smoke; satu device nyata per platform tetap direkomendasikan.</p>
+<p><strong>Failure drill:</strong> storage corrupt, token expired saat sync, process killed, duplicate push, timezone berbeda, dan response terlambat setelah screen ditutup.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Gate Kelulusan" duration="30">
+        <p>Ketiga app menyelesaikan flow yang sama pada dua backend, tidak kehilangan offline mutation, menampilkan conflict dengan jelas, lulus automated checks, dan menghasilkan release artifact/evidence. Agent tidak boleh memegang signing credential produksi.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

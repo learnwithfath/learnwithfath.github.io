@@ -1,6 +1,21 @@
 {
   "codelabs": [
     {
+      "id": "agentic-engineering-roadmap",
+      "title": "Agentic Engineering Roadmap — Full Stack & Mobile",
+      "icon": "🧭",
+      "summary": "Roadmap praktis 24 minggu membangun workflow agentic yang aman dan terukur melalui Go, NestJS, Next.js, Nuxt, Flutter, Jetpack Compose, dan SwiftUI.",
+      "duration": null,
+      "sections": 24,
+      "sectionLabel": "Minggu",
+      "phases": 8,
+      "tags": ["AI", "Agentic Engineering", "Full Stack", "Mobile", "Backend", "Frontend", "Loop Engineering"],
+      "categories": ["ai", "agentic-engineering", "fullstack", "mobile", "backend", "frontend"],
+      "searchTerms": "agentic engineering roadmap coding agent loop pang ghiath qwen deepseek glm kimi minimax flutter compose swiftui go nestjs next nuxt",
+      "url": "agentic-engineering-roadmap.html",
+      "ctaText": "Mulai Roadmap 24 Minggu"
+    },
+    {
       "id": "getting-started",
       "title": "Getting Started",
       "icon": "📚",
@@ -212,8 +227,8 @@
     }
   ],
   "stats": {
-    "totalTutorials": 14,
-    "totalSubPhases": 33,
-    "totalMajorPhases": 6
+    "totalTutorials": 15,
+    "totalSubPhases": 57,
+    "totalMajorPhases": 14
   }
 }

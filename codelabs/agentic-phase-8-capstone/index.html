@@ -1,0 +1,151 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Fase 8 — Capstone, Release &amp; Portfolio</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="agentic-phase-8-capstone"
+                  title="Fase 8 — Capstone, Release &amp; Portfolio"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Definition of Success" duration="25">
+        <p>Capstone bukan dinilai dari jumlah kode agent. Nilainya berasal dari interoperabilitas, evidence, failure recovery, keamanan, dan kemampuan reviewer menelusuri keputusan dari intent sampai artifact.</p>
+<p>Matrix akhir: lima client (Next, Nuxt, Flutter, Compose, SwiftUI) × dua backend (Go, NestJS), ditambah satu contract suite sebagai referee.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 22 — Full-System Integration" duration="420">
+        <p>Seed environment yang sama dan jalankan pada sepuluh kombinasi client/backend utama. Untuk mobile, buktikan masing-masing app terhadap kedua backend; untuk offline recovery, minimal satu full recording per app.</p>
+<p>Flow acceptance:</p>
+<ol type="1">
+<li>login;</li>
+<li>create project;</li>
+<li>add member;</li>
+<li>create dan assign task;</li>
+<li>update status;</li>
+<li>lakukan offline mutation;</li>
+<li>ubah entity dari client lain;</li>
+<li>reconnect dan resolve conflict;</li>
+<li>verifikasi audit event dan trace correlation;</li>
+<li>logout/revoke session.</li>
+</ol>
+<p>Gunakan compatibility matrix dengan link CI trace, screenshot/video, API trace ID, dan known deviation. Tidak boleh ada branch behavior berdasarkan nama backend.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 23 — Red Team dan Hardening" duration="420">
+        <p>Jalankan threat model sebagai test campaign:</p>
+<ul>
+<li>prompt injection dalam issue, README, API payload, dan fetched web page;</li>
+<li>secret request melalui shell/environment;</li>
+<li>ambiguous deletion dan broad glob;</li>
+<li>compromised MCP/tool response;</li>
+<li>auth bypass dan cross-project access;</li>
+<li>repeated migration/external write;</li>
+<li>retry storm dan token-cost spike;</li>
+<li>database/Redis outage, rollback, restore;</li>
+<li>dependency integrity dan generated-code drift.</li>
+</ul>
+<p>Pisahkan attacker, defender, dan verifier sessions. Human menetapkan severity. Temuan critical/high harus ditutup atau release diblokir; medium/low memerlukan owner dan expiration.</p>
+<p>Lakukan restore drill dari backup pada environment baru. Catat recovery time dan data loss window aktual.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 24 — Release dan Engineering Review" duration="360">
+        <p>Release pack minimum:</p>
+<ul>
+<li>preview URL web dan API;</li>
+<li>versioned OpenAPI;</li>
+<li>reproducible build/runbook;</li>
+<li>Flutter release, Android APK/AAB, iOS build/archive evidence;</li>
+<li>architecture/ADR, threat model, permission matrix;</li>
+<li>CI, contract, E2E, mobile, load, dan accessibility reports;</li>
+<li>model scorecard dan cost per accepted task;</li>
+<li>agent run logs dengan human interventions;</li>
+<li>known limitations, rollback, dan incident contact;</li>
+<li>demo 10–15 menit serta retrospective.</li>
+</ul>
+<p>Bandingkan baseline fase 1 dengan capstone: lead time, correction rate, escaped defects, test pass on first run, token/cost, review time, dan percentage task stopped safely. Jangan menyimpulkan produktivitas hanya dari lines of code.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Rubric Akhir" duration="45">
+        <table>
+<tr><td colspan="1" rowspan="1"><p>Area</p>
+</td><td colspan="1" rowspan="1"><p>Bobot</p>
+</td><td colspan="1" rowspan="1"><p>Bukti lulus</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Product correctness</p>
+</td><td colspan="1" rowspan="1"><p>20%</p>
+</td><td colspan="1" rowspan="1"><p>Lima flow dan offline conflict sesuai brief</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Seven-stack interoperability</p>
+</td><td colspan="1" rowspan="1"><p>20%</p>
+</td><td colspan="1" rowspan="1"><p>Semua client bekerja dengan kedua backend</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Quality and testing</p>
+</td><td colspan="1" rowspan="1"><p>15%</p>
+</td><td colspan="1" rowspan="1"><p>Contract/E2E/mobile suites reproducible</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Agentic workflow</p>
+</td><td colspan="1" rowspan="1"><p>15%</p>
+</td><td colspan="1" rowspan="1"><p>State, isolation, budget, retry, evidence bekerja</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Security/governance</p>
+</td><td colspan="1" rowspan="1"><p>15%</p>
+</td><td colspan="1" rowspan="1"><p>Critical zero; production human-only</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Operations</p>
+</td><td colspan="1" rowspan="1"><p>10%</p>
+</td><td colspan="1" rowspan="1"><p>Observability, rollback, restore, runbook terbukti</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Communication</p>
+</td><td colspan="1" rowspan="1"><p>5%</p>
+</td><td colspan="1" rowspan="1"><p>Demo dan decision trail dapat diikuti reviewer</p>
+</td></tr>
+</table>
+<p>Nilai minimal 80/100 dan tidak boleh ada critical security finding. Kegagalan satu stack tidak ditutupi oleh keberhasilan stack lain.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Penutup" duration="15">
+        <p>Anda lulus ketika dapat merancang loop yang tetap berguna saat model, host, framework, atau provider diganti. Workflow yang baik mempersempit context, menghasilkan feedback executable, membatasi kerusakan, meminta manusia pada keputusan bernilai tinggi, dan meninggalkan bukti yang dapat diaudit.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

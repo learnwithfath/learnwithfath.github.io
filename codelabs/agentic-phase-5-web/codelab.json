@@ -1,0 +1,33 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-09T09:59:58+07:00",
+  "id": "agentic-phase-5-web",
+  "duration": 1135,
+  "title": "Fase 5 — Dua Web Client",
+  "authors": "LearnWithFath Team",
+  "summary": "Bangun TaskForge dashboard paralel dengan Next.js dan Nuxt, shared design contract, accessibility, failure states, dan browser E2E.",
+  "source": "agentic-phase-5-web.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "frontend",
+    "react",
+    "vue",
+    "testing"
+  ],
+  "tags": [
+    "accessibility",
+    "design-system",
+    "nextjs",
+    "nuxt",
+    "playwright",
+    "typescript"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "agentic-phase-5-web"
+}

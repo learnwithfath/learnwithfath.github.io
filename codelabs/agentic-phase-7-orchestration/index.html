@@ -1,0 +1,106 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Fase 7 — Loop Engineering Production-Shaped</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="agentic-phase-7-orchestration"
+                  title="Fase 7 — Loop Engineering Production-Shaped"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Dari Sesi ke Sistem" duration="30">
+        <p><a href="https://github.com/isfaaghyth/pang" target="_blank">Pang</a> menunjukkan pola note status → periodic tick → long-lived engineer → isolated project agent → real codebase. <a href="https://github.com/isfaaghyth/ghiath" target="_blank">Ghiath</a> memberi pelajaran berbeda: personal assistant ringan sengaja dipisahkan dari engineering loop berat, dengan vault, bot, credential, dan confirmation gate terisolasi.</p>
+<p>Bangun versi minimum lokal lebih dulu. Jangan langsung menyalin seluruh self-hosted stack.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 19 — Vault dan State Machine" duration="360">
+        <p>Gunakan folder Markdown sebagai cognitive core. Setiap project mempunyai context, architecture, task records, run log, dan decision log. Frontmatter task adalah source of truth.</p>
+<p>Buat tick runner yang:</p>
+<ol type="1">
+<li>mengambil lock;</li>
+<li>membaca task <code>ready</code>;</li>
+<li>memvalidasi dependency dan transition;</li>
+<li>membuat immutable event ID;</li>
+<li>mengubah status menjadi <code>in-progress</code> secara atomik;</li>
+<li>dispatch worker;</li>
+<li>menulis outcome dan next state;</li>
+<li>aman dijalankan ulang.</li>
+</ol>
+<p>Uji restart tepat setelah dispatch, duplicate tick, malformed note, dependency belum selesai, dan stale lock. Jangan gunakan vector search untuk data state; semantic index hanya membantu recall.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 20 — Orchestrator dan Model Routing" duration="420">
+        <p>Engineer agent membaca brief dan task graph, tetapi per-project worker hanya menerima subtree/context yang dibutuhkan. Setiap worker mendapat workspace, branch, credential, tools, budget, dan port terpisah.</p>
+<p>Routing policy contoh:</p>
+<ul>
+<li>exploration/mechanical edit → model hemat dan cepat;</li>
+<li>architecture/concurrency/security → reasoning model kuat;</li>
+<li>UI visual review → multimodal model;</li>
+<li>independent verification → provider/model berbeda bila memungkinkan;</li>
+<li>sensitive task → provider yang memenuhi policy data;</li>
+<li>fallback → hanya provider allowlist, dengan total budget tetap.</li>
+</ul>
+<p>Gateway menyimpan provider keys; agent menerima virtual/scoped key. Rekam model ID, cost, tool calls, correction, status, dan artifact—bukan hidden chain-of-thought.</p>
+<p>Demonstrasikan satu issue bergerak <code>ready → in-progress → review</code>, menghasilkan PR/diff dan evidence. Human memutuskan merge.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 21 — CI, Governance, dan VPS Opsional" duration="420">
+        <p>CI matrix mencakup OpenAPI lint, Go, NestJS, Next, Nuxt, Flutter, Android, iOS build/test sesuai runner tersedia, contract tests, secret scan, dependency scan, dan preview smoke.</p>
+<p>Terapkan:</p>
+<ul>
+<li>ephemeral workspace dan network egress allowlist;</li>
+<li>no production credential;</li>
+<li>approval untuk dependency, migration, external write, preview deploy;</li>
+<li>human-only production release;</li>
+<li>audit log export dan anomalous cost/tool alerts;</li>
+<li>backup/restore untuk vault dan state;</li>
+<li>kill switch untuk scheduler serta worker.</li>
+</ul>
+<p>VPS adalah lab opsional: containerize gateway, sync/memory services, dan orchestrator; expose hanya service yang diperlukan melalui TLS; pisahkan personal assistant dan engineering instance. Jalankan preflight collision, backup, provision, validate, dan reversible teardown.</p>
+<p>Negative : Ghiath sendiri menyatakan bukan loop engineering berat. Jangan memberi assistant rumah akses ke repository, work vault, atau deployment credential.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Gate Kelulusan" duration="30">
+        <p>Restart tidak menduplikasi task, worker tidak dapat membaca workspace lain, model fallback patuh policy, budget menghentikan loop, CI memberi feedback executable, dan deploy production memerlukan manusia. Sertakan incident drill dan cost dashboard.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,94 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Fase 5 — Dua Web Client</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="agentic-phase-5-web"
+                  title="Fase 5 — Dua Web Client"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="UI Contract" duration="25">
+        <p>Next.js dan Nuxt tidak perlu berbagi component code, tetapi wajib berbagi design tokens, content vocabulary, routes, API contract, accessibility criteria, dan visual fixtures. Pertahankan idiom masing-masing framework.</p>
+<p>State wajib: loading, empty, populated, validation error, unauthorized, forbidden, server error, offline, optimistic pending, conflict, dan success.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 13 — Design System dan Skeleton" duration="360">
+        <p>Definisikan tokens untuk color, typography, spacing, radius, shadow, breakpoint, dan motion. Buat component state table untuk button, input, dialog, toast, project card, task row, status badge, skeleton, serta error panel.</p>
+<p>Berikan agent screenshot/wireframe dan state table, bukan instruksi &#34;buat UI modern.&#34; Minta implementasi routes: login, project list, project detail/board, task detail, dan member settings.</p>
+<p>Review visual pada tiga viewport, keyboard flow, reduced motion, long Indonesian copy, empty list, serta error state. Snapshot adalah alat deteksi perubahan, bukan pengganti usability review.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 14 — Data, Auth, dan Failure States" duration="390">
+        <p>Generate typed API client dari OpenAPI. Bungkus transport dalam domain-facing repository agar base URL Go/NestJS dapat diganti melalui environment configuration.</p>
+<p>Implementasikan:</p>
+<ul>
+<li>session lifecycle dan protected routes;</li>
+<li>query cache dan explicit invalidation;</li>
+<li>optimistic status update dengan rollback;</li>
+<li>form validation client + server errors;</li>
+<li>conflict dialog yang menampilkan server version;</li>
+<li>retry hanya untuk safe reads;</li>
+<li>global unexpected-error boundary.</li>
+</ul>
+<p><strong>Failure drill:</strong> throttle network, kembalikan <code>401</code>, <code>403</code>, <code>409</code>, <code>500</code>, response lambat, dan invalid JSON fixture. UI tidak boleh stuck atau menampilkan raw stack trace.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 15 — Accessibility dan E2E" duration="330">
+        <p>Audit semantic landmarks, label, focus order, visible focus, dialog focus trap/return, heading hierarchy, color contrast, status announcements, dan target size. Board harus tetap dapat digunakan tanpa drag-and-drop.</p>
+<p>Automasi browser flow:</p>
+<ol type="1">
+<li>login;</li>
+<li>create project;</li>
+<li>create dan assign task;</li>
+<li>update status;</li>
+<li>tampilkan conflict dan resolve;</li>
+<li>logout.</li>
+</ol>
+<p>Jalankan suite yang sama terhadap Next/Nuxt dan Go/NestJS. Gunakan stable role/text selectors; hindari class CSS. Simpan screenshot hanya pada kegagalan dan trace untuk diagnosis.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Gate Kelulusan" duration="30">
+        <p>Dua client lulus typecheck/build, component tests, accessibility audit tanpa critical issue, dan browser E2E pada kedua backend. Mengganti backend hanya mengubah base URL. Diff agent direview untuk hydration issue, stale cache, insecure token storage, dan framework anti-pattern.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

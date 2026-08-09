@@ -1,0 +1,115 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Fase 3 — Verified Local Engineering Loop</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="agentic-phase-3-verified-loop"
+                  title="Fase 3 — Verified Local Engineering Loop"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Arsitektur Loop" duration="25">
+        <p>Loop minimum:</p>
+<pre><code language="language-text" class="language-text">approved task → isolated worktree → inspect → plan → edit
+      ↑                                      ↓
+ human gate ← review/evidence ← test ← failure feedback
+</code></pre>
+<p>Satu agent sudah cukup untuk task sederhana. Tambahkan subagent hanya saat pekerjaan independen, memerlukan context khusus, atau review yang benar-benar terpisah.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 7 — Instructions, Skills, dan Hooks" duration="300">
+        <p>Pasang <code>agent-instructions.md</code> sebagai instruksi repository, lalu scope instruksi per stack. Jangan menduplikasi dokumentasi framework; referensikan command dan aturan lokal.</p>
+<p>Buat skill <code>verify-change</code> yang menerima stack dan changed files, lalu memilih formatter, static check, focused test, broader test, dan diff audit. Tool harus sedikit dan on-demand. MCP database dimulai read-only terhadap seed database.</p>
+<p>Hooks yang aman:</p>
+<ul>
+<li>setelah edit: formatter pada file berubah;</li>
+<li>sebelum selesai: focused test dan secret scan;</li>
+<li>setelah tool failure: capture exit code, jangan retry otomatis tanpa klasifikasi.</li>
+</ul>
+<p>Uji dengan satu bug kecil di tiap bahasa. Lulus bila agent konsisten menjalankan verifier yang tepat tanpa memasukkan generated/build directories ke context.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 8 — Worktree dan Parallel Agents" duration="330">
+        <p>Buat branch/worktree eksplisit:</p>
+<pre><code language="language-bash" class="language-bash">git worktree add ../tf-contract -b feat/contract
+git worktree add ../tf-go -b feat/go-service
+git worktree add ../tf-nest -b feat/nest-service
+</code></pre>
+<p>Contract agent memiliki ownership <code>api/</code> dan fixtures. Backend agents mulai setelah contract commit disetujui dan tidak boleh mengubahnya. Tugas paralel mengirim hasil berupa commit, evidence, assumptions, dan unresolved risk—bukan sekadar ringkasan.</p>
+<p>Integrasikan berurutan: contract, Go, NestJS. Jalankan test gabungan setelah setiap merge. Jika dua agent menyentuh file yang sama, hentikan paralelisasi dan tetapkan satu owner.</p>
+<p><strong>Failure drill:</strong> sengaja beri dua agent ownership file yang overlap. Catat konflik semantik yang tidak terlihat oleh merge tool.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 9 — Recovery dan Human Gate" duration="300">
+        <p>Definisikan error classes:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Class</p>
+</td><td colspan="1" rowspan="1"><p>Respons</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Test assertion</p>
+</td><td colspan="1" rowspan="1"><p>Diagnose satu kali, edit, rerun focused test</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Flaky/timeout</p>
+</td><td colspan="1" rowspan="1"><p>Rerun maksimal dua kali, lalu quarantine/escalate</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Tool/network</p>
+</td><td colspan="1" rowspan="1"><p>Backoff terbatas atau fallback yang disetujui</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Spec conflict</p>
+</td><td colspan="1" rowspan="1"><p>Stop dan minta keputusan</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Permission denied</p>
+</td><td colspan="1" rowspan="1"><p>Jangan mencari bypass</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Destructive/migration/deploy</p>
+</td><td colspan="1" rowspan="1"><p>Human approval wajib</p>
+</td></tr>
+</table>
+<p>Gunakan time, token, dan attempt budget. Completion judge memeriksa acceptance evidence; tidak boleh hanya percaya self-report worker.</p>
+<p>Simulasikan empat insiden: test flaky, package registry mati, scope drift, dan perintah penghapusan dengan target ambigu. Simpan trace di <code>run-log.md</code>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Gate Kelulusan" duration="30">
+        <p>Tunjukkan satu task selesai end-to-end dan satu task berhenti aman. Worktree bersih, verifier hijau, diff bounded, log tidak berisi secret, serta approval manusia tercatat untuk aksi berisiko. Jika operator tidak dapat menjelaskan mengapa loop berhenti atau lanjut, fase belum lulus.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,108 @@
+{
+  "meta": {
+    "title": "Agentic Engineering Roadmap",
+    "subtitle": "24 minggu membangun satu produk melalui 7 stack dan engineering loop yang dapat diaudit",
+    "weeks": 24,
+    "phases": 8,
+    "hoursPerWeek": "15–20",
+    "snapshot": "2026-08-09"
+  },
+  "phases": [
+    {
+      "id": "foundations",
+      "number": 1,
+      "title": "Fondasi Agentic Engineering",
+      "summary": "Berpindah dari prompt sekali pakai ke loop dengan tujuan, tools, feedback, dan batas aman.",
+      "moduleUrl": "agentic-phase-1-foundations/",
+      "weeks": [
+        {"week": 1, "title": "Agent loop & baseline", "tracks": ["workflow"], "hours": "15–18", "lab": "Selesaikan bug yang sama secara manual, dengan chat, lalu coding agent; bandingkan trace dan hasil.", "deliverable": "Baseline report, diff, test log, dan daftar kegagalan.", "rubric": "Hasil reproducible; perbedaan prompt vs loop dijelaskan dengan bukti."},
+        {"week": 2, "title": "Model & host arena", "tracks": ["workflow", "models"], "hours": "16–20", "lab": "Jalankan tiga tugas repo pada minimal satu model Barat dan satu model Tiongkok.", "deliverable": "Scorecard kualitas, latency, biaya, tool use, dan correction rate.", "rubric": "Pemilihan model berbasis data, bukan merek atau satu benchmark."},
+        {"week": 3, "title": "Tools, context & permissions", "tracks": ["workflow", "security"], "hours": "15–18", "lab": "Konfigurasi repo context, allowlist command, MCP read-only, dan approval untuk aksi berisiko.", "deliverable": "Context map dan permission matrix.", "rubric": "Least privilege aktif; secret dan produksi tidak dapat dijangkau agent."}
+      ]
+    },
+    {
+      "id": "spec",
+      "number": 2,
+      "title": "Context & Spec Engineering",
+      "summary": "Ubah intent menjadi artefak keputusan dan acceptance criteria yang dapat dieksekusi.",
+      "moduleUrl": "agentic-phase-2-spec/",
+      "weeks": [
+        {"week": 4, "title": "Product brief TaskForge", "tracks": ["product", "workflow"], "hours": "15–18", "lab": "Definisikan persona, flow, non-goals, risiko, dan metrik aplikasi kolaborasi.", "deliverable": "Product brief dan scope v1 yang disetujui.", "rubric": "Tidak ada requirement ambigu yang memengaruhi arsitektur."},
+        {"week": 5, "title": "Architecture & shared contract", "tracks": ["backend", "web", "mobile"], "hours": "18–20", "lab": "Rancang domain, ADR, error envelope, auth, sync semantics, dan OpenAPI bersama.", "deliverable": "Architecture doc, ADR, dan OpenAPI lintable.", "rubric": "Dua backend dan lima client dapat bekerja tanpa kontrak khusus vendor."},
+        {"week": 6, "title": "Task graph & Definition of Done", "tracks": ["workflow"], "hours": "15–18", "lab": "Pecah vertical slice menjadi task kecil dengan dependency, verifier, dan stopping rule.", "deliverable": "Task graph, DoD, PR template, dan evidence policy.", "rubric": "Setiap task bisa dikerjakan tanpa keputusan tersisa dan punya verifier."}
+      ]
+    },
+    {
+      "id": "verified-loop",
+      "number": 3,
+      "title": "Verified Local Engineering Loop",
+      "summary": "Bangun loop plan–act–verify–review yang aman, terisolasi, dan bisa dihentikan.",
+      "moduleUrl": "agentic-phase-3-verified-loop/",
+      "weeks": [
+        {"week": 7, "title": "Instructions, skills & tools", "tracks": ["workflow"], "hours": "15–18", "lab": "Buat instruksi repo, skill verifikasi, hooks, dan tool selection yang sempit.", "deliverable": "Instruction hierarchy dan reusable verification skill.", "rubric": "Context ringkas; agent konsisten menjalankan test yang relevan."},
+        {"week": 8, "title": "Worktree & parallel agents", "tracks": ["workflow", "git"], "hours": "18–20", "lab": "Jalankan tiga tugas independen di worktree terpisah dan integrasikan lewat review.", "deliverable": "Tiga branch, trace delegasi, dan integration report.", "rubric": "Tidak ada konflik tersembunyi atau shared-state contamination."},
+        {"week": 9, "title": "Recovery & human gates", "tracks": ["workflow", "security"], "hours": "15–18", "lab": "Simulasikan test flaky, tool failure, scope drift, dan command destruktif.", "deliverable": "Retry budget, escalation policy, dan audit log.", "rubric": "Loop berhenti aman dan meminta keputusan manusia pada batas yang benar."}
+      ]
+    },
+    {
+      "id": "backend",
+      "number": 4,
+      "title": "Dua Backend Paralel",
+      "summary": "Implementasikan kontrak yang sama dalam Go dan NestJS dengan data serta quality gate bersama.",
+      "moduleUrl": "agentic-phase-4-backend/",
+      "weeks": [
+        {"week": 10, "title": "Scaffold & domain core", "tracks": ["backend"], "hours": "18–20", "lab": "Agent membuat service Go dan NestJS dari OpenAPI tanpa mengubah kontrak.", "deliverable": "Dua API dengan health, auth, project, dan task endpoints.", "rubric": "Structure idiomatik; domain tidak bergantung framework."},
+        {"week": 11, "title": "Postgres, Redis & reliability", "tracks": ["backend", "data"], "hours": "18–20", "lab": "Tambah migration, transaction, cache, idempotency, pagination, dan optimistic concurrency.", "deliverable": "Dua service memakai skema dan seed data setara.", "rubric": "Race, retry, cache invalidation, dan rollback diuji."},
+        {"week": 12, "title": "Contract, security & telemetry", "tracks": ["backend", "security"], "hours": "18–20", "lab": "Jalankan contract suite, authorization matrix, structured logs, traces, dan load smoke test.", "deliverable": "Interchangeability report dan security findings.", "rubric": "Kedua backend lulus suite yang sama tanpa client workaround."}
+      ]
+    },
+    {
+      "id": "web",
+      "number": 5,
+      "title": "Dua Web Client",
+      "summary": "Bangun dashboard accessible dan responsive pada Next.js serta Nuxt dari design contract yang sama.",
+      "moduleUrl": "agentic-phase-5-web/",
+      "weeks": [
+        {"week": 13, "title": "Design system & skeleton", "tracks": ["web", "design"], "hours": "18–20", "lab": "Turunkan tokens, component states, routes, dan skeleton Next/Nuxt dari satu UI contract.", "deliverable": "Dua shell UI responsive dengan visual fixtures.", "rubric": "Semua state utama ada; bukan hanya happy-path screenshot."},
+        {"week": 14, "title": "Data, auth & failure states", "tracks": ["web"], "hours": "18–20", "lab": "Integrasikan auth, query/cache, optimistic update, validation, empty/error/offline state.", "deliverable": "Flow project dan task end-to-end pada dua client.", "rubric": "Dapat berpindah backend hanya lewat base URL."},
+        {"week": 15, "title": "Accessibility & browser E2E", "tracks": ["web", "testing"], "hours": "16–20", "lab": "Audit keyboard, focus, semantic HTML, responsive breakpoints, dan E2E lintas browser.", "deliverable": "Accessibility report, screenshots, dan green E2E suite.", "rubric": "Tidak ada pelanggaran kritis; flow utama lolos browser automation."}
+      ]
+    },
+    {
+      "id": "mobile",
+      "number": 6,
+      "title": "Tiga Mobile Client",
+      "summary": "Bangun Flutter, Compose, dan SwiftUI dengan behavior, offline semantics, dan release evidence setara.",
+      "moduleUrl": "agentic-phase-6-mobile/",
+      "weeks": [
+        {"week": 16, "title": "Architecture & generated clients", "tracks": ["mobile"], "hours": "18–20", "lab": "Scaffold tiga app, generate API clients, dan petakan state/navigation ke idiom tiap platform.", "deliverable": "Tiga app login dan menampilkan project/task.", "rubric": "Shared contract, native conventions, tanpa menyalin arsitektur secara buta."},
+        {"week": 17, "title": "Offline sync & device features", "tracks": ["mobile", "data"], "hours": "18–20", "lab": "Tambah local store, queue mutation, conflict handling, deep link, dan push-notification contract.", "deliverable": "Offline-create lalu recovery demo pada tiga app.", "rubric": "Tidak ada silent data loss; konflik terlihat dan dapat dipulihkan."},
+        {"week": 18, "title": "UI tests & release builds", "tracks": ["mobile", "testing"], "hours": "18–20", "lab": "Jalankan unit/widget/UI tests, accessibility checks, profiling, signing sandbox, dan release build.", "deliverable": "APK/AAB, iOS archive evidence, Flutter release, dan test report.", "rubric": "Flow kritis lulus di emulator/simulator atau device nyata."}
+      ]
+    },
+    {
+      "id": "orchestration",
+      "number": 7,
+      "title": "Loop Engineering Production-Shaped",
+      "summary": "Orkestrasi pekerjaan berulang dengan state, scheduler, gateway, memory, isolation, dan observability.",
+      "moduleUrl": "agentic-phase-7-orchestration/",
+      "weeks": [
+        {"week": 19, "title": "Vault & state machine", "tracks": ["orchestration", "workflow"], "hours": "16–20", "lab": "Jadikan note frontmatter source of truth untuk backlog → in-progress → review → done/blocked.", "deliverable": "Vault template, transition rules, dan idempotent tick runner.", "rubric": "Restart tidak menduplikasi pekerjaan; invalid transition ditolak."},
+        {"week": 20, "title": "Orchestrator & model routing", "tracks": ["orchestration", "models"], "hours": "18–20", "lab": "Dispatch per-project agent, route model berdasarkan task/risk, dan simpan trace serta biaya.", "deliverable": "Local orchestrator mengerjakan satu issue sampai PR review.", "rubric": "Agent terisolasi; fallback dan budget limit terbukti bekerja."},
+        {"week": 21, "title": "CI, governance & optional VPS", "tracks": ["orchestration", "security", "devops"], "hours": "18–20", "lab": "Bangun CI matrix, secret boundary, approval gate, audit export, observability, dan runbook VPS opsional.", "deliverable": "Green matrix, threat model, incident drill, dan cost dashboard.", "rubric": "Agent tidak dapat deploy production tanpa human approval."}
+      ]
+    },
+    {
+      "id": "capstone",
+      "number": 8,
+      "title": "Capstone, Release & Portfolio",
+      "summary": "Buktikan bahwa tujuh implementasi dan workflow-nya dapat dipercaya, bukan sekadar menghasilkan kode.",
+      "moduleUrl": "agentic-phase-8-capstone/",
+      "weeks": [
+        {"week": 22, "title": "Full-system integration", "tracks": ["backend", "web", "mobile"], "hours": "18–20", "lab": "Jalankan login → create → assign → update → offline recovery pada seluruh client dan backend.", "deliverable": "Compatibility matrix dan integration evidence.", "rubric": "14 pasangan client/backend bekerja tanpa branch khusus."},
+        {"week": 23, "title": "Red team & hardening", "tracks": ["security", "testing", "devops"], "hours": "18–20", "lab": "Uji prompt injection, secret exposure, destructive tool call, auth bypass, load, rollback, dan restore.", "deliverable": "Findings, fixes, residual risk, dan recovery recording.", "rubric": "Tidak ada finding kritis terbuka; rollback dan restore teruji."},
+        {"week": 24, "title": "Release & engineering review", "tracks": ["portfolio", "workflow"], "hours": "15–20", "lab": "Deploy preview, hasilkan mobile builds, demo workflow, dan review cost/quality/productivity.", "deliverable": "Portfolio pack, demo, runbook, scorecard, dan retrospective.", "rubric": "Reviewer dapat mereproduksi build dan menelusuri keputusan dari intent sampai artifact."}
+      ]
+    }
+  ]
+}

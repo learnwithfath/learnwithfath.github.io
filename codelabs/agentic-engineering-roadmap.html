@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Roadmap praktis 24 minggu untuk menguasai agentic engineering pada mobile, backend, dan frontend.">
+    <title>Agentic Engineering Roadmap — Learn with Fath</title>
+    <link rel="stylesheet" href="agentic-engineering-roadmap.css">
+</head>
+<body>
+    <div class="shell">
+        <nav class="topbar" aria-label="Navigasi utama">
+            <a class="brand" href="index.html">LEARN WITH FATH</a>
+            <a class="back" href="index.html">← Semua tutorial</a>
+        </nav>
+
+        <header class="hero">
+            <div class="eyebrow">Deep learning path · snapshot 9 Agustus 2026</div>
+            <h1>Bangun workflow-nya. Bukan cuma prompt-nya.</h1>
+            <p class="hero-copy">Roadmap praktik untuk mengarahkan, menguji, dan mengoperasikan coding agent pada satu produk melalui tujuh stack—dengan bukti, batas aman, dan loop yang dapat diulang.</p>
+            <div class="hero-stats" aria-label="Ringkasan roadmap">
+                <div class="hero-stat"><strong>24</strong><span>Minggu</span></div>
+                <div class="hero-stat"><strong>8</strong><span>Fase</span></div>
+                <div class="hero-stat"><strong>7</strong><span>Implementasi</span></div>
+                <div class="hero-stat"><strong>15–20</strong><span>Jam / minggu</span></div>
+            </div>
+        </header>
+
+        <section class="dashboard" aria-label="Progress dan filter">
+            <div class="progress-row">
+                <div class="progress-track" id="progressTrack" role="progressbar" aria-label="Progress belajar" aria-valuemin="0" aria-valuemax="24" aria-valuenow="0"><div class="progress-fill" id="progressFill"></div></div>
+                <div class="progress-copy" id="progressCopy">0/24 selesai · 0%</div>
+            </div>
+            <div class="controls" aria-label="Filter minggu">
+                <button class="filter active" data-filter="all">Semua</button>
+                <button class="filter" data-filter="workflow">Workflow</button>
+                <button class="filter" data-filter="backend">Backend</button>
+                <button class="filter" data-filter="web">Web</button>
+                <button class="filter" data-filter="mobile">Mobile</button>
+                <button class="filter" data-filter="orchestration">Orchestration</button>
+                <button class="filter" data-filter="security">Security</button>
+                <button class="reset" id="resetProgress">Reset progress</button>
+            </div>
+        </section>
+
+        <div class="legend">
+            <section class="note">
+                <h2>Capstone: TaskForge</h2>
+                <p>Satu aplikasi kolaborasi dengan dua backend kompatibel, dua web dashboard, dan tiga mobile client. Seluruhnya berbagi domain serta kontrak API yang sama.</p>
+            </section>
+            <section class="note alt">
+                <h2>Aturan belajar</h2>
+                <p>Agent boleh menghasilkan kode. Anda tetap pemilik spec, approval, review, test evidence, keamanan, dan keputusan yang dikirim.</p>
+            </section>
+        </div>
+
+        <main id="roadmap" aria-live="polite"></main>
+
+        <section class="resources">
+            <h2>Toolkit praktik</h2>
+            <div class="resource-grid">
+                <a href="agentic-engineering-assets/product-brief.md">Product brief</a>
+                <a href="agentic-engineering-assets/agent-instructions.md">Agent instructions</a>
+                <a href="agentic-engineering-assets/task-state.md">Task state machine</a>
+                <a href="agentic-engineering-assets/model-scorecard.tsv">Model scorecard</a>
+                <a href="agentic-engineering-assets/permission-matrix.md">Permission matrix</a>
+                <a href="agentic-engineering-assets/review-and-dod.md">Review & Definition of Done</a>
+                <a href="agentic-engineering-assets/openapi-taskforge.yaml">TaskForge OpenAPI starter</a>
+                <a href="agentic-engineering-assets/run-log.md">Agent run log</a>
+                <a href="agentic-engineering-assets/threat-model.md">Threat model</a>
+            </div>
+        </section>
+
+        <footer class="footer">Progress tersimpan hanya di browser perangkat ini. Tidak ada akun atau data yang dikirim.</footer>
+    </div>
+    <script src="agentic-engineering-roadmap.js"></script>
+</body>
+</html>

@@ -1,0 +1,103 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Fase 2 — Context &amp; Spec Engineering</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="agentic-phase-2-spec"
+                  title="Fase 2 — Context &amp; Spec Engineering"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Prinsip Kerja" duration="25">
+        <p>Agent mempercepat keputusan yang sudah jelas dan memperbesar kekacauan yang belum jelas. Fase ini mengubah intent TaskForge menjadi artefak yang bisa dipakai tujuh implementasi tanpa menebak.</p>
+<p>Salin template pada <code>agentic-engineering-assets/</code> ke repository latihan. Sumber kebenaran diurutkan: product brief → OpenAPI → ADR → task record → existing tests. Konflik harus menghentikan pekerjaan.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 4 — Product Brief" duration="270">
+        <p>Baca <code>product-brief.md</code>, lalu lakukan review bersama agent dengan peran critic. Minta agent hanya mengidentifikasi ambiguity:</p>
+<pre><code language="language-text" class="language-text">Review brief ini sebagai implementation-risk analyst.
+Kelompokkan ambiguity menjadi product, data, security, dan operations.
+Jangan menambah fitur. Untuk tiap ambiguity, jelaskan keputusan yang dibutuhkan
+dan test acceptance yang akan berubah.
+</code></pre>
+<p>Kunci lima flow: login, create project, create/assign task, status update, dan offline recovery. Nyatakan non-goals secara eksplisit. Buat glossary untuk <code>project</code>, <code>task</code>, <code>member</code>, <code>version</code>, <code>idempotency key</code>, dan <code>conflict</code>.</p>
+<p><strong>Failure drill:</strong> minta agent &#34;buat aplikasi project management terbaik.&#34; Bandingkan scope yang mengembang dengan brief yang dibatasi.</p>
+<p><strong>Evidence:</strong> brief disetujui, ambiguity log ditutup, serta acceptance scenario Given/When/Then untuk lima flow.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 5 — Architecture dan Shared Contract" duration="330">
+        <p>Buat context diagram dan keputusan berikut:</p>
+<ol type="1">
+<li>PostgreSQL sebagai source of truth; Redis bukan penyimpanan permanen.</li>
+<li>JWT sandbox untuk auth; authorization berdasarkan membership dan role.</li>
+<li>Cursor pagination, idempotent writes, optimistic version, UTC timestamps.</li>
+<li>Error envelope konsisten: <code>code</code>, <code>message</code>, <code>traceId</code>.</li>
+<li>Mobile mutation queue; server menolak stale version dengan <code>409</code>.</li>
+</ol>
+<p>Mulai dari <code>openapi-taskforge.yaml</code>, lalu lengkapi login, projects, membership, task detail/update, dan sync endpoints. Lint kontrak dan generate client untuk satu bahasa sebagai feasibility check.</p>
+<p>Tuliskan ADR pendek untuk authentication, offline conflict, shared schema, dan API versioning. Setiap ADR berisi context, decision, alternatives, consequences, dan reversal trigger.</p>
+<p><strong>Acceptance:</strong> Go dan NestJS tidak membutuhkan extension vendor; lima client tidak membutuhkan response khusus platform.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Minggu 6 — Task Graph dan DoD" duration="300">
+        <p>Pecah vertical slice menjadi task maksimal 30–90 menit agent time. Setiap task record wajib berisi:</p>
+<ul>
+<li>goal dan non-goal;</li>
+<li>exact acceptance criteria;</li>
+<li>dependency dan file ownership;</li>
+<li>risk/budget;</li>
+<li>verifier command;</li>
+<li>expected evidence;</li>
+<li>stopping dan escalation rule.</li>
+</ul>
+<p>Urutan awal: schema/migration → contract fixture → backend operation → generated clients → UI state → E2E. Task yang mengubah kontrak memblokir semua consumer sampai contract review selesai.</p>
+<p>Gunakan template <code>task-state.md</code> dan <code>review-and-dod.md</code>. Minta agent kedua melakukan pre-mortem terhadap graph, tetapi manusia yang menyetujui dependency dan scope.</p>
+<p>Negative : &#34;Implement auth&#34; bukan task yang bounded. Pecah menjadi contract, token validation, identity context, authorization rules, fixtures, dan tests.</p>
+<p><strong>Failure drill:</strong> hapus satu acceptance criterion tentang idempotency dan biarkan agent merencanakan. Tunjukkan bagaimana verifier yang lemah menghasilkan implementasi yang tampak benar.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Gate Kelulusan" duration="30">
+        <p>Fase selesai jika brief tidak memiliki ambiguity high-impact, OpenAPI valid, generated-client smoke test berhasil, minimal empat ADR diterima, dan graph mempunyai verifier pada setiap node. Review dilakukan tanpa model yang menulis spec pertama kali.</p>
+<p>Hasil akhir adalah <strong>decision-complete build packet</strong>, bukan koleksi prompt.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
