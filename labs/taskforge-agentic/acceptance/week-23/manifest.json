@@ -1,0 +1,29 @@
+{
+  "week": 23,
+  "phase": 8,
+  "title": "Red team & hardening",
+  "tracks": [
+    "security",
+    "testing",
+    "devops"
+  ],
+  "startBranch": "week-23-start",
+  "solutionBranch": "week-23-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 23",
+  "fixture": "acceptance/week-23/fixture.json",
+  "expectedFailure": {
+    "id": "W23_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 23 belum terpenuhi."
+  },
+  "expectedSuccess": "Tidak ada finding kritis terbuka; rollback dan restore teruji.",
+  "artifacts": [
+    "Findings, fixes, residual risk, dan recovery recording."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

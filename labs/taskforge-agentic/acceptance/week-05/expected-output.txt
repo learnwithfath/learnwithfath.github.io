@@ -1,0 +1,1 @@
+PASS week 05: Dua backend dan lima client dapat bekerja tanpa kontrak khusus vendor.

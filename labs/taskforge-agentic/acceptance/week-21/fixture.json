@@ -1,0 +1,6 @@
+{
+  "week": 21,
+  "deterministic": true,
+  "seed": "taskforge-week-21",
+  "scenario": "Bangun CI matrix, secret boundary, approval gate, audit export, observability, dan runbook VPS opsional."
+}

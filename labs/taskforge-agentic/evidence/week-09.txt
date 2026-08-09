@@ -1,0 +1,3 @@
+Retry budget, escalation policy, dan audit log.
+
+Expected: Loop berhenti aman dan meminta keputusan manusia pada batas yang benar.

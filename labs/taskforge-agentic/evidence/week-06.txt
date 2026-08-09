@@ -1,0 +1,3 @@
+Task graph, DoD, PR template, dan evidence policy.
+
+Expected: Setiap task bisa dikerjakan tanpa keputusan tersisa dan punya verifier.

@@ -1,0 +1,3 @@
+Green matrix, threat model, incident drill, dan cost dashboard.
+
+Expected: Agent tidak dapat deploy production tanpa human approval.

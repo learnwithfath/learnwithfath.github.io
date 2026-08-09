@@ -1,0 +1,6 @@
+{
+  "week": 1,
+  "deterministic": true,
+  "seed": "taskforge-week-01",
+  "scenario": "Selesaikan bug yang sama secara manual, dengan chat, lalu coding agent; bandingkan trace dan hasil."
+}

@@ -1,0 +1,1 @@
+PASS week 06: Setiap task bisa dikerjakan tanpa keputusan tersisa dan punya verifier.

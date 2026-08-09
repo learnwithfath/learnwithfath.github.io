@@ -1,0 +1,29 @@
+{
+  "week": 5,
+  "phase": 2,
+  "title": "Architecture & shared contract",
+  "tracks": [
+    "backend",
+    "web",
+    "mobile"
+  ],
+  "startBranch": "week-05-start",
+  "solutionBranch": "week-05-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 05",
+  "fixture": "acceptance/week-05/fixture.json",
+  "expectedFailure": {
+    "id": "W05_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 5 belum terpenuhi."
+  },
+  "expectedSuccess": "Dua backend dan lima client dapat bekerja tanpa kontrak khusus vendor.",
+  "artifacts": [
+    "Architecture doc, ADR, dan OpenAPI lintable."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

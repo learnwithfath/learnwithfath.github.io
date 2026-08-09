@@ -1,0 +1,6 @@
+{
+  "week": 19,
+  "deterministic": true,
+  "seed": "taskforge-week-19",
+  "scenario": "Jadikan note frontmatter source of truth untuk backlog → in-progress → review → done/blocked."
+}

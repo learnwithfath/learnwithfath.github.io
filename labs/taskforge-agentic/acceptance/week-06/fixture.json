@@ -1,0 +1,6 @@
+{
+  "week": 6,
+  "deterministic": true,
+  "seed": "taskforge-week-06",
+  "scenario": "Pecah vertical slice menjadi task kecil dengan dependency, verifier, dan stopping rule."
+}

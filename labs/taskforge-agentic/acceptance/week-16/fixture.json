@@ -1,0 +1,6 @@
+{
+  "week": 16,
+  "deterministic": true,
+  "seed": "taskforge-week-16",
+  "scenario": "Scaffold tiga app, generate API clients, dan petakan state/navigation ke idiom tiap platform."
+}

@@ -1,0 +1,28 @@
+{
+  "week": 15,
+  "phase": 5,
+  "title": "Accessibility & browser E2E",
+  "tracks": [
+    "web",
+    "testing"
+  ],
+  "startBranch": "week-15-start",
+  "solutionBranch": "week-15-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 15",
+  "fixture": "acceptance/week-15/fixture.json",
+  "expectedFailure": {
+    "id": "W15_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 15 belum terpenuhi."
+  },
+  "expectedSuccess": "Tidak ada pelanggaran kritis; flow utama lolos browser automation.",
+  "artifacts": [
+    "Accessibility report, screenshots, dan green E2E suite."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

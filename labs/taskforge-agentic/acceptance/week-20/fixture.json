@@ -1,0 +1,6 @@
+{
+  "week": 20,
+  "deterministic": true,
+  "seed": "taskforge-week-20",
+  "scenario": "Dispatch per-project agent, route model berdasarkan task/risk, dan simpan trace serta biaya."
+}

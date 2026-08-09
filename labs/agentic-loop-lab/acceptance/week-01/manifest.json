@@ -1,0 +1,27 @@
+{
+  "week": 1,
+  "phase": 1,
+  "title": "Agent loop & baseline",
+  "tracks": [
+    "workflow"
+  ],
+  "startBranch": "week-01-start",
+  "solutionBranch": "week-01-solution",
+  "setup": [
+    "npm test"
+  ],
+  "verifier": "npm run lab -- verify 01",
+  "fixture": "acceptance/week-01/fixture.json",
+  "expectedFailure": {
+    "id": "W01_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 1 belum terpenuhi."
+  },
+  "expectedSuccess": "Hasil reproducible; perbedaan prompt vs loop dijelaskan dengan bukti.",
+  "artifacts": [
+    "Baseline report, diff, test log, dan daftar kegagalan."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

@@ -1,0 +1,3 @@
+Architecture doc, ADR, dan OpenAPI lintable.
+
+Expected: Dua backend dan lima client dapat bekerja tanpa kontrak khusus vendor.

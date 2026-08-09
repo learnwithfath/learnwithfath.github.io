@@ -1,0 +1,3 @@
+APK/AAB, iOS archive evidence, Flutter release, dan test report.
+
+Expected: Flow kritis lulus di emulator/simulator atau device nyata.

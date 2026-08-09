@@ -1,0 +1,28 @@
+{
+  "week": 9,
+  "phase": 3,
+  "title": "Recovery & human gates",
+  "tracks": [
+    "workflow",
+    "security"
+  ],
+  "startBranch": "week-09-start",
+  "solutionBranch": "week-09-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 09",
+  "fixture": "acceptance/week-09/fixture.json",
+  "expectedFailure": {
+    "id": "W09_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 9 belum terpenuhi."
+  },
+  "expectedSuccess": "Loop berhenti aman dan meminta keputusan manusia pada batas yang benar.",
+  "artifacts": [
+    "Retry budget, escalation policy, dan audit log."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

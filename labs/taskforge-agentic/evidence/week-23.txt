@@ -1,0 +1,3 @@
+Findings, fixes, residual risk, dan recovery recording.
+
+Expected: Tidak ada finding kritis terbuka; rollback dan restore teruji.

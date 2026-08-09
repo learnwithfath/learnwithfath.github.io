@@ -1,0 +1,3 @@
+Interchangeability report dan security findings.
+
+Expected: Kedua backend lulus suite yang sama tanpa client workaround.

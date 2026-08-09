@@ -1,0 +1,28 @@
+{
+  "week": 13,
+  "phase": 5,
+  "title": "Design system & skeleton",
+  "tracks": [
+    "web",
+    "design"
+  ],
+  "startBranch": "week-13-start",
+  "solutionBranch": "week-13-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 13",
+  "fixture": "acceptance/week-13/fixture.json",
+  "expectedFailure": {
+    "id": "W13_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 13 belum terpenuhi."
+  },
+  "expectedSuccess": "Semua state utama ada; bukan hanya happy-path screenshot.",
+  "artifacts": [
+    "Dua shell UI responsive dengan visual fixtures."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "week": 9,
+  "deterministic": true,
+  "seed": "taskforge-week-09",
+  "scenario": "Simulasikan test flaky, tool failure, scope drift, dan command destruktif."
+}

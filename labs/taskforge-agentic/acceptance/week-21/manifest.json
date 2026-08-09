@@ -1,0 +1,29 @@
+{
+  "week": 21,
+  "phase": 7,
+  "title": "CI, governance & optional VPS",
+  "tracks": [
+    "orchestration",
+    "security",
+    "devops"
+  ],
+  "startBranch": "week-21-start",
+  "solutionBranch": "week-21-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 21",
+  "fixture": "acceptance/week-21/fixture.json",
+  "expectedFailure": {
+    "id": "W21_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 21 belum terpenuhi."
+  },
+  "expectedSuccess": "Agent tidak dapat deploy production tanpa human approval.",
+  "artifacts": [
+    "Green matrix, threat model, incident drill, dan cost dashboard."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

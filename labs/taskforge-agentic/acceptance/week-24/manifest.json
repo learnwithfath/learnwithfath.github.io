@@ -1,0 +1,28 @@
+{
+  "week": 24,
+  "phase": 8,
+  "title": "Release & engineering review",
+  "tracks": [
+    "portfolio",
+    "workflow"
+  ],
+  "startBranch": "week-24-start",
+  "solutionBranch": "week-24-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 24",
+  "fixture": "acceptance/week-24/fixture.json",
+  "expectedFailure": {
+    "id": "W24_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 24 belum terpenuhi."
+  },
+  "expectedSuccess": "Reviewer dapat mereproduksi build dan menelusuri keputusan dari intent sampai artifact.",
+  "artifacts": [
+    "Portfolio pack, demo, runbook, scorecard, dan retrospective."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

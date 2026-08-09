@@ -1,0 +1,11 @@
+**/.dart_tool/
+**/build/
+**/.build/
+**/.gradle/
+**/local.properties
+**/node_modules/
+**/.next/
+**/.nuxt/
+**/.output/
+**/dist/
+.DS_Store

@@ -1,0 +1,6 @@
+{
+  "week": 14,
+  "deterministic": true,
+  "seed": "taskforge-week-14",
+  "scenario": "Integrasikan auth, query/cache, optimistic update, validation, empty/error/offline state."
+}

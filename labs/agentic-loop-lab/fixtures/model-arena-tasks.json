@@ -1,0 +1,7 @@
+{
+  "tasks": [
+    {"id": "reason", "prompt": "Explain the duplicate-submission race and propose an executable verifier."},
+    {"id": "implement", "prompt": "Fix the race without changing the public API. Add a regression test."},
+    {"id": "review", "prompt": "Review the diff for scope drift, security issues, and missing failure paths."}
+  ]
+}

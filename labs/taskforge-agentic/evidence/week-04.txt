@@ -1,0 +1,3 @@
+Product brief dan scope v1 yang disetujui.
+
+Expected: Tidak ada requirement ambigu yang memengaruhi arsitektur.

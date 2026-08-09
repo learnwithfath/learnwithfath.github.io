@@ -1,0 +1,27 @@
+{
+  "week": 16,
+  "phase": 6,
+  "title": "Architecture & generated clients",
+  "tracks": [
+    "mobile"
+  ],
+  "startBranch": "week-16-start",
+  "solutionBranch": "week-16-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 16",
+  "fixture": "acceptance/week-16/fixture.json",
+  "expectedFailure": {
+    "id": "W16_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 16 belum terpenuhi."
+  },
+  "expectedSuccess": "Shared contract, native conventions, tanpa menyalin arsitektur secara buta.",
+  "artifacts": [
+    "Tiga app login dan menampilkan project/task."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "week": 3,
+  "phase": 1,
+  "title": "Tools, context & permissions",
+  "tracks": [
+    "workflow",
+    "security"
+  ],
+  "startBranch": "week-03-start",
+  "solutionBranch": "week-03-solution",
+  "setup": [
+    "npm test"
+  ],
+  "verifier": "npm run lab -- verify 03",
+  "fixture": "acceptance/week-03/fixture.json",
+  "expectedFailure": {
+    "id": "W03_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 3 belum terpenuhi."
+  },
+  "expectedSuccess": "Least privilege aktif; secret dan produksi tidak dapat dijangkau agent.",
+  "artifacts": [
+    "Context map dan permission matrix."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

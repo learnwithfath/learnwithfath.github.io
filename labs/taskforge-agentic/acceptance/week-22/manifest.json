@@ -1,0 +1,29 @@
+{
+  "week": 22,
+  "phase": 8,
+  "title": "Full-system integration",
+  "tracks": [
+    "backend",
+    "web",
+    "mobile"
+  ],
+  "startBranch": "week-22-start",
+  "solutionBranch": "week-22-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 22",
+  "fixture": "acceptance/week-22/fixture.json",
+  "expectedFailure": {
+    "id": "W22_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 22 belum terpenuhi."
+  },
+  "expectedSuccess": "14 pasangan client/backend bekerja tanpa branch khusus.",
+  "artifacts": [
+    "Compatibility matrix dan integration evidence."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

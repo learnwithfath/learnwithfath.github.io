@@ -1,0 +1,28 @@
+{
+  "week": 12,
+  "phase": 4,
+  "title": "Contract, security & telemetry",
+  "tracks": [
+    "backend",
+    "security"
+  ],
+  "startBranch": "week-12-start",
+  "solutionBranch": "week-12-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 12",
+  "fixture": "acceptance/week-12/fixture.json",
+  "expectedFailure": {
+    "id": "W12_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 12 belum terpenuhi."
+  },
+  "expectedSuccess": "Kedua backend lulus suite yang sama tanpa client workaround.",
+  "artifacts": [
+    "Interchangeability report dan security findings."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

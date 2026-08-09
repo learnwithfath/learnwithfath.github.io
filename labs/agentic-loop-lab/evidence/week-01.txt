@@ -1,0 +1,3 @@
+Baseline report, diff, test log, dan daftar kegagalan.
+
+Expected: Hasil reproducible; perbedaan prompt vs loop dijelaskan dengan bukti.

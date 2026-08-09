@@ -1,0 +1,3 @@
+Tiga branch, trace delegasi, dan integration report.
+
+Expected: Tidak ada konflik tersembunyi atau shared-state contamination.

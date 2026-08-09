@@ -1,0 +1,27 @@
+{
+  "week": 6,
+  "phase": 2,
+  "title": "Task graph & Definition of Done",
+  "tracks": [
+    "workflow"
+  ],
+  "startBranch": "week-06-start",
+  "solutionBranch": "week-06-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 06",
+  "fixture": "acceptance/week-06/fixture.json",
+  "expectedFailure": {
+    "id": "W06_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 6 belum terpenuhi."
+  },
+  "expectedSuccess": "Setiap task bisa dikerjakan tanpa keputusan tersisa dan punya verifier.",
+  "artifacts": [
+    "Task graph, DoD, PR template, dan evidence policy."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

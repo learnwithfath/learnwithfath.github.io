@@ -1,0 +1,6 @@
+{
+  "week": 12,
+  "deterministic": true,
+  "seed": "taskforge-week-12",
+  "scenario": "Jalankan contract suite, authorization matrix, structured logs, traces, dan load smoke test."
+}

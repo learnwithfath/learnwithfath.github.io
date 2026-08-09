@@ -1,0 +1,3 @@
+Tiga app login dan menampilkan project/task.
+
+Expected: Shared contract, native conventions, tanpa menyalin arsitektur secara buta.

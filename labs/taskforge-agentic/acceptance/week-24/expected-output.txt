@@ -1,0 +1,1 @@
+PASS week 24: Reviewer dapat mereproduksi build dan menelusuri keputusan dari intent sampai artifact.

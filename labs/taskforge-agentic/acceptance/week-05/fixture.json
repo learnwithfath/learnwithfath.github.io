@@ -1,0 +1,6 @@
+{
+  "week": 5,
+  "deterministic": true,
+  "seed": "taskforge-week-05",
+  "scenario": "Rancang domain, ADR, error envelope, auth, sync semantics, dan OpenAPI bersama."
+}

@@ -1,0 +1,3 @@
+Dua service memakai skema dan seed data setara.
+
+Expected: Race, retry, cache invalidation, dan rollback diuji.

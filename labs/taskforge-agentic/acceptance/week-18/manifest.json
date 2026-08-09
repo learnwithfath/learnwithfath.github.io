@@ -1,0 +1,28 @@
+{
+  "week": 18,
+  "phase": 6,
+  "title": "UI tests & release builds",
+  "tracks": [
+    "mobile",
+    "testing"
+  ],
+  "startBranch": "week-18-start",
+  "solutionBranch": "week-18-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 18",
+  "fixture": "acceptance/week-18/fixture.json",
+  "expectedFailure": {
+    "id": "W18_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 18 belum terpenuhi."
+  },
+  "expectedSuccess": "Flow kritis lulus di emulator/simulator atau device nyata.",
+  "artifacts": [
+    "APK/AAB, iOS archive evidence, Flutter release, dan test report."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

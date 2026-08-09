@@ -1,0 +1,6 @@
+{
+  "week": 24,
+  "deterministic": true,
+  "seed": "taskforge-week-24",
+  "scenario": "Deploy preview, hasilkan mobile builds, demo workflow, dan review cost/quality/productivity."
+}

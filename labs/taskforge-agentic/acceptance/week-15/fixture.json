@@ -1,0 +1,6 @@
+{
+  "week": 15,
+  "deterministic": true,
+  "seed": "taskforge-week-15",
+  "scenario": "Audit keyboard, focus, semantic HTML, responsive breakpoints, dan E2E lintas browser."
+}

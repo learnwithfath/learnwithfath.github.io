@@ -1,0 +1,9 @@
+[
+  {"id": "api-go", "verify": "cd services/api-go && go test ./..."},
+  {"id": "api-nest", "verify": "cd services/api-nest && npm test"},
+  {"id": "web-next", "verify": "cd apps/web-next && npm test"},
+  {"id": "web-nuxt", "verify": "cd apps/web-nuxt && npm test"},
+  {"id": "flutter", "verify": "cd apps/mobile-flutter && flutter test"},
+  {"id": "android-compose", "verify": "open apps/mobile-android in Android Studio"},
+  {"id": "ios-swiftui", "verify": "cd apps/mobile-ios && swift test"}
+]

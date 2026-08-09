@@ -1,0 +1,27 @@
+{
+  "week": 14,
+  "phase": 5,
+  "title": "Data, auth & failure states",
+  "tracks": [
+    "web"
+  ],
+  "startBranch": "week-14-start",
+  "solutionBranch": "week-14-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 14",
+  "fixture": "acceptance/week-14/fixture.json",
+  "expectedFailure": {
+    "id": "W14_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 14 belum terpenuhi."
+  },
+  "expectedSuccess": "Dapat berpindah backend hanya lewat base URL.",
+  "artifacts": [
+    "Flow project dan task end-to-end pada dua client."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "week": 10,
+  "deterministic": true,
+  "seed": "taskforge-week-10",
+  "scenario": "Agent membuat service Go dan NestJS dari OpenAPI tanpa mengubah kontrak."
+}

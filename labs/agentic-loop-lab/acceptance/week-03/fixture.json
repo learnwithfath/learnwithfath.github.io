@@ -1,0 +1,6 @@
+{
+  "week": 3,
+  "deterministic": true,
+  "seed": "taskforge-week-03",
+  "scenario": "Konfigurasi repo context, allowlist command, MCP read-only, dan approval untuk aksi berisiko."
+}

@@ -1,0 +1,28 @@
+{
+  "week": 19,
+  "phase": 7,
+  "title": "Vault & state machine",
+  "tracks": [
+    "orchestration",
+    "workflow"
+  ],
+  "startBranch": "week-19-start",
+  "solutionBranch": "week-19-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 19",
+  "fixture": "acceptance/week-19/fixture.json",
+  "expectedFailure": {
+    "id": "W19_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 19 belum terpenuhi."
+  },
+  "expectedSuccess": "Restart tidak menduplikasi pekerjaan; invalid transition ditolak.",
+  "artifacts": [
+    "Vault template, transition rules, dan idempotent tick runner."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

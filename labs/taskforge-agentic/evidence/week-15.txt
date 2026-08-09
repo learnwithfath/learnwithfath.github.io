@@ -1,0 +1,3 @@
+Accessibility report, screenshots, dan green E2E suite.
+
+Expected: Tidak ada pelanggaran kritis; flow utama lolos browser automation.

@@ -1,0 +1,3 @@
+Local orchestrator mengerjakan satu issue sampai PR review.
+
+Expected: Agent terisolasi; fallback dan budget limit terbukti bekerja.

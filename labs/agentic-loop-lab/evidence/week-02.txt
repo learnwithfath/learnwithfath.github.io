@@ -1,0 +1,3 @@
+Scorecard kualitas, latency, biaya, tool use, dan correction rate.
+
+Expected: Pemilihan model berbasis data, bukan merek atau satu benchmark.

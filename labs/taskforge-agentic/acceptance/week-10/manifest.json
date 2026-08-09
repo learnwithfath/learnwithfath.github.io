@@ -1,0 +1,27 @@
+{
+  "week": 10,
+  "phase": 4,
+  "title": "Scaffold & domain core",
+  "tracks": [
+    "backend"
+  ],
+  "startBranch": "week-10-start",
+  "solutionBranch": "week-10-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 10",
+  "fixture": "acceptance/week-10/fixture.json",
+  "expectedFailure": {
+    "id": "W10_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 10 belum terpenuhi."
+  },
+  "expectedSuccess": "Structure idiomatik; domain tidak bergantung framework.",
+  "artifacts": [
+    "Dua API dengan health, auth, project, dan task endpoints."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

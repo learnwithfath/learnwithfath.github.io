@@ -1,0 +1,27 @@
+{
+  "week": 7,
+  "phase": 3,
+  "title": "Instructions, skills & tools",
+  "tracks": [
+    "workflow"
+  ],
+  "startBranch": "week-07-start",
+  "solutionBranch": "week-07-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 07",
+  "fixture": "acceptance/week-07/fixture.json",
+  "expectedFailure": {
+    "id": "W07_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 7 belum terpenuhi."
+  },
+  "expectedSuccess": "Context ringkas; agent konsisten menjalankan test yang relevan.",
+  "artifacts": [
+    "Instruction hierarchy dan reusable verification skill."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "week": 13,
+  "deterministic": true,
+  "seed": "taskforge-week-13",
+  "scenario": "Turunkan tokens, component states, routes, dan skeleton Next/Nuxt dari satu UI contract."
+}

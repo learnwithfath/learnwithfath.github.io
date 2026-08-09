@@ -1,0 +1,28 @@
+{
+  "week": 20,
+  "phase": 7,
+  "title": "Orchestrator & model routing",
+  "tracks": [
+    "orchestration",
+    "models"
+  ],
+  "startBranch": "week-20-start",
+  "solutionBranch": "week-20-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 20",
+  "fixture": "acceptance/week-20/fixture.json",
+  "expectedFailure": {
+    "id": "W20_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 20 belum terpenuhi."
+  },
+  "expectedSuccess": "Agent terisolasi; fallback dan budget limit terbukti bekerja.",
+  "artifacts": [
+    "Local orchestrator mengerjakan satu issue sampai PR review."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

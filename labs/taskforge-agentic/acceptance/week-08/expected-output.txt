@@ -1,0 +1,1 @@
+PASS week 08: Tidak ada konflik tersembunyi atau shared-state contamination.

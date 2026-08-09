@@ -1,0 +1,6 @@
+{
+  "week": 23,
+  "deterministic": true,
+  "seed": "taskforge-week-23",
+  "scenario": "Uji prompt injection, secret exposure, destructive tool call, auth bypass, load, rollback, dan restore."
+}

@@ -1,0 +1,6 @@
+{
+  "week": 22,
+  "deterministic": true,
+  "seed": "taskforge-week-22",
+  "scenario": "Jalankan login → create → assign → update → offline recovery pada seluruh client dan backend."
+}

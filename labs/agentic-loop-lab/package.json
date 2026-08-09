@@ -1,0 +1,9 @@
+{
+  "name": "agentic-loop-lab",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "lab": "node tooling/lab.mjs"
+  }
+}

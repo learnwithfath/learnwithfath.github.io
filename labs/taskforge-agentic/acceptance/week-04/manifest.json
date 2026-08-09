@@ -1,0 +1,28 @@
+{
+  "week": 4,
+  "phase": 2,
+  "title": "Product brief TaskForge",
+  "tracks": [
+    "product",
+    "workflow"
+  ],
+  "startBranch": "week-04-start",
+  "solutionBranch": "week-04-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 04",
+  "fixture": "acceptance/week-04/fixture.json",
+  "expectedFailure": {
+    "id": "W04_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 4 belum terpenuhi."
+  },
+  "expectedSuccess": "Tidak ada requirement ambigu yang memengaruhi arsitektur.",
+  "artifacts": [
+    "Product brief dan scope v1 yang disetujui."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

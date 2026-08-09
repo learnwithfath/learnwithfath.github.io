@@ -1,0 +1,6 @@
+{
+  "week": 11,
+  "deterministic": true,
+  "seed": "taskforge-week-11",
+  "scenario": "Tambah migration, transaction, cache, idempotency, pagination, dan optimistic concurrency."
+}

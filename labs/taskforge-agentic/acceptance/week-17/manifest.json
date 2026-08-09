@@ -1,0 +1,28 @@
+{
+  "week": 17,
+  "phase": 6,
+  "title": "Offline sync & device features",
+  "tracks": [
+    "mobile",
+    "data"
+  ],
+  "startBranch": "week-17-start",
+  "solutionBranch": "week-17-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 17",
+  "fixture": "acceptance/week-17/fixture.json",
+  "expectedFailure": {
+    "id": "W17_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 17 belum terpenuhi."
+  },
+  "expectedSuccess": "Tidak ada silent data loss; konflik terlihat dan dapat dipulihkan.",
+  "artifacts": [
+    "Offline-create lalu recovery demo pada tiga app."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

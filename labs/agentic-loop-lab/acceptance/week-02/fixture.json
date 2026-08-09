@@ -1,0 +1,6 @@
+{
+  "week": 2,
+  "deterministic": true,
+  "seed": "taskforge-week-02",
+  "scenario": "Jalankan tiga tugas repo pada minimal satu model Barat dan satu model Tiongkok."
+}

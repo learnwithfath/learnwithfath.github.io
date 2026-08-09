@@ -1,0 +1,6 @@
+{
+  "week": 8,
+  "deterministic": true,
+  "seed": "taskforge-week-08",
+  "scenario": "Jalankan tiga tugas independen di worktree terpisah dan integrasikan lewat review."
+}

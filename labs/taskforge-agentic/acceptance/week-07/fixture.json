@@ -1,0 +1,6 @@
+{
+  "week": 7,
+  "deterministic": true,
+  "seed": "taskforge-week-07",
+  "scenario": "Buat instruksi repo, skill verifikasi, hooks, dan tool selection yang sempit."
+}

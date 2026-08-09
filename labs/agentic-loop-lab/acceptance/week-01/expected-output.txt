@@ -1,0 +1,1 @@
+PASS week 01: Hasil reproducible; perbedaan prompt vs loop dijelaskan dengan bukti.

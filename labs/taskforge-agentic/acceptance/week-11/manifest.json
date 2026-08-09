@@ -1,0 +1,28 @@
+{
+  "week": 11,
+  "phase": 4,
+  "title": "Postgres, Redis & reliability",
+  "tracks": [
+    "backend",
+    "data"
+  ],
+  "startBranch": "week-11-start",
+  "solutionBranch": "week-11-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 11",
+  "fixture": "acceptance/week-11/fixture.json",
+  "expectedFailure": {
+    "id": "W11_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 11 belum terpenuhi."
+  },
+  "expectedSuccess": "Race, retry, cache invalidation, dan rollback diuji.",
+  "artifacts": [
+    "Dua service memakai skema dan seed data setara."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

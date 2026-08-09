@@ -1,0 +1,6 @@
+{
+  "week": 17,
+  "deterministic": true,
+  "seed": "taskforge-week-17",
+  "scenario": "Tambah local store, queue mutation, conflict handling, deep link, dan push-notification contract."
+}

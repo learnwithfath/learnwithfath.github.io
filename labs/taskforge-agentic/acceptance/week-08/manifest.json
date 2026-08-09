@@ -1,0 +1,28 @@
+{
+  "week": 8,
+  "phase": 3,
+  "title": "Worktree & parallel agents",
+  "tracks": [
+    "workflow",
+    "git"
+  ],
+  "startBranch": "week-08-start",
+  "solutionBranch": "week-08-solution",
+  "setup": [
+    "npm run test:smoke"
+  ],
+  "verifier": "npm run lab -- verify 08",
+  "fixture": "acceptance/week-08/fixture.json",
+  "expectedFailure": {
+    "id": "W08_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 8 belum terpenuhi."
+  },
+  "expectedSuccess": "Tidak ada konflik tersembunyi atau shared-state contamination.",
+  "artifacts": [
+    "Tiga branch, trace delegasi, dan integration report."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

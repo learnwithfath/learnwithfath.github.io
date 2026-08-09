@@ -1,0 +1,6 @@
+{
+  "week": 18,
+  "deterministic": true,
+  "seed": "taskforge-week-18",
+  "scenario": "Jalankan unit/widget/UI tests, accessibility checks, profiling, signing sandbox, dan release build."
+}

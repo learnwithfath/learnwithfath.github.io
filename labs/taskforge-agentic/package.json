@@ -1,0 +1,9 @@
+{
+  "name": "taskforge-agentic",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lab": "node tooling/lab.mjs",
+    "test:smoke": "node --test tooling/smoke.test.mjs"
+  }
+}

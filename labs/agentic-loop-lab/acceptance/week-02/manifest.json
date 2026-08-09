@@ -1,0 +1,28 @@
+{
+  "week": 2,
+  "phase": 1,
+  "title": "Model & host arena",
+  "tracks": [
+    "workflow",
+    "models"
+  ],
+  "startBranch": "week-02-start",
+  "solutionBranch": "week-02-solution",
+  "setup": [
+    "npm test"
+  ],
+  "verifier": "npm run lab -- verify 02",
+  "fixture": "acceptance/week-02/fixture.json",
+  "expectedFailure": {
+    "id": "W02_NOT_IMPLEMENTED",
+    "message": "Acceptance criteria minggu 2 belum terpenuhi."
+  },
+  "expectedSuccess": "Pemilihan model berbasis data, bukan merek atau satu benchmark.",
+  "artifacts": [
+    "Scorecard kualitas, latency, biaya, tool use, dan correction rate."
+  ],
+  "cleanup": [
+    "git restore .",
+    "git clean -fd"
+  ]
+}

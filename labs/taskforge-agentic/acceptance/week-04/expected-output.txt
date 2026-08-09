@@ -1,0 +1,1 @@
+PASS week 04: Tidak ada requirement ambigu yang memengaruhi arsitektur.

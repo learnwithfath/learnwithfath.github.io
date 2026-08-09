@@ -1,0 +1,3 @@
+Portfolio pack, demo, runbook, scorecard, dan retrospective.
+
+Expected: Reviewer dapat mereproduksi build dan menelusuri keputusan dari intent sampai artifact.
