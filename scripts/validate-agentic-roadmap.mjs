@@ -35,6 +35,10 @@ for (const { phase, ...week } of weeks) {
     if (!Array.isArray(week.tracks) || week.tracks.length === 0) errors.push(`Week ${week.week} has no tracks.`);
 }
 
+const roadmapScript = await readFile(path.join(root, 'codelabs/agentic-engineering-roadmap.js'), 'utf8');
+if (!roadmapScript.includes('Buka panduan lab')) errors.push('Roadmap cards are missing the lab guide action.');
+if (!roadmapScript.includes('week-${paddedWeek}-start')) errors.push('Roadmap cards are missing checkpoint branch labels.');
+
 for (const track of requiredTracks) {
     if (!weeks.some(item => item.tracks.includes(track))) errors.push(`Required track '${track}' is not represented.`);
 }

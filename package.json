@@ -9,7 +9,9 @@
     "export": "node scripts/export-codelabs.mjs",
     "export:single": "cd codelabs && go run github.com/googlecodelabs/tools/claat@latest export",
     "validate:roadmap": "node scripts/validate-agentic-roadmap.mjs",
-    "build": "npm run export && npm run validate:roadmap",
+    "generate:labs": "node scripts/generate-agentic-labs.mjs",
+    "validate:labs": "node scripts/validate-agentic-labs.mjs",
+    "build": "npm run export && npm run validate:roadmap && npm run validate:labs",
     "dev": "npm run serve"
   },
   "keywords": [
