@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Agentic Engineering Roadmap",
-    "subtitle": "24 minggu membangun satu produk melalui 7 stack dan engineering loop yang dapat diaudit",
+    "subtitle": "24 minggu menguasai agentic infrastructure — AI routing, memory, token ops, remote workflow — sambil membangun satu produk nyata",
     "weeks": 24,
     "phases": 8,
     "hoursPerWeek": "15–20",
@@ -12,7 +12,7 @@
       "id": "foundations",
       "number": 1,
       "title": "Fondasi Agentic Engineering",
-      "summary": "Berpindah dari prompt sekali pakai ke loop dengan tujuan, tools, feedback, dan batas aman.",
+      "summary": "Bangun fondasi sistem AI kamu sendiri — diagnosa cara kerja sekarang, pilih model secara data-driven tanpa tergantung satu frontier, dan konfigurasi konteks serta permission agar bisa kerja aman dari mana saja.",
       "moduleUrl": "agentic-phase-1-foundations/",
       "weeks": [
         {"week": 1, "title": "Agent loop & baseline", "tracks": ["workflow"], "hours": "15–18", "lab": "Selesaikan bug yang sama secara manual, dengan chat, lalu coding agent; bandingkan trace dan hasil.", "deliverable": "Baseline report, diff, test log, dan daftar kegagalan.", "rubric": "Hasil reproducible; perbedaan prompt vs loop dijelaskan dengan bukti."},

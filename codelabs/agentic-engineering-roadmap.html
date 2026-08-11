@@ -16,8 +16,8 @@
 
         <header class="hero">
             <div class="eyebrow">Deep learning path · snapshot 9 Agustus 2026</div>
-            <h1>Bangun workflow-nya. Bukan cuma prompt-nya.</h1>
-            <p class="hero-copy">Roadmap praktik untuk mengarahkan, menguji, dan mengoperasikan coding agent pada satu produk melalui tujuh stack—dengan bukti, batas aman, dan loop yang dapat diulang.</p>
+            <h1>Kuasai infrastrukturnya. Bukan cuma agentnya.</h1>
+            <p class="hero-copy">Roadmap praktik untuk membangun sistem kerja AI yang tidak tergantung satu model frontier—dengan AI router, memory layer, token budgeting, dan remote workflow yang bisa dijalankan dari mana saja. TaskForge adalah arena latihan nyata, bukan tujuan akhirnya.</p>
             <div class="hero-stats" aria-label="Ringkasan roadmap">
                 <div class="hero-stat"><strong>24</strong><span>Minggu</span></div>
                 <div class="hero-stat"><strong>8</strong><span>Fase</span></div>
@@ -49,7 +49,7 @@
             <div class="prereq-grid">
                 <div class="note">
                     <h2>Untuk siapa</h2>
-                    <p>Software engineer yang sudah menulis kode sehari-hari dan ingin memasukkan coding agent ke workflow nyata. Alokasikan <strong>15–20 jam / minggu</strong> selama 24 minggu. Estimasi mengasumsikan alur agent-assisted; implementasi manual penuh (khususnya offline sync Minggu 17) bisa lebih lama.</p>
+                    <p>Engineer yang sudah sesekali pakai Claude, Codex, atau Gemini secara manual—buka sesi, jelaskan bug, agent kerjain, deploy, selesai—dan ingin naik level ke sistem yang tidak tergantung satu model frontier, bisa dioperasikan dari HP, dan efisien dalam token. Alokasikan <strong>15–20 jam / minggu</strong> selama 24 minggu.</p>
                 </div>
                 <div class="note alt">
                     <h2>Prasyarat toolchain</h2>
@@ -72,7 +72,10 @@
                 <h2 id="starterTitle">Clone checkpoint, jalankan test merah, lalu mulai.</h2>
                 <p>Setiap minggu punya branch <code>week-XX-start</code> dan <code>week-XX-solution</code>. Coba branch start terlebih dahulu; solution dipakai untuk review setelah evidence Anda lengkap.</p>
             </div>
-            <pre><code>git clone agentic-loop-lab.bundle
+            <pre><code>git clone codelabs/downloads/agentic-loop-lab.bundle agentic-loop-lab
+Cloning into 'agentic-loop-lab'...
+Receiving objects: 100% (56/56), 7.57 KiB | 3.78 MiB/s, done.
+Resolving deltas: 100% (14/14), done.
 cd agentic-loop-lab
 git switch week-01-start
 npm run lab -- verify 01</code></pre>
