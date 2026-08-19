@@ -29,6 +29,19 @@
       "ctaText": "Mulai Tutorial"
     },
     {
+      "id": "macos-full-keyboard-workflow-yabai-skhd",
+      "title": "macOS Full Keyboard Workflow: Yabai, skhd, Homerow, Alacritty & Tmux",
+      "icon": "⌨️",
+      "summary": "Panduan mendalam setup macOS 100% keyboard-driven workflow tanpa trackpad — Yabai BSP tiling window manager, skhd hotkey daemon, Homerow & Shortcat, Alacritty & Tmux, dan Vim browsing Surfingkeys.",
+      "duration": 92,
+      "sections": 10,
+      "tags": ["macOS", "Yabai", "skhd", "Homerow", "Shortcat", "Alacritty", "Tmux", "Surfingkeys", "Keyboard-Driven", "Vim", "Productivity"],
+      "categories": ["macos", "developer-tools", "productivity", "cli"],
+      "searchTerms": "macos full keyboard workflow yabai skhd homerow shortcat alacritty tmux surfingkeys tiling window manager vim rectangle alternative",
+      "url": "macos-full-keyboard-workflow-yabai-skhd/",
+      "ctaText": "Mulai Tutorial"
+    },
+    {
       "id": "getting-started",
       "title": "Getting Started",
       "icon": "📚",

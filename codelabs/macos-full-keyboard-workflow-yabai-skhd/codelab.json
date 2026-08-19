@@ -1,0 +1,38 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-19T16:10:01+07:00",
+  "id": "macos-full-keyboard-workflow-yabai-skhd",
+  "duration": 97,
+  "title": "macOS Full Keyboard-Driven Workflow: Yabai, skhd, Homerow, Alacritty \u0026 Tmux",
+  "authors": "LearnWithFath Team",
+  "summary": "Panduan lengkap dan fundamental setup macOS 100% keyboard-driven workflow tanpa trackpad — konfigurasi mendalam Yabai BSP tiling window manager, skhd hotkey daemon, navigasi GUI dengan Homerow \u0026 Shortcat, Alacritty \u0026 Tmux terminal multiplexer, dan Vim browser navigation dengan Surfingkeys.",
+  "source": "macos-full-keyboard-workflow-yabai-skhd.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "macos",
+    "developertools",
+    "productivity",
+    "cli"
+  ],
+  "tags": [
+    "alacritty",
+    "homerow",
+    "keyboard-driven",
+    "macos",
+    "productivity",
+    "shortcat",
+    "skhd",
+    "surfingkeys",
+    "tmux",
+    "vim",
+    "yabai"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "macos-full-keyboard-workflow-yabai-skhd"
+}

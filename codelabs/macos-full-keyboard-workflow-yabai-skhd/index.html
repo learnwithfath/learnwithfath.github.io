@@ -1,0 +1,598 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>macOS Full Keyboard-Driven Workflow: Yabai, skhd, Homerow, Alacritty &amp; Tmux</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="macos-full-keyboard-workflow-yabai-skhd"
+                  title="macOS Full Keyboard-Driven Workflow: Yabai, skhd, Homerow, Alacritty &amp; Tmux"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Overview &amp; Filosofi Keyboard-Driven macOS" duration="5">
+        <h2 is-upgraded>Mengapa 100% Keyboard-Driven Workflow?</h2>
+<p>Sebagai software engineer, perpindahan tangan dari keyboard ke trackpad/mouse (<em>context switching cost</em>) terjadi ratusan kali setiap hari. Setiap gerakan meraih trackpad untuk menggeser jendela, menekan tombol pada browser, atau mengklik dialog popup membuang fokus dan waktu.</p>
+<p>Dengan beralih ke ekosistem <strong>Full Keyboard-Driven</strong>, kedua tangan Anda tetap berada pada posisi <strong>Home Row</strong> (<code>ASDF</code> - <code>JKL;</code>). Seluruh navigasi sistem—mulai dari manajemen layout window, perpindahan workspace, navigasi terminal, interaksi browser, hingga klik tombol pada UI native—dieksekusi secara instan murni melalui kombinasi tombol.</p>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                          EKOSISTEM FULL KEYBOARD MAC                        │
+├────────────────────────────────┬────────────────────────────────────────────┤
+│ 1. Arsitektur Tiling Window    │ • Yabai (Binary Space Partitioning Tiling) │
+│                                │ • skhd (Fast &amp; Lightweight Hotkey Daemon)  │
+├────────────────────────────────┼────────────────────────────────────────────┤
+│ 2. Pengganti Kursor &amp; GUI Nav  │ • Homerow (Letter-hint Accessibility Click)│
+│                                │ • Shortcat (Visual OCR &amp; Query Clicker)    │
+├────────────────────────────────┼────────────────────────────────────────────┤
+│ 3. Terminal &amp; Multiplexer      │ • Alacritty (GPU-Accelerated Terminal)     │
+│                                │ • Tmux (Pane Splitting &amp; Persistent State) │
+├────────────────────────────────┼────────────────────────────────────────────┤
+│ 4. Browser Navigation (Vim)    │ • Surfingkeys (Vim-Style Web Browsing)     │
+└────────────────────────────────┴────────────────────────────────────────────┘
+</code></pre>
+<h2 is-upgraded>Mengapa Menggantikan Rectangle dengan Yabai?</h2>
+<p>Aplikasi seperti <strong>Rectangle</strong> atau <strong>Magnet</strong> adalah <em>window snapping tools</em> pasif: Anda harus menekan shortcut setiap kali ingin merapikan satu jendela ke sisi kiri atau kanan. Jika Anda membuka jendela baru, jendela tersebut akan menumpuk (<em>floating overlay</em>) di atas jendela lama.</p>
+<p>Sebaliknya, <strong>Yabai</strong> adalah <strong>Dynamic Tiling Window Manager</strong> berbasis <em>Binary Space Partitioning (BSP)</em>:</p>
+<ul>
+<li>Setiap jendela baru otomatis membelah area layar secara proporsional dan presisi tanpa tumpang tindih.</li>
+<li>Saat jendela ditutup, jendela yang tersisa otomatis mengisi ruang kosong secara mulus.</li>
+<li>Sangat ideal bagi <strong>Mobile &amp; Full Stack Developer</strong> yang perlu membuka IDE (VS Code/Xcode), Terminal, dan Mobile Emulator di satu layar secara berdampingan.</li>
+</ul>
+<p>Positive : Panduan ini dirancang dari tingkat fundamental hingga file konfigurasi siap pakai. Pastikan Anda mengikuti langkah demi langkah dengan teliti.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setup Yabai: Dynamic Tiling Window Manager" duration="15">
+        <h2 is-upgraded>Apa itu Yabai?</h2>
+<p><strong>Yabai</strong> adalah window manager untuk macOS yang memanipulasi jendela aplikasi secara otomatis menggunakan macOS Accessibility API.</p>
+<h2 is-upgraded>Langkah 1: Instalasi Yabai via Homebrew</h2>
+<p>Buka terminal Anda dan jalankan perintah berikut:</p>
+<pre><code language="language-bash" class="language-bash"># Tap repository resmi Yabai
+brew tap koekeishiya/formulae
+
+# Install Yabai
+brew install yabai
+</code></pre>
+<h2 is-upgraded>Langkah 2: Konfigurasi File <code>~/.config/yabai/yabairc</code></h2>
+<p>Yabai membaca file konfigurasi executable di <code>~/.config/yabai/yabairc</code>. Buat foldernya dan tulis file konfigurasi:</p>
+<pre><code language="language-bash" class="language-bash">mkdir -p ~/.config/yabai
+touch ~/.config/yabai/yabairc
+chmod +x ~/.config/yabai/yabairc
+</code></pre>
+<p>Edit file <code>~/.config/yabai/yabairc</code> dengan konfigurasi optimal berikut:</p>
+<pre><code language="language-bash" class="language-bash">#!/usr/bin/env sh
+
+# ==============================================================================
+# 1. GLOBAL LAYOUT CONFIGURATION
+# ==============================================================================
+# Gunakan layout BSP (Binary Space Partitioning)
+yabai -m config layout                       bsp
+
+# Penempatan split jendela baru (first_child atau second_child)
+yabai -m config window_placement             second_child
+
+# Padding &amp; Gaps (Jarak antar jendela dan tepi layar dalam pixel)
+yabai -m config top_padding                  8
+yabai -m config bottom_padding               8
+yabai -m config left_padding                 8
+yabai -m config right_padding                8
+yabai -m config window_gap                   8
+
+# Rasio pembagian split default (0.5 = 50:50)
+yabai -m config split_ratio                  0.50
+yabai -m config auto_balance                 off
+
+# ==============================================================================
+# 2. MOUSE &amp; FOCUS BEHAVIOR
+# ==============================================================================
+# Focus mengikuti kursor mouse (autoraise / autofocus)
+yabai -m config mouse_follows_focus          off
+yabai -m config focus_follows_mouse          off
+
+# Modifikasi jendela dengan drag mouse + tombol modifier (fn / alt / cmd)
+yabai -m config mouse_modifier               alt
+yabai -m config mouse_action1                move
+yabai -m config mouse_action2                resize
+
+# Modifikasi opacity jendela yang tidak aktif (opsional)
+yabai -m config window_opacity               off
+yabai -m config active_window_opacity        1.0
+yabai -m config normal_window_opacity        0.90
+
+# ==============================================================================
+# 3. WINDOW RULES &amp; EXCEPTIONS (NON-TILED APPS)
+# ==============================================================================
+# Jangan susun jendela popup, preferences, dialog modal, &amp; emulator kecil
+yabai -m rule --add app=&#34;^System Settings$&#34; manage=off
+yabai -m rule --add app=&#34;^System Information$&#34; manage=off
+yabai -m rule --add app=&#34;^Calculator$&#34; manage=off
+yabai -m rule --add app=&#34;^Finder$&#34; title=&#34;(Copy|Move|Bin|About)&#34; manage=off
+yabai -m rule --add app=&#34;^Simulator$&#34; manage=off
+yabai -m rule --add app=&#34;^Emulator$&#34; manage=off
+yabai -m rule --add app=&#34;^Android Studio$&#34; title=&#34;^win.*&#34; manage=off
+yabai -m rule --add app=&#34;^QuickTime Player$&#34; manage=off
+yabai -m rule --add app=&#34;^Archive Utility$&#34; manage=off
+
+echo &#34;yabai configuration loaded successfully.&#34;
+</code></pre>
+<h2 is-upgraded>Langkah 3: Memberikan Permission Accessibility macOS</h2>
+<p>Yabai membutuhkan izin Accessibility untuk mengontrol jendela:</p>
+<ol type="1">
+<li>Jalankan service Yabai:</li>
+</ol>
+<pre><code language="language-bash" class="language-bash">yabai --start-service
+</code></pre>
+<ol type="1" start="2">
+<li>macOS akan memunculkan notifikasi permintaan izin Accessibility.</li>
+<li>Buka <strong>System Settings &gt; Privacy &amp; Security &gt; Accessibility</strong>.</li>
+<li>Aktifkan toggle switch untuk <strong>yabai</strong>. (Jika tidak muncul otomatis, klik tanda <code>+</code> dan tambahkan <code>/opt/homebrew/bin/yabai</code> untuk Apple Silicon atau <code>/usr/local/bin/yabai</code> untuk Intel).</li>
+<li>Restart service Yabai:</li>
+</ol>
+<pre><code language="language-bash" class="language-bash">yabai --restart-service
+</code></pre>
+<p>Negative : <strong>Catatan tentang SIP (System Integrity Protection)</strong>: Yabai dapat berjalan 100% normal tanpa mematikan SIP macOS untuk semua fitur tiling, gaps, padding, dan window focus. Fitur lanjutan seperti transisi workspace instan tanpa animasi hanya memerlukan scripting-addition opsional. Untuk pemula dan keamanan harian kantor, <strong>SIP tidak perlu dimatikan</strong>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Setup skhd: The Fast Hotkey Daemon" duration="15">
+        <h2 is-upgraded>Apa itu skhd?</h2>
+<p><strong>skhd</strong> (Simple Kotkey Daemon) adalah pasangan resmi Yabai. Aplikasi ini bertugas menangkap penekanan tombol keyboard (<em>hotkey event</em>) dan mengeksekusi perintah IPC ke Yabai atau shell script secara instan dengan latensi mendekati 0 milidetik.</p>
+<h2 is-upgraded>Langkah 1: Instalasi skhd via Homebrew</h2>
+<pre><code language="language-bash" class="language-bash"># Install skhd
+brew install skhd
+
+# Buat folder konfigurasi
+mkdir -p ~/.config/skhd
+touch ~/.config/skhd/skhdrc
+</code></pre>
+<h2 is-upgraded>Langkah 2: Konfigurasi Lengkap <code>~/.config/skhd/skhdrc</code></h2>
+<p>Konvensi hotkey terbaik adalah menggunakan <strong><code>alt</code></strong></p>
+<p><strong> (Option)</strong> sebagai tombol modifier utama agar tidak bentrok dengan shortcut bawaan macOS (<code>Cmd + ...</code>).</p>
+<p>Edit file <code>~/.config/skhd/skhdrc</code>:</p>
+<pre><code language="language-bash" class="language-bash"># ==============================================================================
+# SKHD CONFIGURATION FOR YABAI &amp; SYSTEM HOTKEYS
+# Modifier: alt (Option)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. NAVIGASI FOKUS JENDELA (Vim Style: h, j, k, l)
+# ------------------------------------------------------------------------------
+alt - h : yabai -m window --focus west
+alt - j : yabai -m window --focus south
+alt - k : yabai -m window --focus north
+alt - l : yabai -m window --focus east
+
+# ------------------------------------------------------------------------------
+# 2. MEMINDAHKAN POSISI JENDELA / SWAP (alt + shift - h, j, k, l)
+# ------------------------------------------------------------------------------
+alt + shift - h : yabai -m window --swap west
+alt + shift - j : yabai -m window --swap south
+alt + shift - k : yabai -m window --swap north
+alt + shift - l : yabai -m window --swap east
+
+# ------------------------------------------------------------------------------
+# 3. WARP / INSERT JENDELA KE ARAH TERTENTU (alt + ctrl - h, j, k, l)
+# ------------------------------------------------------------------------------
+alt + ctrl - h : yabai -m window --warp west
+alt + ctrl - j : yabai -m window --warp south
+alt + ctrl - k : yabai -m window --warp north
+alt + ctrl - l : yabai -m window --warp east
+
+# ------------------------------------------------------------------------------
+# 4. MENGUBAH UKURAN JENDELA / RESIZE (shift + cmd - h, j, k, l)
+# ------------------------------------------------------------------------------
+shift + cmd - h : yabai -m window --resize left:-50:0 || yabai -m window --resize right:-50:0
+shift + cmd - j : yabai -m window --resize bottom:0:50 || yabai -m window --resize top:0:50
+shift + cmd - k : yabai -m window --resize top:0:-50 || yabai -m window --resize bottom:0:-50
+shift + cmd - l : yabai -m window --resize right:50:0 || yabai -m window --resize left:50:0
+
+# ------------------------------------------------------------------------------
+# 5. MANIPULASI LAYOUT &amp; FULLSCREEN
+# ------------------------------------------------------------------------------
+# Toggle Fullscreen / Zoom Jendela
+alt - f : yabai -m window --toggle zoom-fullscreen
+
+# Toggle Float / Unfloat Jendela Aktif
+alt - t : yabai -m window --toggle float --grid 4:4:1:1:2:2
+
+# Rotasi orientasi split (Vertical &lt;-&gt; Horizontal)
+alt - r : yabai -m space --rotate 90
+
+# Re-balance ukuran seluruh jendela agar rata 50:50
+alt - e : yabai -m space --balance
+
+# ------------------------------------------------------------------------------
+# 6. BERPINDAH WORKSPACE / SPACE (alt - 1..6)
+# ------------------------------------------------------------------------------
+alt - 1 : yabai -m space --focus 1
+alt - 2 : yabai -m space --focus 2
+alt - 3 : yabai -m space --focus 3
+alt - 4 : yabai -m space --focus 4
+alt - 5 : yabai -m space --focus 5
+alt - 6 : yabai -m space --focus 6
+
+# Pindahkan jendela aktif ke Workspace tertentu (alt + shift - 1..6)
+alt + shift - 1 : yabai -m window --space 1; yabai -m space --focus 1
+alt + shift - 2 : yabai -m window --space 2; yabai -m space --focus 2
+alt + shift - 3 : yabai -m window --space 3; yabai -m space --focus 3
+alt + shift - 4 : yabai -m window --space 4; yabai -m space --focus 4
+alt + shift - 5 : yabai -m window --space 5; yabai -m space --focus 5
+alt + shift - 6 : yabai -m window --space 6; yabai -m space --focus 6
+
+# ------------------------------------------------------------------------------
+# 7. QUICK LAUNCHER &amp; RESTART DAEMONS
+# ------------------------------------------------------------------------------
+# Buka Alacritty Terminal baru
+alt - return : open -na /Applications/Alacritty.app
+
+# Restart Yabai &amp; skhd secara instan
+alt + shift - r : yabai --restart-service &amp;&amp; skhd --restart-service
+</code></pre>
+<h2 is-upgraded>Langkah 3: Menjalankan Service skhd</h2>
+<pre><code language="language-bash" class="language-bash"># Start service skhd
+skhd --start-service
+</code></pre>
+<p>Buka <strong>System Settings &gt; Privacy &amp; Security &gt; Accessibility</strong> dan pastikan <strong>skhd</strong> sudah dicentang/diizinkan.</p>
+<p>Positive : Uji coba sekarang: Buka 2 jendela terminal, lalu tekan <code>alt - h</code> dan <code>alt - l</code>. Fokus jendela akan berpindah seketika tanpa menyentuh mouse!</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Pengganti Kursor &amp; Navigasi GUI: Homerow &amp; Shortcat" duration="10">
+        <p>Saat berada di luar editor teks (misalnya menekan tombol pada dialog native macOS, memilih menu dropdown di Figma, atau mengklik button pada simulator), Anda membutuhkan cara menargetkan elemen UI dengan keyboard. Di sinilah <strong>Homerow</strong> dan <strong>Shortcat</strong> berperan.</p>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│ [Homerow]  -&gt; Menginjeksi 2-huruf label (misal: &#34;JK&#34;, &#34;AS&#34;) di atas elemen │
+│ [Shortcat] -&gt; Mengetik nama teks tombol (misal: &#34;Save&#34;, &#34;Submit&#34;) + Enter   │
+└─────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h2 is-upgraded>1. Homerow (Vimium untuk Seluruh macOS)</h2>
+<p><strong>Homerow</strong> membaca Accessibility Tree dari seluruh aplikasi macOS yang sedang terbuka dan menempatkan label huruf kecil di atas setiap elemen interaktif.</p>
+<h3 is-upgraded>Instalasi:</h3>
+<ol type="1">
+<li>Download dari <a href="https://www.homerow.app" target="_blank">homerow.app</a> atau via Homebrew:</li>
+</ol>
+<pre><code language="language-bash" class="language-bash">brew install --cask homerow
+</code></pre>
+<ol type="1" start="2">
+<li>Berikan izin <strong>Accessibility</strong> dan <strong>Screen Recording</strong> di <em>System Settings</em>.</li>
+</ol>
+<h3 is-upgraded>Cara Penggunaan:</h3>
+<ul>
+<li>Tekan shortcut default: <code>Cmd + Shift + Space</code>.</li>
+<li>Seluruh tombol, link, tab, dan textfield di layar akan ditandai dengan label huruf (seperti <code>AA</code>, <code>SK</code>, <code>FJ</code>).</li>
+<li>Ketik huruf label tersebut pada keyboard -&gt; Elemen akan terklik secara otomatis!</li>
+<li><strong>Scroll Mode</strong>: Tekan <code>Cmd + Shift + J</code> untuk masuk ke mode scroll, lalu gunakan <code>h/j/k/l</code> untuk scroll halaman.</li>
+</ul>
+<h2 is-upgraded>2. Shortcat (Pencarian Elemen Visual Berbasis Teks)</h2>
+<p><strong>Shortcat</strong> bekerja seperti Spotlight, namun dikhususkan untuk elemen UI yang terlihat.</p>
+<h3 is-upgraded>Instalasi:</h3>
+<pre><code language="language-bash" class="language-bash">brew install --cask shortcat
+</code></pre>
+<h3 is-upgraded>Cara Penggunaan:</h3>
+<ul>
+<li>Tekan <code>Cmd + Shift + .</code> (atau konfigurasi shortcut Anda).</li>
+<li>Ketik nama tombol yang terlihat di layar, misalnya: <code>Save</code> atau <code>Cancel</code>.</li>
+<li>Shortcat akan menyorot tombol tersebut.</li>
+<li>Tekan <code>Enter</code> untuk melakukan klik kiri, atau <code>Ctrl + Enter</code> untuk klik kanan.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Lingkungan Terminal: Alacritty &amp; Tmux Multiplexer" duration="15">
+        <p>Terminal adalah ruang kerja utama bagi developer. Kombinasi <strong>Alacritty</strong> (emulator terminal GPU-rendered super cepat) dan <strong>Tmux</strong> (terminal multiplexer) memungkinkan Anda membagi satu jendela terminal menjadi puluhan panel independen.</p>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│ ALACRITTY WINDOW                                        │
+│ ┌───────────────────────────┬─────────────────────────┐ │
+│ │ Pane 1 (Editor / Agent)   │ Pane 2 (Backend Logs)   │ │
+│ │ $ nvim . / claude / pi    │ $ docker compose logs -f│ │
+│ ├───────────────────────────┴─────────────────────────┤ │
+│ │ Pane 3 (Watcher / Metro / Gradle Build)             │ │
+│ │ $ npx react-native start / flutter run              │ │
+│ └─────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────┘
+</code></pre>
+<h2 is-upgraded>Langkah 1: Instalasi Alacritty &amp; Tmux</h2>
+<pre><code language="language-bash" class="language-bash">brew install --cask alacritty
+brew install tmux
+</code></pre>
+<h2 is-upgraded>Langkah 2: Konfigurasi <code>~/.config/alacritty/alacritty.toml</code></h2>
+<p>Buat file konfigurasi Alacritty:</p>
+<pre><code language="language-bash" class="language-bash">mkdir -p ~/.config/alacritty
+touch ~/.config/alacritty/alacritty.toml
+</code></pre>
+<p>Isi dengan konfigurasi modern:</p>
+<pre><code language="language-toml" class="language-toml">[window]
+padding = { x = 12, y = 12 }
+decorations = &#34;buttonless&#34;
+opacity = 0.95
+blur = true
+option_as_alt = &#34;Both&#34;
+
+[font]
+size = 14.0
+
+[font.normal]
+family = &#34;JetBrainsMono Nerd Font&#34;
+style = &#34;Regular&#34;
+
+[font.bold]
+family = &#34;JetBrainsMono Nerd Font&#34;
+style = &#34;Bold&#34;
+
+[colors.primary]
+background = &#34;#1a1b26&#34;
+foreground = &#34;#c0caf5&#34;
+
+[cursor]
+style = { shape = &#34;Block&#34;, blinking = &#34;On&#34; }
+</code></pre>
+<h2 is-upgraded>Langkah 3: Konfigurasi <code>~/.tmux.conf</code></h2>
+<p>Buat konfigurasi Tmux dengan keybinding ramah Vim:</p>
+<pre><code language="language-bash" class="language-bash">cat &lt;&lt; &#39;EOF&#39; &gt; ~/.tmux.conf
+# Ubah prefix key dari Ctrl-b menjadi Ctrl-a (lebih mudah dijangkau)
+unbind C-b
+set-option -g prefix C-a
+bind-key C-a send-prefix
+
+# Enable mouse support jika sewaktu-waktu dibutuhkan
+set -g mouse on
+
+# Index window dan pane mulai dari 1 (bukan 0)
+set -g base-index 1
+setw -g pane-base-index 1
+
+# Split pane menggunakan | (horizontal) dan - (vertical)
+bind | split-window -h -c &#34;#{pane_current_path}&#34;
+bind - split-window -v -c &#34;#{pane_current_path}&#34;
+unbind &#39;&#34;&#39;
+unbind %
+
+# Pindah antar pane menggunakan Vim keys (h, j, k, l)
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Resize pane dengan Prefix + H, J, K, L
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 5
+bind -r K resize-pane -U 5
+bind -r L resize-pane -R 5
+
+# Mode copy berbasis Vim
+setw -g mode-keys vi
+bind -T copy-mode-vi v send -X begin-selection
+bind -T copy-mode-vi y send -X copy-pipe-and-cancel &#34;pbcopy&#34;
+
+# Tampilan Status Bar Minimalis
+set -g status-style bg=&#34;#16161e&#34;,fg=&#34;#7aa2f7&#34;
+set -g status-left &#34; #[bold]Sesi: #S #[default]| &#34;
+set -g status-right &#34; %H:%M #[bold]%d-%b-%y #[default]&#34;
+EOF
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Navigasi Browser Bebas Mouse: Surfingkeys" duration="10">
+        <p>Web browser sering kali menjadi penghambat utama alur kerja full-keyboard. Ekstensi <strong>Surfingkeys</strong> menyematkan sistem navigasi Vim langsung ke dalam browser Anda (Chrome, Brave, Edge, Firefox).</p>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                       SURFINGKEYS CHEAT SHEET               │
+├─────────────────────────────────────────────────────────────┤
+│ f       : Buka link di tab saat ini (muncul letter hints)   │
+│ F       : Buka link di tab baru di background               │
+│ j / k   : Scroll ke bawah / ke atas                         │
+│ d / u   : Scroll setengah layar ke bawah / ke atas          │
+│ E / R   : Pindah ke tab sebelah kiri / kanan                │
+│ x       : Tutup tab saat ini                                │
+│ X       : Restore tab yang baru saja ditutup                │
+│ t       : Buka omnibar URL search                           │
+│ yy      : Salin (copy) URL halaman saat ini ke clipboard    │
+│ yf      : Salin link URL dari target tombol ke clipboard    │
+│ /       : Cari kata/teks di dalam halaman web               │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<h2 is-upgraded>Langkah 1: Instalasi Surfingkeys</h2>
+<ol type="1">
+<li>Buka browser Chromium favorit Anda (Chrome / Brave / Edge).</li>
+<li>Install ekstensi <a href="https://chrome.google.com/webstore/detail/surfingkeys/gfbliohnnapiefjpjlpndaikpmhhbfnb" target="_blank">Surfingkeys dari Chrome Web Store</a> (atau dari Firefox Add-ons).</li>
+</ol>
+<h2 is-upgraded>Langkah 2: Kustomisasi Settings</h2>
+<p>Buka pengaturan Surfingkeys (<code>Alt + s</code> atau klik icon ekstensi &gt; <em>Options</em>) dan Anda dapat menambahkan mapping kustom:</p>
+<pre><code language="language-javascript" class="language-javascript">// Nonaktifkan Surfingkeys di domain tertentu jika bentrok (misal Figma/Google Docs)
+unmapAllExcept([&#39;f&#39;, &#39;F&#39;], /figma\.com|docs\.google\.com/);
+
+// Gunakan Smooth Scroll
+settings.smoothScroll = true;
+
+// Mode insert cepat keluar dengan ESC
+api.iunmap(&#34;:&#34;);
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Migrasi: Uninstall Rectangle Secara Bersih" duration="5">
+        <p>Negative : <strong>PENTING</strong>: Jika Anda sebelumnya menggunakan <strong>Rectangle</strong>, <strong>Magnet</strong>, atau <strong>Spectacle</strong>, aplikasi tersebut <strong>WAJIB di-uninstall</strong> atau dinonaktifkan sepenuhnya.</p>
+<h2 is-upgraded>Mengapa Terjadi Konflik?</h2>
+<ol type="1">
+<li><strong>Event Listener Race</strong>: Baik Rectangle maupun Yabai mendengarkan Accessibility API window lifecycle. Jika keduanya aktif, jendela akan saling &#34;tarik-menarik&#34; posisi sehingga memicu kedipan (<em>glitch</em>) dan lag.</li>
+<li><strong>Hotkey Collision</strong>: Shortcut snapping Rectangle akan menimpa IPC commands skhd.</li>
+</ol>
+<h2 is-upgraded>Langkah Uninstall Rectangle:</h2>
+<ol type="1">
+<li>Buka <strong>Rectangle &gt; Preferences &gt; Quit Rectangle</strong>.</li>
+<li>Matikan toggle <em>Launch on Login</em>.</li>
+<li>Hapus aplikasi:</li>
+</ol>
+<pre><code language="language-bash" class="language-bash"># Hapus aplikasi Rectangle
+sudo rm -rf /Applications/Rectangle.app
+# Hapus preferensi plist lama
+rm -f ~/Library/Preferences/com.knollsoft.Rectangle.plist
+</code></pre>
+<ol type="1" start="4">
+<li>Buka <strong>System Settings &gt; Privacy &amp; Security &gt; Accessibility</strong>, lalu hapus (<em>remove</em>) entry Rectangle dengan tombol <code>-</code>.</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Skenario Praktik Harian: Mobile Multi-Window Workflow" duration="15">
+        <p>Mari kita simulasikan alur kerja nyata: <strong>Membangun Fitur Flutter/React Native dengan Multi-Window Tiling</strong>.</p>
+<h2 is-upgraded>1. Inisialisasi Layout Kerja</h2>
+<ol type="1">
+<li>Tekan <code>alt - 1</code> (Pindah ke Workspace 1: Coding).</li>
+<li>Buka VS Code / Antigravity (<code>open -na "Visual Studio Code"</code>).</li>
+<li>Buka Alacritty Terminal (<code>alt - return</code>). <ul>
+<li>Yabai secara otomatis membagi layar menjadi 50:50 (Editor di kiri, Terminal di kanan).</li>
+</ul>
+</li>
+<li>Di Alacritty, jalankan <code>tmux</code>: <ul>
+<li>Tekan <code>Ctrl-a</code> lalu <code>|</code> untuk membelah terminal menjadi 2 panel: <ul>
+<li>Panel Atas: Menjalankan <code>flutter run</code> / <code>npx react-native start</code>.</li>
+<li>Panel Bawah: Menjalankan agent runner CLI (<code>claude</code> / <code>pi</code> / <code>git status</code>).</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 is-upgraded>2. Membuka Mobile Simulator (Floating Mode)</h2>
+<ol type="1">
+<li>Buka iOS Simulator atau Android Emulator.</li>
+<li>Karena rule di <code>~/.config/yabai/yabairc</code> sudah diset <code>yabai -m rule --add app="^Simulator$" manage=off</code>, Simulator akan muncul dalam mode <strong>Floating</strong> tanpa merusak susunan 50:50 antara Editor dan Terminal.</li>
+<li>Geser posisi simulator secara presisi menggunakan <code>alt + drag mouse</code> atau biarkan berdampingan.</li>
+</ol>
+<h2 is-upgraded>3. Navigasi &amp; Modifikasi Jendela</h2>
+<ul>
+<li>Ingin memperluas area Editor dan memperkecil Terminal? Tekan <code>shift + cmd - l</code>.</li>
+<li>Ingin fokus penuh ke Terminal? Tekan <code>alt - l</code> lalu <code>alt - f</code> (Fullscreen Zoom). Tekan <code>alt - f</code> lagi untuk kembali ke tiling semula.</li>
+<li>Ingin pindah ke browser untuk melihat dokumentasi API di Workspace 2? Cukup tekan <code>alt - 2</code>.</li>
+<li>Di browser, tekan <code>f</code> untuk klik link dokumentasi tanpa trackpad, lalu tekan <code>yy</code> untuk copy URL.</li>
+<li>Tekan <code>alt - 1</code> untuk kembali ke Workspace coding.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Cheatsheet Shortcut Lengkap &amp; Troubleshooting" duration="5">
+        <h2 is-upgraded>⌨️ Master Keyboard Cheatsheet</h2>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Kategori</p>
+</td><td colspan="1" rowspan="1"><p>Shortcut</p>
+</td><td colspan="1" rowspan="1"><p>Aksi</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Focus Window</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>alt + h / j / k / l</code></p>
+</td><td colspan="1" rowspan="1"><p>Pindah fokus ke Barat / Selatan / Utara / Timur</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Swap Window</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>alt + shift + h / j / k / l</code></p>
+</td><td colspan="1" rowspan="1"><p>Tukar posisi jendela aktif ke arah target</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Resize Window</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>shift + cmd + h / j / k / l</code></p>
+</td><td colspan="1" rowspan="1"><p>Perbesar/perkecil batas jendela 50px</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Layout Mode</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>alt + f</code></p>
+</td><td colspan="1" rowspan="1"><p>Toggle Zoom Fullscreen jendela aktif</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Floating Mode</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>alt + t</code></p>
+</td><td colspan="1" rowspan="1"><p>Toggle Floating / Tiling pada jendela aktif</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Workspaces</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>alt + 1..6</code></p>
+</td><td colspan="1" rowspan="1"><p>Pindah instan ke Workspace 1 s.d. 6</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Move to Space</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>alt + shift + 1..6</code></p>
+</td><td colspan="1" rowspan="1"><p>Pindahkan jendela aktif ke Workspace target</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>UI Clicker</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>cmd + shift + space</code></p>
+</td><td colspan="1" rowspan="1"><p>Aktifkan label <strong>Homerow</strong> untuk klik elemen GUI</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>UI Search</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>cmd + shift + .</code></p>
+</td><td colspan="1" rowspan="1"><p>Aktifkan pencarian visual <strong>Shortcat</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Vim Browser</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>f</code> / <code>F</code></p>
+</td><td colspan="1" rowspan="1"><p>Buka link halaman web di tab aktif / background</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Reload Daemon</strong></p>
+</td><td colspan="1" rowspan="1"><p><code>alt + shift + r</code></p>
+</td><td colspan="1" rowspan="1"><p>Restart Yabai &amp; skhd secara instan</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Troubleshooting Masalah Umum</h2>
+<h3 is-upgraded>1. Yabai tidak mau membagi jendela secara otomatis</h3>
+<ul>
+<li>Pastikan Accessibility permission aktif di <strong>System Settings &gt; Privacy &amp; Security &gt; Accessibility</strong>.</li>
+<li>Jalankan restart service:</li>
+</ul>
+<pre><code language="language-bash" class="language-bash">yabai --restart-service &amp;&amp; skhd --restart-service
+</code></pre>
+<ul>
+<li>Cek log error:</li>
+</ul>
+<pre><code language="language-bash" class="language-bash">tail -f /tmp/yabai_*.log
+</code></pre>
+<h3 is-upgraded>2. Shortcut skhd tidak merespons sama sekali</h3>
+<ul>
+<li>Pastikan file <code>~/.config/skhd/skhdrc</code> tidak memiliki sintaks error.</li>
+<li>Jalankan skhd secara manual di terminal untuk melihat error:</li>
+</ul>
+<pre><code language="language-bash" class="language-bash">skhd -V
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="2">
+        <p>Selamat! Anda kini telah memiliki lingkungan kerja <strong>100% Full Keyboard-Driven</strong> di macOS:</p>
+<h2 is-upgraded>Apa yang Telah Anda Pelajari &amp; Pasang:</h2>
+<ul>
+<li>✅ <strong>Yabai Tiling Window Manager</strong>: Layout otomatis berbasis BSP tanpa jendela tumpang tindih.</li>
+<li>✅ <strong>skhd Hotkey Daemon</strong>: Manajemen layout, resize, dan workspace switching instan via tombol <code>alt</code>.</li>
+<li>✅ <strong>Homerow &amp; Shortcat</strong>: Mengklik tombol dan elemen antarmuka visual macOS murni lewat ketikan keyboard.</li>
+<li>✅ <strong>Alacritty &amp; Tmux</strong>: Lingkungan terminal GPU-rendered dengan kemampuan multi-pane persisten.</li>
+<li>✅ <strong>Surfingkeys</strong>: Pengalaman browsing web berbasis Vim tanpa menyentuh mouse.</li>
+<li>✅ <strong>Uninstall Rectangle</strong>: Ekosistem bersih tanpa konflik event listener.</li>
+</ul>
+<p>Nikmati kecepatan eksekusi teknis murni dari sentuhan jari Anda di atas keyboard!</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
