@@ -1,0 +1,39 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-19T12:33:04+07:00",
+  "id": "agentic-workflow-dual-mac-setup",
+  "duration": 112,
+  "title": "Agentic Workflow Dual-Mac: Setup Terperinci Full Stack Mobile Developer",
+  "authors": "LearnWithFath Team",
+  "summary": "Panduan lengkap dan sangat terperinci setup agentic workflow dual-mac untuk fullstack mobile developer — optimasi MacBook M1 8GB \u0026 MacBook 2019 32GB, shared memory (Graphify, Obsidian LLM Wiki), agent harness (Pi, Antigravity, Claude Code), dan automated mobile testing (Maestro \u0026 Mobile-MCP).",
+  "source": "agentic-workflow-dual-mac-setup.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "mobile",
+    "architecture",
+    "macos"
+  ],
+  "tags": [
+    "agentic-workflow",
+    "apple-silicon",
+    "dual-mac",
+    "graphify",
+    "intel-mac",
+    "maestro",
+    "mcp",
+    "memory",
+    "obsidian",
+    "pi-coding-agent",
+    "tailscale"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "agentic-workflow-dual-mac-setup"
+}

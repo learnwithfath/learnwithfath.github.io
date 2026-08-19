@@ -16,6 +16,19 @@
       "ctaText": "Mulai Roadmap 24 Minggu"
     },
     {
+      "id": "agentic-workflow-dual-mac-setup",
+      "title": "Agentic Workflow Dual-Mac: Setup Terperinci Full Stack Mobile",
+      "icon": "⚡",
+      "summary": "Panduan lengkap dan sangat terperinci setup agentic workflow dual-mac (M1 8GB & Intel 32GB), shared memory (Graphify, Obsidian), agent harness (Pi, Claude Code), dan mobile testing otomatis (Maestro & Mobile-MCP).",
+      "duration": 105,
+      "sections": 10,
+      "tags": ["AI", "Agentic Workflow", "Dual-Mac", "Mobile", "Graphify", "Obsidian", "Pi-Coding-Agent", "Maestro", "Tailscale"],
+      "categories": ["ai", "developer-tools", "mobile", "architecture"],
+      "searchTerms": "agentic workflow dual mac setup m1 8gb intel 32gb graphify obsidian pi coding agent harness maestro mobile mcp tailscale",
+      "url": "agentic-workflow-dual-mac-setup/",
+      "ctaText": "Mulai Tutorial"
+    },
+    {
       "id": "getting-started",
       "title": "Getting Started",
       "icon": "📚",
