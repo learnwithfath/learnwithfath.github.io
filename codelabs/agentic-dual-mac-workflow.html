@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dual-Mac Agentic Workflow — seri 5-part why-first untuk memisahkan driver node (M1 8GB) dan compute node (Intel 32GB) dan membangun workflow agentik yang dingin, hemat, dan remote.">
+    <title>Dual-Mac Agentic Workflow — Learn with Fath</title>
+    <link rel="stylesheet" href="agentic-engineering-roadmap.css">
+</head>
+<body>
+    <div class="shell">
+        <nav class="topbar" aria-label="Navigasi utama">
+            <a class="brand" href="index.html">LEARN WITH FATH</a>
+            <a class="back" href="index.html">← Semua tutorial</a>
+        </nav>
+
+        <header class="hero">
+            <div class="eyebrow">Seri praktik · snapshot 20 Agustus 2026</div>
+            <h1>Satu laptop mengetik. Laptop lain yang bekerja.</h1>
+            <p class="hero-copy">Seri 5-part <em>why-first</em> untuk memisahkan driver node (MacBook M1 8GB) dari compute node (MacBook 2019 32GB), lalu membangun workflow agentik yang dingin, hemat baterai, dan bisa dioperasikan dari mana saja. Paham <strong>kenapa</strong> dulu, baru <strong>bagaimana</strong>.</p>
+            <div class="hero-stats" aria-label="Ringkasan seri">
+                <div class="hero-stat"><strong>5</strong><span>Part</span></div>
+                <div class="hero-stat"><strong>23</strong><span>Langkah</span></div>
+                <div class="hero-stat"><strong>2</strong><span>Mac</span></div>
+                <div class="hero-stat"><strong>3–4</strong><span>Jam</span></div>
+            </div>
+        </header>
+
+        <section class="dashboard" aria-label="Progress dan filter">
+            <div class="progress-row">
+                <div class="progress-track" id="progressTrack" role="progressbar" aria-label="Progress belajar" aria-valuemin="0" aria-valuemax="23" aria-valuenow="0"><div class="progress-fill" id="progressFill"></div></div>
+                <div class="progress-copy" id="progressCopy">0/23 selesai · 0%</div>
+            </div>
+            <div class="controls" aria-label="Filter langkah">
+                <button class="filter active" data-filter="all">Semua</button>
+                <button class="filter" data-filter="konsep">Konsep</button>
+                <button class="filter" data-filter="server">Server (2019)</button>
+                <button class="filter" data-filter="driver">Driver (M1)</button>
+                <button class="filter" data-filter="jaringan">Jaringan</button>
+                <button class="filter" data-filter="memori">Memori</button>
+                <button class="filter" data-filter="harness">Harness</button>
+                <button class="filter" data-filter="testing">Testing</button>
+                <button class="reset" id="resetProgress">Reset progress</button>
+            </div>
+        </section>
+
+        <section class="sebelum-mulai" aria-labelledby="sebelumMulaiTitle">
+            <div class="eyebrow dark">SEBELUM MULAI</div>
+            <h2 id="sebelumMulaiTitle">Cek prasyarat sebelum Part 1</h2>
+            <div class="prereq-grid">
+                <div class="note">
+                    <h2>Untuk siapa</h2>
+                    <p>Full stack / mobile developer yang menabrak dinding RAM di satu laptop (Docker + emulator + agent paralel) dan punya laptop kedua yang menganggur dengan RAM besar. Alokasikan <strong>3–4 jam</strong> untuk setup penuh.</p>
+                </div>
+                <div class="note alt">
+                    <h2>Perangkat</h2>
+                    <p>Dua Mac — idealnya <strong>MacBook M1 8GB</strong> (driver, harian) dan <strong>MacBook 2019 Intel 32GB</strong> (compute server). Tanpa perangkat kedua, cloud VM Linux bisa jadi pengganti compute node (konsep sama, target SSH berbeda).</p>
+                </div>
+                <div class="note">
+                    <h2>Prasyarat toolchain</h2>
+                    <p>Homebrew, Git, Node 24 LTS, Docker/OrbStack, Android SDK (API 36). Untuk memori & testing: uv, Graphify, Maestro, mobile-mcp. Tiap Part memasang yang dibutuhkannya.</p>
+                </div>
+                <div class="note alt">
+                    <h2>Cara pakai</h2>
+                    <p>Kerjakan berurutan Part 1 → 5. Command diberi label perangkatnya (2019/M1). Tandai tiap langkah selesai untuk memantau progress — tersimpan hanya di browser ini.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="legend">
+            <section class="note">
+                <h2>Inti pola</h2>
+                <p>Pisahkan <em>tempat Anda mengetik</em> (M1 yang dingin) dari <em>tempat komputasi berjalan</em> (RAM 32GB milik 2019). Yang berpindah lewat jaringan hanya teks & perintah — bukan beban komputasi.</p>
+            </section>
+            <section class="note alt">
+                <h2>Aturan belajar</h2>
+                <p>Setiap Part mulai dari <strong>kenapa</strong>, punya checklist verifikasi, dan saling terhubung. Jangan lompat langkah — tiap Part mengandaikan Part sebelumnya selesai.</p>
+            </section>
+        </div>
+
+        <main id="roadmap" aria-live="polite"></main>
+
+        <section class="resources">
+            <h2>Semua Part</h2>
+            <div class="resource-grid">
+                <a href="agentic-workflow-dual-mac-setup/">Part 1 · Konsep & Arsitektur</a>
+                <a href="agentic-dual-mac-part-2-provisioning/">Part 2 · Provisioning Dua Mac</a>
+                <a href="agentic-dual-mac-part-3-jaringan-remote/">Part 3 · Jaringan & Remote Development</a>
+                <a href="agentic-dual-mac-part-4-memory-harness/">Part 4 · Shared Memory & Agent Harness</a>
+                <a href="agentic-dual-mac-part-5-testing-e2e/">Part 5 · Autonomous Testing & End-to-End</a>
+            </div>
+        </section>
+
+        <footer class="footer">Progress tersimpan hanya di browser perangkat ini. Tidak ada akun atau data yang dikirim.</footer>
+    </div>
+    <script src="agentic-dual-mac-workflow.js"></script>
+</body>
+</html>
