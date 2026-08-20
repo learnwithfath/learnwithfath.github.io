@@ -1,0 +1,412 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Homerow macOS: Panduan Lengkap Navigasi &amp; Klik UI Tanpa Mouse</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="homerow-macos-keyboard-navigation"
+                  title="Homerow macOS: Panduan Lengkap Navigasi &amp; Klik UI Tanpa Mouse"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Overview &amp; Filosofi Homerow" duration="5">
+        <h2 is-upgraded>Apa itu Homerow?</h2>
+<p><strong>Homerow</strong> adalah aplikasi utilitas macOS yang memungkinkan Anda melakukan navigasi, scroll, dan mengklik elemen antarmuka grafis (GUI) di seluruh sistem operasi macOS murni menggunakan keyboard tanpa menyentuh mouse atau trackpad sama sekali.</p>
+<p>Dibuat oleh <em>Dexter Leng</em>, Homerow terinspirasi langsung dari ekstensi browser legendaris seperti <strong>Vimium</strong> dan <strong>Vimperator</strong>, namun membawanya ke level sistem operasi—bekerja pada aplikasi native macOS (Finder, Xcode, System Settings, Notes, Mail) serta aplikasi modern berbasis Electron/Web (VS Code, Slack, Discord, Obsidian, Notion, Chrome, Arc, Safari, Firefox).</p>
+<pre><code>┌────────────────────────────────────────────────────────────────────────┐
+│                        HOMEROW WORKFLOW OVERVIEW                       │
+├────────────────────────────────────────────────────────────────────────┤
+│ 1. Search Mode      : Ketik nama tombol -&gt; Filter -&gt; Shift+Label/Enter │
+│ 2. Labels-Only Mode : Tampilkan label di semua elemen -&gt; Ketik label   │
+│ 3. Scroll Mode      : ⇧ ⌘ J -&gt; Navigasi scroll area dengan HJKL        │
+│ 4. Tutor Feature 🤓 : Tekan ? -&gt; Tampilkan atribut searchable elemen   │
+│ 5. Hyper Key        : Remap Caps Lock -&gt; Navigasi ergonomis satu jari  │
+└────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<h2 is-upgraded>Persyaratan Sistem</h2>
+<ul>
+<li><strong>OS Support</strong>: macOS 12.3 ke atas (direkomendasikan macOS 13+).</li>
+<li><strong>Architecture</strong>: Apple Silicon (M1/M2/M3/M4) dan Intel Mac.</li>
+<li><strong>Perizinan macOS</strong>: Izin <strong>Accessibility</strong> (wajib) dan <strong>Screen Recording</strong> (opsional untuk akurasi rendering).</li>
+</ul>
+<p>Positive : Seluruh penjelasan, sintaks query, dan shortcut dalam tutorial ini diambil langsung dan diverifikasi berdasarkan repositori resmi <a href="https://github.com/nchudleigh/homerow" target="_blank">nchudleigh/homerow</a> dan dokumentasi <a href="https://homerow.app" target="_blank">homerow.app</a>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Instalasi &amp; Setup Perizinan macOS" duration="5">
+        <h2 is-upgraded>Langkah 1: Mengunduh Homerow</h2>
+<p>Anda dapat menginstal Homerow melalui Homebrew Cask atau mengunduh installer resminya:</p>
+<h3 is-upgraded>Opsi A: Menggunakan Homebrew (Direkomendasikan)</h3>
+<p>Buka terminal Anda dan jalankan:</p>
+<pre><code language="language-bash" class="language-bash">brew install --cask homerow
+</code></pre>
+<h3 is-upgraded>Opsi B: Unduh Manual</h3>
+<p>Kunjungi halaman rilis resmi di <a href="https://homerow.app/download/" target="_blank">homerow.app/download</a> dan unduh file <code>.zip</code> / <code>.dmg</code>.</p>
+<h2 is-upgraded>Langkah 2: Mengaktifkan Izin Aksesibilitas (Accessibility)</h2>
+<p>Homerow membaca struktur antarmuka tombol dan teks melalui macOS Accessibility API:</p>
+<ol type="1">
+<li>Buka <strong>System Settings</strong> &gt; <strong>Privacy &amp; Security</strong> &gt; <strong>Accessibility</strong>.</li>
+<li>Pastikan toggle untuk <strong>Homerow</strong> diaktifkan (<code>ON</code>).</li>
+<li>Jika diminta, aktifkan juga izin <strong>Screen Recording</strong> pada menu <strong>Privacy &amp; Security &gt; Screen Recording</strong> agar Homerow dapat mendeteksi elemen pada layar multi-monitor dengan presisi.</li>
+<li>Buka aplikasi Homerow dari folder Applications atau Spotlight.</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Search Workflow (Alur Kerja Pencarian &amp; Seleksi)" duration="10">
+        <p>Search Workflow adalah alur kerja default Homerow. Mode ini sangat berguna ketika layar dipenuhi banyak tombol dan Anda ingin langsung menyaring elemen target berdasarkan namanya.</p>
+<h2 is-upgraded>5 Langkah Alur Kerja Search Workflow</h2>
+<ol type="1">
+<li><strong>Aktivasi Shortcut</strong>: Tekan shortcut default: <pre><code>Command-Shift-Space (⌘ ⇧ Space)
+</code></pre>
+</li>
+<li><strong>Ketik Nama Elemen UI</strong>: Mulai mengetik teks dari tombol, link, menu, atau label yang ingin Anda klik (contoh: ketik <code>save</code>, <code>commit</code>, atau <code>cancel</code>).</li>
+<li><strong>Identifikasi Label</strong>: Label huruf kecil (<em>dynamic shortcuts</em>) akan muncul di atas elemen UI yang cocok dengan pencarian. Elemen dengan <strong>target berwarna hijau</strong> adalah elemen yang sedang aktif terfokus.</li>
+<li><strong>Fokuskan Elemen yang Benar</strong>: Ada dua cara untuk memindahkan fokus ke elemen target: <ul>
+<li><strong>Cara 1</strong>: Tekan <code>Tab</code> atau <code>Arrow-Down</code> (atau <code>Control-N</code>) untuk maju, dan <code>Shift-Tab</code> atau <code>Arrow-Up</code> (atau <code>Control-P</code>) untuk mundur.</li>
+<li><strong>Cara 2</strong>: Ketik langsung teks label huruf tersebut <strong>sambil menahan tombol </strong><strong><code>Shift</code></strong>.</li>
+</ul>
+</li>
+<li><strong>Eksekusi Klik</strong>: Tekan <strong><code>Return</code></strong><strong> (Enter)</strong> untuk melakukan klik pada elemen yang sedang terfokus.</li>
+</ol>
+<pre><code>[⌘ ⇧ Space] ──&gt; [Ketik &#34;Submit&#34;] ──&gt; [Shift + Label / Tab] ──&gt; [Return (Click)]
+</code></pre>
+<h2 is-upgraded>Modifier Tombol saat Eksekusi Klik</h2>
+<p>Saat elemen sudah terfokus, Anda dapat melakukan aksi klik dengan modifier khusus:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Tombol Eksekusi</p>
+</td><td colspan="1" rowspan="1"><p>Aksi yang Dijalankan</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong><code>Return</code></strong></p>
+</td><td colspan="1" rowspan="1"><p>Klik kiri standar pada elemen terfokus</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong><code>Shift-Return</code></strong></p>
+</td><td colspan="1" rowspan="1"><p>Membuka link di tab baru (<em>Open Link in New Tab</em>) / Alternate Action</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong><code>Command-Return</code></strong></p>
+</td><td colspan="1" rowspan="1"><p>Command-click (⌘ + Click) pada elemen</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong><code>Esc</code></strong></p>
+</td><td colspan="1" rowspan="1"><p>Membatalkan dan keluar dari Homerow</p>
+</td></tr>
+</table>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Fitur The Tutor 🤓 &amp; Sintaks Query" duration="8">
+        <h2 is-upgraded>Aturan Sintaks Query</h2>
+<p>Pencarian di Homerow sangat fleksibel dan mematuhi aturan berikut:</p>
+<ol type="1">
+<li><strong>Case &amp; Space Insensitive</strong>: Spasi dan huruf besar/kecil diabaikan sepenuhnya (mengetik <code>newtab</code> sama dengan <code>New Tab</code>).</li>
+<li><strong>Wildcard Operator (</strong><strong><code>*</code></strong><strong> dan </strong><strong><code>;</code></strong><strong>)</strong>: Mengetik karakter bintang <code>*</code> atau titik-koma <code>;</code> akan menampilkan <strong>seluruh elemen UI yang ada di layar</strong> tanpa filter teks.</li>
+</ol>
+<pre><code>*  -&gt; Tampilkan seluruh tombol &amp; elemen yang dapat diklik di layar
+;  -&gt; Alternatif wildcard untuk menampilkan seluruh elemen
+</code></pre>
+<h2 is-upgraded>Mengenal Fitur The Tutor 🤓</h2>
+<p>Sering kali kita tidak tahu pasti atribut atau teks apa yang dikenali sistem macOS pada sebuah ikon/tombol (misalnya ikon berbentuk gear mungkin bernama <em>Settings</em>, <em>Preferences</em>, atau <em>Options</em>).</p>
+<p><strong>The Tutor</strong> bertugas menampilkan seluruh properti <em>searchable</em> dari suatu elemen UI secara transparan:</p>
+<pre><code>┌─────────────────────────────────────────────────────────────┐
+│                    CARA MEMANGGIL THE TUTOR                 │
+├─────────────────────────────────────────────────────────────┤
+│ 1. Melalui Keyboard : Tekan tombol &#34;?&#34; saat Homerow aktif   │
+│                       (Tutor akan mengikuti elemen fokus)   │
+│ 2. Melalui Mouse    : Arahkan kursor mouse ke atas elemen   │
+└─────────────────────────────────────────────────────────────┘
+</code></pre>
+<p>Saat Tutor aktif, kotak info kecil akan muncul dan memberi tahu kata kunci persis yang bisa Anda ketik untuk menemukan elemen tersebut di masa mendatang.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Labels-Only Workflow (Mode Kecepatan Tinggi)" duration="10">
+        <p>Jika Anda seorang pengguna setia <strong>Vimium</strong>, <strong>Vimperator</strong>, atau menginginkan kecepatan navigasi maksimal tanpa perlu mengetik nama tombol, Anda dapat mengaktifkan <strong>Labels-only mode</strong>.</p>
+<h2 is-upgraded>Perbedaan Search Workflow vs. Labels-Only Workflow</h2>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Fitur</p>
+</td><td colspan="1" rowspan="1"><p>Search Workflow (Default)</p>
+</td><td colspan="1" rowspan="1"><p>Labels-Only Mode (Vimium Style)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Pencarian Teks</strong></p>
+</td><td colspan="1" rowspan="1"><p>Aktif (Mengetik nama tombol)</p>
+</td><td colspan="1" rowspan="1"><p>Dinonaktifkan</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Tampilan Label</strong></p>
+</td><td colspan="1" rowspan="1"><p>Muncul setelah elemen difilter</p>
+</td><td colspan="1" rowspan="1"><p>Selalu muncul di semua elemen seketika</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Input Label</strong></p>
+</td><td colspan="1" rowspan="1"><p>Wajib menahan tombol <code>Shift</code></p>
+</td><td colspan="1" rowspan="1"><p>Cukup ketik huruf label <strong>tanpa Shift</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Tombol Klik</strong></p>
+</td><td colspan="1" rowspan="1"><p>Tekan <code>Return</code></p>
+</td><td colspan="1" rowspan="1"><p>Tekan <strong><code>Space</code></strong> atau <code>Return</code> (sangat ergonomis)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Kecepatan</strong></p>
+</td><td colspan="1" rowspan="1"><p>Presisi untuk layar kompleks</p>
+</td><td colspan="1" rowspan="1"><p><strong>Instan / Zero Latency</strong></p>
+</td></tr>
+</table>
+<h2 is-upgraded>Cara Mengaktifkan Labels-Only Mode</h2>
+<ol type="1">
+<li>Buka Preferences Homerow (klik ikon Homerow di Menu Bar macOS &gt; <em>Preferences</em> atau tekan <code>⌘ ,</code> saat panel terbuka).</li>
+<li>Pada tab Navigation/General, pilih <strong>Workflow: Labels-only</strong>.</li>
+</ol>
+<p>Setelah aktif, setiap kali Anda menekan <code>⌘ ⇧ Space</code>:</p>
+<ul>
+<li>Seluruh elemen di layar langsung diberi label 2 huruf (seperti <code>JK</code>, <code>FD</code>, <code>SL</code>).</li>
+<li>Anda cukup menekan dua huruf tersebut langsung di Home Row keyboard Anda, lalu tekan <code>Space</code> untuk mengklik.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Scroll Mode dengan Tombol HJKL 🛞" duration="10">
+        <p>Homerow tidak hanya berfungsi untuk mengklik, tetapi juga memiliki mesin scrolling mandiri yang mendukung pergerakan berbasis tombol <strong>HJKL</strong> (atau <strong>DHTN</strong> untuk pengguna layout DVORAK).</p>
+<pre><code>┌────────────────────────────────────────────────────────────────┐
+│                       SCROLL MODE CONTROLS                     │
+├────────────────────────────────┬───────────────────────────────┤
+│ ⇧ ⌘ J                          │ Aktivasi Scroll-mode          │
+│ H / J / K / L                  │ Scroll Kiri / Bawah / Atas / Kanan│
+│ Shift + H / J / K / L          │ Scroll Cepat (Large Scroll)   │
+│ Tab / Arrow-Dn / Ctrl-N        │ Pindah fokus ke area scroll berikutnya│
+│ Shift-Tab / Arrow-Up / Ctrl-P  │ Pindah fokus ke area scroll sebelumnya│
+│ 0 - 9                          │ Pilih target area scroll langsung│
+│ Esc                            │ Keluar dari Scroll-mode       │
+└────────────────────────────────┴───────────────────────────────┘
+</code></pre>
+<h2 is-upgraded>Langkah-Langkah Menggunakan Scroll Mode</h2>
+<ol type="1">
+<li>Tekan shortcut aktivasi: <pre><code>Shift-Command-J (⇧ ⌘ J)
+</code></pre>
+</li>
+<li>Area yang dapat di-scroll (sidebar, konten utama, log terminal) akan disorot dengan border visual.</li>
+<li>Tekan <strong><code>J</code></strong> untuk scroll ke bawah, <strong><code>K</code></strong> untuk scroll ke atas, <strong><code>H</code></strong> untuk scroll ke kiri, dan <strong><code>L</code></strong> untuk scroll ke kanan.</li>
+<li>Jika halaman memiliki beberapa area scroll independen (misalnya sidebar folder vs editor teks), tekan <code>Tab</code> atau angka <code>0</code>-<code>9</code> untuk berpindah area scroll aktif.</li>
+<li>Tekan <code>Esc</code> jika sudah selesai membaca.</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Integrasi Hyper Key (Caps Lock Mapping)" duration="12">
+        <p>Untuk efisiensi tingkat tinggi, developer Homerow merekomendasikan pemetaan <strong>Caps Lock menjadi Hyper Key</strong> (<code>Shift-Command-Control</code> atau <code>Command-Option-Control-Shift</code>).</p>
+<h2 is-upgraded>3 Alasan Menggunakan Hyper Key di Homerow:</h2>
+<ol type="1">
+<li><strong>Aktivasi Instan</strong>: Menjalankan Homerow dengan kombinasi <code>Caps Lock + F</code> atau <code>Hyper + Space</code>.</li>
+<li><strong>Navigasi Cepat</strong>: Memindahkan fokus elemen berikutnya dengan <code>Caps Lock + J</code> dan elemen sebelumnya dengan <code>Caps Lock + K</code>.</li>
+<li><strong>Menu Navigation</strong>: Menelusuri seluruh menu bar macOS dengan <code>Caps Lock + H/J/K/L</code>.</li>
+</ol>
+<h2 is-upgraded>Cara Konfigurasi Hyper Key</h2>
+<p>Anda dapat menggunakan salah satu dari dua metode resmi berikut:</p>
+<h3 is-upgraded>Opsi 1: Menggunakan Aplikasi Hyperkey (Ryan Hanson)</h3>
+<ol type="1">
+<li>Unduh aplikasi gratis <a href="https://hyperkey.app" target="_blank">Hyperkey.app</a>.</li>
+<li>Konfigurasikan <strong>Caps Lock</strong> agar bertindak sebagai <code>Hyper</code> saat ditekan bersama tombol lain, dan sebagai <code>Escape</code> saat ditekan sekali sendirian.</li>
+</ol>
+<h3 is-upgraded>Opsi 2: Menggunakan Karabiner-Elements via <code>hyper_key.json</code></h3>
+<p>Jika Anda menggunakan <strong>Karabiner-Elements</strong>, Anda dapat langsung mengimpor aturan resmi dari repository Homerow:</p>
+<p>Buka tautan berikut di browser Anda:</p>
+<pre><code language="language-text" class="language-text">karabiner://karabiner/assets/complex_modifications/import?url=https://raw.githubusercontent.com/dexterleng/homerow/main/hyper_key.json
+</code></pre>
+<p>Atau tambahkan aturan JSON berikut ke <code>~/.config/karabiner/karabiner.json</code>:</p>
+<pre><code language="language-json" class="language-json">{
+  &#34;title&#34;: &#34;Caps Lock to Hyper Key (Command-Control-Shift)&#34;,
+  &#34;rules&#34;: [
+    {
+      &#34;description&#34;: &#34;Hyper Key: map Caps Lock to Shift-Command-Control (Escape if alone)&#34;,
+      &#34;manipulators&#34;: [
+        {
+          &#34;from&#34;: {
+            &#34;key_code&#34;: &#34;caps_lock&#34;,
+            &#34;modifiers&#34;: {
+              &#34;optional&#34;: [&#34;any&#34;]
+            }
+          },
+          &#34;to&#34;: [
+            {
+              &#34;key_code&#34;: &#34;left_shift&#34;,
+              &#34;modifiers&#34;: [&#34;left_command&#34;, &#34;left_control&#34;]
+            }
+          ],
+          &#34;to_if_alone&#34;: [
+            {
+              &#34;key_code&#34;: &#34;escape&#34;
+            }
+          ],
+          &#34;type&#34;: &#34;basic&#34;
+        }
+      ]
+    }
+  ]
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Tabel Lengkap Kontrol &amp; Shortcut Keybindings" duration="5">
+        <p>Berikut adalah ringkasan seluruh kontrol resmi Homerow yang dapat Anda simpan sebagai referensi cepat:</p>
+<h2 is-upgraded>1. Mode Pencarian &amp; Seleksi (Search &amp; Labels)</h2>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Tombol / Shortcut</p>
+</td><td colspan="1" rowspan="1"><p>Fungsi</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>⌘ ⇧ Space</code></p>
+</td><td colspan="1" rowspan="1"><p>Mengaktifkan Homerow (Default Shortcut)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>[Teks]</code></p>
+</td><td colspan="1" rowspan="1"><p>Mengetik query untuk memfilter elemen UI</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>*</code> atau <code>;</code></p>
+</td><td colspan="1" rowspan="1"><p>Query wildcard untuk memunculkan seluruh elemen di layar</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Shift + [Label]</code></p>
+</td><td colspan="1" rowspan="1"><p>Mengetik label target secara langsung pada Search mode</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Tab</code> / <code>↓</code> / <code>Ctrl-N</code></p>
+</td><td colspan="1" rowspan="1"><p>Memindahkan fokus ke elemen berikutnya (<em>Next Element</em>)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>⇧ Tab</code> / <code>↑</code> / <code>Ctrl-P</code></p>
+</td><td colspan="1" rowspan="1"><p>Memindahkan fokus ke elemen sebelumnya (<em>Previous Element</em>)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Return</code></p>
+</td><td colspan="1" rowspan="1"><p>Klik kiri pada elemen terfokus</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Shift-Return</code></p>
+</td><td colspan="1" rowspan="1"><p>Buka di tab baru (<em>Open link in new tab</em>)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Command-Return</code></p>
+</td><td colspan="1" rowspan="1"><p>Command-click (⌘-click)</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Space</code></p>
+</td><td colspan="1" rowspan="1"><p>Klik instan pada <em>Labels-only mode</em></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>?</code></p>
+</td><td colspan="1" rowspan="1"><p>Memanggil <strong>The Tutor 🤓</strong> untuk melihat atribut searchable</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Esc</code></p>
+</td><td colspan="1" rowspan="1"><p>Menutup panel Homerow</p>
+</td></tr>
+</table>
+<h2 is-upgraded>2. Mode Scrolling (Scroll Mode)</h2>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Tombol / Shortcut</p>
+</td><td colspan="1" rowspan="1"><p>Fungsi</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>⇧ ⌘ J</code></p>
+</td><td colspan="1" rowspan="1"><p>Mengaktifkan Scroll Mode</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>H</code> / <code>J</code> / <code>K</code> / <code>L</code></p>
+</td><td colspan="1" rowspan="1"><p>Scroll Kiri / Bawah / Atas / Kanan</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>⇧ + H / J / K / L</code></p>
+</td><td colspan="1" rowspan="1"><p>Scroll cepat dengan jarak lompatan lebih besar</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Tab</code> / <code>↓</code> / <code>Ctrl-N</code></p>
+</td><td colspan="1" rowspan="1"><p>Pindah ke scroll-container berikutnya</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>⇧ Tab</code> / <code>↑</code> / <code>Ctrl-P</code></p>
+</td><td colspan="1" rowspan="1"><p>Pindah ke scroll-container sebelumnya</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>0</code> s.d. <code>9</code></p>
+</td><td colspan="1" rowspan="1"><p>Memilih area scroll secara langsung berdasarkan indeks</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><code>Esc</code></p>
+</td><td colspan="1" rowspan="1"><p>Keluar dari Scroll Mode</p>
+</td></tr>
+</table>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Best Practices &amp; Kompatibilitas Aplikasi" duration="5">
+        <h2 is-upgraded>Kompatibilitas Aplikasi</h2>
+<p>Homerow bekerja secara optimal pada dua kategori aplikasi:</p>
+<ol type="1">
+<li><strong>Aplikasi Native macOS</strong>: <ul>
+<li>Finder, Xcode, System Settings, Apple Notes, Mail, Pages, Preview, Terminal, Activity Monitor.</li>
+<li>Pada aplikasi native, seluruh tombol tombol toolbar, sidebar tree, dan dialog sheet dapat terdeteksi dengan akurasi 100%.</li>
+</ul>
+</li>
+<li><strong>Aplikasi Non-Native &amp; Web-Based (Electron / Chromium)</strong>: <ul>
+<li>Google Chrome, Safari, Firefox, Arc Browser, Brave.</li>
+<li>VS Code, Slack, Discord, Obsidian, Notion, Spotify, Figma.</li>
+<li><em>Tips untuk Web</em>: Pada browser, pastikan accessibility tree aktif (diaktifkan otomatis oleh Homerow saat membaca window).</li>
+</ul>
+</li>
+</ol>
+<h2 is-upgraded>Best Practice Workflow Harian</h2>
+<ol type="1">
+<li><strong>Kombinasikan dengan Tiling Window Manager (Yabai)</strong>: <ul>
+<li>Gunakan Yabai &amp; skhd untuk berpindah antar-jendela dan workspace.</li>
+<li>Gunakan Homerow saat Anda perlu mengklik tombol di dalam aplikasi (misal: tombol <em>Deploy</em> di browser, tombol <em>Run</em> di Xcode, atau dialog konfirmasi pop-up).</li>
+</ul>
+</li>
+<li><strong>Gunakan Labels-Only Mode untuk Tugas Berulang</strong>: <ul>
+<li>Jika Anda sering melakukan serangkaian klik pada antarmuka yang sama (misal mengisi form web atau mereview PR), Labels-Only mode menghemat ketukan tombol secara signifikan.</li>
+</ul>
+</li>
+<li><strong>Manfaatkan Wildcard </strong><strong><code>;</code></strong>: <ul>
+<li>Daripada memikirkan nama tombol, tekan <code>⌘ ⇧ Space</code> lalu ketik <code>;</code> untuk langsung memunculkan semua label klik di layar.</li>
+</ul>
+</li>
+</ol>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan &amp; Langkah Lanjutan" duration="2">
+        <p>Selamat! Anda telah menguasai seluruh fitur fundamental dan lanjutan dari <strong>Homerow</strong> sesuai dokumentasi resmi:</p>
+<h2 is-upgraded>Apa yang Telah Anda Pelajari:</h2>
+<ul>
+<li>✅ <strong>Search Workflow</strong>: Cara cepat mencari, memfokuskan, dan mengklik elemen UI via <code>⌘ ⇧ Space</code>.</li>
+<li>✅ <strong>The Tutor 🤓</strong>: Menginspeksi atribut <em>searchable</em> elemen antarmuka yang tersembunyi dengan menekan <code>?</code>.</li>
+<li>✅ <strong>Labels-Only Mode</strong>: Navigasi ultra-cepat ala Vimium dengan eksekusi tombol <code>Space</code>.</li>
+<li>✅ <strong>Scroll Mode HJKL</strong>: Menavigasi area scrolling multi-panel murni via tombol Vim <code>H/J/K/L</code> (<code>⇧ ⌘ J</code>).</li>
+<li>✅ <strong>Hyper Key Integration</strong>: Menjadikan tombol <code>Caps Lock</code> sebagai pusat navigasi ergonomis di macOS.</li>
+</ul>
+<h2 is-upgraded>Sumber Daya Resmi &amp; Dukungan:</h2>
+<ul>
+<li>Website Resmi: <a href="https://homerow.app" target="_blank">homerow.app</a></li>
+<li>Repositori GitHub: <a href="https://github.com/nchudleigh/homerow" target="_blank">nchudleigh/homerow</a></li>
+<li>Hyper Key Configuration: <a href="https://raw.githubusercontent.com/nchudleigh/homerow/main/hyper_key.json" target="_blank">hyper_key.json</a></li>
+<li>Feedback &amp; Support: Buka issue di GitHub atau kontak <code>dexter@homerow.app</code></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

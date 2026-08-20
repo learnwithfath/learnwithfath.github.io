@@ -1,0 +1,35 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T09:20:52+07:00",
+  "id": "homerow-macos-keyboard-navigation",
+  "duration": 72,
+  "title": "Homerow macOS: Panduan Lengkap Navigasi \u0026 Klik UI Tanpa Mouse",
+  "authors": "LearnWithFath Team",
+  "summary": "Panduan lengkap dan komprehensif Homerow untuk macOS berdasarkan dokumentasi resmi — instalasi, Search Workflow, The Tutor, Labels-only mode, Scroll mode HJKL, Hyper Key mapping, dan tabel kontrol shortcut lengkap.",
+  "source": "homerow-macos-keyboard-navigation.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "macos",
+    "developertools",
+    "productivity",
+    "keyboard"
+  ],
+  "tags": [
+    "accessibility",
+    "homerow",
+    "hyperkey",
+    "karabiner",
+    "keyboard-navigation",
+    "macos",
+    "productivity",
+    "vim"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "homerow-macos-keyboard-navigation"
+}

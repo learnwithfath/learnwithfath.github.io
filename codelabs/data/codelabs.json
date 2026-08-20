@@ -42,6 +42,19 @@
       "ctaText": "Mulai Tutorial"
     },
     {
+      "id": "homerow-macos-keyboard-navigation",
+      "title": "Homerow macOS: Panduan Lengkap Navigasi & Klik UI Tanpa Mouse",
+      "icon": "🎯",
+      "summary": "Panduan lengkap Homerow untuk macOS berdasarkan dokumentasi resmi — Search Workflow, The Tutor, Labels-only mode, Scroll mode HJKL, Hyper Key mapping, dan shortcut keybindings.",
+      "duration": 72,
+      "sections": 10,
+      "tags": ["macOS", "Homerow", "Keyboard-Navigation", "Vim", "Accessibility", "Hyperkey", "Karabiner", "Productivity"],
+      "categories": ["macos", "developer-tools", "productivity", "keyboard"],
+      "searchTerms": "homerow macos keyboard navigation click ui without mouse vimium vim scroll hjkl tutor hyperkey karabiner",
+      "url": "homerow-macos-keyboard-navigation/",
+      "ctaText": "Mulai Tutorial"
+    },
+    {
       "id": "getting-started",
       "title": "Getting Started",
       "icon": "📚",
