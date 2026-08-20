@@ -1,7 +1,7 @@
-summary: Panduan lengkap dan sangat terperinci setup agentic workflow dual-mac untuk fullstack mobile developer — optimasi MacBook M1 8GB & MacBook 2019 32GB, shared memory (Graphify, Obsidian LLM Wiki), agent harness (Pi, Antigravity, Claude Code), dan automated mobile testing (Maestro & Mobile-MCP).
+summary: Panduan lengkap dan sangat terperinci setup agentic workflow dual-mac untuk fullstack mobile developer — optimasi MacBook M1 8GB & MacBook 2019 32GB, shared memory (Graphify AST Graph + Obsidian LLM Wiki), agent harness MCP-first (Claude Code headless, Pi, Antigravity 2.0), dan autonomous mobile testing self-healing (Maestro MCP & mobile-next mobile-mcp).
 id: agentic-workflow-dual-mac-setup
 categories: AI, Developer Tools, Mobile, Architecture, macOS
-tags: agentic-workflow, dual-mac, apple-silicon, intel-mac, memory, graphify, obsidian, pi-coding-agent, maestro, mcp, tailscale
+tags: agentic-workflow, dual-mac, apple-silicon, intel-mac, memory, graphify, obsidian, claude-code, pi-coding-agent, antigravity, maestro-mcp, mobile-mcp, mcp, tailscale
 status: Published
 authors: LearnWithFath Team
 Feedback Link: https://github.com/learnwithfath/learnwithfath.github.io/issues
@@ -16,7 +16,7 @@ Duration: 0:05:00
 Sebagai Full Stack Mobile Developer, Anda mengelola ekosistem yang sangat kompleks:
 * **Mobile Stack**: Android Studio / Xcode, Simulator/Emulator, Gradle/CocoaPods builds, Flutter/React Native/Native Kotlin/Swift.
 * **Backend Stack**: Docker Engine, Database (PostgreSQL/MySQL), In-Memory Cache (Redis), API Servers (Go/NestJS/Node).
-* **AI Agentic Layer**: Context-heavy AI agents (Antigravity, Claude Code, Pi, Cursor), MCP (Model Context Protocol) servers, embedding indexer, dan autonomous test runners.
+* **AI Agentic Layer**: Context-heavy AI agents (Claude Code, Antigravity 2.0, Pi, Cursor), MCP (Model Context Protocol) servers (Maestro MCP, mobile-mcp), knowledge-graph indexer (Graphify), dan autonomous test runners.
 
 Ketika seluruh beban ini dijalankan di satu laptop dengan **RAM 8 GB (seperti MacBook Pro M1)**, sistem akan mengalami *memory thrashing* (swap SSD membengkak, UI macet, build gagal). Di sisi lain, Anda memiliki **MacBook Pro 2019 16" dengan RAM 32 GB** yang memiliki kapasitas memori sangat besar namun boros baterai dan bising jika dipangku.
 
@@ -25,11 +25,11 @@ Ketika seluruh beban ini dijalankan di satu laptop dengan **RAM 8 GB (seperti Ma
 │     MacBook Pro M1 (RAM 8 GB)        │ ────────────────────────────── │   MacBook Pro 2019 16" (RAM 32 GB)      │
 │      [CLIENT / DRIVER NODE]          │        (Zero-Config SSH)       │     [COMPUTE & AGENT SERVER NODE]       │
 │                                      │                                │                                         │
-│ • Antigravity / Cursor / VS Code     │                                │ • Docker Stack (DB, Redis, Backend API) │
-│ • Interactive Prompting & Planning   │                                │ • Heavy Emulators & Headless Simulators │
-│ • Physical Device Testing (USB)      │                                │ • Autonomous Subagent Swarms            │
+│ • Antigravity CLI / Cursor / VS Code │                                │ • Docker Stack (DB, Redis, Backend API) │
+│ • Interactive Prompting & Planning   │                                │ • Claude Code headless + Subagent Swarm │
+│ • Physical Device Testing (USB)      │                                │ • Heavy Emulators & Headless Simulators │
 │ • Apple Universal Control & Display  │                                │ • Graphify (AST) & Obsidian LLM Wiki    │
-│ • Baterai awet, dingin, & super cepat│                                │ • Maestro UI Automation & Mobile-MCP    │
+│ • Baterai awet, dingin, & super cepat│                                │ • Maestro MCP + mobile-mcp (self-heal)  │
 └──────────────────────────────────────┘                                └─────────────────────────────────────────┘
 ```
 
@@ -40,8 +40,8 @@ Dalam tutorial terperinci ini, kita akan mengonfigurasi arsitektur dual-Mac dari
 2. Setup driver client di MacBook Pro M1 (8 GB RAM).
 3. Jembatan koneksi aman latensi rendah via Tailscale & SSH.
 4. Setup **Inter-Agent Shared Memory** (Graphify AST Knowledge Graph + Obsidian LLM Wiki).
-5. Setup **Agent Harness Terbaik** (Pi Coding Agent, Antigravity, Claude Code).
-6. Setup **Autonomous Mobile Testing Loop** (Maestro declarative YAML & `mobile-mcp`).
+5. Setup **Agent Harness MCP-first** — Claude Code headless sebagai backbone di server, dengan Pi & Antigravity 2.0 sebagai opsi.
+6. Setup **Autonomous Mobile Testing Loop yang self-healing** (Maestro MCP + `@mobilenext/mobile-mcp`).
 7. Skenario praktek end-to-end pembuatan fitur mobile + backend dengan verifikasi otomatis.
 8. Checklist pemeliharaan dan tips performa harian.
 
@@ -87,7 +87,9 @@ xcode-select --install
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # 3. Install bahasa dan utilitas esensial
-brew install git node@22 go python@3.12 tree-sitter ripgrep jq htop mosh
+# Node 24 = LTS aktif per 2026 (node@22 sudah masuk fase maintenance).
+# uv dipakai untuk memasang CLI Python modern seperti Graphify.
+brew install git node@24 go python@3.13 uv tree-sitter ripgrep jq htop mosh
 ```
 
 ### Langkah 3: Setup Container Runtime (OrbStack / Docker)
@@ -102,7 +104,7 @@ docker ps
 ```
 
 ### Langkah 4: Setup Mobile Android SDK & Emulator Headless
-Pasang Android Command-line tools dan buat emulator virtual tanpa skin GUI (headless):
+Pasang Android Command-line tools dan buat emulator virtual tanpa skin GUI (headless). Kita target **API 36 (Android 16)** karena sejak 31 Agustus 2026 Google Play mewajibkan seluruh app baru & update menargetkan API level 36:
 
 ```bash
 # Buat direktori Android SDK
@@ -115,12 +117,15 @@ export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-
 EOF
 source ~/.zshrc
 
-# Install platform-tools, emulator, dan system image x86_64
-sdkmanager --install "platform-tools" "emulator" "platforms;android-34" "system-images;android-34;google_apis;x86_64"
+# Install platform-tools, emulator, dan system image x86_64 (Android 16 / API 36)
+sdkmanager --install "platform-tools" "emulator" "platforms;android-36" "system-images;android-36;google_apis;x86_64"
 
 # Buat AVD (Android Virtual Device) bernama 'agent_runner'
-avdmanager create avd -n agent_runner -k "system-images;android-34;google_apis;x86_64" --device "pixel_7"
+avdmanager create avd -n agent_runner -k "system-images;android-36;google_apis;x86_64" --device "pixel_7"
 ```
+
+Positive
+: **Kenapa emulator ditaruh di MacBook 2019 (Intel), bukan M1?** Di CPU Intel, system image `x86_64` berjalan **native** tanpa lapisan translasi — cepat dan hemat overhead. Di Apple Silicon (M1) Anda justru harus memakai image `arm64-v8a`; menjalankan image `x86_64` di M1 akan lewat Rosetta 2 dengan penalti 20–30%. Ditambah RAM M1 hanya 8 GB, maka strategi kita: emulator berat hidup di server Intel 2019, sedangkan M1 cukup mengetes di **HP fisik via USB** (lihat Perangkat 2).
 
 Uji menjalankan emulator dalam mode tanpa jendela (*headless/no-window*):
 ```bash
@@ -237,8 +242,10 @@ Tantangan terbesar saat menggunakan banyak agen AI secara paralel adalah **Conte
  │    ├── 📂 adr/                 <-- Architecture Decision Records (e.g. ADR-001.md)
  │    ├── 📂 contracts/           <-- API Contracts (OpenAPI schemas, JSON payloads)
  │    └── 📂 learnings/           <-- Past bug resolutions & gotchas
- ├── 📄 graph.json                <-- Layer 2: Graphify AST Output (Code relations)
- ├── 📄 GRAPH_REPORT.md           <-- Graph summary for AI context
+ ├── 📂 graphify-out/             <-- Layer 2: Graphify AST Output
+ │    ├── 📄 graph.json           <-- Full queryable graph (IMPORTS/CALLS/EXTENDS)
+ │    ├── 📄 GRAPH_REPORT.md      <-- Ringkasan graf untuk konteks AI
+ │    └── 📄 graph.html           <-- Visualisasi interaktif di browser
  └── 📂 app/                      <-- Source Code (Flutter/Kotlin/Swift/Go)
 ```
 
@@ -267,30 +274,40 @@ Buat file index `.knowledge/index.md`:
 Buka folder `.knowledge/` menggunakan aplikasi **Obsidian** di MacBook M1 Anda untuk memantau grafik keterhubungan secara visual (*Graph View*).
 
 ### Langkah 2: Instalasi & Setup Graphify di MacBook 2019
-Graphify mem-parsing codebase menggunakan **Tree-Sitter** untuk membuat peta grafis dependensi antar fungsi, class, dan file tanpa membuang token LLM.
+Graphify (open-source, YC-backed, 33+ bahasa) mem-parsing codebase menggunakan **Tree-Sitter** secara lokal untuk membuat peta grafis dependensi antar fungsi, class, dan file — deterministik, tanpa vector store, dan **tanpa membuang token LLM**. Graphify berjalan sebagai *skill* di dalam agen (Claude Code, Cursor, Codex, Gemini CLI).
 
 Di MacBook 2019 (Server):
 ```bash
-# Install graphify
-pip3 install graphify-ai
+# 1. Install CLI Graphify (perhatikan nama paket: graphifyy dengan dua 'y')
+uv tool install graphifyy        # alternatif: pipx install graphifyy
 
-# Masuk ke direktori project
+# 2. Daftarkan skill /graphify ke agen Anda
+graphify install
+
+# 3. Masuk ke direktori project lalu aktifkan integrasi Claude Code (per-project)
 cd ~/projects/my-mobile-project
-
-# Ekstrak graf dependensi kode
-graphify build --languages dart,kotlin,swift,go,typescript
+graphify claude install          # menulis direktif CLAUDE.md + PreToolUse hook
 ```
 
-Graphify akan menghasilkan:
-* `graph.json`: Database grafis relasi kode (`IMPORTS`, `CALLS`, `EXTENDS`).
-* `GRAPH_REPORT.md`: Ringkasan ringkas yang bisa dibaca agen saat merencanakan perubahan arsitektur.
+Setelah terpasang, panggil skill langsung dari dalam sesi agen:
+```text
+/graphify .                                   # bangun graf untuk folder saat ini
+/graphify ./app --update                      # re-extract hanya file yang berubah
+/graphify query "apa yang menghubungkan auth ke database?"
+/graphify path "AuthService" "UserRepository" # lacak jalur dependensi
+```
+
+Graphify menulis output ke folder `graphify-out/`:
+* `graph.json`: Database grafis relasi kode (`IMPORTS`, `CALLS`, `EXTENDS`) yang bisa di-commit ke git.
+* `GRAPH_REPORT.md`: Ringkasan ringkas yang dibaca agen saat merencanakan perubahan arsitektur.
+* `graph.html`: Visualisasi graf interaktif yang bisa dibuka di browser.
 
 ### Langkah 3: Aturan Interaksi Agen dengan Memori
 Tambahkan instruksi memori di file panduan agen (seperti `AGENTS.md` atau `CLAUDE.md`):
 
 ```markdown
 ## Inter-Agent Memory Rules
-1. **Pre-Task Check**: Sebelum memulai task baru, baca `.knowledge/index.md` dan cek `GRAPH_REPORT.md` untuk memahami arsitektur dan dependensi yang terdampak.
+1. **Pre-Task Check**: Sebelum memulai task baru, baca `.knowledge/index.md` dan cek `graphify-out/GRAPH_REPORT.md` (atau jalankan `/graphify query ...`) untuk memahami arsitektur dan dependensi yang terdampak.
 2. **Contract-First**: Setiap perubahan endpoint backend WAJIB didokumentasikan di `.knowledge/contracts/` sebelum kode mobile ditulis.
 3. **Post-Task Learnings**: Jika Anda menemukan bug rumit atau membuat keputusan teknis baru, tuliskan catatan baru di `.knowledge/learnings/` atau `.knowledge/adr/` dengan format Markdown ber-link `[[nama-topik]]`.
 ```
