@@ -1,0 +1,321 @@
+{
+  "meta": {
+    "title": "Maksimalkan Google AI Pro",
+    "subtitle": "Seri 7-part why-first untuk memanfaatkan Google AI Pro secara penuh — kerja kantor, cari uang tambahan, dan fullstack mobile/software engineering. Setiap fakta produk digrounding ke dokumentasi resmi Google.",
+    "parts": 7,
+    "steps": 35,
+    "surfaces": 10,
+    "goals": 3,
+    "snapshot": "2026-08-20"
+  },
+  "parts": [
+    {
+      "id": "peta-strategi",
+      "number": 1,
+      "title": "Peta Ekosistem & Strategi",
+      "summary": "Mental model dulu: apa saja yang sebenarnya Anda bayar, mindset AI sebagai amplifier, peta ke tiga tujuan, cara mengaktifkan semua benefit, dan tata kelola data yang aman.",
+      "moduleUrl": "google-ai-pro-part-1-peta-strategi/",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Apa yang sebenarnya Anda bayar",
+          "tracks": ["strategi"],
+          "detail": "Tabel komponen resmi AI Pro: 4x limit, Gemini 3.1 Pro + Deep Research, NotebookLM, Flow (1.000 kredit), 5 TB, AI Studio, Android Studio, Antigravity, Gemini di Workspace, Developer Program ($10 kredit Cloud/bln).",
+          "outcome": "Tahu isi paket dan surface mana yang sering nganggur."
+        },
+        {
+          "step": 2,
+          "title": "Mindset amplifier & peta 3 tujuan",
+          "tracks": ["strategi"],
+          "detail": "AI mengerjakan riset/draf/otomasi; Anda menilai & bertanggung jawab. Petakan setiap surface ke track: kerja, riset, kreatif, engineering, cuan.",
+          "outcome": "Punya strategi memilih tool sesuai tujuan."
+        },
+        {
+          "step": 3,
+          "title": "Aktifkan semua benefit sekali di awal",
+          "tracks": ["strategi"],
+          "detail": "Klaim Developer Program premium ($10 kredit Cloud/bln, 1.000+ codelab), atur berbagi ke 5 orang, dan benefit lain agar tidak menganggur.",
+          "outcome": "Semua benefit aktif, tidak ada nilai terbuang."
+        },
+        {
+          "step": 4,
+          "title": "Tata kelola & keamanan data",
+          "tracks": ["strategi"],
+          "detail": "Jangan masukkan data rahasia/PII kantor tanpa izin; pisahkan akun kerja vs pribadi; anonimkan data klien sebelum diproses AI.",
+          "outcome": "Bekerja aman & layak dipercaya klien."
+        }
+      ]
+    },
+    {
+      "id": "gemini-otak",
+      "number": 2,
+      "title": "Gemini sebagai Otak",
+      "summary": "Jadikan Gemini mesin riset dan kerja: pilih model dengan sadar, Deep Research untuk laporan bersitasi, Gems sebagai asisten kustom, plus kemampuan agentic & Canvas.",
+      "moduleUrl": "google-ai-pro-part-2-gemini-otak/",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Pilih model: 3.1 Pro vs Flash",
+          "tracks": ["riset"],
+          "detail": "Flash untuk 80% kerja sehari-hari, Gemini 3.1 Pro untuk reasoning penting, agar batas 4x tidak cepat habis. Catatan: Deep Think adalah tier Ultra, bukan Pro.",
+          "outcome": "Hemat kuota tanpa mengorbankan kualitas."
+        },
+        {
+          "step": 2,
+          "title": "Deep Research: laporan bersitasi",
+          "tracks": ["riset", "cuan"],
+          "detail": "Brief lengkap → rencana riset → laporan multi-sumber bersitasi → verifikasi manusia. Fondasi jasa riset pasar/kompetitor berbayar.",
+          "outcome": "Bisa memproduksi laporan riset yang bisa diaudit."
+        },
+        {
+          "step": 3,
+          "title": "Gems: asisten kustom",
+          "tracks": ["kerja"],
+          "detail": "Buat satu Gem per layanan (editor SEO, analis email, reviewer kode) agar pengerjaan konsisten & cepat untuk banyak klien.",
+          "outcome": "Alur berulang otomatis & konsisten."
+        },
+        {
+          "step": 4,
+          "title": "Kemampuan agentic & Canvas",
+          "tracks": ["kerja"],
+          "detail": "Ubah jawaban jadi artefak siap pakai: dokumen panjang, prototipe web kecil, dan alur multi-langkah. Search AI Mode untuk verifikasi cepat.",
+          "outcome": "Jawaban menjadi output yang bisa langsung dipakai."
+        }
+      ]
+    },
+    {
+      "id": "workspace-autopilot",
+      "number": 3,
+      "title": "Workspace Autopilot",
+      "summary": "Bawa Gemini ke Gmail, Docs, Sheets, Slides, dan Meet untuk mempercepat kerja kantor, plus manfaatkan 5 TB dan Search AI Mode. Rangkai jadi jasa VA/admin.",
+      "moduleUrl": "google-ai-pro-part-3-workspace-autopilot/",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Gmail & Docs: draf dan ringkas",
+          "tracks": ["kerja"],
+          "detail": "Help me write, ringkas thread, balasan kontekstual di Gmail; draf, refine, dan ekstraksi tabel di Docs.",
+          "outcome": "Email & dokumen selesai jauh lebih cepat."
+        },
+        {
+          "step": 2,
+          "title": "Sheets: formula & analisis",
+          "tracks": ["kerja"],
+          "detail": "Formula dari bahasa biasa, analisis tren & anomali, bersihkan dan susun data berantakan.",
+          "outcome": "Spreadsheet tidak lagi jadi titik macet."
+        },
+        {
+          "step": 3,
+          "title": "Slides & Meet: deck dan notulen",
+          "tracks": ["kerja"],
+          "detail": "Bangun deck dari outline & gambar di Slides; notulen otomatis + poin aksi + ringkasan di Meet.",
+          "outcome": "Presentasi & rapat jadi output otomatis."
+        },
+        {
+          "step": 4,
+          "title": "5 TB & Search AI Mode",
+          "tracks": ["kerja"],
+          "detail": "5 TB untuk arsip aset klien & draf video; Search AI Mode (Gemini 3 Pro) sebagai lapisan verifikasi cepat.",
+          "outcome": "Ruang simpan lega & verifikasi cepat."
+        },
+        {
+          "step": 5,
+          "title": "Positioning jasa berbasis Workspace",
+          "tracks": ["cuan"],
+          "detail": "Paket Inbox & Admin, Docs & SOP, Data & Report, Meeting Ops. Jual hasil, bukan 'saya pakai AI'.",
+          "outcome": "Punya paket jasa VA/admin yang jelas."
+        }
+      ]
+    },
+    {
+      "id": "notebooklm-aset",
+      "number": 4,
+      "title": "NotebookLM → Aset Konten",
+      "summary": "Ubah riset dan sumber jadi aset konten dengan NotebookLM: notebook grounded, Ringkasan Audio/Video/Cinematic, plus pipeline faceless YouTube dan produk digital.",
+      "moduleUrl": "google-ai-pro-part-4-notebooklm-aset/",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Bangun notebook yang grounded",
+          "tracks": ["riset"],
+          "detail": "Limit Pro resmi: 100 sumber/notebook, 200 notebook/user. Jawaban bersitasi hanya dari sumber Anda — kunci untuk konten yang bisa dipertanggungjawabkan.",
+          "outcome": "Analisis terkunci pada sumber terpilih."
+        },
+        {
+          "step": 2,
+          "title": "Audio, Video & Cinematic Overview",
+          "tracks": ["kreatif"],
+          "detail": "6 Audio + 6 Video + 6 Cinematic Video per hari, 20 kuis/hari. Cinematic pakai Gemini 3 + Veo 3; tier Pro bisa hapus watermark.",
+          "outcome": "Riset berubah jadi konten siap tayang."
+        },
+        {
+          "step": 3,
+          "title": "Deep Research di dalam NotebookLM",
+          "tracks": ["riset"],
+          "detail": "3 Deep Research/hari (angka resmi — bukan 20 seperti disebut banyak blog) untuk memperkaya notebook dengan sumber terkini.",
+          "outcome": "Sumber notebook selalu segar & akurat."
+        },
+        {
+          "step": 4,
+          "title": "Pipeline faceless YouTube",
+          "tracks": ["cuan"],
+          "detail": "Riset niche → notebook → Cinematic/naskah → poles → publikasikan → ulangi. Monetisasi AdSense & sponsorship, patuhi kebijakan konten AI.",
+          "outcome": "Punya alur produksi kanal faceless."
+        },
+        {
+          "step": 5,
+          "title": "Produk digital dari riset",
+          "tracks": ["cuan"],
+          "detail": "Kursus mini/ebook dari outline notebook, kuis sebagai latihan soal, podcast dari Ringkasan Audio.",
+          "outcome": "Satu riset jadi banyak kanal pendapatan."
+        }
+      ]
+    },
+    {
+      "id": "studio-kreatif",
+      "number": 5,
+      "title": "Studio Kreatif",
+      "summary": "Google Flow (Veo 3.1), Nano Banana Pro, dan Flow Music untuk jasa dan konten visual/audio — video iklan, konten sosmed, aset stok, dan thumbnail.",
+      "moduleUrl": "google-ai-pro-part-5-studio-kreatif/",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Google Flow & Veo 3.1",
+          "tracks": ["kreatif"],
+          "detail": "Veo 3.1 dengan audio native; tools Scenebuilder, Frames/Ingredients to Video, Video Extension, video-to-video editing.",
+          "outcome": "Bisa membuat video sinematik dari prompt."
+        },
+        {
+          "step": 2,
+          "title": "Kelola 1.000 kredit dengan bijak",
+          "tracks": ["kreatif"],
+          "detail": "Matangkan prompt dulu, storyboard, generate pendek lalu Extension, simpan aset ke Drive. Catatan: 4K upscale hanya di Ultra.",
+          "outcome": "Kredit cukup untuk produksi sebulan."
+        },
+        {
+          "step": 3,
+          "title": "Nano Banana Pro untuk gambar",
+          "tracks": ["kreatif"],
+          "detail": "Thumbnail, mockup produk & iklan, ilustrasi, aset brand. Padukan dengan Frames to Video untuk menganimasikan gambar.",
+          "outcome": "Aset gambar berkualitas untuk klien & konten."
+        },
+        {
+          "step": 4,
+          "title": "Flow Music untuk audio",
+          "tracks": ["kreatif"],
+          "detail": "Backsound video, jingle brand, musik latar podcast tanpa pusing lisensi.",
+          "outcome": "Konten punya audio yang layak."
+        },
+        {
+          "step": 5,
+          "title": "Jasa kreatif yang bisa dijual",
+          "tracks": ["cuan"],
+          "detail": "Video iklan pendek, konten sosmed, aset stok/template, thumbnail, video profil produk untuk UMKM & brand kecil.",
+          "outcome": "Punya lini jasa kreatif konkret."
+        }
+      ]
+    },
+    {
+      "id": "bangun-software",
+      "number": 6,
+      "title": "Bangun Software",
+      "summary": "Bangun app nyata dari prompt: AI Studio Build (React + Node, Antigravity Agent), Android native (Kotlin + Compose), Gemini API + Managed Agents, Gemini di Android Studio, dan Antigravity untuk orkestrasi.",
+      "moduleUrl": "google-ai-pro-part-6-bangun-software/",
+      "steps": [
+        {
+          "step": 1,
+          "title": "AI Studio Build: prompt ke aplikasi",
+          "tracks": ["engineering"],
+          "detail": "Deskripsi bahasa → app runnable + live preview, ditenagai Antigravity Agent. Web (React + Node) atau Android native (Kotlin + Jetpack Compose), plus Firebase & Workspace API.",
+          "outcome": "Prototipe app jadi dalam hitungan jam."
+        },
+        {
+          "step": 2,
+          "title": "Deploy: Cloud Run, GitHub, ZIP",
+          "tracks": ["engineering"],
+          "detail": "Cloud Run untuk produksi skalabel (pakai $10 kredit Cloud/bln), GitHub export untuk workflow dev, ZIP untuk hosting lokal.",
+          "outcome": "App bisa dirilis, bukan cuma di editor."
+        },
+        {
+          "step": 3,
+          "title": "Gemini API & Managed Agents",
+          "tracks": ["engineering"],
+          "detail": "Panggil Gemini (termasuk Nano Banana Pro) dari kode; Managed Agents menyalakan agen di Linux terisolasi (Gemini 3.5 Flash) tanpa mengelola infra.",
+          "outcome": "Bisa menanam fitur AI ke dalam app."
+        },
+        {
+          "step": 4,
+          "title": "Gemini di Android Studio",
+          "tracks": ["engineering"],
+          "detail": "Agent Mode, Create project with AI, AGENTS.md, MCP server, Next Edit Prediction, Compose previews, UI dari gambar, analisis crash/Logcat/Gradle.",
+          "outcome": "Pengembangan Android tingkat produksi lebih cepat."
+        },
+        {
+          "step": 5,
+          "title": "Antigravity untuk orkestrasi",
+          "tracks": ["engineering"],
+          "detail": "Antigravity 2.0 (Desktop, CLI, SDK) dengan subagent dinamis; AI Studio bisa ekspor langsung ke Antigravity. Dalami di seri Ekosistem Antigravity.",
+          "outcome": "Tahu posisi Antigravity dalam alur build."
+        },
+        {
+          "step": 6,
+          "title": "Dari skill ke cuan",
+          "tracks": ["cuan"],
+          "detail": "Jual MVP/SaaS mikro, freelance dev, fitur AI untuk bisnis, atau template/starter kit. Kode AI tetap harus direview: keamanan, error, performa.",
+          "outcome": "Punya jalur monetisasi engineering."
+        }
+      ]
+    },
+    {
+      "id": "mesin-cuan",
+      "number": 7,
+      "title": "Mesin Cuan & Tata Kelola",
+      "summary": "Satukan semua jadi penghasilan: matriks peluang, positioning & pricing, platform & kanal, Developer Program premium, serta etika, keamanan data, dan pengelolaan waktu.",
+      "moduleUrl": "google-ai-pro-part-7-mesin-cuan/",
+      "steps": [
+        {
+          "step": 1,
+          "title": "Matriks peluang: kemampuan → layanan",
+          "tracks": ["cuan"],
+          "detail": "Petakan Part 2–6 ke layanan/produk: riset, VA/admin, faceless YouTube, jasa kreatif, MVP/freelance dev. Mulai dari satu, kuasai, baru diversifikasi.",
+          "outcome": "Tahu persis apa yang bisa dijual."
+        },
+        {
+          "step": 2,
+          "title": "Positioning: jual hasil, bukan 'AI'",
+          "tracks": ["cuan"],
+          "detail": "Judul berbasis hasil, portofolio nyata (anonim), tekankan verifikasi manusia. Menyebut skill AI + bukti kualitas menaikkan tarif.",
+          "outcome": "Tawaran yang meyakinkan klien."
+        },
+        {
+          "step": 3,
+          "title": "Pricing yang berkelanjutan",
+          "tracks": ["cuan"],
+          "detail": "Per proyek, retainer bulanan, atau berbasis nilai. Naik bertahap, jual paket bukan satuan, hitung biaya nyata. Jangan menjual di bawah biaya.",
+          "outcome": "Harga sehat & bisa diprediksi."
+        },
+        {
+          "step": 4,
+          "title": "Platform & kanal",
+          "tracks": ["cuan"],
+          "detail": "Upwork/Fiverr untuk arus klien, kanal lokal/referral untuk margin tinggi, produk sendiri (YouTube/kursus/template) untuk pendapatan pasif.",
+          "outcome": "Punya campuran kanal yang seimbang."
+        },
+        {
+          "step": 5,
+          "title": "Google Developer Program premium",
+          "tracks": ["cuan"],
+          "detail": "$10 kredit Cloud/bln untuk deploy MVP, 1.000+ codelab untuk naik skill, skill badge sebagai bukti kompetensi, komunitas sebagai sumber klien.",
+          "outcome": "Kredibilitas naik, biaya turun."
+        },
+        {
+          "step": 6,
+          "title": "Etika, keamanan & keseimbangan",
+          "tracks": ["strategi"],
+          "detail": "Disclosure AI sesuai kebijakan platform, jangan unggah data rahasia/PII tanpa izin, hindari konflik dengan kerja utama, kelola waktu & rencana aksi 30 hari.",
+          "outcome": "Side job yang etis, aman, dan berkelanjutan."
+        }
+      ]
+    }
+  ]
+}

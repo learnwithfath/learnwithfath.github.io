@@ -46,6 +46,21 @@
       "ctaText": "Buka seri"
     },
     {
+      "id": "google-ai-pro-maksimal",
+      "title": "Maksimalkan Google AI Pro",
+      "icon": "💎",
+      "summary": "Seri 7-part why-first untuk memanfaatkan langganan Google AI Pro secara penuh — kerja kantor, cari uang tambahan, dan fullstack mobile/software engineering. Dari Deep Research, NotebookLM, dan Flow (Veo) sampai AI Studio, Android Studio, dan Antigravity. Setiap fakta produk digrounding ke dokumentasi resmi Google.",
+      "duration": 265,
+      "sections": 7,
+      "sectionLabel": "Part",
+      "phases": 7,
+      "tags": ["AI", "Google", "Gemini", "Google AI Pro", "NotebookLM", "Flow", "AI Studio", "Side Income"],
+      "categories": ["ai", "productivity", "developer-tools"],
+      "searchTerms": "google ai pro gemini 3.1 pro deep research notebooklm gemini notebook flow veo nano banana pro flow music ai studio android studio antigravity managed agents gemini api workspace gmail docs sheets slides meet 5tb developer program side income uang tambahan freelance faceless youtube fullstack mobile software engineering seri part",
+      "url": "google-ai-pro-maksimal.html",
+      "ctaText": "Buka seri"
+    },
+    {
       "id": "macos-full-keyboard-workflow-yabai-skhd",
       "title": "macOS Full Keyboard Workflow: Yabai, skhd, Homerow, Alacritty & Tmux",
       "icon": "⌨️",
@@ -283,7 +298,7 @@
     }
   ],
   "stats": {
-    "totalTutorials": 16,
+    "totalTutorials": 17,
     "totalSubPhases": 57,
     "totalMajorPhases": 14
   }
