@@ -1,0 +1,153 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Dual-Mac Agentic Workflow — Part 3: Jaringan &amp; Remote Development</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="agentic-dual-mac-part-3-jaringan-remote"
+                  title="Dual-Mac Agentic Workflow — Part 3: Jaringan &amp; Remote Development"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Outcome &amp; Prasyarat" duration="5">
+        <p>Ini part yang mewujudkan janji seri: <strong>duduk di M1 yang dingin, tetapi seluruh komputasi berjalan di RAM 32 GB milik 2019.</strong> Di <a href="agentic-workflow-dual-mac-setup/" target="_blank">Part 1</a> kita bahas <em>kenapa</em>; di sini kita bahas <em>bagaimana</em>.</p>
+<p>Di akhir part ini:</p>
+<ul>
+<li>Kedua Mac saling terhubung aman dari jaringan mana pun (rumah/kantor/kafe).</li>
+<li>Anda bisa <code>ssh mac-server</code> tanpa password.</li>
+<li>Editor di M1 membuka folder project yang fisiknya ada di 2019, dengan terminal &amp; build yang berjalan di 2019.</li>
+</ul>
+<p><strong>Prasyarat: </strong><a href="agentic-dual-mac-part-2-provisioning/" target="_blank">Part 2</a> selesai — SSH aktif di 2019, <code>tailscale</code> terpasang di M1.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kenapa Dua Lapis: Tailscale &#43; SSH" duration="5">
+        <p>Sering ada kebingungan: &#34;kalau sudah SSH, kenapa perlu Tailscale? Kalau sudah Tailscale, kenapa perlu SSH?&#34; Keduanya menjawab masalah berbeda:</p>
+<ul>
+<li><strong>Tailscale menjawab &#34;di mana server-nya?&#34;</strong> — memberi 2019 sebuah alamat IP tetap (<code>100.x.y.z</code>) yang tidak berubah walau Anda pindah Wi-Fi. Tanpa ini, IP lokal berubah tiap ganti jaringan dan koneksi putus.</li>
+<li><strong>SSH menjawab &#34;bagaimana masuk dengan aman?&#34;</strong> — sesi terenkripsi untuk menjalankan perintah dan meneruskan editor. SSH butuh alamat yang stabil; Tailscale menyediakannya.</li>
+</ul>
+<pre><code>[MacBook M1: 100.64.0.2] &lt;==== Encrypted WireGuard Tunnel ====&gt; [MacBook 2019: 100.64.0.3]
+</code></pre>
+<p>Positive : Tailscale memakai WireGuard sehingga trafik terenkripsi ujung ke ujung. Anda tidak perlu membuka port di router atau mengekspos 2019 ke internet publik — jauh lebih aman daripada port forwarding manual.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 1: Install &amp; Login Tailscale" duration="5">
+        <p>Di <strong>kedua Mac</strong>:</p>
+<pre><code language="language-bash" class="language-bash">brew install --cask tailscale
+</code></pre>
+<p>Lalu buka aplikasi Tailscale di masing-masing Mac dan <strong>login dengan akun yang sama</strong> (Google/GitHub/dll). Catat IP yang diberikan:</p>
+<ul>
+<li>MacBook 2019 → misal <code>100.100.20.50</code> (hostname <code>mac-server</code>)</li>
+<li>MacBook M1 → misal <code>100.100.20.51</code> (hostname <code>mac-m1</code>)</li>
+</ul>
+<p>Uji keduanya saling terlihat, dari M1:</p>
+<pre><code language="language-bash" class="language-bash">tailscale ping mac-server
+</code></pre>
+<p>Negative : Kalau <code>tailscale ping</code> gagal, pastikan kedua Mac login akun yang <strong>sama</strong> dan status Tailscale &#34;Connected&#34;. Perangkat di akun berbeda tidak akan saling melihat.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 2: SSH Key-Based Authentication" duration="8">
+        <p><strong>Kenapa key, bukan password:</strong> Anda akan menyambung berkali-kali setiap hari. Password melelahkan dan lebih lemah. SSH key memberi login instan tanpa password sekaligus lebih aman.</p>
+<p>Di <strong>MacBook M1</strong>:</p>
+<pre><code language="language-bash" class="language-bash"># Buat key (tekan Enter untuk lokasi default ~/.ssh/id_ed25519)
+ssh-keygen -t ed25519 -C &#34;m1-to-intel-server&#34;
+
+# Kirim public key ke 2019 (ganti user &amp; IP sesuai milik Anda)
+ssh-copy-id username@100.100.20.50
+</code></pre>
+<p><code>ssh-copy-id</code> menyalin <em>public</em> key Anda ke daftar tepercaya di 2019. Private key tidak pernah meninggalkan M1.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 3: Konfigurasi 
+~/.ssh/config" duration="5">
+        <p><strong>Kenapa:</strong> supaya Anda cukup mengetik <code>ssh mac-server</code>, bukan menghafal IP dan flag. Ini juga yang dibaca editor untuk Remote-SSH.</p>
+<p>Di <strong>MacBook M1</strong>, edit <code>~/.ssh/config</code>:</p>
+<pre><code language="language-ssh" class="language-ssh">Host mac-server
+    HostName 100.100.20.50
+    User username
+    IdentityFile ~/.ssh/id_ed25519
+    ServerAliveInterval 30
+    ServerAliveCountMax 5
+    ForwardAgent yes
+</code></pre>
+<p><code>ServerAliveInterval</code>/<code>CountMax</code> menjaga koneksi tetap hidup saat jaringan sesaat goyah. Uji:</p>
+<pre><code language="language-bash" class="language-bash">ssh mac-server   # harus masuk tanpa menanyakan password
+</code></pre>
+<p>Positive : Kalau butuh sesi terminal yang tahan putus-sambung (mis. laptop sleep sebentar atau ganti jaringan), gunakan <code>mosh mac-server</code> alih-alih <code>ssh</code>. Mosh (dipasang di Part 2) melanjutkan sesi otomatis tanpa reconnect manual.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 4: Remote Development di Editor" duration="7">
+        <p>Inilah bagian yang menjawab <strong>&#34;guna remote SSH untuk apa&#34;</strong> secara konkret. Alih-alih menyalin file antar-laptop, editor Anda membuka folder yang fisiknya ada di 2019 — dan menjalankan semua proses di sana.</p>
+<p>Di <strong>MacBook M1</strong>:</p>
+<ol type="1">
+<li>Buka VS Code / Antigravity.</li>
+<li>Pasang ekstensi <strong>Remote - SSH</strong> (<code>ms-vscode-remote.remote-ssh</code>).</li>
+<li><code>Cmd + Shift + P</code> → <strong>Remote-SSH: Connect to Host...</strong> → pilih <strong>mac-server</strong>.</li>
+<li>Buka folder project Anda yang ada di 2019 (mis. <code>~/projects/my-mobile-project</code>).</li>
+</ol>
+<p>Sekarang perhatikan apa yang terjadi saat Anda bekerja:</p>
+<ul>
+<li><strong>Membuka &amp; mengedit file</strong> — UI di M1, file di 2019. Tidak ada salinan ganda.</li>
+<li><strong>Terminal terintegrasi</strong> — sebenarnya shell di 2019. <code>docker compose up</code> menjalankan Docker <strong>di server</strong>.</li>
+<li><strong>Build, indexing, ekstensi bahasa</strong> — semua memakai CPU/RAM 2019.</li>
+</ul>
+<p>Positive : Hasil akhirnya: M1 tetap dingin dan hening, baterai tahan 12+ jam, sementara pekerjaan berat memakai memori 32 GB milik 2019. Inilah seluruh nilai pola dual-mac, dan alasan remote SSH menjadi tulang punggungnya.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Verifikasi" duration="3">
+        <p>Dari <strong>MacBook M1</strong>, pastikan seluruh rantai ini jalan:</p>
+<ul>
+<li>[ ] <code>tailscale ping mac-server</code> berhasil dari jaringan apa pun.</li>
+<li>[ ] <code>ssh mac-server</code> masuk tanpa password.</li>
+<li>[ ] Editor terhubung via Remote-SSH dan membuka folder project di 2019.</li>
+<li>[ ] Di terminal editor, <code>hostname</code> mengembalikan nama <strong>2019</strong>, bukan M1.</li>
+<li>[ ] <code>docker ps</code> di terminal editor menampilkan Docker milik 2019.</li>
+</ul>
+<p>Item terakhir adalah bukti paling meyakinkan: Anda mengetik di M1, tetapi command berjalan di server.</p>
+<p>Negative : Kalau terminal editor menunjukkan hostname M1, berarti Anda membuka folder lokal, bukan sesi remote. Ulangi Remote-SSH: Connect to Host.</p>
+<p>Positive : <strong>Lanjut ke Part 4 — Shared Memory &amp; Agent Harness</strong>, tempat kita mencegah antar-agen saling menimpa konteks dan memasang runtime agent-nya.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

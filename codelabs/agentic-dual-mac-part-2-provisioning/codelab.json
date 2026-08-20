@@ -1,0 +1,37 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T15:39:12+07:00",
+  "id": "agentic-dual-mac-part-2-provisioning",
+  "duration": 50,
+  "title": "Dual-Mac Agentic Workflow — Part 2: Provisioning Dua Mac",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 2 dari seri Dual-Mac Agentic Workflow — provisioning kedua Mac dari nol. Menyiapkan MacBook 2019 sebagai compute/agent server (power, toolchain, Docker, emulator headless) dan MacBook M1 sebagai driver node yang ringan.",
+  "source": "agentic-dual-mac-part-2-provisioning.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "mobile",
+    "architecture",
+    "macos"
+  ],
+  "tags": [
+    "agentic-workflow",
+    "android-emulator",
+    "apple-silicon",
+    "docker",
+    "dual-mac",
+    "homebrew",
+    "intel-mac",
+    "orbstack",
+    "provisioning"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "agentic-dual-mac-part-2-provisioning"
+}

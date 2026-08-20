@@ -1,0 +1,36 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T15:39:59+07:00",
+  "id": "agentic-dual-mac-part-3-jaringan-remote",
+  "duration": 38,
+  "title": "Dual-Mac Agentic Workflow — Part 3: Jaringan \u0026 Remote Development",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 3 dari seri Dual-Mac Agentic Workflow — jaringan dan remote development. Menyambungkan kedua Mac dengan Tailscale, SSH key-based auth, dan Remote-SSH sehingga Anda mengedit di M1 tetapi kompilasi, Docker, dan agent berjalan di MacBook 2019.",
+  "source": "agentic-dual-mac-part-3-jaringan-remote.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "architecture",
+    "macos",
+    "networking"
+  ],
+  "tags": [
+    "agentic-workflow",
+    "dual-mac",
+    "mosh",
+    "remote-development",
+    "ssh",
+    "tailscale",
+    "vscode-remote",
+    "wireguard"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "agentic-dual-mac-part-3-jaringan-remote"
+}

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#4F7DC9">
   <meta charset="UTF-8">
-  <title>Agentic Workflow Dual-Mac: Setup Terperinci Full Stack Mobile Developer</title>
+  <title>Dual-Mac Agentic Workflow — Part 1: Konsep &amp; Arsitektur</title>
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
   <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
@@ -24,19 +24,60 @@
   <google-codelab codelab-gaid=""
                   codelab-ga4id=""
                   id="agentic-workflow-dual-mac-setup"
-                  title="Agentic Workflow Dual-Mac: Setup Terperinci Full Stack Mobile Developer"
+                  title="Dual-Mac Agentic Workflow — Part 1: Konsep &amp; Arsitektur"
                   environment="web"
                   feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
     
-      <google-codelab-step label="Overview &amp; Arsitektur Sistem" duration="5">
-        <h2 is-upgraded>Tantangan Nyata Full Stack Mobile Developer</h2>
-<p>Sebagai Full Stack Mobile Developer, Anda mengelola ekosistem yang sangat kompleks:</p>
+      <google-codelab-step label="Tentang Seri Ini" duration="5">
+        <p>Seri ini memecah setup <strong>agentic workflow dual-mac</strong> menjadi lima part yang bisa dikerjakan bertahap. Setiap part berdiri sendiri, punya outcome dan checklist verifikasi, dan dijelaskan dari <strong>kenapa</strong> dulu — baru <strong>bagaimana</strong>.</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Part</p>
+</td><td colspan="1" rowspan="1"><p>Fokus</p>
+</td><td colspan="1" rowspan="1"><p>Outcome</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Part 1 (ini)</strong></p>
+</td><td colspan="1" rowspan="1"><p>Konsep &amp; arsitektur</p>
+</td><td colspan="1" rowspan="1"><p>Paham peran tiap komponen dan alasannya sebelum menyentuh terminal</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 2</p>
+</td><td colspan="1" rowspan="1"><p>Provisioning dua Mac</p>
+</td><td colspan="1" rowspan="1"><p>Server node &amp; driver node siap pakai</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 3</p>
+</td><td colspan="1" rowspan="1"><p>Jaringan &amp; remote development</p>
+</td><td colspan="1" rowspan="1"><p>Kedua Mac tersambung aman; edit di M1, jalan di 2019</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 4</p>
+</td><td colspan="1" rowspan="1"><p>Shared memory &amp; agent harness</p>
+</td><td colspan="1" rowspan="1"><p>Antar-agen berbagi konteks; harness terpasang</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 5</p>
+</td><td colspan="1" rowspan="1"><p>Autonomous testing &amp; alur end-to-end</p>
+</td><td colspan="1" rowspan="1"><p>Loop uji mandiri + praktik fitur nyata</p>
+</td></tr>
+</table>
+<p>Positive : <strong>Part 1 tidak berisi command.</strong> Tujuannya membangun <em>mental model</em>. Kalau Anda sudah paham alasannya, command di part berikutnya jadi masuk akal — bukan sekadar copy-paste.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Masalah yang Kita Selesaikan" duration="8">
+        <p>Sebagai Full Stack Mobile Developer, satu laptop harus menanggung tiga beban sekaligus:</p>
 <ul>
-<li><strong>Mobile Stack</strong>: Android Studio / Xcode, Simulator/Emulator, Gradle/CocoaPods builds, Flutter/React Native/Native Kotlin/Swift.</li>
-<li><strong>Backend Stack</strong>: Docker Engine, Database (PostgreSQL/MySQL), In-Memory Cache (Redis), API Servers (Go/NestJS/Node).</li>
-<li><strong>AI Agentic Layer</strong>: Context-heavy AI agents (Claude Code, Antigravity 2.0, Pi, Cursor), MCP (Model Context Protocol) servers (Maestro MCP, mobile-mcp), knowledge-graph indexer (Graphify), dan autonomous test runners.</li>
+<li><strong>Mobile Stack</strong> — Android Studio / Xcode, emulator/simulator, build Gradle/CocoaPods, Flutter/React Native/Kotlin/Swift.</li>
+<li><strong>Backend Stack</strong> — Docker, database (PostgreSQL/MySQL), Redis, API server (Go/NestJS/Node).</li>
+<li><strong>AI Agentic Layer</strong> — coding agent yang haus konteks (Claude Code, Antigravity, Pi, Cursor), MCP server, indexer kode, dan test runner otonom.</li>
 </ul>
-<p>Ketika seluruh beban ini dijalankan di satu laptop dengan <strong>RAM 8 GB (seperti MacBook Pro M1)</strong>, sistem akan mengalami <em>memory thrashing</em> (swap SSD membengkak, UI macet, build gagal). Di sisi lain, Anda memiliki <strong>MacBook Pro 2019 16&#34; dengan RAM 32 GB</strong> yang memiliki kapasitas memori sangat besar namun boros baterai dan bising jika dipangku.</p>
+<p>Jalankan semuanya di satu <strong>MacBook M1 8 GB</strong> dan Anda menabrak dinding: <em>memory thrashing</em> — swap SSD membengkak, UI macet, build gagal di tengah jalan. Menaikkan RAM tidak mungkin (Apple Silicon disolder).</p>
+<p>Di sisi lain, banyak dari kita punya laptop lama yang menganggur — misalnya <strong>MacBook Pro 2019 16&#34; dengan RAM 32 GB</strong>. RAM-nya besar, tapi boros baterai, panas, dan berisik kalau dipangku seharian.</p>
+<p>Negative : Menjalankan Docker + emulator + agent AI secara paralel di M1 8 GB adalah penyebab paling umum laptop &#34;ngadat&#34; saat kerja agentic. Ini bukan masalah kalau ditata dengan benar.</p>
+<p><strong>Ide intinya:</strong> pisahkan <em>tempat Anda mengetik</em> dari <em>tempat komputasi berat berjalan</em>. Laptop lama yang menganggur itu justru aset — jadikan ia server.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Arsitektur: Driver Node vs Compute Node" duration="10">
+        <p>Kita membelah peran menjadi dua node:</p>
 <pre><code>┌──────────────────────────────────────┐       Tailscale Mesh VPN       ┌─────────────────────────────────────────┐
 │     MacBook Pro M1 (RAM 8 GB)        │ ────────────────────────────── │   MacBook Pro 2019 16&#34; (RAM 32 GB)      │
 │      [CLIENT / DRIVER NODE]          │        (Zero-Config SSH)       │     [COMPUTE &amp; AGENT SERVER NODE]       │
@@ -48,427 +89,75 @@
 │ • Baterai awet, dingin, &amp; super cepat│                                │ • Maestro MCP + mobile-mcp (self-heal)  │
 └──────────────────────────────────────┘                                └─────────────────────────────────────────┘
 </code></pre>
-<h2 is-upgraded>Apa yang Akan Anda Pelajari</h2>
-<p>Dalam tutorial terperinci ini, kita akan mengonfigurasi arsitektur dual-Mac dari nol hingga siap digunakan untuk siklus kerja harian (<em>production-ready</em>):</p>
-<ol type="1">
-<li>Setup headless server di MacBook Pro 2019 (32 GB RAM).</li>
-<li>Setup driver client di MacBook Pro M1 (8 GB RAM).</li>
-<li>Jembatan koneksi aman latensi rendah via Tailscale &amp; SSH.</li>
-<li>Setup <strong>Inter-Agent Shared Memory</strong> (Graphify AST Knowledge Graph + Obsidian LLM Wiki).</li>
-<li>Setup <strong>Agent Harness MCP-first</strong> — Claude Code headless sebagai backbone di server, dengan Pi &amp; Antigravity 2.0 sebagai opsi.</li>
-<li>Setup <strong>Autonomous Mobile Testing Loop yang self-healing</strong> (Maestro MCP + <code>@mobilenext/mobile-mcp</code>).</li>
-<li>Skenario praktek end-to-end pembuatan fitur mobile + backend dengan verifikasi otomatis.</li>
-<li>Checklist pemeliharaan dan tips performa harian.</li>
-</ol>
-<p>Positive : Tutorial ini menyajikan instruksi command-line langkah demi langkah yang dapat langsung Anda copy-paste di terminal masing-masing Mac.</p>
+<p><strong>Driver Node (M1 8 GB)</strong> — tempat Anda berada. Fungsinya <em>tipis</em>: editor, terminal, prompting, dan device fisik lewat USB. Karena beban berat tidak di sini, laptop tetap dingin dan baterai tahan seharian.</p>
+<p><strong>Compute Node (2019 32 GB)</strong> — &#34;otot&#34;-nya. Colok charger, taruh di meja, tutup layar (<em>clamshell</em>). Semua yang rakus memori hidup di sini: Docker, emulator, indexer kode, dan agent yang berjalan lama.</p>
+<p>Positive : Analoginya seperti <em>thin client</em> + <em>workstation</em>. Anda mengetik di perangkat ringan, tetapi CPU/RAM 32 GB yang bekerja. Yang berpindah lewat jaringan hanyalah teks dan perintah — bukan beban komputasi.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Setup Perangkat 1: MacBook Pro 2019 (32 GB)" duration="15">
-        <p>MacBook Pro 2019 16&#34; Intel (32 GB RAM) akan bertindak sebagai <strong>Dedicated Headless Compute &amp; Agent Server</strong>. Perangkat ini ditempatkan di meja kerja dalam posisi terhubung ke daya (charger) dan jaringan Wi-Fi/LAN.</p>
-<h2 is-upgraded>Langkah 1: Konfigurasi Power &amp; Remote Access macOS</h2>
-<p>Agar MacBook tidak tertidur (<em>sleep</em>) saat layar ditutup (<em>clamshell mode</em>) atau saat tidak ada interaksi fisik:</p>
-<ol type="1">
-<li>Buka <strong>System Settings</strong> &gt; <strong>General</strong> &gt; <strong>Sharing</strong>.</li>
-<li>Aktifkan <strong>Remote Login (SSH)</strong>. <ul>
-<li>Pilih <em>Allow access for: All users</em> atau pilih user akun Anda.</li>
-</ul>
-</li>
-<li>Buka Terminal di MacBook 2019 dan jalankan perintah konfigurasi power:</li>
-</ol>
-<pre><code language="language-bash" class="language-bash"># Cegah sistem sleep saat charger terpasang
-sudo pmset -c sleep 0
-sudo pmset -c disablesleep 1
-
-# Nonaktifkan power nap dan disk sleep untuk stabilitas server
-sudo pmset -c disksleep 0
-sudo pmset -c displaysleep 15
-</code></pre>
-<p>Positive : Anda juga dapat menginstal utilitas seperti <strong>Amphetamine</strong> dari Mac App Store untuk memastikan sistem tetap terjaga dengan trigger status power/charger.</p>
-<h2 is-upgraded>Langkah 2: Instalasi Developer Toolchain &amp; Homebrew</h2>
-<p>Pastikan Homebrew dan command line tools terinstal:</p>
-<pre><code language="language-bash" class="language-bash"># 1. Install Command Line Tools
-xcode-select --install
-
-# 2. Install Homebrew (jika belum ada)
-/bin/bash -c &#34;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&#34;
-
-# 3. Install bahasa dan utilitas esensial
-# Node 24 = LTS aktif per 2026 (node@22 sudah masuk fase maintenance).
-# uv dipakai untuk memasang CLI Python modern seperti Graphify.
-brew install git node@24 go python@3.13 uv tree-sitter ripgrep jq htop mosh
-</code></pre>
-<h2 is-upgraded>Langkah 3: Setup Container Runtime (OrbStack / Docker)</h2>
-<p>Di macOS Intel dengan 32 GB RAM, <strong>OrbStack</strong> sangat direkomendasikan karena jauh lebih hemat CPU/baterai dan booting lebih cepat dibandingkan Docker Desktop klasik:</p>
-<pre><code language="language-bash" class="language-bash"># Install OrbStack
-brew install --cask orbstack
-
-# Verifikasi docker berjalan
-docker ps
-</code></pre>
-<h2 is-upgraded>Langkah 4: Setup Mobile Android SDK &amp; Emulator Headless</h2>
-<p>Pasang Android Command-line tools dan buat emulator virtual tanpa skin GUI (headless). Kita target <strong>API 36 (Android 16)</strong> karena sejak 31 Agustus 2026 Google Play mewajibkan seluruh app baru &amp; update menargetkan API level 36:</p>
-<pre><code language="language-bash" class="language-bash"># Buat direktori Android SDK
-mkdir -p ~/Android/sdk/cmdline-tools
-
-# Set environment variables di ~/.zshrc
-cat &lt;&lt; &#39;EOF&#39; &gt;&gt; ~/.zshrc
-export ANDROID_HOME=$HOME/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator
-EOF
-source ~/.zshrc
-
-# Install platform-tools, emulator, dan system image x86_64 (Android 16 / API 36)
-sdkmanager --install &#34;platform-tools&#34; &#34;emulator&#34; &#34;platforms;android-36&#34; &#34;system-images;android-36;google_apis;x86_64&#34;
-
-# Buat AVD (Android Virtual Device) bernama &#39;agent_runner&#39;
-avdmanager create avd -n agent_runner -k &#34;system-images;android-36;google_apis;x86_64&#34; --device &#34;pixel_7&#34;
-</code></pre>
-<p>Positive : <strong>Kenapa emulator ditaruh di MacBook 2019 (Intel), bukan M1?</strong> Di CPU Intel, system image <code>x86_64</code> berjalan <strong>native</strong> tanpa lapisan translasi — cepat dan hemat overhead. Di Apple Silicon (M1) Anda justru harus memakai image <code>arm64-v8a</code>; menjalankan image <code>x86_64</code> di M1 akan lewat Rosetta 2 dengan penalti 20–30%. Ditambah RAM M1 hanya 8 GB, maka strategi kita: emulator berat hidup di server Intel 2019, sedangkan M1 cukup mengetes di <strong>HP fisik via USB</strong> (lihat Perangkat 2).</p>
-<p>Uji menjalankan emulator dalam mode tanpa jendela (<em>headless/no-window</em>):</p>
-<pre><code language="language-bash" class="language-bash">emulator -avd agent_runner -no-window -no-audio -no-boot-anim &amp;
-</code></pre>
-<p>Negative : Jangan lupa jalankan <code>adb devices</code> untuk memastikan emulator terdeteksi dengan status <code>device</code>.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Setup Perangkat 2: MacBook Pro M1 (8 GB)" duration="10">
-        <p>MacBook Pro M1 (8 GB RAM) adalah perangkat harian Anda (<em>Driver / Control Plane</em>). Fokus setup di sini adalah menjaga penggunaan memori seminimal mungkin agar laptop tetap dingin, baterai tahan 12+ jam, dan responsivitas editor instan.</p>
-<h2 is-upgraded>Langkah 1: Instalasi Editor &amp; Client Tools</h2>
-<p>Di MacBook M1, pasang editor ringan dan terminal modern:</p>
-<pre><code language="language-bash" class="language-bash"># Install tool terminal dan shell
-brew install ghostty mosh tailscale
-
-# Install IDE pilihan (Antigravity, Cursor, atau VS Code)
-brew install --cask visual-studio-code
-</code></pre>
-<h2 is-upgraded>Langkah 2: Setup Physical Device Testing (USB Bridge)</h2>
-<p>Menjalankan emulator Android di M1 8GB memakan 3–4 GB RAM secara sia-sia. Sebagai gantinya:</p>
-<ol type="1">
-<li>Hubungkan HP fisik Android atau iPhone via kabel USB ke MacBook M1.</li>
-<li>Aktifkan <strong>Developer Options</strong> dan <strong>USB Debugging</strong> di Android, atau <strong>Developer Mode</strong> di iOS.</li>
-<li>Jalankan <code>adb devices</code> di M1. Anda mendapatkan live-preview native tanpa beban RAM!</li>
-</ol>
-<h2 is-upgraded>Langkah 3: Setup Apple Universal Control (Jika Bekerja Berdampingan)</h2>
-<p>Jika Anda meletakkan kedua laptop berdampingan di meja kerja:</p>
-<ol type="1">
-<li>Di kedua Mac, buka <strong>System Settings</strong> &gt; <strong>Displays</strong> &gt; <strong>Advanced</strong>.</li>
-<li>Centang <strong>&#34;Link to Mac or iPad&#34;</strong> dan <strong>&#34;Allow pointer and keyboard to move between any nearby Mac or iPad&#34;</strong>.</li>
-<li>Pastikan Bluetooth dan Wi-Fi aktif di kedua Mac dengan Apple ID yang sama.</li>
-<li>Mouse dan keyboard MacBook M1 kini dapat digerakkan langsung ke layar MacBook 2019, lengkap dengan clipboard sharing (copy text di M1, paste di Intel Mac).</li>
-</ol>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Jembatan Jaringan: Tailscale &amp; Remote Development" duration="10">
-        <p>Untuk menghubungkan kedua laptop secara transparan di mana pun Anda berada (baik satu Wi-Fi rumah, kantor, maupun saat tethering di cafe), kita gunakan <strong>Tailscale</strong> (mesh VPN terenkripsi WireGuard).</p>
-<pre><code>[MacBook M1: 100.64.0.2] &lt;==== Encrypted WireGuard Tunnel ====&gt; [MacBook 2019: 100.64.0.3]
-</code></pre>
-<h2 is-upgraded>Langkah 1: Install &amp; Login Tailscale di Kedua Mac</h2>
-<ol type="1">
-<li>Pasang Tailscale dari App Store atau via brew:</li>
-</ol>
-<pre><code language="language-bash" class="language-bash">brew install --cask tailscale
-</code></pre>
-<ol type="1" start="2">
-<li>Buka aplikasi Tailscale di kedua Mac dan login dengan akun yang sama (misal Google / GitHub).</li>
-<li>Catat IP Tailscale masing-masing Mac (format <code>100.x.y.z</code>). <ul>
-<li>Misal: MacBook 2019 = <code>100.100.20.50</code> (Hostname: <code>mac-server</code>)</li>
-<li>Misal: MacBook M1 = <code>100.100.20.51</code> (Hostname: <code>mac-m1</code>)</li>
-</ul>
-</li>
-</ol>
-<h2 is-upgraded>Langkah 2: Setup SSH Key-Based Authentication</h2>
-<p>Dari MacBook M1, buat SSH key dan kirimkan ke MacBook 2019:</p>
-<pre><code language="language-bash" class="language-bash"># Jalankan di MacBook M1
-ssh-keygen -t ed25519 -C &#34;m1-to-intel-server&#34;
-# Tekan Enter untuk lokasi default (~/.ssh/id_ed25519)
-
-# Copy public key ke MacBook 2019 (ganti IP dan username sesuai milik Anda)
-ssh-copy-id username@100.100.20.50
-</code></pre>
-<h2 is-upgraded>Langkah 3: Konfigurasi <code>~/.ssh/config</code> di MacBook M1</h2>
-<p>Edit file <code>~/.ssh/config</code> di MacBook M1:</p>
-<pre><code language="language-ssh" class="language-ssh">Host mac-server
-    HostName 100.100.20.50
-    User username
-    IdentityFile ~/.ssh/id_ed25519
-    ServerAliveInterval 30
-    ServerAliveCountMax 5
-    ForwardAgent yes
-</code></pre>
-<p>Uji koneksi tanpa password:</p>
-<pre><code language="language-bash" class="language-bash">ssh mac-server
-</code></pre>
-<h2 is-upgraded>Langkah 4: Remote Development via VS Code / Antigravity</h2>
-<ol type="1">
-<li>Buka VS Code / Antigravity di MacBook M1.</li>
-<li>Install ekstensi <strong>Remote - SSH</strong> (<code>ms-vscode-remote.remote-ssh</code>).</li>
-<li>Tekan <code>Cmd + Shift + P</code> &gt; pilih <strong>Remote-SSH: Connect to Host...</strong> &gt; pilih <strong>mac-server</strong>.</li>
-<li>Buka folder project Anda yang ada di MacBook 2019.</li>
-</ol>
-<p>Positive : Sekarang Anda mengedit kode di MacBook M1 yang ringan dan dingin, sementara seluruh proses kompilasi, indexing, dan eksekusi Docker berjalan di memori 32 GB MacBook 2019!</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Setup Inter-Agent Shared Memory" duration="15">
-        <p>Tantangan terbesar saat menggunakan banyak agen AI secara paralel adalah <strong>Context Drift</strong> dan <strong>Memory Loss</strong>. Kita akan memasang arsitektur memori 2 layer:</p>
-<ol type="1">
-<li><strong>Graphify</strong>: Memori struktural kode berbasis AST (<em>Deterministic Code Graph</em>).</li>
-<li><strong>Obsidian (LLM Wiki)</strong>: Memori semantik &amp; keputusan arsitektur berbasis Markdown.</li>
-</ol>
-<pre><code>📂 your-mobile-project/
- ├── 📂 .knowledge/               &lt;-- Layer 1: Obsidian Vault (Human &amp; Agent Wiki)
- │    ├── 📄 index.md             &lt;-- Map of Content
- │    ├── 📂 adr/                 &lt;-- Architecture Decision Records (e.g. ADR-001.md)
- │    ├── 📂 contracts/           &lt;-- API Contracts (OpenAPI schemas, JSON payloads)
- │    └── 📂 learnings/           &lt;-- Past bug resolutions &amp; gotchas
- ├── 📂 graphify-out/             &lt;-- Layer 2: Graphify AST Output
- │    ├── 📄 graph.json           &lt;-- Full queryable graph (IMPORTS/CALLS/EXTENDS)
- │    ├── 📄 GRAPH_REPORT.md      &lt;-- Ringkasan graf untuk konteks AI
- │    └── 📄 graph.html           &lt;-- Visualisasi interaktif di browser
- └── 📂 app/                      &lt;-- Source Code (Flutter/Kotlin/Swift/Go)
-</code></pre>
-<h2 is-upgraded>Langkah 1: Setup Obsidian Vault di Dalam Repository</h2>
-<p>Buat folder <code>.knowledge/</code> di root repository project Anda:</p>
-<pre><code language="language-bash" class="language-bash">mkdir -p .knowledge/{adr,contracts,learnings}
-</code></pre>
-<p>Buat file index <code>.knowledge/index.md</code>:</p>
-<pre><code language="language-markdown" class="language-markdown"># Project Brain &amp; Knowledge Graph
-
-## Architecture Decisions
-* [[ADR-001-auth-flow]]: Standard autentikasi JWT &amp; Refresh Token
-* [[ADR-002-state-management]]: Standar State Management Mobile (BLoC / Riverpod)
-
-## API Contracts
-* [[auth-endpoints]]: Spesifikasi payload login, OTP, dan token refresh
-
-## Learnings &amp; Known Gotchas
-* [[gradle-build-workaround]]: Solusi konflik versi Android Gradle Plugin
-</code></pre>
-<p>Buka folder <code>.knowledge/</code> menggunakan aplikasi <strong>Obsidian</strong> di MacBook M1 Anda untuk memantau grafik keterhubungan secara visual (<em>Graph View</em>).</p>
-<h2 is-upgraded>Langkah 2: Instalasi &amp; Setup Graphify di MacBook 2019</h2>
-<p>Graphify (open-source, YC-backed, 33+ bahasa) mem-parsing codebase menggunakan <strong>Tree-Sitter</strong> secara lokal untuk membuat peta grafis dependensi antar fungsi, class, dan file — deterministik, tanpa vector store, dan <strong>tanpa membuang token LLM</strong>. Graphify berjalan sebagai <em>skill</em> di dalam agen (Claude Code, Cursor, Codex, Gemini CLI).</p>
-<p>Di MacBook 2019 (Server):</p>
-<pre><code language="language-bash" class="language-bash"># 1. Install CLI Graphify (perhatikan nama paket: graphifyy dengan dua &#39;y&#39;)
-uv tool install graphifyy        # alternatif: pipx install graphifyy
-
-# 2. Daftarkan skill /graphify ke agen Anda
-graphify install
-
-# 3. Masuk ke direktori project lalu aktifkan integrasi Claude Code (per-project)
-cd ~/projects/my-mobile-project
-graphify claude install          # menulis direktif CLAUDE.md + PreToolUse hook
-</code></pre>
-<p>Setelah terpasang, panggil skill langsung dari dalam sesi agen:</p>
-<pre><code language="language-text" class="language-text">/graphify .                                   # bangun graf untuk folder saat ini
-/graphify ./app --update                      # re-extract hanya file yang berubah
-/graphify query &#34;apa yang menghubungkan auth ke database?&#34;
-/graphify path &#34;AuthService&#34; &#34;UserRepository&#34; # lacak jalur dependensi
-</code></pre>
-<p>Graphify menulis output ke folder <code>graphify-out/</code>:</p>
+      <google-codelab-step label="Peran Tiap Komponen (dan Kenapa Ada)" duration="10">
+        <p>Ini bagian terpenting. Sebelum menginstal apa pun, pahami <strong>untuk apa</strong> setiap potongan ada. Tiap komponen menjawab satu masalah spesifik:</p>
+<h2 is-upgraded>Tailscale — &#34;kenapa perlu VPN?&#34;</h2>
+<p>Kedua Mac harus bisa saling menemukan <strong>di mana pun Anda berada</strong> — Wi-Fi rumah, kantor, atau tethering di kafe. Tanpa ini, alamat IP berubah tiap pindah jaringan dan koneksi putus. Tailscale membuat <em>mesh VPN</em> terenkripsi (WireGuard): tiap Mac dapat IP tetap (<code>100.x.y.z</code>) yang tidak berubah walau jaringan fisiknya berganti. Jadi &#34;server&#34; Anda selalu bisa dihubungi dengan alamat yang sama.</p>
+<h2 is-upgraded>SSH &amp; Remote Development — &#34;guna remote SSH ini apa?&#34;</h2>
+<p>Ini pertanyaan kunci. <strong>SSH adalah jembatan yang membuat Anda bisa duduk di M1 tapi seolah bekerja langsung di dalam MacBook 2019.</strong></p>
+<p>Tanpa remote development, Anda harus:</p>
 <ul>
-<li><code>graph.json</code>: Database grafis relasi kode (<code>IMPORTS</code>, <code>CALLS</code>, <code>EXTENDS</code>) yang bisa di-commit ke git.</li>
-<li><code>GRAPH_REPORT.md</code>: Ringkasan ringkas yang dibaca agen saat merencanakan perubahan arsitektur.</li>
-<li><code>graph.html</code>: Visualisasi graf interaktif yang bisa dibuka di browser.</li>
+<li>pindah fisik ke laptop 2019 setiap mau menjalankan build/test, atau</li>
+<li>menyalin file bolak-balik antar laptop (rawan file basi/konflik).</li>
 </ul>
-<h2 is-upgraded>Langkah 3: Aturan Interaksi Agen dengan Memori</h2>
-<p>Tambahkan instruksi memori di file panduan agen (seperti <code>AGENTS.md</code> atau <code>CLAUDE.md</code>):</p>
-<pre><code language="language-markdown" class="language-markdown">## Inter-Agent Memory Rules
-1. **Pre-Task Check**: Sebelum memulai task baru, baca `.knowledge/index.md` dan cek `graphify-out/GRAPH_REPORT.md` (atau jalankan `/graphify query ...`) untuk memahami arsitektur dan dependensi yang terdampak.
-2. **Contract-First**: Setiap perubahan endpoint backend WAJIB didokumentasikan di `.knowledge/contracts/` sebelum kode mobile ditulis.
-3. **Post-Task Learnings**: Jika Anda menemukan bug rumit atau membuat keputusan teknis baru, tuliskan catatan baru di `.knowledge/learnings/` atau `.knowledge/adr/` dengan format Markdown ber-link `[[nama-topik]]`.
-</code></pre>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Setup Agent Harness: Pi, Antigravity, &amp; Claude Code" duration="15">
-        <h2 is-upgraded>Apa itu Agent Harness?</h2>
-<p>Harness adalah runtime yang membungkus LLM, menangani loop eksekusi tool, pemangkasan konteks, dan percabangan sesi (<em>session trees</em>).</p>
-<h2 is-upgraded>Pilihan 1: Pi Coding Agent (The Minimalist Powerhouse)</h2>
-<p><strong>Pi (</strong></p>
-<p><strong><code>@earendil-works/pi-coding-agent</code></strong></p>
-<p><strong>)</strong> oleh Mario Zechner adalah harness terminal paling ramping, tercepat, dan hemat token:</p>
-<pre><code language="language-bash" class="language-bash"># Jalankan di MacBook 2019 (atau di M1)
-npm install -g --ignore-scripts @earendil-works/pi-coding-agent
-</code></pre>
-<h3 is-upgraded>1. Konfigurasi API Keys</h3>
-<p>Buat file konfigurasi <code>~/.pi/config.json</code> atau export environment variable:</p>
-<pre><code language="language-bash" class="language-bash">export ANTHROPIC_API_KEY=&#34;sk-ant-...&#34;
-export GEMINI_API_KEY=&#34;AIzaSy...&#34;
-export OPENAI_API_KEY=&#34;sk-...&#34;
-</code></pre>
-<h3 is-upgraded>2. Menjalankan Pi &amp; Fitur Tree Session</h3>
-<p>Jalankan Pi di folder project:</p>
-<pre><code language="language-bash" class="language-bash">pi
-</code></pre>
-<p>Kekuatan utama Pi adalah <strong>Tree-Structured History</strong>:</p>
+<p>Dengan remote SSH (lewat ekstensi <em>Remote - SSH</em> di VS Code/Antigravity):</p>
 <ul>
-<li>Jika agen melakukan kesalahan refactor di langkah ke-5, Anda tidak perlu memulai percakapan baru dari awal.</li>
-<li>Ketik <code>/tree</code> untuk melihat cabang percakapan.</li>
-<li>Ketik <code>/branch 3</code> untuk melompat kembali ke langkah ke-3 dan mengambil pendekatan solusi yang berbeda.</li>
+<li><strong>Kode tinggal di 2019.</strong> Tidak ada duplikasi file, tidak ada sinkronisasi manual.</li>
+<li><strong>Editor jalan di M1</strong> (ringan, responsif), tapi kompilasi, indexing, Docker, dan eksekusi agent semuanya terjadi di 32 GB milik 2019.</li>
+<li><strong>Terminal di editor Anda sebenarnya terminal di 2019.</strong> Ketik <code>docker compose up</code> — yang jalan adalah Docker di server, bukan di M1.</li>
 </ul>
-<h2 is-upgraded>Pilihan 2: Antigravity &amp; Subagent Orchestration</h2>
-<p>Antigravity menyediakan harness dengan dukungan <strong>Reactive Subagents</strong> dan <strong>Planning Mode Artifacts</strong>.</p>
-<p>Konfigurasi subagent untuk fullstack mobile dapat didefinisikan dalam prompt atau skill:</p>
+<p>Jadi jawabannya: remote SSH menghilangkan pemisahan yang tadi kita buat dari sisi pengalaman. Anda mendapat kenyamanan satu layar (M1 yang dingin) dengan tenaga mesin lain (2019 yang bertenaga). Ini seluruh inti dari pola dual-mac. Detail konfigurasinya ada di <strong>Part 3</strong>.</p>
+<h2 is-upgraded>Graphify + Obsidian — &#34;kenapa perlu shared memory?&#34;</h2>
+<p>Saat beberapa agent bekerja pada repo yang sama, mereka gampang <strong>kehilangan konteks</strong> (<em>context drift</em>): agent A mengubah kontrak API, agent B tidak tahu, hasilnya tabrakan. Dua layar memori mengatasinya:</p>
 <ul>
-<li><strong>Subagent 1 (Backend Specialist)</strong>: Fokus pada handler API, unit testing, dan migration SQL.</li>
-<li><strong>Subagent 2 (Mobile Specialist)</strong>: Fokus pada UI widgets, state lifecycle, dan response deserialization.</li>
-<li><strong>Subagent 3 (QA &amp; Testing Specialist)</strong>: Menjalankan lint, build, dan Maestro test.</li>
+<li><strong>Graphify</strong> — peta struktural kode berbasis AST (siapa memanggil siapa), deterministik, tanpa membuang token.</li>
+<li><strong>Obsidian Vault</strong> — memori keputusan: ADR, kontrak API, catatan bug. Dibaca manusia <em>dan</em> agent.</li>
 </ul>
+<p>Detailnya di <strong>Part 4</strong>.</p>
+<h2 is-upgraded>Agent Harness (Pi / Antigravity / Claude Code) — &#34;kenapa tidak langsung pakai chat?&#34;</h2>
+<p>Harness adalah runtime yang membungkus LLM: mengelola loop eksekusi tool, pemangkasan konteks, dan percabangan sesi. Inilah yang mengubah &#34;chat yang memberi saran&#34; menjadi &#34;agent yang benar-benar mengedit, menjalankan test, dan memperbaiki dirinya&#34;. Detailnya di <strong>Part 4</strong>.</p>
+<h2 is-upgraded>Maestro + mobile-mcp — &#34;kenapa perlu testing khusus?&#34;</h2>
+<p>Kelemahan terbesar AI pada aplikasi mobile: <strong>ia tidak bisa melihat hasil render UI</strong>. Maestro (uji UI deklaratif YAML) + <code>mobile-mcp</code> (memberi agent akses ke accessibility tree) menutup celah ini, memungkinkan <em>self-healing loop</em>: agent mengubah UI → jalankan test → baca kegagalan → perbaiki → ulang. Detailnya di <strong>Part 5</strong>.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Setup Autonomous Mobile Testing Loop (Maestro &amp; Mobile-MCP)" duration="15">
-        <p>Kelemahan terbesar AI coding pada aplikasi mobile adalah <strong>ketidakmampuan AI melihat hasil render UI</strong>. Kita mengatasi ini dengan menggabungkan <strong>Maestro</strong> dan <strong><code>mobile-mcp</code></strong>.</p>
-<pre><code>[AI Coding Agent] ──&gt; [mobile-mcp] ──&gt; [Android/iOS Accessibility Tree]
-       │                                            │
-       ▼                                            ▼
-[Edit Code UI] ───&gt; [Run Maestro YAML] ───&gt; [Pass / Fail Assertion]
-       ▲                                            │
-       └────────────── [Self-Healing Loop] ─────────┘
-</code></pre>
-<h2 is-upgraded>Langkah 1: Instalasi Maestro CLI di MacBook 2019</h2>
-<p>Maestro adalah tool UI testing deklaratif berbasis YAML yang sangat mudah dibuat dan dibaca oleh AI:</p>
-<pre><code language="language-bash" class="language-bash"># Install Maestro di MacBook 2019
-curl -Ls &#34;https://get.maestro.mobile.dev&#34; | bash
-export PATH=&#34;$PATH:$HOME/.maestro/bin&#34;
-</code></pre>
-<h2 is-upgraded>Langkah 2: Buat Skenario Flow Test Maestro</h2>
-<p>Buat file <code>.maestro/auth_login_flow.yaml</code>:</p>
-<pre><code language="language-yaml" class="language-yaml">appId: com.example.myfullstackapp
----
-- launchApp:
-    clearState: true
-- assertVisible: &#34;Selamat Datang&#34;
-- tapOn: &#34;Input Email&#34;
-- inputText: &#34;developer@learnwithfath.com&#34;
-- tapOn: &#34;Kirim OTP&#34;
-- assertVisible: &#34;Masukkan Kode OTP&#34;
-- inputText: &#34;123456&#34;
-- tapOn: &#34;Verifikasi&#34;
-- assertVisible: &#34;Dashboard Utama&#34;
-</code></pre>
-<p>Uji flow secara lokal di server:</p>
-<pre><code language="language-bash" class="language-bash">maestro test .maestro/auth_login_flow.yaml
-</code></pre>
-<h2 is-upgraded>Langkah 3: Setup <code>mobile-mcp</code> untuk Inspeksi UI</h2>
-<p><code>mobile-mcp</code> memberikan akses ke AI agent untuk menginspeksi hierarchy UI emulator secara real-time via Model Context Protocol:</p>
-<pre><code language="language-bash" class="language-bash"># Clone dan build mobile-mcp di MacBook 2019
-git clone https://github.com/lobehub/mobile-mcp.git ~/.tools/mobile-mcp
-cd ~/.tools/mobile-mcp &amp;&amp; npm install &amp;&amp; npm run build
-</code></pre>
-<p>Tambahkan ke konfigurasi MCP client Anda:</p>
-<pre><code language="language-json" class="language-json">{
-  &#34;mcpServers&#34;: {
-    &#34;mobile&#34;: {
-      &#34;command&#34;: &#34;node&#34;,
-      &#34;args&#34;: [&#34;/Users/username/.tools/mobile-mcp/dist/index.js&#34;]
-    }
-  }
-}
-</code></pre>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Skenario Praktik End-to-End" duration="20">
-        <p>Mari kita simulasikan alur kerja nyata: <strong>Mengimplementasikan Fitur Login OTP dari Backend hingga Mobile</strong>.</p>
-<h2 is-upgraded>Langkah 1: Tahap Perencanaan &amp; Kontrak</h2>
-<ol type="1">
-<li>Buka sesi di MacBook M1 (terhubung via Remote-SSH ke MacBook 2019).</li>
-<li>Berikan instruksi ke Agent: <em>&#34;Kita akan membuat fitur Login OTP. Pertama, buat kontrak API di </em><em><code>.knowledge/contracts/otp-auth.md</code></em><em> dan catat keputusan arsitektur di </em><em><code>.knowledge/adr/ADR-003-otp.md</code></em><em>.&#34;</em></li>
-<li>Agen menyusun skema JSON request/response dan alur verifikasi token.</li>
-</ol>
-<h2 is-upgraded>Langkah 2: Implementasi Backend (Concurrent Task di 32 GB Mac)</h2>
-<ol type="1">
-<li>Backend Subagent membuat endpoint <code>/api/v1/auth/request-otp</code> dan <code>/api/v1/auth/verify-otp</code> di Go/NestJS.</li>
-<li>Agen menjalankan unit test di container Docker: <pre><code language="language-bash" class="language-bash">docker compose exec backend go test ./internal/auth/...
-</code></pre>
-</li>
-</ol>
-<h2 is-upgraded>Langkah 3: Implementasi Mobile Client</h2>
-<ol type="1">
-<li>Mobile Subagent membaca <code>.knowledge/contracts/otp-auth.md</code>.</li>
-<li>Agen membuat screen UI OTP dan state management di Flutter/React Native/Compose.</li>
-<li>Agen melakukan build incremental pada project mobile.</li>
-</ol>
-<h2 is-upgraded>Langkah 4: Autonomous Testing &amp; Self-Healing Loop</h2>
-<ol type="1">
-<li>Agen menjalankan test E2E di Android Emulator MacBook 2019: <pre><code language="language-bash" class="language-bash">maestro test .maestro/auth_login_flow.yaml
-</code></pre>
-</li>
-<li><strong>Skenario Error</strong>: Misal tombol memiliki identifier <code>btn_submit</code> sementara Maestro mencari text <code>"Verifikasi"</code>.</li>
-<li>Test gagal -&gt; Agen membaca log kegagalan -&gt; Agen memperbaiki identifier di kode UI -&gt; Agen menjalankan ulang <code>maestro test</code>.</li>
-<li>Seluruh assertion <strong>PASS</strong>!</li>
-</ol>
-<h2 is-upgraded>Langkah 5: Live Verifikasi di HP Fisik</h2>
-<p>Tanpa perlu menyalakan emulator berat di M1, pasang APK hasil build ke HP fisik yang tersambung di M1:</p>
-<pre><code language="language-bash" class="language-bash">adb install -r build/app/outputs/flutter-apk/app-debug.apk
-</code></pre>
-<p>Anda langsung memverifikasi animasi dan haptic feedback di perangkat asli.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Maintenance, Checklist Harian, &amp; Tips Pro" duration="5">
-        <h2 is-upgraded>Checklist Harian Memulai Kerja</h2>
-<table>
-<tr><td colspan="1" rowspan="1"><p>No</p>
-</td><td colspan="1" rowspan="1"><p>Aktivitas</p>
-</td><td colspan="1" rowspan="1"><p>Device</p>
-</td><td colspan="1" rowspan="1"><p>Command / Cara</p>
-</td></tr>
-<tr><td colspan="1" rowspan="1"><p>1</p>
-</td><td colspan="1" rowspan="1"><p>Nyalakan / Wake Server</p>
-</td><td colspan="1" rowspan="1"><p>Intel 2019</p>
-</td><td colspan="1" rowspan="1"><p>Pastikan charger terpasang &amp; Amphetamine aktif</p>
-</td></tr>
-<tr><td colspan="1" rowspan="1"><p>2</p>
-</td><td colspan="1" rowspan="1"><p>Verifikasi Koneksi Tailscale</p>
-</td><td colspan="1" rowspan="1"><p>M1</p>
-</td><td colspan="1" rowspan="1"><p><code>tailscale ping mac-server</code></p>
-</td></tr>
-<tr><td colspan="1" rowspan="1"><p>3</p>
-</td><td colspan="1" rowspan="1"><p>Jalankan Stack Backend</p>
-</td><td colspan="1" rowspan="1"><p>Intel 2019</p>
-</td><td colspan="1" rowspan="1"><p><code>ssh mac-server "cd ~/projects/app && docker compose up -d"</code></p>
-</td></tr>
-<tr><td colspan="1" rowspan="1"><p>4</p>
-</td><td colspan="1" rowspan="1"><p>Buka Remote Editor</p>
-</td><td colspan="1" rowspan="1"><p>M1</p>
-</td><td colspan="1" rowspan="1"><p>Buka VS Code / Antigravity via Remote-SSH</p>
-</td></tr>
-<tr><td colspan="1" rowspan="1"><p>5</p>
-</td><td colspan="1" rowspan="1"><p>Update Peta Kode Graphify</p>
-</td><td colspan="1" rowspan="1"><p>Intel 2019</p>
-</td><td colspan="1" rowspan="1"><p><code>graphify build</code> jika ada merge branch baru</p>
-</td></tr>
-</table>
-<h2 is-upgraded>Tips Efisiensi &amp; Thermal Management</h2>
-<p>Positive : <strong>Thermal MacBook 2019</strong>: Gunakan dudukan laptop (<em>vertical laptop stand</em>) berbahan aluminium agar sirkulasi udara di bawah bodi MacBook 2019 tetap optimal saat menjalankan komputasi berat.</p>
-<p>Negative : <strong>Hindari Docker di M1 8GB</strong>: Jangan pernah menjalankan Docker Desktop dan Android Studio Emulator secara bersamaan di M1 8GB jika tidak ingin memicu swap SSD hingga puluhan gigabyte. Biarkan M1 murni sebagai <em>thin client</em>.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Ringkasan" duration="2">
-        <p>Selamat! Anda telah berhasil merancang dan mengonfigurasi arsitektur <strong>Agentic Workflow Dual-Mac</strong> yang sangat efisien:</p>
-<h2 is-upgraded>Apa yang Telah Anda Capai</h2>
+      <google-codelab-step label="Kapan Pola Ini Layak (dan Tidak)" duration="5">
+        <p>Jujur soal trade-off supaya Anda tidak menghabiskan waktu untuk setup yang tidak Anda butuhkan.</p>
+<p><strong>Layak dipakai bila:</strong></p>
 <ul>
-<li>✅ <strong>Utilisasi Optimal 2 Mac</strong>: MacBook M1 (8 GB) tetap dingin &amp; responsif sebagai Driver Node, sementara MacBook 2019 (32 GB) menangani beban berat Docker, Emulator, dan Multi-Agent Swarms.</li>
-<li>✅ <strong>Zero-Config Mesh Network</strong>: Konektivitas SSH aman dari mana saja menggunakan Tailscale.</li>
-<li>✅ <strong>Shared Memory Architecture</strong>: Kolaborasi antar-agen yang rapi menggunakan <strong>Graphify</strong> (AST Code Graph) dan <strong>Obsidian</strong> (LLM Wiki &amp; ADR).</li>
-<li>✅ <strong>State-of-the-Art Agent Harness</strong>: Memanfaatkan <strong>Pi Coding Agent</strong>, <strong>Antigravity</strong>, dan <strong>Claude Code</strong> dengan efisiensi token maksimal.</li>
-<li>✅ <strong>Autonomous Mobile Verification Loop</strong>: Pengujian UI otomatis mandiri menggunakan <strong>Maestro</strong> dan <strong>mobile-mcp</strong>.</li>
+<li>Anda punya laptop kedua yang menganggur dengan RAM besar.</li>
+<li>Beban kerja Anda memang berat: Docker + emulator + agent paralel.</li>
+<li>Anda ingin baterai laptop utama tahan lama dan tetap dingin.</li>
 </ul>
-<p>Terus kembangkan workflow agentic Anda dan nikmati lonjakan produktivitas pengembangan full stack mobile!</p>
+<p><strong>Tidak perlu (atau berlebihan) bila:</strong></p>
+<ul>
+<li>Laptop utama Anda sudah 32 GB+ dan nyaman menjalankan semuanya sendiri.</li>
+<li>Anda hanya sesekali memakai agent untuk perubahan kecil.</li>
+<li>Anda tidak punya perangkat kedua — dalam hal ini, sewa cloud VM Linux bisa jadi alternatif compute node (konsepnya sama; hanya SSH target-nya berbeda).</li>
+</ul>
+<p>Negative : Pola ini menambah satu lapis kompleksitas (jaringan + remote). Jangan pasang kalau masalah RAM Anda belum nyata. Optimasi yang tidak dibutuhkan hanya menambah titik kegagalan.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Verifikasi Pemahaman" duration="2">
+        <p>Sebelum lanjut ke Part 2, pastikan Anda bisa menjawab ini tanpa melihat catatan:</p>
+<ol type="1">
+<li>Apa beda peran <strong>driver node</strong> dan <strong>compute node</strong>, dan kenapa M1 8 GB dijadikan driver?</li>
+<li>Apa fungsi <strong>Tailscale</strong>, dan kenapa IP biasa tidak cukup?</li>
+<li><strong>Guna remote SSH</strong> dalam alur ini apa — apa yang berpindah lewat jaringan dan apa yang tetap di tempat?</li>
+<li>Kenapa emulator berat ditaruh di 2019 (Intel), bukan di M1?</li>
+</ol>
+<p>Kalau keempatnya sudah jelas, Anda siap membangunnya.</p>
+<p>Positive : <strong>Lanjut ke Part 2 — Provisioning Dua Mac</strong>, tempat kita menyiapkan compute node (2019) dan driver node (M1) dari nol.</p>
 
 
       </google-codelab-step>

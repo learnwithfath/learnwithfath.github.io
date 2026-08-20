@@ -1,0 +1,38 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T15:40:51+07:00",
+  "id": "agentic-dual-mac-part-4-memory-harness",
+  "duration": 40,
+  "title": "Dual-Mac Agentic Workflow — Part 4: Shared Memory \u0026 Agent Harness",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 4 dari seri Dual-Mac Agentic Workflow — shared memory antar-agen (Graphify AST graph + Obsidian LLM wiki) dan agent harness (Pi, Antigravity, Claude Code) supaya beberapa agen bisa bekerja paralel tanpa saling menimpa konteks.",
+  "source": "agentic-dual-mac-part-4-memory-harness.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "architecture",
+    "macos",
+    "agenticengineering"
+  ],
+  "tags": [
+    "agent-harness",
+    "agentic-workflow",
+    "antigravity",
+    "claude-code",
+    "dual-mac",
+    "graphify",
+    "mcp",
+    "obsidian",
+    "pi-coding-agent",
+    "shared-memory"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "agentic-dual-mac-part-4-memory-harness"
+}

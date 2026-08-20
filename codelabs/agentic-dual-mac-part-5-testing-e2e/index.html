@@ -1,0 +1,217 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Dual-Mac Agentic Workflow — Part 5: Autonomous Testing &amp; Alur End-to-End</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="agentic-dual-mac-part-5-testing-e2e"
+                  title="Dual-Mac Agentic Workflow — Part 5: Autonomous Testing &amp; Alur End-to-End"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Outcome &amp; Prasyarat" duration="5">
+        <p>Ini part penutup: kita menutup <em>loop</em> agentic sehingga agent bisa <strong>melihat</strong> hasil kerjanya dan memperbaiki diri, lalu menjalankan satu fitur nyata dari ujung ke ujung.</p>
+<p>Di akhir part ini:</p>
+<ul>
+<li>Agent bisa menjalankan uji UI mandiri dan memperbaiki kegagalan tanpa Anda menyetir tiap langkah.</li>
+<li>Anda pernah menjalankan satu fitur lengkap (Login OTP) backend→mobile→test→device.</li>
+<li>Anda punya checklist harian dan tahu cara merawat setup.</li>
+</ul>
+<p><strong>Prasyarat:</strong> Part 2–4 selesai (server, remote, memory + harness).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kenapa Testing Perlu Perlakuan Khusus" duration="5">
+        <p>Kelemahan terbesar AI pada aplikasi mobile: <strong>ia tidak bisa melihat hasil render UI</strong>. Ia menulis kode UI &#34;buta&#34;, lalu tidak tahu apakah tombolnya benar-benar muncul. Dua alat menutup celah ini:</p>
+<ul>
+<li><strong>Maestro</strong> — uji UI deklaratif berbasis YAML. Mudah ditulis &amp; dibaca AI, dan memberi sinyal lulus/gagal yang jelas.</li>
+<li><strong>mobile-mcp</strong> — memberi agent akses ke <em>accessibility tree</em> aplikasi via Model Context Protocol, sehingga agent bisa &#34;membaca&#34; isi layar secara real-time.</li>
+</ul>
+<p>Gabungan keduanya menghasilkan <strong>self-healing loop</strong>:</p>
+<pre><code>[AI Coding Agent] ──&gt; [mobile-mcp] ──&gt; [Android/iOS Accessibility Tree]
+       │                                            │
+       ▼                                            ▼
+[Edit Code UI] ───&gt; [Run Maestro YAML] ───&gt; [Pass / Fail Assertion]
+       ▲                                            │
+       └────────────── [Self-Healing Loop] ─────────┘
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 1: Maestro CLI" duration="5">
+        <p>Di MacBook 2019 (compute node):</p>
+<pre><code language="language-bash" class="language-bash">curl -Ls &#34;https://get.maestro.mobile.dev&#34; | bash
+export PATH=&#34;$PATH:$HOME/.maestro/bin&#34;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 2: Skenario Flow Test" duration="6">
+        <p><strong>Kenapa YAML:</strong> formatnya cukup sederhana sehingga agent bisa menulis dan mengubahnya sendiri, tapi cukup ekspresif untuk alur nyata. Buat <code>.maestro/auth_login_flow.yaml</code>:</p>
+<pre><code language="language-yaml" class="language-yaml">appId: com.example.myfullstackapp
+---
+- launchApp:
+    clearState: true
+- assertVisible: &#34;Selamat Datang&#34;
+- tapOn: &#34;Input Email&#34;
+- inputText: &#34;developer@learnwithfath.com&#34;
+- tapOn: &#34;Kirim OTP&#34;
+- assertVisible: &#34;Masukkan Kode OTP&#34;
+- inputText: &#34;123456&#34;
+- tapOn: &#34;Verifikasi&#34;
+- assertVisible: &#34;Dashboard Utama&#34;
+</code></pre>
+<p>Uji lokal di server:</p>
+<pre><code language="language-bash" class="language-bash">maestro test .maestro/auth_login_flow.yaml
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 3: mobile-mcp untuk Inspeksi UI" duration="6">
+        <p><strong>Kenapa MCP:</strong> ini yang memberi agent &#34;mata&#34;. Tanpa mobile-mcp, agent hanya menebak isi layar; dengan itu, ia bisa membaca elemen yang benar-benar ter-render.</p>
+<p>Di MacBook 2019:</p>
+<pre><code language="language-bash" class="language-bash">git clone https://github.com/lobehub/mobile-mcp.git ~/.tools/mobile-mcp
+cd ~/.tools/mobile-mcp &amp;&amp; npm install &amp;&amp; npm run build
+</code></pre>
+<p>Daftarkan ke konfigurasi MCP client agent Anda:</p>
+<pre><code language="language-json" class="language-json">{
+  &#34;mcpServers&#34;: {
+    &#34;mobile&#34;: {
+      &#34;command&#34;: &#34;node&#34;,
+      &#34;args&#34;: [&#34;/Users/username/.tools/mobile-mcp/dist/index.js&#34;]
+    }
+  }
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 4: Alur End-to-End — Fitur Login OTP" duration="15">
+        <p>Sekarang semua komponen bekerja bersama. Kita implementasikan <strong>Login OTP</strong> dari backend sampai mobile, memakai memori (Part 4), harness (Part 4), dan testing (part ini).</p>
+<h2 is-upgraded>Tahap 1 — Perencanaan &amp; Kontrak</h2>
+<ol type="1">
+<li>Dari M1, buka sesi agent lewat Remote-SSH ke 2019.</li>
+<li>Instruksi ke agent: <em>&#34;Kita membuat fitur Login OTP. Pertama, buat kontrak API di </em><em><code>.knowledge/contracts/otp-auth.md</code></em><em> dan catat keputusan di </em><em><code>.knowledge/adr/ADR-003-otp.md</code></em><em>.&#34;</em></li>
+<li>Agent menyusun skema request/response dan alur verifikasi token — <strong>kontrak dulu, kode kemudian</strong>.</li>
+</ol>
+<h2 is-upgraded>Tahap 2 — Backend (task berat di 32 GB)</h2>
+<ol type="1">
+<li>Backend subagent membuat endpoint <code>/api/v1/auth/request-otp</code> dan <code>/api/v1/auth/verify-otp</code>.</li>
+<li>Test di container Docker (yang jalan di 2019): <pre><code language="language-bash" class="language-bash">docker compose exec backend go test ./internal/auth/...
+</code></pre>
+</li>
+</ol>
+<h2 is-upgraded>Tahap 3 — Mobile Client</h2>
+<ol type="1">
+<li>Mobile subagent membaca <code>.knowledge/contracts/otp-auth.md</code> (sinkron karena contract-first).</li>
+<li>Membuat screen OTP + state management (Flutter/RN/Compose).</li>
+<li>Build incremental.</li>
+</ol>
+<h2 is-upgraded>Tahap 4 — Autonomous Testing &amp; Self-Healing</h2>
+<ol type="1">
+<li>Agent menjalankan E2E di emulator 2019: <pre><code language="language-bash" class="language-bash">maestro test .maestro/auth_login_flow.yaml
+</code></pre>
+</li>
+<li><strong>Skenario error</strong>: tombol punya id <code>btn_submit</code>, tapi Maestro mencari teks <code>"Verifikasi"</code>.</li>
+<li>Test gagal → agent membaca log → memperbaiki identifier di kode UI → menjalankan ulang <code>maestro test</code>.</li>
+<li>Assertion <strong>PASS</strong> — tanpa Anda menyetir tiap langkah.</li>
+</ol>
+<h2 is-upgraded>Tahap 5 — Verifikasi di HP Fisik</h2>
+<p>Tanpa emulator berat di M1, pasang APK ke HP yang tercolok di M1:</p>
+<pre><code language="language-bash" class="language-bash">adb install -r build/app/outputs/flutter-apk/app-debug.apk
+</code></pre>
+<p>Verifikasi animasi &amp; haptic di perangkat asli.</p>
+<p>Positive : Perhatikan bagaimana kelima part menyatu: konsep (P1) → infrastruktur (P2–P3) → memori &amp; harness (P4) → loop mandiri (P5). Fitur mengalir tanpa Anda memindahkan file atau menunggu build memberati M1.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Maintenance &amp; Checklist Harian" duration="5">
+        <h2 is-upgraded>Rutinitas memulai kerja</h2>
+<table>
+<tr><td colspan="1" rowspan="1"><p>No</p>
+</td><td colspan="1" rowspan="1"><p>Aktivitas</p>
+</td><td colspan="1" rowspan="1"><p>Device</p>
+</td><td colspan="1" rowspan="1"><p>Command / Cara</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>1</p>
+</td><td colspan="1" rowspan="1"><p>Wake server</p>
+</td><td colspan="1" rowspan="1"><p>Intel 2019</p>
+</td><td colspan="1" rowspan="1"><p>Pastikan charger terpasang &amp; Amphetamine aktif</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>2</p>
+</td><td colspan="1" rowspan="1"><p>Verifikasi Tailscale</p>
+</td><td colspan="1" rowspan="1"><p>M1</p>
+</td><td colspan="1" rowspan="1"><p><code>tailscale ping mac-server</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>3</p>
+</td><td colspan="1" rowspan="1"><p>Jalankan backend stack</p>
+</td><td colspan="1" rowspan="1"><p>Intel 2019</p>
+</td><td colspan="1" rowspan="1"><p><code>ssh mac-server "cd ~/projects/app && docker compose up -d"</code></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>4</p>
+</td><td colspan="1" rowspan="1"><p>Buka remote editor</p>
+</td><td colspan="1" rowspan="1"><p>M1</p>
+</td><td colspan="1" rowspan="1"><p>Remote-SSH ke mac-server</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>5</p>
+</td><td colspan="1" rowspan="1"><p>Update peta Graphify</p>
+</td><td colspan="1" rowspan="1"><p>Intel 2019</p>
+</td><td colspan="1" rowspan="1"><p><code>/graphify . --update</code> setelah merge branch baru</p>
+</td></tr>
+</table>
+<h2 is-upgraded>Tips efisiensi &amp; thermal</h2>
+<p>Positive : <strong>Thermal 2019:</strong> pakai <em>vertical laptop stand</em> aluminium agar sirkulasi udara di bawah bodi tetap baik saat komputasi berat berjalan seharian.</p>
+<p>Negative : <strong>Jangan Docker + emulator di M1 8 GB.</strong> Menjalankan keduanya bersamaan di M1 memicu swap SSD puluhan GB. Biarkan M1 murni sebagai <em>thin client</em>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan Seri" duration="3">
+        <p>Selamat — Anda telah membangun <strong>Agentic Workflow Dual-Mac</strong> yang utuh:</p>
+<ul>
+<li>✅ <strong>Utilisasi optimal 2 Mac</strong> — M1 (8 GB) dingin &amp; responsif sebagai driver; 2019 (32 GB) menangani Docker, emulator, dan multi-agent swarm.</li>
+<li>✅ <strong>Zero-config mesh network</strong> — SSH aman dari mana saja via Tailscale.</li>
+<li>✅ <strong>Shared memory</strong> — kolaborasi antar-agen rapi dengan Graphify (AST) + Obsidian (ADR/wiki).</li>
+<li>✅ <strong>Agent harness modern</strong> — Pi, Antigravity, dan Claude Code dengan efisiensi token.</li>
+<li>✅ <strong>Autonomous verification loop</strong> — uji UI mandiri dengan Maestro + mobile-mcp.</li>
+</ul>
+<p>Kembali ke part mana pun untuk mendalami: <a href="agentic-workflow-dual-mac-setup/" target="_blank">Part 1 Konsep</a> · <a href="agentic-dual-mac-part-2-provisioning/" target="_blank">Part 2 Provisioning</a> · <a href="agentic-dual-mac-part-3-jaringan-remote/" target="_blank">Part 3 Jaringan &amp; Remote</a> · <a href="agentic-dual-mac-part-4-memory-harness/" target="_blank">Part 4 Memory &amp; Harness</a>.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

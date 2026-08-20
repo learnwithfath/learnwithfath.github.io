@@ -1,0 +1,180 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Dual-Mac Agentic Workflow — Part 4: Shared Memory &amp; Agent Harness</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="agentic-dual-mac-part-4-memory-harness"
+                  title="Dual-Mac Agentic Workflow — Part 4: Shared Memory &amp; Agent Harness"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Outcome &amp; Prasyarat" duration="5">
+        <p>Infrastruktur sudah siap (<a href="agentic-dual-mac-part-2-provisioning/" target="_blank">Part 2</a> &amp; <a href="agentic-dual-mac-part-3-jaringan-remote/" target="_blank">Part 3</a>). Sekarang kita mengisinya dengan <strong>otak bersama</strong> dan <strong>runtime agent</strong>.</p>
+<p>Di akhir part ini:</p>
+<ul>
+<li>Repo Anda punya dua lapis memori yang dibaca manusia dan agent.</li>
+<li>Minimal satu harness (Pi/Antigravity/Claude Code) terpasang dan tahu aturan memori.</li>
+</ul>
+<p><strong>Prasyarat:</strong> bekerja lewat sesi Remote-SSH ke 2019 (Part 3). Command &#34;server&#34; dijalankan di terminal editor yang terhubung ke 2019.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kenapa Perlu Shared Memory" duration="5">
+        <p>Saat satu agent bekerja, konteksnya ada di kepalanya sendiri. Saat <strong>beberapa agent</strong> bekerja paralel — atau satu agent lintas sesi/hari — muncul dua penyakit:</p>
+<ul>
+<li><strong>Context drift</strong> — agent A mengubah kontrak API, agent B tidak tahu, hasilnya tabrakan.</li>
+<li><strong>Memory loss</strong> — keputusan arsitektur kemarin hilang; agent mengulang kesalahan yang sudah pernah dipecahkan.</li>
+</ul>
+<p>Solusinya dua lapis memori dengan tugas berbeda:</p>
+<ol type="1">
+<li><strong>Graphify</strong> — memori <em>struktural</em>: peta kode berbasis AST (siapa meng-import/memanggil/meng-extend siapa). Deterministik, tanpa vector store, tanpa membuang token.</li>
+<li><strong>Obsidian Vault</strong> — memori <em>keputusan</em>: ADR, kontrak API, catatan bug — dalam Markdown ber-link.</li>
+</ol>
+<pre><code>📂 your-mobile-project/
+ ├── 📂 .knowledge/               &lt;-- Layer 1: Obsidian Vault (Human &amp; Agent Wiki)
+ │    ├── 📄 index.md             &lt;-- Map of Content
+ │    ├── 📂 adr/                 &lt;-- Architecture Decision Records (ADR-001.md)
+ │    ├── 📂 contracts/           &lt;-- API Contracts (OpenAPI/JSON payloads)
+ │    └── 📂 learnings/           &lt;-- Resolusi bug &amp; gotchas
+ ├── 📂 graphify-out/             &lt;-- Layer 2: Graphify AST Output
+ │    ├── 📄 graph.json           &lt;-- Graf queryable (IMPORTS/CALLS/EXTENDS)
+ │    ├── 📄 GRAPH_REPORT.md      &lt;-- Ringkasan graf untuk konteks AI
+ │    └── 📄 graph.html           &lt;-- Visualisasi interaktif
+ └── 📂 app/                      &lt;-- Source Code (Flutter/Kotlin/Swift/Go)
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 1: Obsidian Vault di Dalam Repo" duration="8">
+        <p><strong>Kenapa di dalam repo:</strong> memori yang ikut di-<em>commit</em> berpindah bersama kode, ter-<em>review</em> di PR, dan selalu sinkron dengan branch. Vault terpisah cepat basi.</p>
+<p>Di root project (lewat sesi remote):</p>
+<pre><code language="language-bash" class="language-bash">mkdir -p .knowledge/{adr,contracts,learnings}
+</code></pre>
+<p>Buat <code>.knowledge/index.md</code> sebagai peta konten:</p>
+<pre><code language="language-markdown" class="language-markdown"># Project Brain &amp; Knowledge Graph
+
+## Architecture Decisions
+* [[ADR-001-auth-flow]]: Standar autentikasi JWT &amp; Refresh Token
+* [[ADR-002-state-management]]: Standar State Management Mobile (BLoC / Riverpod)
+
+## API Contracts
+* [[auth-endpoints]]: Spesifikasi payload login, OTP, dan token refresh
+
+## Learnings &amp; Known Gotchas
+* [[gradle-build-workaround]]: Solusi konflik versi Android Gradle Plugin
+</code></pre>
+<p>Positive : Buka folder <code>.knowledge/</code> dengan aplikasi <strong>Obsidian</strong> di M1 untuk melihat <em>Graph View</em> — keterhubungan antar-catatan secara visual. Anda mengedit di M1; file tetap di repo pada 2019 (lewat remote).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 2: Graphify di Compute Node" duration="8">
+        <p><strong>Kenapa Graphify:</strong> agent yang paham &#34;apa yang terhubung ke apa&#34; membuat perubahan yang aman. Graphify mem-parsing kode dengan Tree-Sitter secara lokal — deterministik, tanpa mengirim kode ke mana pun, tanpa membuang token LLM. Ia berjalan sebagai <em>skill</em> di dalam agent (Claude Code, Cursor, Codex, Gemini CLI).</p>
+<p>Di MacBook 2019:</p>
+<pre><code language="language-bash" class="language-bash"># 1. Install CLI (perhatikan nama paket: graphifyy dengan dua &#39;y&#39;)
+uv tool install graphifyy        # alternatif: pipx install graphifyy
+
+# 2. Daftarkan skill /graphify ke agent Anda
+graphify install
+
+# 3. Aktifkan integrasi per-project (menulis direktif CLAUDE.md + PreToolUse hook)
+cd ~/projects/my-mobile-project
+graphify claude install
+</code></pre>
+<p>Panggil dari dalam sesi agent:</p>
+<pre><code language="language-text" class="language-text">/graphify .                                   # bangun graf folder saat ini
+/graphify ./app --update                      # re-extract hanya file yang berubah
+/graphify query &#34;apa yang menghubungkan auth ke database?&#34;
+/graphify path &#34;AuthService&#34; &#34;UserRepository&#34; # lacak jalur dependensi
+</code></pre>
+<p>Output ke <code>graphify-out/</code>: <code>graph.json</code> (relasi kode, bisa di-commit), <code>GRAPH_REPORT.md</code> (ringkasan yang dibaca agent saat merencanakan), <code>graph.html</code> (visualisasi).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 3: Aturan Interaksi Agent dengan Memori" duration="4">
+        <p>Memori tidak berguna kalau agent tidak diperintahkan memakainya. Tambahkan aturan ini di <code>AGENTS.md</code>/<code>CLAUDE.md</code>:</p>
+<pre><code language="language-markdown" class="language-markdown">## Inter-Agent Memory Rules
+1. **Pre-Task Check**: Sebelum task baru, baca `.knowledge/index.md` dan cek
+   `graphify-out/GRAPH_REPORT.md` (atau `/graphify query ...`) untuk memahami
+   arsitektur dan dependensi yang terdampak.
+2. **Contract-First**: Setiap perubahan endpoint backend WAJIB didokumentasikan
+   di `.knowledge/contracts/` sebelum kode mobile ditulis.
+3. **Post-Task Learnings**: Setelah menyelesaikan bug rumit atau membuat keputusan
+   teknis, tulis catatan di `.knowledge/learnings/` atau `.knowledge/adr/` dengan
+   link `[[nama-topik]]`.
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 4: Memasang Agent Harness" duration="8">
+        <p><strong>Apa itu harness:</strong> runtime yang membungkus LLM — mengelola loop eksekusi tool, pemangkasan konteks, dan percabangan sesi. Inilah yang mengubah &#34;chat pemberi saran&#34; menjadi &#34;agent yang benar-benar mengedit, menjalankan test, dan memperbaiki diri&#34;. Karena berjalan lama dan haus memori, harness hidup di <strong>compute node (2019)</strong>.</p>
+<h2 is-upgraded>Pilihan 1: Pi Coding Agent (ramping &amp; hemat token)</h2>
+<p><strong>Pi</strong> (<code>@earendil-works/pi-coding-agent</code>) adalah harness terminal paling ringan dan cepat.</p>
+<pre><code language="language-bash" class="language-bash">npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+</code></pre>
+<p>Konfigurasi API key (via env var atau <code>~/.pi/config.json</code>):</p>
+<pre><code language="language-bash" class="language-bash">export ANTHROPIC_API_KEY=&#34;sk-ant-...&#34;
+export GEMINI_API_KEY=&#34;AIzaSy...&#34;
+export OPENAI_API_KEY=&#34;sk-...&#34;
+</code></pre>
+<p>Jalankan di folder project: <code>pi</code>. Kekuatan utamanya <strong>Tree-Structured History</strong> — kalau agent salah refactor di langkah ke-5, Anda tidak perlu mulai dari nol: <code>/tree</code> melihat cabang percakapan, <code>/branch 3</code> melompat ke langkah ke-3 dan mencoba pendekatan lain.</p>
+<h2 is-upgraded>Pilihan 2: Antigravity (subagent orchestration)</h2>
+<p>Antigravity mendukung <strong>Reactive Subagents</strong> dan <strong>Planning Mode Artifacts</strong>. Definisikan subagent per peran:</p>
+<ul>
+<li><strong>Backend Specialist</strong> — handler API, unit test, migration SQL.</li>
+<li><strong>Mobile Specialist</strong> — UI widget, state lifecycle, deserialization.</li>
+<li><strong>QA Specialist</strong> — lint, build, dan Maestro test (Part 5).</li>
+</ul>
+<h2 is-upgraded>Pilihan 3: Claude Code headless (backbone)</h2>
+<p>Claude Code dapat dijalankan <em>headless</em> di server sebagai backbone yang mengoordinasi subagent swarm — cocok untuk 2019 yang selalu menyala. Ia membaca <code>CLAUDE.md</code> (termasuk aturan memori dan hook Graphify di atas) secara otomatis.</p>
+<p>Positive : Anda tidak harus memilih satu. Umum memakai Claude Code headless sebagai backbone di server, dan Pi untuk sesi interaktif cepat. Yang penting: semuanya membaca aturan memori yang sama.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Verifikasi" duration="2">
+        <ul>
+<li>[ ] <code>.knowledge/{adr,contracts,learnings}</code> ada dan <code>index.md</code> terisi.</li>
+<li>[ ] <code>/graphify .</code> menghasilkan <code>graphify-out/GRAPH_REPORT.md</code>.</li>
+<li>[ ] <code>AGENTS.md</code>/<code>CLAUDE.md</code> memuat Inter-Agent Memory Rules.</li>
+<li>[ ] Minimal satu harness jalan dan bisa membaca <code>.knowledge/</code> serta laporan Graphify.</li>
+</ul>
+<p>Positive : <strong>Lanjut ke Part 5 — Autonomous Testing &amp; Alur End-to-End</strong>, tempat kita menutup loop dengan uji UI mandiri dan menjalankan satu fitur nyata dari backend sampai mobile.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
