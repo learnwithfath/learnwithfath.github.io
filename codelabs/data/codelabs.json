@@ -31,82 +31,19 @@
       "ctaText": "Buka seri"
     },
     {
-      "id": "antigravity-part-1-konsep-ekosistem",
-      "title": "Ekosistem Google Antigravity — Part 1: Konsep & Memilih Surface",
+      "id": "antigravity-ecosystem",
+      "title": "Ekosistem Google Antigravity",
       "icon": "🚀",
-      "summary": "Part 1 dari seri Ekosistem Google Antigravity. Apa itu Antigravity, kenapa satu agent harness dipakai empat surface (Desktop 2.0, IDE, CLI, SDK), cara memilih surface, model yang tersedia (Gemini 3.x + non-Google), dan konsep inti agent/subagent/artifact/skill/hook/plugin/MCP.",
-      "duration": 48,
-      "sections": 8,
-      "tags": ["AI", "Antigravity", "Google", "Gemini", "Agentic Workflow", "Agent Harness", "MCP", "Mental Model"],
+      "summary": "Seri 6-part why-first untuk menguasai ekosistem Google Antigravity: satu agent harness, empat surface (Desktop 2.0, IDE, CLI, SDK), plus customizations, governance, dan alur kerja ideal end-to-end. Grounded ke dokumentasi resmi.",
+      "duration": 305,
+      "sections": 6,
+      "sectionLabel": "Part",
+      "phases": 6,
+      "tags": ["AI", "Antigravity", "Google", "Gemini", "Agentic Workflow", "CLI", "SDK", "MCP"],
       "categories": ["ai", "developer-tools", "agentic-engineering"],
-      "searchTerms": "google antigravity 2.0 cli ide sdk konsep ekosistem agent harness gemini 3 model surface artifact subagent skill hook plugin mcp",
-      "url": "antigravity-part-1-konsep-ekosistem/",
-      "ctaText": "Mulai Part 1"
-    },
-    {
-      "id": "antigravity-part-2-desktop-2-0",
-      "title": "Ekosistem Google Antigravity — Part 2: Antigravity 2.0 (Desktop)",
-      "icon": "🖥️",
-      "summary": "Part 2 dari seri. Instalasi & login, membuat Project dengan boundaries, Agent Manager, artifacts (task list/plan/walkthrough/diff), conversations, slash commands (/goal /schedule /browser), subagent paralel, dan scheduled tasks.",
-      "duration": 45,
-      "sections": 9,
-      "tags": ["AI", "Antigravity", "Google", "Gemini", "Desktop", "Agent Manager", "Subagents", "Scheduled Tasks"],
-      "categories": ["ai", "developer-tools", "agentic-engineering"],
-      "searchTerms": "antigravity 2.0 desktop install project boundaries agent manager artifacts slash command goal schedule browser subagent paralel scheduled tasks worktree",
-      "url": "antigravity-part-2-desktop-2-0/",
-      "ctaText": "Mulai Part 2"
-    },
-    {
-      "id": "antigravity-part-3-ide",
-      "title": "Ekosistem Google Antigravity — Part 3: Antigravity IDE",
-      "icon": "💠",
-      "summary": "Part 3 dari seri. Editor agentik: agent panel, review kode baris demi baris (accept/reject), artifacts inline, debugging dengan one-click fix, kontrol browser untuk verifikasi visual, dan kapan memilih IDE dibanding Desktop 2.0.",
-      "duration": 48,
-      "sections": 10,
-      "tags": ["AI", "Antigravity", "Google", "Gemini", "IDE", "Code Review", "Debugging", "Browser Control"],
-      "categories": ["ai", "developer-tools", "agentic-engineering"],
-      "searchTerms": "antigravity ide editor agent panel code review baris demi baris accept reject diff debugging one-click fix browser control artifacts",
-      "url": "antigravity-part-3-ide/",
-      "ctaText": "Mulai Part 3"
-    },
-    {
-      "id": "antigravity-part-4-cli",
-      "title": "Ekosistem Google Antigravity — Part 4: Antigravity CLI (agy)",
-      "icon": "⌨️",
-      "summary": "Part 4 dari seri. Instalasi & auth (termasuk headless/SSH), TUI interaktif, slash commands, referensi file @, execution modes, terminal sandbox, subagent async, mode headless -p, plugins/skills/hooks/MCP, dan migrasi dari Gemini CLI.",
-      "duration": 56,
-      "sections": 11,
-      "tags": ["AI", "Antigravity", "Google", "Gemini", "CLI", "agy", "Terminal", "Headless", "Sandbox"],
-      "categories": ["ai", "developer-tools", "agentic-engineering"],
-      "searchTerms": "antigravity cli agy install auth headless ssh tui slash command model usage agents file reference sandbox subagent async headless -p plugin import gemini migrasi",
-      "url": "antigravity-part-4-cli/",
-      "ctaText": "Mulai Part 4"
-    },
-    {
-      "id": "antigravity-part-5-sdk",
-      "title": "Ekosistem Google Antigravity — Part 5: Antigravity SDK (Python)",
-      "icon": "🐍",
-      "summary": "Part 5 dari seri. Library Python: Agent & LocalAgentConfig, personas, tools, policies, subagents, structured output (Pydantic), lifecycle/hooks, dan deploy agent lokal ke Vertex AI tanpa ubah kode.",
-      "duration": 55,
-      "sections": 11,
-      "tags": ["AI", "Antigravity", "Google", "Gemini", "SDK", "Python", "Vertex AI", "Structured Output"],
-      "categories": ["ai", "developer-tools", "agentic-engineering"],
-      "searchTerms": "antigravity sdk python google-antigravity agent localagentconfig persona tools policies subagents structured output pydantic lifecycle deploy vertex ai gcp",
-      "url": "antigravity-part-5-sdk/",
-      "ctaText": "Mulai Part 5"
-    },
-    {
-      "id": "antigravity-part-6-customizations-workflow",
-      "title": "Ekosistem Google Antigravity — Part 6: Customizations, Governance & Ideal Workflow",
-      "icon": "🎛️",
-      "summary": "Part 6 (penutup) dari seri. Skills (SKILL.md), rules, plugins, hooks, sidecars, MCP; governance & permissions least-privilege; catatan enterprise/plans; dan alur kerja ideal end-to-end yang merangkai keempat surface.",
-      "duration": 53,
-      "sections": 10,
-      "tags": ["AI", "Antigravity", "Google", "Gemini", "Skills", "Plugins", "Hooks", "Governance", "Workflow"],
-      "categories": ["ai", "developer-tools", "agentic-engineering"],
-      "searchTerms": "antigravity customizations skills skill.md rules plugins hooks sidecars mcp governance permissions least privilege enterprise plans ideal workflow lintas surface",
-      "url": "antigravity-part-6-customizations-workflow/",
-      "ctaText": "Mulai Part 6"
+      "searchTerms": "google antigravity 2.0 desktop ide cli agy sdk python vertex ai ekosistem agent harness gemini 3 surface artifact subagent skill hook plugin mcp governance seri part",
+      "url": "antigravity-ecosystem.html",
+      "ctaText": "Buka seri"
     },
     {
       "id": "macos-full-keyboard-workflow-yabai-skhd",
@@ -346,7 +283,7 @@
     }
   ],
   "stats": {
-    "totalTutorials": 21,
+    "totalTutorials": 16,
     "totalSubPhases": 57,
     "totalMajorPhases": 14
   }

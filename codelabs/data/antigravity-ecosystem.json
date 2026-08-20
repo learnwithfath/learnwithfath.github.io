@@ -1,0 +1,98 @@
+{
+  "meta": {
+    "title": "Ekosistem Google Antigravity",
+    "subtitle": "Seri 6-part why-first: satu agent harness, empat surface (Desktop 2.0, IDE, CLI, SDK), plus customizations & governance — dari konsep sampai alur kerja ideal end-to-end.",
+    "parts": 6,
+    "steps": 32,
+    "surfaces": 4,
+    "snapshot": "2026-08-20"
+  },
+  "parts": [
+    {
+      "id": "konsep-ekosistem",
+      "number": 1,
+      "title": "Konsep & Memilih Surface",
+      "summary": "Mental model dulu: kenapa satu harness dipakai empat surface, cara memilih, dan konsep inti yang berlaku di mana-mana.",
+      "moduleUrl": "antigravity-part-1-konsep-ekosistem/",
+      "steps": [
+        {"step": 1, "title": "Apa itu Antigravity", "tracks": ["konsep"], "detail": "Platform agent-first dari Google; rilis 2.0 memperluas IDE awal menjadi full stack: Desktop, CLI, SDK, Managed Agents, enterprise.", "outcome": "Paham posisi Antigravity vs asisten biasa."},
+        {"step": 2, "title": "Empat surface & cara memilih", "tracks": ["konsep"], "detail": "Desktop (orkestrasi), IDE (kontrol kode), CLI (headless), SDK (agent kustom) — semua di atas harness yang sama.", "outcome": "Bisa memilih surface sesuai cara kerja."},
+        {"step": 3, "title": "Konsep inti lintas surface", "tracks": ["konsep"], "detail": "Agent, subagent, artifact, skill, hook, plugin, rules, MCP, permissions — istilah yang sama di keempat produk.", "outcome": "Kosakata konsisten untuk seluruh seri."},
+        {"step": 4, "title": "Model yang tersedia", "tracks": ["konsep"], "detail": "Gemini 3.x (Pro/Flash) + non-Google (Claude, GPT-OSS) + Nano Banana 2; kuota & plan.", "outcome": "Tahu kapan pilih Pro vs Flash, dan batasan plan."}
+      ]
+    },
+    {
+      "id": "desktop",
+      "number": 2,
+      "title": "Antigravity 2.0 (Desktop)",
+      "summary": "Orkestrator: jalankan banyak agent paralel di banyak project dari satu layar.",
+      "moduleUrl": "antigravity-part-2-desktop-2-0/",
+      "steps": [
+        {"step": 1, "title": "Instalasi & login", "tracks": ["desktop"], "detail": "Download, OAuth Google, setup wizard (policy, tema, plugin).", "outcome": "Desktop terpasang dan login."},
+        {"step": 2, "title": "Membuat Project (boundaries)", "tracks": ["desktop"], "detail": "Project mendefinisikan folder/repo yang boleh diakses agent; mode Local vs New Worktree.", "outcome": "Batas keamanan pertama aktif."},
+        {"step": 3, "title": "Conversation & artifact pertama", "tracks": ["desktop"], "detail": "Baca implementation plan/task list/walkthrough/diff sebelum menyetujui; slash /goal /schedule /browser.", "outcome": "Terbiasa mereview artifact lebih dulu."},
+        {"step": 4, "title": "Subagent paralel & Agent Manager", "tracks": ["desktop"], "detail": "Delegasikan tugas independen ke subagent (backend/frontend/QA); pantau di Agent Manager.", "outcome": "Kerja paralel tanpa memblokir workspace."},
+        {"step": 5, "title": "Scheduled tasks", "tracks": ["desktop"], "detail": "Jadwalkan tugas berulang: lint, deteksi dependency usang, ringkasan repo.", "outcome": "Agent bekerja otomatis di background."}
+      ]
+    },
+    {
+      "id": "ide",
+      "number": 3,
+      "title": "Antigravity IDE",
+      "summary": "Kontrol penuh: lihat persis kode yang diedit agent dan setujui baris demi baris.",
+      "moduleUrl": "antigravity-part-3-ide/",
+      "steps": [
+        {"step": 1, "title": "Instalasi IDE", "tracks": ["ide"], "detail": "Diunduh terpisah; login sama → skill/plugin/rules ikut berlaku.", "outcome": "Agent panel aktif di samping editor."},
+        {"step": 2, "title": "Menjalankan agent di workspace", "tracks": ["ide"], "detail": "Beri tujuan; agent menyusun plan lalu mengedit file sebagai diff.", "outcome": "Perubahan tampil menyatu dengan kode."},
+        {"step": 3, "title": "Review kode baris demi baris", "tracks": ["ide"], "detail": "Accept/reject per baris atau hunk — tidak harus terima semua sekaligus.", "outcome": "Tidak ada perubahan diam-diam di luar scope."},
+        {"step": 4, "title": "Debugging & one-click fix", "tracks": ["ide"], "detail": "Error runtime tampil di editor; agent usul perbaikan, sering one-click.", "outcome": "Loop edit→run→fix tanpa keluar editor."},
+        {"step": 5, "title": "Kontrol browser & artifacts", "tracks": ["ide"], "detail": "Agent memverifikasi render web secara visual + walkthrough yang bisa diaudit.", "outcome": "Review bukti visual, bukan asumsi."}
+      ]
+    },
+    {
+      "id": "cli",
+      "number": 4,
+      "title": "Antigravity CLI (agy)",
+      "summary": "Terminal-first & headless: agent yang sama di SSH, container remote, dan CI — plus subagent asinkron.",
+      "moduleUrl": "antigravity-part-4-cli/",
+      "steps": [
+        {"step": 1, "title": "Instalasi & verifikasi", "tracks": ["cli"], "detail": "install.sh (macOS/Linux) atau install.ps1 (Windows); cek agy --version.", "outcome": "agy terpasang."},
+        {"step": 2, "title": "Autentikasi (termasuk headless)", "tracks": ["cli"], "detail": "OAuth browser di desktop; URL + kode sekali pakai untuk SSH/headless; API key untuk CI.", "outcome": "Login jalan di lingkungan tanpa GUI."},
+        {"step": 3, "title": "Interaktif, inspect, headless -p", "tracks": ["cli"], "detail": "agy (TUI), agy inspect, agy -p; referensi file dengan @.", "outcome": "Bisa jalan interaktif maupun non-interaktif."},
+        {"step": 4, "title": "Slash commands di TUI", "tracks": ["cli"], "detail": "/model /permissions /skills /mcp /agents /tasks /usage /context /diff dst.", "outcome": "Kendali penuh dari dalam sesi."},
+        {"step": 5, "title": "Subagent async & execution modes", "tracks": ["cli"], "detail": "Kirim tugas panjang ke background (/agent ...); beberapa paralel via /agents.", "outcome": "Refactor besar jalan tanpa memblokir prompt."},
+        {"step": 6, "title": "Terminal sandbox", "tracks": ["cli"], "detail": "enableTerminalSandbox: batas OS-level (nsjail/sandbox-exec/AppContainer).", "outcome": "Aman saat memberi otonomi tinggi."},
+        {"step": 7, "title": "Customizations & migrasi Gemini CLI", "tracks": ["cli"], "detail": "AGENTS.md, skills, hooks, MCP, plugins; agy plugin import gemini (sunset 18 Jun 2026).", "outcome": "Konfigurasi lama terbawa."}
+      ]
+    },
+    {
+      "id": "sdk",
+      "number": 5,
+      "title": "Antigravity SDK (Python)",
+      "summary": "Bangun agent kustom secara programatik, lalu deploy ke Vertex AI tanpa ubah kode.",
+      "moduleUrl": "antigravity-part-5-sdk/",
+      "steps": [
+        {"step": 1, "title": "Instalasi & agent pertama", "tracks": ["sdk"], "detail": "pip install google-antigravity; Agent + LocalAgentConfig (async context manager).", "outcome": "Agent pertama berjalan dari Python."},
+        {"step": 2, "title": "Personas", "tracks": ["sdk"], "detail": "system_instructions menyetel perilaku — padanan Rules/AGENTS.md di kode.", "outcome": "Perilaku agent terarah."},
+        {"step": 3, "title": "Tools & skills", "tracks": ["sdk"], "detail": "Daftarkan fungsi Python sebagai tool; muat skill bawaan.", "outcome": "Agent melakukan hal spesifik domain."},
+        {"step": 4, "title": "Policies (kontrol eksekusi)", "tracks": ["sdk"], "detail": "Aturan eksekusi tool + approval; padanan /permissions. Terapkan least privilege.", "outcome": "Aksi berisiko butuh persetujuan."},
+        {"step": 5, "title": "Subagents & structured output", "tracks": ["sdk"], "detail": "Multi-agent dengan isolasi; validasi output ke schema Pydantic.", "outcome": "Agent jadi komponen sistem yang andal."},
+        {"step": 6, "title": "Deploy ke Vertex AI", "tracks": ["sdk"], "detail": "vertex=True + project/location atau env var; kode sama lokal & cloud.", "outcome": "Agent naik ke produksi tanpa ubah kode."}
+      ]
+    },
+    {
+      "id": "customizations-workflow",
+      "number": 6,
+      "title": "Customizations, Governance & Ideal Workflow",
+      "summary": "Buat keempat surface bekerja konsisten & aman, lalu rangkai jadi satu alur end-to-end.",
+      "moduleUrl": "antigravity-part-6-customizations-workflow/",
+      "steps": [
+        {"step": 1, "title": "Skills (SKILL.md)", "tracks": ["governance"], "detail": "Paket pengetahuan Markdown di .agents/skills/ atau global; discover→activate→execute.", "outcome": "Agent paham konvensi tim Anda."},
+        {"step": 2, "title": "Rules, Hooks, Plugins & Sidecars", "tracks": ["governance"], "detail": "Rules (selalu), Hooks (event), Plugins (bundel), Sidecars (proses pendamping).", "outcome": "Hierarki kustomisasi jelas."},
+        {"step": 3, "title": "MCP — sistem eksternal", "tracks": ["governance"], "detail": "Sambungkan docs/DB/issue tracker; prioritaskan read-only untuk sumber sensitif.", "outcome": "Akses eksternal terkendali."},
+        {"step": 4, "title": "Governance & permissions", "tracks": ["governance"], "detail": "request-review/always-proceed/strict, boundaries, sandbox, policies, worktree — least privilege.", "outcome": "Otonomi sepadan dengan risiko."},
+        {"step": 5, "title": "Alur kerja ideal lintas surface", "tracks": ["governance"], "detail": "IDE (desain) → Desktop (paralel) → CLI (headless/CI) → SDK (pipeline), disatukan customizations.", "outcome": "Blueprint memakai tiap surface untuk kekuatannya."}
+      ]
+    }
+  ]
+}
