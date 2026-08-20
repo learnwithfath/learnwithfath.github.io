@@ -1,0 +1,35 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T15:57:01+07:00",
+  "id": "antigravity-part-3-ide",
+  "duration": 48,
+  "title": "Ekosistem Google Antigravity — Part 3: Antigravity IDE",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 3 dari seri Ekosistem Google Antigravity — Antigravity IDE. Editor agentik dengan agent panel, review kode baris demi baris, artifacts, kontrol browser, debugging dengan one-click fix, dan kapan memilih IDE dibanding Desktop 2.0.",
+  "source": "antigravity-part-3-ide.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "agenticengineering",
+    "google"
+  ],
+  "tags": [
+    "antigravity",
+    "artifacts",
+    "browser-control",
+    "code-review",
+    "debugging",
+    "gemini",
+    "google",
+    "ide"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "antigravity-part-3-ide"
+}

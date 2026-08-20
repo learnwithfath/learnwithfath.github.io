@@ -1,0 +1,217 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Ekosistem Google Antigravity — Part 1: Konsep &amp; Memilih Surface</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="antigravity-part-1-konsep-ekosistem"
+                  title="Ekosistem Google Antigravity — Part 1: Konsep &amp; Memilih Surface"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Tentang Seri Ini" duration="5">
+        <p>Seri ini membedah <strong>ekosistem Google Antigravity</strong> secara menyeluruh dan berurutan, dengan gaya <em>why-first</em>: paham <strong>kenapa</strong> dulu, baru <strong>bagaimana</strong>. Setiap part berdiri sendiri dengan outcome dan checklist verifikasi.</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Part</p>
+</td><td colspan="1" rowspan="1"><p>Fokus</p>
+</td><td colspan="1" rowspan="1"><p>Untuk siapa</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Part 1 (ini)</strong></p>
+</td><td colspan="1" rowspan="1"><p>Konsep, ekosistem, memilih surface, model</p>
+</td><td colspan="1" rowspan="1"><p>Semua orang — baca lebih dulu</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 2</p>
+</td><td colspan="1" rowspan="1"><p>Antigravity 2.0 (Desktop)</p>
+</td><td colspan="1" rowspan="1"><p>Orkestrasi banyak agent paralel</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 3</p>
+</td><td colspan="1" rowspan="1"><p>Antigravity IDE</p>
+</td><td colspan="1" rowspan="1"><p>Developer yang ingin melihat &amp; mengedit kode</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 4</p>
+</td><td colspan="1" rowspan="1"><p>Antigravity CLI (<code>agy</code>)</p>
+</td><td colspan="1" rowspan="1"><p>Terminal-first, headless, CI/remote</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 5</p>
+</td><td colspan="1" rowspan="1"><p>Antigravity SDK (Python)</p>
+</td><td colspan="1" rowspan="1"><p>Membangun agent kustom &amp; pipeline</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 6</p>
+</td><td colspan="1" rowspan="1"><p>Customizations, governance &amp; ideal workflow</p>
+</td><td colspan="1" rowspan="1"><p>Merangkai keempat surface jadi satu alur</p>
+</td></tr>
+</table>
+<p>Positive : <strong>Part 1 hampir tanpa command.</strong> Tujuannya membangun <em>mental model</em>. Antigravity punya empat &#34;pintu masuk&#34; yang mudah membingungkan; setelah paham perannya, part berikutnya jadi jelas.</p>
+<p>Negative : <strong>Catatan versi.</strong> Angka versi dan detail flag di seri ini mengikuti snapshot dokumentasi resmi saat penulisan (Desktop v2.8.1, CLI v1.1.14, IDE v2.5.5, SDK v0.1.12). Antigravity bergerak cepat — selalu cek <a href="https://antigravity.google/docs" target="_blank">antigravity.google/docs</a> untuk angka terbaru.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Apa Itu Antigravity" duration="8">
+        <p><strong>Antigravity adalah platform </strong></p>
+<p><strong><em>agent-first</em></strong></p>
+<p><strong> dari Google</strong> untuk pengembangan software. Berbeda dari asisten yang sekadar memberi saran, agent Antigravity menjalankan tugas secara otonom: merencanakan, mengedit kode, menjalankan tool, dan menghasilkan bukti kerja — dalam batas (<em>boundaries</em>) yang Anda tetapkan.</p>
+<p>Rilis <strong>Antigravity 2.0 (2026)</strong> memperluas produk awal yang tadinya hanya sebuah IDE menjadi <em>full stack</em> empat surface: aplikasi <strong>Desktop</strong>, <strong>CLI</strong>, <strong>SDK</strong>, plus Managed Agents di Gemini API dan deployment enterprise lewat Gemini Enterprise Agent Platform.</p>
+<p>Positive : <strong>Kunci pemahaman:</strong> keempat surface berjalan di atas <strong>agent harness yang sama</strong>. Skill, plugin, rules, dan logika inti konsisten di mana pun Anda memakainya. Anda tidak belajar empat produk berbeda — Anda belajar satu agent yang bisa diakses lewat empat &#34;pintu&#34;.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Empat Surface &amp; Cara Memilih" duration="12">
+        <p>Inilah pertanyaan paling sering: &#34;saya harus pakai yang mana?&#34; Jawabannya bergantung pada <em>bagaimana Anda ingin bekerja</em>, bukan kemampuan agent (yang sama di semuanya).</p>
+<pre><code>                 ┌──────────────────────────────────────────┐
+                 │        AGENT HARNESS (satu, bersama)       │
+                 │  skills · rules · plugins · hooks · MCP    │
+                 └──────────────────────────────────────────┘
+                    ▲          ▲            ▲           ▲
+          ┌─────────┘   ┌──────┘      ┌─────┘     ┌─────┘
+   ┌──────────────┐ ┌──────────┐ ┌──────────┐ ┌──────────────┐
+   │ Desktop 2.0  │ │   IDE    │ │  CLI(agy)│ │  SDK (Python)│
+   │ orkestrasi   │ │ edit &amp;   │ │ terminal │ │ agent kustom │
+   │ banyak agent │ │ review   │ │ headless │ │ &amp; pipeline   │
+   └──────────────┘ └──────────┘ └──────────┘ └──────────────┘
+</code></pre>
+<h2 is-upgraded>Antigravity 2.0 (Desktop) — orkestrator</h2>
+<p>Aplikasi desktop untuk <strong>menjalankan banyak agent sekaligus</strong> di berbagai project dari satu layar. Bisa menjadwalkan tugas berulang (mis. cek kualitas kode, deteksi paket usang) dan mengeksekusi paralel tanpa memblokir workspace utama. <em>Pilih ini</em> sebagai default kalau Anda mengelola banyak tugas/project. (Part 2)</p>
+<h2 is-upgraded>Antigravity IDE — kontrol penuh atas kode</h2>
+<p>Editor tempat Anda <strong>melihat persis kode yang diedit agent</strong>, menerima/menolak perubahan baris demi baris, dengan debugging dan one-click fix di dalam editor. <em>Pilih ini</em> saat Anda butuh visibilitas dan kontrol granular. (Part 3)</p>
+<h2 is-upgraded>Antigravity CLI (<code>agy</code>) — terminal &amp; headless</h2>
+<p>Antarmuka terminal (TUI) yang dibangun dengan <strong>Go</strong> demi kecepatan. Bisa menjalankan agent di background tanpa mengunci terminal, dan berjalan <strong>headless</strong> (SSH, container remote, CI). <em>Pilih ini</em> kalau Anda terminal-first atau butuh otomasi di lingkungan tanpa GUI. (Part 4)</p>
+<h2 is-upgraded>Antigravity SDK (Python) — bangun agent sendiri</h2>
+<p>Library Python untuk <strong>menulis agent kustom dari nol</strong> dengan akses ke tool &amp; rules yang sama, lalu deploy ke Google Cloud tanpa ubah kode. <em>Pilih ini</em> untuk pipeline otomatis dan integrasi programatik. (Part 5)</p>
+<table>
+<tr><td colspan="1" rowspan="1"></td><td colspan="1" rowspan="1"><p>2.0 Desktop</p>
+</td><td colspan="1" rowspan="1"><p>IDE</p>
+</td><td colspan="1" rowspan="1"><p>CLI</p>
+</td><td colspan="1" rowspan="1"><p>SDK</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Antarmuka</strong></p>
+</td><td colspan="1" rowspan="1"><p>Aplikasi desktop</p>
+</td><td colspan="1" rowspan="1"><p>Editor</p>
+</td><td colspan="1" rowspan="1"><p>Terminal (TUI)</p>
+</td><td colspan="1" rowspan="1"><p>Kode Python</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Paling cocok</strong></p>
+</td><td colspan="1" rowspan="1"><p>Banyak tugas paralel</p>
+</td><td colspan="1" rowspan="1"><p>Edit &amp; review kode</p>
+</td><td colspan="1" rowspan="1"><p>Terminal / headless</p>
+</td><td colspan="1" rowspan="1"><p>Agent kustom</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Visibilitas kode</strong></p>
+</td><td colspan="1" rowspan="1"><p>Ringkasan</p>
+</td><td colspan="1" rowspan="1"><p>Penuh (baris demi baris)</p>
+</td><td colspan="1" rowspan="1"><p>Terbatas</p>
+</td><td colspan="1" rowspan="1"><p>Penuh</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Kurva belajar</strong></p>
+</td><td colspan="1" rowspan="1"><p>Rendah</p>
+</td><td colspan="1" rowspan="1"><p>Menengah</p>
+</td><td colspan="1" rowspan="1"><p>Rendah</p>
+</td><td colspan="1" rowspan="1"><p>Menengah–tinggi</p>
+</td></tr>
+</table>
+<p>Positive : Anda <strong>tidak harus memilih satu</strong>. Alur ideal justru mengombinasikan: desain di IDE, jalankan paralel di Desktop, otomasi headless di CLI (CI), pipeline kustom via SDK. Kita rangkai ini di Part 6.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Konsep Inti yang Berlaku di Semua Surface" duration="10">
+        <p>Karena harness-nya sama, istilah berikut muncul di keempat produk. Pahami sekali, pakai di mana saja:</p>
+<ul>
+<li><strong>Agent</strong> — eksekutor otonom yang bekerja dalam batas <strong>Project</strong> (folder/repo yang boleh diakses).</li>
+<li><strong>Subagent</strong> — agent sekunder yang didelegasikan tugas spesifik, sering berjalan <strong>paralel di background</strong>.</li>
+<li><strong>Artifact</strong> — keluaran terstruktur sebagai bukti kerja: <em>task list</em>, <em>implementation plan</em>, <em>walkthrough</em>, dan <em>code diff</em>. Ini yang membuat kerja agent transparan dan bisa direview.</li>
+<li><strong>Skill</strong> — paket pengetahuan Markdown (<code>SKILL.md</code>) yang memperluas kemampuan agent; standar terbuka. (Detail di Part 6)</li>
+<li><strong>Hook</strong> — pemicu berbasis event daur hidup (mis. jalankan formatter setelah file ditulis).</li>
+<li><strong>Plugin / Extension</strong> — bundel yang mengelompokkan skills, rules, hooks, dan definisi MCP jadi satu unit (dulu disebut <em>extensions</em>, kini <em>plugins</em>).</li>
+<li><strong>Rules</strong> — batasan gaya/kebijakan yang selalu dipatuhi agent.</li>
+<li><strong>MCP (Model Context Protocol)</strong> — protokol untuk menyambungkan agent ke sistem eksternal (docs, database, issue tracker).</li>
+<li><strong>Permissions</strong> — tingkat otonomi agent dan aksi apa yang butuh persetujuan manusia.</li>
+</ul>
+<p>Positive : Perhatikan <strong>Artifact</strong> — ini pembeda besar Antigravity. Alih-alih hanya menghasilkan kode, agent menghasilkan rencana dan walkthrough yang bisa Anda audit sebelum menerima perubahan.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Model yang Tersedia" duration="8">
+        <p>Agent butuh model penalaran, dan Antigravity memberi pilihan (ketersediaan bergantung plan). Anda memilih lewat <em>dropdown model selector</em> di bawah kotak prompt.</p>
+<p><strong>Model Google (Gemini):</strong></p>
+<ul>
+<li><strong>Gemini 3.1 Pro</strong> — reasoning tinggi, untuk task kompleks (spec, konkurensi, migrasi, keamanan).</li>
+<li><strong>Gemini 3.7 / 3.6 / 3.5 Flash</strong> — cepat, dengan level reasoning Low/Medium/High; untuk eksplorasi &amp; perubahan mekanis.</li>
+</ul>
+<p><strong>Model non-Google (di plan tertentu):</strong></p>
+<ul>
+<li><strong>Claude Sonnet 4.6 (thinking)</strong> dan <strong>Claude Opus 4.6 (thinking)</strong></li>
+<li><strong>GPT-OSS-120b</strong></li>
+</ul>
+<p>Selain itu, <strong>Nano Banana 2</strong> dipakai untuk tugas generatif gambar (mockup UI, diagram, konten visual) — model ini tidak dapat dipilih manual.</p>
+<p>Negative : <strong>Plan Enterprise mengecualikan</strong> opsi Claude &amp; GPT, dan berfokus pada model frontier Gemini. Selain itu ada kuota <strong>Weekly Limit</strong> dan <strong>Five Hour Limit</strong> yang terpisah untuk keluarga Gemini vs Claude/GPT. Cek halaman <em>Plans</em> untuk detail. Plan berbayar antara lain <strong>Ultra</strong> ($100/bln, 5× limit Pro) dan <strong>Ultra Premium</strong> ($200/bln, 20×).</p>
+<p>Positive : Prinsip pemilihan model sama seperti agentic engineering pada umumnya: <strong>model cepat/hemat untuk kerja mekanis, model reasoning kuat untuk keputusan arsitektur</strong> — bukan selalu memakai yang paling mahal.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Prasyarat Seri" duration="2">
+        <ul>
+<li>Akun Google (login OAuth) dan akses ke salah satu plan Antigravity.</li>
+<li>OS didukung: macOS 12+, Windows 10 (64-bit), atau Linux (glibc ≥ 2.28).</li>
+<li>Untuk Part 4 (CLI) &amp; Part 5 (SDK): terminal, dan Python untuk SDK.</li>
+<li>Chrome sebagai browser default membantu alur autentikasi &amp; fitur browser.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Verifikasi Pemahaman" duration="2">
+        <p>Sebelum lanjut, pastikan Anda bisa menjawab tanpa melihat catatan:</p>
+<ol type="1">
+<li>Kenapa keempat surface disebut &#34;satu agent, empat pintu&#34;? Apa yang mereka bagi bersama?</li>
+<li>Kapan memilih <strong>Desktop 2.0</strong> vs <strong>IDE</strong> vs <strong>CLI</strong> vs <strong>SDK</strong>?</li>
+<li>Apa itu <strong>Artifact</strong>, dan kenapa penting untuk transparansi?</li>
+<li>Kapan memilih model <strong>Pro</strong> vs <strong>Flash</strong>?</li>
+</ol>
+<p>Positive : <strong>Lanjut ke Part 2 — Antigravity 2.0 (Desktop)</strong>, tempat kita instal, membuat Project, dan menjalankan banyak agent paralel.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Sumber" duration="1">
+        <ul>
+<li><a href="https://antigravity.google/docs" target="_blank">Dokumentasi resmi Antigravity</a></li>
+<li><a href="https://cloud.google.com/blog/topics/developers-practitioners/choosing-your-surface-antigravity-20-antigravity-cli-antigravity-ide-or-antigravity-sdk" target="_blank">Choosing your surface — Google Cloud Blog</a></li>
+<li><a href="https://codelabs.developers.google.com/getting-started-google-antigravity" target="_blank">Getting Started codelab (Google)</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

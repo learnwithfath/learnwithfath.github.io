@@ -1,0 +1,37 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T15:59:37+07:00",
+  "id": "antigravity-part-6-customizations-workflow",
+  "duration": 53,
+  "title": "Ekosistem Google Antigravity — Part 6: Customizations, Governance \u0026 Ideal Workflow",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 6 (penutup) dari seri Ekosistem Google Antigravity — customizations (skills, rules, plugins, hooks, sidecars, MCP), governance \u0026 permissions/least-privilege, catatan enterprise/plans, dan alur kerja ideal end-to-end yang merangkai keempat surface (IDE, Desktop 2.0, CLI, SDK).",
+  "source": "antigravity-part-6-customizations-workflow.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "agenticengineering",
+    "google"
+  ],
+  "tags": [
+    "antigravity",
+    "gemini",
+    "google",
+    "governance",
+    "hooks",
+    "mcp",
+    "permissions",
+    "plugins",
+    "skills",
+    "workflow"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "antigravity-part-6-customizations-workflow"
+}

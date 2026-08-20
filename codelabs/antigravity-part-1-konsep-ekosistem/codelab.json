@@ -1,0 +1,35 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T15:55:38+07:00",
+  "id": "antigravity-part-1-konsep-ekosistem",
+  "duration": 48,
+  "title": "Ekosistem Google Antigravity — Part 1: Konsep \u0026 Memilih Surface",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 1 dari seri Ekosistem Google Antigravity — konsep dan cara memilih surface. Apa itu Antigravity, kenapa satu agent harness dipakai empat surface (Desktop 2.0, IDE, CLI, SDK), model yang tersedia (Gemini 3.x + non-Google), dan konsep inti agent/subagent/artifact/skill/hook/plugin/MCP.",
+  "source": "antigravity-part-1-konsep-ekosistem.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "agenticengineering",
+    "google"
+  ],
+  "tags": [
+    "agent-harness",
+    "agentic-workflow",
+    "antigravity",
+    "ekosistem",
+    "gemini",
+    "google",
+    "mcp",
+    "mental-model"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "antigravity-part-1-konsep-ekosistem"
+}

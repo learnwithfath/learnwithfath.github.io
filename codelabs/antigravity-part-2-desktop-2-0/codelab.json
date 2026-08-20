@@ -1,0 +1,35 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T15:56:23+07:00",
+  "id": "antigravity-part-2-desktop-2-0",
+  "duration": 45,
+  "title": "Ekosistem Google Antigravity — Part 2: Antigravity 2.0 (Desktop)",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 2 dari seri Ekosistem Google Antigravity — Antigravity 2.0 Desktop. Instalasi, membuat Project dengan boundaries, Agent Manager, artifacts, conversations, slash commands, subagents paralel, scheduled tasks, dan kontrol browser.",
+  "source": "antigravity-part-2-desktop-2-0.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "agenticengineering",
+    "google"
+  ],
+  "tags": [
+    "agent-manager",
+    "antigravity",
+    "artifacts",
+    "desktop",
+    "gemini",
+    "google",
+    "scheduled-tasks",
+    "subagents"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "antigravity-part-2-desktop-2-0"
+}

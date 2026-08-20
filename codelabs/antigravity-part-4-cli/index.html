@@ -1,0 +1,200 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Ekosistem Google Antigravity — Part 4: Antigravity CLI (
+agy)</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="antigravity-part-4-cli"
+                  title="Ekosistem Google Antigravity — Part 4: Antigravity CLI (
+agy)"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Outcome &amp; Prasyarat" duration="4">
+        <p>CLI (<code>agy</code>) adalah surface untuk <strong>terminal-first dan headless</strong>: dibangun dengan Go demi kecepatan, bisa menjalankan agent tanpa GUI di SSH, container remote, atau CI.</p>
+<p>Di akhir part ini:</p>
+<ul>
+<li><code>agy</code> terpasang, terautentikasi (termasuk skenario headless).</li>
+<li>Anda memakai TUI interaktif, referensi file <code>@</code>, dan slash commands.</li>
+<li>Anda menjalankan subagent async, mode headless <code>-p</code>, dan mengatur sandbox.</li>
+</ul>
+<p><strong>Prasyarat: </strong><a href="antigravity-part-1-konsep-ekosistem/" target="_blank">Part 1</a> dipahami; akses terminal.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kenapa CLI" duration="4">
+        <p>GUI hebat di laptop, tetapi banyak pekerjaan agentik hidup di tempat tanpa layar: server remote, pipeline CI, atau sekadar preferensi terminal. <code>agy</code> membawa agent yang sama ke sana — dan menambah keunggulan <strong>subagent asinkron</strong>: kirim tugas panjang ke background, lanjut mengetik di foreground.</p>
+<p>Positive : Ini melengkapi pola dual-mac (lihat seri terpisah): jalankan <code>agy</code> headless di compute node lewat SSH, sementara Anda mengetik di laptop ringan.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 1: Instalasi &amp; Verifikasi" duration="5">
+        <p><strong>macOS / Linux:</strong></p>
+<pre><code language="language-bash" class="language-bash">curl -fsSL https://antigravity.google/cli/install.sh | bash
+</code></pre>
+<p><strong>Windows (PowerShell):</strong></p>
+<pre><code language="language-powershell" class="language-powershell">irm https://antigravity.google/cli/install.ps1 | iex
+</code></pre>
+<p>Verifikasi:</p>
+<pre><code language="language-bash" class="language-bash">agy --version
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 2: Autentikasi (termasuk Headless)" duration="6">
+        <p><strong>Di desktop:</strong> jalankan <code>agy</code>, OAuth otomatis membuka browser.</p>
+<p><strong>Di SSH/headless:</strong> CLI menampilkan <strong>URL otorisasi + kode sekali pakai</strong> yang Anda buka di mesin lokal — inilah yang membuat <code>agy</code> bisa login tanpa GUI.</p>
+<p><strong>Via API key</strong> (mis. untuk CI):</p>
+<pre><code language="language-bash" class="language-bash">export ANTIGRAVITY_API_KEY=your_api_key_here
+</code></pre>
+<p>Negative : Nama variabel API key bisa berbeda antar versi/surface (SDK di Part 5 memakai <code>GEMINI_API_KEY</code>). Selalu cek <code>agy --help</code> dan dokumentasi versi Anda sebelum mengandalkannya di CI.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 3: Menjalankan — Interaktif, Inspect, Headless" duration="7">
+        <pre><code language="language-bash" class="language-bash"># Mode interaktif (TUI)
+agy
+
+# Periksa konteks project yang terdeteksi
+agy inspect
+
+# Mode prompt tunggal (non-interaktif)
+agy -p &#34;Write a Go function that reads a CSV&#34;
+</code></pre>
+<p><strong>Referensi file dengan </strong></p>
+<p><strong><code>@</code></strong> di dalam prompt:</p>
+<ul>
+<li>File tunggal: <code>@src/main.go</code></li>
+<li>Direktori: <code>@src/</code></li>
+<li>Glob: <code>@**/*.ts</code></li>
+</ul>
+<p>Negative : Mode headless <code>agy -p</code> mencetak <strong>teks polos</strong> — tanpa envelope hasil terstruktur. Beberapa flag yang muncul di dokumen (mis. <code>--output-format</code>) mungkin tidak ada di versi Anda; verifikasi dengan <code>agy --help</code>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 4: Slash Commands di TUI" duration="8">
+        <p>Slash command hanya hidup <strong>di dalam sesi </strong></p>
+<p><strong><code>agy</code></strong></p>
+<p><strong> yang berjalan</strong>, berbeda dari perintah shell wrapper (Langkah 6).</p>
+<p><strong>Percakapan:</strong></p>
+<ul>
+<li><code>/resume</code> atau <code>/switch</code> — pemilih percakapan untuk melanjutkan/berpindah sesi.</li>
+<li><code>/rewind</code> atau <code>/undo</code> — mundur ke checkpoint sebelumnya.</li>
+<li><code>/rename <name></code> — ganti nama percakapan.</li>
+</ul>
+<p><strong>Konfigurasi:</strong></p>
+<ul>
+<li><code>/permissions</code> — tingkat otonomi: <code>request-review</code>, <code>always-proceed</code>, atau <code>strict</code>.</li>
+<li><code>/model</code> — pilih model default (persisten), mis. <code>/model gemini-3.1-pro</code>.</li>
+<li><code>/keybindings</code>, <code>/statusline</code> — kustomisasi keyboard &amp; status bar.</li>
+<li><code>/config</code> — pengaturan sesi.</li>
+</ul>
+<p><strong>Tools &amp; monitoring:</strong></p>
+<ul>
+<li><code>/tasks</code> — pantau, lihat log, atau hentikan background task.</li>
+<li><code>/skills</code> — jelajah skill lokal &amp; global.</li>
+<li><code>/mcp</code> — kelola MCP server.</li>
+<li><code>/agents</code> — panel manajemen subagent.</li>
+</ul>
+<p><strong>Utilitas: </strong><code>/help</code> (semua command), <code>/context</code> (rincian token), <code>/usage</code> (kuota &amp; limit), <code>/diff</code> (peninjau diff), <code>/open <path></code>, <code>/export</code> (sinkron ke aplikasi desktop), <code>/logout</code>.</p>
+<p>Positive : <code>/usage</code> dan <code>/context</code> adalah teman terbaik Anda di plan bermeteran — cek berkala agar tahu sisa kuota dan besar konteks yang dikirim.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 5: Subagent Async &amp; Execution Modes" duration="7">
+        <p>Keunggulan utama <code>agy</code>: <strong>subagent asinkron</strong>. Kirim tugas panjang ke background lalu terus bekerja:</p>
+<pre><code>/agent refactor &#34;Convert all callbacks to context.Context in @internal/api&#34;
+</code></pre>
+<p>Subagent melaporkan progres di status bar dan mengirim hasil kembali ke percakapan saat selesai; beberapa bisa berjalan paralel (bagus untuk memecah refactor besar antar-package). Buka panel via <code>/agents</code> — setujui/tolak izin dengan pintasan (mis. <code>ctrl+j</code> melompat ke detail, <code>ctrl+k</code> untuk persetujuan cepat).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 6: Terminal Sandbox" duration="6">
+        <p><strong>Kenapa:</strong> agent yang menjalankan perintah shell perlu batas aman. Sandbox membatasi apa yang bisa disentuh proses agent memakai fitur OS native (nsjail di Linux, sandbox-exec di macOS, AppContainer di Windows) — dengan overhead startup nol.</p>
+<p>Aktifkan di <code>settings.json</code>:</p>
+<pre><code language="language-json" class="language-json">{
+  &#34;enableTerminalSandbox&#34;: true
+}
+</code></pre>
+<p>Positive : Nyalakan sandbox terutama saat memberi agent otonomi tinggi (<code>always-proceed</code>). Batas OS-level adalah jaring pengaman kalau permission logic terlewat.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 7: Customizations &amp; Migrasi dari Gemini CLI" duration="6">
+        <p><code>agy</code> memakai kustomisasi yang sama (detail di <a href="antigravity-part-6-customizations-workflow/" target="_blank">Part 6</a>):</p>
+<ul>
+<li><strong>AGENTS.md</strong> di root repo — instruksi project yang otomatis diprepend ke tiap prompt.</li>
+<li><strong>Skills</strong> — Markdown di <code>.agents/skills/</code> menjadi command reusable.</li>
+<li><strong>Hooks</strong> — interseptor lifecycle (JSON) untuk pre-flight check atau format otomatis setelah edit file.</li>
+<li><strong>MCP</strong> — via <code>mcp_config.json</code> untuk database, docs, atau issue tracker.</li>
+<li><strong>Plugins</strong> — bundel skills+rules+hooks+MCP; kelola via <code>agy plugin</code>.</li>
+</ul>
+<p>Shell wrapper (di luar sesi TUI): <code>agy help</code>, <code>agy install</code>, <code>agy plugin</code>, <code>agy update</code>, <code>agy changelog</code>.</p>
+<p>Negative : <strong>Gemini CLI disunset 18 Juni 2026</strong> untuk sebagian besar pengguna. Migrasi konfigurasi lama dengan:</p>
+<pre><code language="language-bash" class="language-bash">agy plugin import gemini
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Verifikasi" duration="2">
+        <ul>
+<li>[ ] <code>agy --version</code> jalan; login berhasil (coba juga skenario headless bila relevan).</li>
+<li>[ ] Anda menjalankan <code>agy -p "..."</code> dan sesi interaktif <code>agy</code>.</li>
+<li>[ ] Anda memakai referensi <code>@file</code> dan minimal 3 slash command (<code>/model</code>, <code>/usage</code>, <code>/agents</code>).</li>
+<li>[ ] Anda menjalankan satu <strong>subagent async</strong> dan memantaunya via <code>/tasks</code>/<code>/agents</code>.</li>
+<li>[ ] <code>enableTerminalSandbox</code> aktif di <code>settings.json</code>.</li>
+</ul>
+<p>Positive : <strong>Lanjut ke Part 5 — Antigravity SDK (Python)</strong>, saat Anda ingin membangun agent kustom secara programatik.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Sumber" duration="1">
+        <ul>
+<li><a href="https://antigravity.google/docs/cli/features/" target="_blank">Antigravity Docs — CLI</a></li>
+<li><a href="https://dev.to/arindam_1729/antigravity-cli-a-hands-on-guide-to-googles-terminal-coding-agent-5bc7" target="_blank">Antigravity CLI hands-on (DEV Community)</a></li>
+<li><a href="https://www.explainx.ai/blog/antigravity-cli-features-sandbox-plugins-subagents-2026" target="_blank">Antigravity CLI reference (explainX)</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

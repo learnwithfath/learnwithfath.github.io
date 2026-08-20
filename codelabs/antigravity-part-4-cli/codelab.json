@@ -1,0 +1,37 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T15:57:52+07:00",
+  "id": "antigravity-part-4-cli",
+  "duration": 56,
+  "title": "Ekosistem Google Antigravity — Part 4: Antigravity CLI (\nagy)",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 4 dari seri Ekosistem Google Antigravity — Antigravity CLI (agy). Instalasi \u0026 auth (termasuk headless/SSH), TUI interaktif, slash commands, referensi file @, execution modes, terminal sandbox, subagent async, mode headless -p, plugins/skills/hooks/MCP, dan migrasi dari Gemini CLI.",
+  "source": "antigravity-part-4-cli.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "agenticengineering",
+    "google"
+  ],
+  "tags": [
+    "agy",
+    "antigravity",
+    "cli",
+    "gemini",
+    "google",
+    "headless",
+    "mcp",
+    "sandbox",
+    "subagents",
+    "terminal"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "antigravity-part-4-cli"
+}

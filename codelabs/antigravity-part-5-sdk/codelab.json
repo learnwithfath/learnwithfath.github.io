@@ -1,0 +1,36 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T15:58:37+07:00",
+  "id": "antigravity-part-5-sdk",
+  "duration": 55,
+  "title": "Ekosistem Google Antigravity — Part 5: Antigravity SDK (Python)",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 5 dari seri Ekosistem Google Antigravity — Antigravity SDK (Python). Instalasi, Agent \u0026 LocalAgentConfig, personas, tools, policies, subagents, structured output (Pydantic), lifecycle/hooks, dan deploy agent lokal ke Vertex AI tanpa ubah kode.",
+  "source": "antigravity-part-5-sdk.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "agenticengineering",
+    "google"
+  ],
+  "tags": [
+    "antigravity",
+    "gemini",
+    "google",
+    "policies",
+    "python",
+    "sdk",
+    "structured-output",
+    "subagents",
+    "vertex-ai"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "antigravity-part-5-sdk"
+}

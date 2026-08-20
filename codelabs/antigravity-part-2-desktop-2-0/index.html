@@ -1,0 +1,161 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Ekosistem Google Antigravity — Part 2: Antigravity 2.0 (Desktop)</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="antigravity-part-2-desktop-2-0"
+                  title="Ekosistem Google Antigravity — Part 2: Antigravity 2.0 (Desktop)"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Outcome &amp; Prasyarat" duration="4">
+        <p>Di <a href="antigravity-part-1-konsep-ekosistem/" target="_blank">Part 1</a> kita tetapkan: Desktop 2.0 adalah <strong>orkestrator</strong> — surface untuk menjalankan banyak agent paralel di banyak project. Sekarang kita pakai.</p>
+<p>Di akhir part ini:</p>
+<ul>
+<li>Antigravity Desktop terpasang dan Anda login.</li>
+<li>Anda punya satu Project dengan boundaries yang benar.</li>
+<li>Anda menjalankan agent, membaca artifact, mendelegasikan subagent, dan menjadwalkan tugas.</li>
+</ul>
+<p><strong>Prasyarat:</strong> akun Google, OS didukung (macOS 12+ / Win10 64-bit / Linux glibc ≥ 2.28).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kenapa Mulai dari Desktop" duration="4">
+        <p>Desktop 2.0 adalah <strong>rekomendasi default</strong> untuk mayoritas kasus. Alasannya: ia memberi gambaran paling utuh tentang cara kerja agent Antigravity — Project, Agent Manager, dan Artifact — dalam GUI yang mudah dipantau. Setelah paham di sini, konsep yang sama tinggal Anda temui lagi di IDE, CLI, dan SDK.</p>
+<p>Kekuatan utamanya: <strong>paralelisme tanpa memblokir</strong>. Anda bisa menyetel beberapa agent mengerjakan masalah berbeda sekaligus, memantau semuanya dari satu layar, dan menjadwalkan tugas yang jalan otomatis di background.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 1: Instalasi &amp; Login" duration="6">
+        <ol type="1">
+<li>Buka <a href="https://antigravity.google/download" target="_blank">antigravity.google/download</a> dan pilih OS + arsitektur yang sesuai.</li>
+<li>Jalankan installer. Saat diminta mengganti instalasi lama, izinkan.</li>
+<li>Login dengan <strong>akun Google</strong> melalui alur OAuth di browser.</li>
+<li>Selesaikan setup wizard: terima <em>Security and Data Use policy</em>, pilih tema, dan (opsional) pasang plugin developer tool.</li>
+</ol>
+<p>Positive : Gunakan <strong>Chrome sebagai browser default</strong> agar alur autentikasi dan fitur kontrol browser (nanti di langkah slash command) berjalan mulus.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 2: Membuat Project (Boundaries)" duration="6">
+        <p><strong>Kenapa Project penting:</strong> agent hanya boleh menyentuh folder/repo di dalam Project-nya. Ini batas keamanan pertama Anda — agent tidak bisa mengembara ke folder lain di disk.</p>
+<ol type="1">
+<li>Dari sidebar, pilih <strong>New Project</strong>.</li>
+<li>Tambahkan satu atau beberapa folder yang mendefinisikan cakupan, mis. <code>$HOME/agy2-projects/my-first-project</code>.</li>
+<li>Pilih preset keamanan <strong>Default</strong> untuk mulai.</li>
+<li>Beri nama Project lalu <strong>Create</strong>.</li>
+</ol>
+<p>Saat menjalankan agent, Anda memilih mode:</p>
+<ul>
+<li><strong>Local</strong> — agent bekerja langsung di folder project Anda.</li>
+<li><strong>New Worktree</strong> — agent bekerja di <em>git worktree</em> terpisah, sehingga eksperimen tidak mengotori working tree utama (ideal untuk tugas paralel).</li>
+</ul>
+<p>Negative : Jangan memasukkan folder berisi secret produksi atau seluruh <code>$HOME</code> ke dalam Project. Batasi ke repo yang memang dikerjakan. Prinsip <em>least privilege</em> dibahas lebih dalam di Part 6.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 3: Conversation &amp; Artifact Pertama" duration="8">
+        <p>Sapa agent dengan sebuah pesan; ia merespons dengan konteks project Anda. Percakapan dikelompokkan per Project (rename via menu tiga titik).</p>
+<p>Yang membuat Antigravity berbeda: agent menghasilkan <strong>Artifact</strong> sebagai bukti kerja, bukan sekadar jawaban:</p>
+<ul>
+<li><strong>Task list</strong> — rencana langkah yang bisa Anda pantau.</li>
+<li><strong>Implementation plan</strong> — desain sebelum kode ditulis.</li>
+<li><strong>Walkthrough</strong> — penjelasan perubahan.</li>
+<li><strong>Code diff</strong> — perubahan konkret untuk direview.</li>
+</ul>
+<p>Positive : Biasakan <strong>membaca implementation plan sebelum menyetujui eksekusi</strong>. Di sinilah Anda mengoreksi arah agent lebih awal — jauh lebih murah daripada membetulkan setelah kode ditulis.</p>
+<p>Slash command penting (ketik <code>/</code>):</p>
+<ul>
+<li><code>/goal</code> — menetapkan tujuan/target task.</li>
+<li><code>/schedule</code> — menjadwalkan tugas berulang (lihat Langkah 5).</li>
+<li><code>/browser</code> — memberi agent kontrol browser untuk verifikasi visual/otomasi web.</li>
+<li><code>/grill-me</code> — agent menguji pemahaman/asumsi Anda sebelum mengeksekusi.</li>
+</ul>
+<p>Pintasan: <strong>⌘K / Ctrl+K</strong> membuka pemilih percakapan; <strong>⌘P / Ctrl+P</strong> untuk pencarian file.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 4: Subagent Paralel &amp; Agent Manager" duration="8">
+        <p>Inilah fitur andalan 2.0. Alih-alih satu agent mengerjakan semuanya berurutan, <strong>delegasikan tugas independen ke subagent</strong> yang jalan paralel di background.</p>
+<p>Pola yang sehat untuk fullstack:</p>
+<ul>
+<li><strong>Subagent Backend</strong> — handler API, unit test, migration.</li>
+<li><strong>Subagent Mobile/Web</strong> — UI, state, integrasi kontrak.</li>
+<li><strong>Subagent QA</strong> — lint, build, test end-to-end.</li>
+</ul>
+<p><strong>Agent Manager</strong> menampilkan semua agent aktif &amp; selesai beserta statusnya, sehingga Anda bisa memantau, menyetujui, atau menghentikan dari satu tempat.</p>
+<p>Negative : Subagent paralel <strong>mengonsumsi kuota secara paralel</strong> juga. Pada plan bermeteran, pantau penggunaan agar tidak menembus Weekly/Five-Hour limit (lihat Part 1).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 5: Scheduled Tasks" duration="6">
+        <p><strong>Kenapa:</strong> sebagian pekerjaan tidak perlu Anda picu manual. Jadwalkan agent menjalankannya otomatis.</p>
+<p>Lewat <code>/schedule</code> atau antarmuka Schedule, definisikan prompt + waktu untuk tugas berulang, contohnya:</p>
+<ul>
+<li>Cek kualitas kode / lint mingguan.</li>
+<li>Deteksi dependency usang dan buka draft PR pembaruan.</li>
+<li>Ringkas perubahan repo tiap pagi.</li>
+</ul>
+<p>Positive : Kombinasi <strong>scheduled tasks + subagent</strong> membuat Desktop 2.0 berfungsi seperti &#34;tim agent&#34; yang bekerja bahkan saat Anda tidak menatap layar.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Verifikasi" duration="2">
+        <ul>
+<li>[ ] Antigravity Desktop terpasang &amp; login berhasil.</li>
+<li>[ ] Ada satu Project dengan boundaries folder yang benar.</li>
+<li>[ ] Anda menjalankan agent dan membaca minimal satu <strong>implementation plan</strong> sebelum menyetujuinya.</li>
+<li>[ ] Anda mendelegasikan minimal satu <strong>subagent</strong> dan memantaunya di Agent Manager.</li>
+<li>[ ] Anda membuat satu <strong>scheduled task</strong>.</li>
+</ul>
+<p>Positive : <strong>Lanjut ke Part 3 — Antigravity IDE</strong>, saat Anda butuh melihat dan menyetujui perubahan kode baris demi baris.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Sumber" duration="1">
+        <ul>
+<li><a href="https://antigravity.google/docs" target="_blank">Antigravity Docs — Getting Started &amp; Features</a></li>
+<li><a href="https://codelabs.developers.google.com/getting-started-google-antigravity" target="_blank">Getting Started codelab (Google)</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
