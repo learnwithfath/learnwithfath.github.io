@@ -1,0 +1,36 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T23:56:43+07:00",
+  "id": "google-ai-pro-part-6-bangun-software",
+  "duration": 44,
+  "title": "Maksimalkan Google AI Pro — Part 6: Bangun Software",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 6 dari seri Maksimalkan Google AI Pro — bangun software nyata dari prompt. AI Studio Build (React + Node, ditenagai Antigravity Agent), generate app Android native (Kotlin + Jetpack Compose) dan deploy ke Cloud Run/GitHub, Gemini API + Managed Agents (Gemini 3.5 Flash), Gemini di Android Studio (Agent Mode, AGENTS.md, MCP), dan Antigravity untuk orkestrasi. Jalur fullstack/mobile menuju jual app \u0026 freelance dev.",
+  "source": "google-ai-pro-part-6-bangun-software.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "mobile",
+    "softwareengineering"
+  ],
+  "tags": [
+    "ai-studio",
+    "android-studio",
+    "antigravity",
+    "freelance-dev",
+    "fullstack",
+    "gemini-api",
+    "jules",
+    "managed-agents",
+    "mobile"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "google-ai-pro-part-6-bangun-software"
+}

@@ -1,0 +1,258 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Maksimalkan Google AI Pro — Part 1: Peta Ekosistem &amp; Strategi</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="google-ai-pro-part-1-peta-strategi"
+                  title="Maksimalkan Google AI Pro — Part 1: Peta Ekosistem &amp; Strategi"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Tentang Seri Ini" duration="5">
+        <p>Anda sudah membayar <strong>Google AI Pro</strong>. Masalahnya, langganan ini bukan satu produk — ia <strong>belasan &#34;surface&#34;</strong> (Gemini, NotebookLM, Flow, AI Studio, Antigravity, Workspace, dan lainnya) yang sangat mudah tidak terpakai. Seri ini memastikan tidak ada nilai yang terbuang, dengan gaya <em>why-first</em>: paham <strong>kenapa</strong> sebuah tool ada, baru <strong>bagaimana</strong> memakainya untuk tiga tujuan konkret — <strong>kerja kantor</strong>, <strong>cari uang tambahan</strong>, dan <strong>fullstack mobile / software engineering</strong>.</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Part</p>
+</td><td colspan="1" rowspan="1"><p>Fokus</p>
+</td><td colspan="1" rowspan="1"><p>Tujuan utama</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Part 1 (ini)</strong></p>
+</td><td colspan="1" rowspan="1"><p>Peta ekosistem, strategi, tata kelola data</p>
+</td><td colspan="1" rowspan="1"><p>Semua — baca lebih dulu</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 2</p>
+</td><td colspan="1" rowspan="1"><p>Gemini sebagai otak: Deep Research, Gems, agentic</p>
+</td><td colspan="1" rowspan="1"><p>Riset &amp; kerja</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 3</p>
+</td><td colspan="1" rowspan="1"><p>Workspace autopilot: Gmail, Docs, Sheets, Slides, Meet</p>
+</td><td colspan="1" rowspan="1"><p>Kerja kantor &amp; jasa VA</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 4</p>
+</td><td colspan="1" rowspan="1"><p>NotebookLM: ubah riset jadi aset konten</p>
+</td><td colspan="1" rowspan="1"><p>Jalur cuan konten</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 5</p>
+</td><td colspan="1" rowspan="1"><p>Studio kreatif: Flow (Veo), Nano Banana Pro, Flow Music</p>
+</td><td colspan="1" rowspan="1"><p>Jasa &amp; konten visual</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 6</p>
+</td><td colspan="1" rowspan="1"><p>Bangun software: AI Studio, Gemini API, Android Studio, Antigravity</p>
+</td><td colspan="1" rowspan="1"><p>Fullstack / mobile</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Part 7</p>
+</td><td colspan="1" rowspan="1"><p>Mesin cuan: peluang, pricing, positioning &amp; etika</p>
+</td><td colspan="1" rowspan="1"><p>Side income</p>
+</td></tr>
+</table>
+<p>Positive : <strong>Part 1 hampir tanpa langkah teknis.</strong> Tujuannya membangun <em>peta</em> dan <em>strategi</em>. Kalau Anda tahu apa yang Anda punya dan untuk apa, part berikutnya tinggal eksekusi.</p>
+<p>Negative : <strong>Catatan snapshot.</strong> Angka limit, nama model, dan fitur di seri ini mengikuti dokumentasi resmi Google per <strong>20 Agustus 2026</strong>. Produk ini bergerak sangat cepat — selalu cek <a href="https://one.google.com/about/google-ai-plans/" target="_blank">one.google.com/about/google-ai-plans</a> untuk angka terbaru sebelum mengambil keputusan penting.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Apa yang Sebenarnya Anda Bayar" duration="10">
+        <p>Kebanyakan orang memakai Google AI Pro hanya sebagai &#34;ChatGPT-nya Google&#34;. Padahal isinya jauh lebih luas. Berikut komponen paket menurut halaman resmi Google, beserta <em>untuk apa</em> masing-masing dalam seri ini:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Komponen (resmi)</p>
+</td><td colspan="1" rowspan="1"><p>Isi</p>
+</td><td colspan="1" rowspan="1"><p>Dipakai di</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Batas 4x lebih tinggi</strong></p>
+</td><td colspan="1" rowspan="1"><p>4x lipat penggunaan Gemini dibanding tanpa paket</p>
+</td><td colspan="1" rowspan="1"><p>Semua</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Gemini 3.1 Pro + Deep Research</strong></p>
+</td><td colspan="1" rowspan="1"><p>Model reasoning terbaik + riset multi-sumber bersitasi</p>
+</td><td colspan="1" rowspan="1"><p>Part 2</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Gemini Notebook (NotebookLM)</strong></p>
+</td><td colspan="1" rowspan="1"><p>Akses lebih luas: Ringkasan Audio &amp; Video, Kuis</p>
+</td><td colspan="1" rowspan="1"><p>Part 4</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Google Flow</strong></p>
+</td><td colspan="1" rowspan="1"><p>Studio video sinematik (Veo 3.1) + <strong>1.000 kredit/bln</strong></p>
+</td><td colspan="1" rowspan="1"><p>Part 5</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Google Flow Music</strong></p>
+</td><td colspan="1" rowspan="1"><p>Studio musik AI</p>
+</td><td colspan="1" rowspan="1"><p>Part 5</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Penyimpanan 5 TB</strong></p>
+</td><td colspan="1" rowspan="1"><p>Total untuk Google Foto, Drive &amp; Gmail</p>
+</td><td colspan="1" rowspan="1"><p>Part 3</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Google AI Studio</strong></p>
+</td><td colspan="1" rowspan="1"><p>Prototipe &amp; bangun app dengan Gemini 3.1 Pro + Nano Banana Pro</p>
+</td><td colspan="1" rowspan="1"><p>Part 6</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Gemini di Android Studio</strong></p>
+</td><td colspan="1" rowspan="1"><p>Batas lebih tinggi untuk bantuan AI agentic Android</p>
+</td><td colspan="1" rowspan="1"><p>Part 6</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Google Antigravity</strong></p>
+</td><td colspan="1" rowspan="1"><p>Kapasitas untuk model agen di platform agentic</p>
+</td><td colspan="1" rowspan="1"><p>Part 6</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Gemini di Gmail, Docs, Slides, Sheets, Meet</strong></p>
+</td><td colspan="1" rowspan="1"><p>AI langsung di aplikasi kerja</p>
+</td><td colspan="1" rowspan="1"><p>Part 3</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Google Penelusuran (AI Mode)</strong></p>
+</td><td colspan="1" rowspan="1"><p>Akses model Gemini 3 Pro + Deep Search</p>
+</td><td colspan="1" rowspan="1"><p>Part 2 &amp; 3</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Google Developer Program premium</strong></p>
+</td><td colspan="1" rowspan="1"><p><strong>US$10 kredit Cloud/bln</strong>, 1.000+ codelab, komunitas</p>
+</td><td colspan="1" rowspan="1"><p>Part 6 &amp; 7</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Berbagi 5 orang</strong></p>
+</td><td colspan="1" rowspan="1"><p>Bagikan benefit ke maksimal 5 orang lain</p>
+</td><td colspan="1" rowspan="1"><p>Part 1</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Google Health Premium</strong></p>
+</td><td colspan="1" rowspan="1"><p>Panduan personal dari Gemini (Pixel Watch / Fitbit)</p>
+</td><td colspan="1" rowspan="1"><p>Part 1</p>
+</td></tr>
+</table>
+<p>Positive : <strong>Kunci pemahaman:</strong> ini <strong>satu langganan, banyak pintu</strong>, dan semuanya bermuara ke keluarga model Gemini yang sama. Belajar satu prinsip inti (prompt yang baik, grounding ke sumber, AI mengeksekusi–Anda menilai) langsung berlaku di semua surface.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Mindset: AI sebagai Amplifier, Bukan Pengganti" duration="6">
+        <p>Ini prinsip terpenting sebelum Anda mengejar produktivitas atau uang tambahan. Dari pola yang konsisten di lapangan: yang menghasilkan bukan orang yang menyerahkan <strong>seluruh</strong> pekerjaan ke AI, tetapi orang yang memakai AI untuk <strong>melipatgandakan</strong> bagian yang lambat.</p>
+<ul>
+<li><strong>AI mengerjakan:</strong> riset awal, draf, boilerplate, variasi ide, ringkasan, otomasi berulang.</li>
+<li><strong>Anda mengerjakan:</strong> penilaian, kualitas, konteks klien, keputusan, sentuhan akhir, tanggung jawab.</li>
+</ul>
+<p>Kenapa ini menentukan penghasilan? Karena klien atau atasan tidak membayar &#34;output AI mentah&#34; — mereka membayar <strong>hasil yang bisa dipercaya</strong>. Deep Research memberi Anda draf laporan pasar dalam 10 menit; nilai Anda ada pada 20 menit berikutnya saat memverifikasi angka dan menajamkan rekomendasi.</p>
+<p>Negative : <strong>Jebakan umum:</strong> menempel output AI mentah ke pekerjaan/klien. Ini cepat, tetapi merusak reputasi saat ada halusinasi. Sepanjang seri, setiap output AI selalu melewati langkah <strong>verifikasi manusia</strong>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Peta ke Tiga Tujuan Anda" duration="6">
+        <p>Supaya tidak tersesat, petakan setiap surface ke tujuan Anda. Chip filter di halaman hub seri ini memakai <em>track</em> yang sama — Anda bisa menyaring langkah sesuai fokus hari ini.</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Track</p>
+</td><td colspan="1" rowspan="1"><p>Untuk</p>
+</td><td colspan="1" rowspan="1"><p>Surface utama</p>
+</td><td colspan="1" rowspan="1"><p>Part</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>kerja</strong></p>
+</td><td colspan="1" rowspan="1"><p>Produktivitas kantor</p>
+</td><td colspan="1" rowspan="1"><p>Gemini di Workspace, 5 TB</p>
+</td><td colspan="1" rowspan="1"><p>3</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>riset</strong></p>
+</td><td colspan="1" rowspan="1"><p>Riset &amp; analisis</p>
+</td><td colspan="1" rowspan="1"><p>Deep Research, NotebookLM, Search AI Mode</p>
+</td><td colspan="1" rowspan="1"><p>2, 4</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>kreatif</strong></p>
+</td><td colspan="1" rowspan="1"><p>Konten visual/audio</p>
+</td><td colspan="1" rowspan="1"><p>Flow (Veo), Nano Banana Pro, Flow Music</p>
+</td><td colspan="1" rowspan="1"><p>5</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>engineering</strong></p>
+</td><td colspan="1" rowspan="1"><p>Bangun software/mobile</p>
+</td><td colspan="1" rowspan="1"><p>AI Studio, Gemini API, Android Studio, Antigravity</p>
+</td><td colspan="1" rowspan="1"><p>6</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>cuan</strong></p>
+</td><td colspan="1" rowspan="1"><p>Uang tambahan</p>
+</td><td colspan="1" rowspan="1"><p>Semua di atas → layanan/produk</p>
+</td><td colspan="1" rowspan="1"><p>4–7</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>strategi</strong></p>
+</td><td colspan="1" rowspan="1"><p>Fondasi &amp; tata kelola</p>
+</td><td colspan="1" rowspan="1"><p>Perencanaan, keamanan, pricing</p>
+</td><td colspan="1" rowspan="1"><p>1, 7</p>
+</td></tr>
+</table>
+<p>Positive : Karena Anda menekankan <strong>cari uang tambahan</strong> dan <strong>fullstack/mobile</strong>, jalur tercepat adalah: Part 2 (riset) → Part 4 (aset konten) atau Part 6 (bangun app) → Part 7 (monetisasi). Part 3 &amp; 5 memperkuat, tetapi bisa Anda dahulukan sesuai kebutuhan.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Aktifkan Semua Benefit (Sekali, di Awal)" duration="5">
+        <p>Banyak benefit &#34;diam&#34; sampai Anda mengaktifkannya. Lakukan sekali agar tidak ada yang menganggur:</p>
+<ol type="1">
+<li><strong>Google Developer Program premium</strong> — tautkan benefit AI Pro Anda, lalu klaim <strong>US$10 kredit Google Cloud bulanan</strong> dan akses 1.000+ codelab. Ini modal gratis untuk Part 6 &amp; 7. Lihat <a href="https://developers.google.com/program" target="_blank">developers.google.com/program</a>.</li>
+<li><strong>Berbagi ke 5 orang</strong> — foto, file, dan email Anda tetap privat meski berbagi penyimpanan. Berguna untuk keluarga atau rekan tim kecil; pertimbangkan berbagi biaya.</li>
+<li><strong>Google Health Premium</strong> — aktif setelah menyambungkan Pixel Watch / Fitbit (opsional, di luar fokus produktivitas).</li>
+<li><strong>YouTube Premium Lite</strong> (jika tersedia di wilayah Anda) — ikut dalam paket.</li>
+</ol>
+<p>Negative : <strong>Berbagi ≠ berbagi identitas.</strong> Setiap orang tetap login akun masing-masing. Jangan berbagi kredensial akun Anda — itu justru menaikkan risiko keamanan dan bisa melanggar ketentuan layanan.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Tata Kelola &amp; Keamanan Data (Wajib Dibaca)" duration="5">
+        <p>Begitu Anda memakai AI untuk kerja dan mencari uang, Anda akan tergoda menempel data nyata. Di sinilah orang paling sering keliru.</p>
+<p><strong>Aturan yang tidak bisa ditawar:</strong></p>
+<ul>
+<li><strong>Jangan pernah</strong> memasukkan <strong>data rahasia perusahaan atau data pribadi (PII)</strong> — nomor KTP, data nasabah, rahasia dagang, kredensial — ke tool AI konsumer <strong>tanpa izin tertulis</strong> dari pemilik/perusahaan.</li>
+<li>Untuk pekerjaan kantor, <strong>pisahkan akun</strong>: gunakan akun Workspace kantor (dengan kebijakan datanya) untuk data kantor, dan akun pribadi untuk eksperimen/side job.</li>
+<li>Untuk data klien side job, <strong>anonimkan</strong> dulu (ganti nama &amp; angka sensitif dengan placeholder) sebelum diproses AI, lalu masukkan kembali detail asli secara manual.</li>
+<li>Cek kebijakan retensi &amp; pelatihan data pada akun Anda; matikan penggunaan data untuk pelatihan bila tersedia dan relevan.</li>
+</ul>
+<p>Positive : Aturan ini bukan penghambat — ini yang membuat Anda <strong>layak dipercaya klien</strong>. Banyak klien justru memilih freelancer yang paham menjaga data. Jadikan &#34;aman data&#34; sebagai nilai jual, bukan beban.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Verifikasi Pemahaman" duration="2">
+        <p>Sebelum lanjut, pastikan Anda bisa menjawab tanpa melihat catatan:</p>
+<ol type="1">
+<li>Sebutkan minimal 5 surface Google AI Pro dan untuk track mana masing-masing.</li>
+<li>Apa arti &#34;AI sebagai amplifier&#34; dan kenapa ini menentukan penghasilan?</li>
+<li>Benefit apa saja yang harus diaktifkan sekali di awal?</li>
+<li>Apa tiga aturan keamanan data yang tidak bisa ditawar?</li>
+</ol>
+<p>Positive : <strong>Lanjut ke Part 2 — Gemini sebagai Otak</strong>, tempat kita ubah langganan ini jadi mesin riset dengan Deep Research, Gems, dan kemampuan agentic.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Sumber" duration="1">
+        <ul>
+<li><a href="https://one.google.com/about/google-ai-plans/" target="_blank">Google One — paket Google AI (resmi)</a></li>
+<li><a href="https://gemini.google/subscriptions/" target="_blank">Gemini — Subscriptions (resmi)</a></li>
+<li><a href="https://support.google.com/googleone/answer/14534406" target="_blank">Use Google AI Pro benefits — Google One Help</a></li>
+<li><a href="https://developers.google.com/program" target="_blank">Google Developer Program</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

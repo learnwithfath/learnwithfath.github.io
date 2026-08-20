@@ -1,0 +1,35 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T23:55:08+07:00",
+  "id": "google-ai-pro-part-4-notebooklm-aset",
+  "duration": 34,
+  "title": "Maksimalkan Google AI Pro — Part 4: NotebookLM → Aset Konten",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 4 dari seri Maksimalkan Google AI Pro — ubah riset jadi aset konten dengan NotebookLM (Gemini Notebook). Kenapa NotebookLM grounded ke sumber Anda, limit Pro yang sebenarnya (100 sumber/notebook, 6 Audio/Video/Cinematic per hari, 3 Deep Research, 20 kuis), cara membuat Audio \u0026 Video Overview dan Cinematic Video (Gemini 3 + Veo 3), plus pipeline faceless YouTube dan produk kursus/ebook.",
+  "source": "google-ai-pro-part-4-notebooklm-aset.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "contentcreation",
+    "research",
+    "sideincome"
+  ],
+  "tags": [
+    "audio-overview",
+    "cinematic",
+    "faceless-youtube",
+    "gemini-notebook",
+    "konten",
+    "notebooklm",
+    "side-income",
+    "video-overview"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "google-ai-pro-part-4-notebooklm-aset"
+}

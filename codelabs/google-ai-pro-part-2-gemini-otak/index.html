@@ -1,0 +1,144 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Maksimalkan Google AI Pro — Part 2: Gemini sebagai Otak</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="google-ai-pro-part-2-gemini-otak"
+                  title="Maksimalkan Google AI Pro — Part 2: Gemini sebagai Otak"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Outcome &amp; Kenapa Mulai dari Sini" duration="4">
+        <p>Setelah part ini Anda bisa:</p>
+<ul>
+<li>Memilih model yang tepat sehingga batas <strong>4x</strong> tidak cepat habis.</li>
+<li>Menghasilkan <strong>laporan riset multi-sumber bersitasi</strong> dengan Deep Research.</li>
+<li>Membuat <strong>Gems</strong> (asisten kustom) untuk alur kerja berulang.</li>
+<li>Memakai kemampuan agentic &amp; <strong>Canvas</strong> untuk mengubah jawaban jadi dokumen/aplikasi jadi.</li>
+</ul>
+<p><strong>Kenapa Gemini dulu?</strong> Karena hampir semua jalur cuan dan engineering bermula dari <em>berpikir dan meriset dengan benar</em>. Kualitas app, konten, atau laporan Anda dibatasi oleh kualitas riset di depannya. Gemini adalah otak yang memberi bahan mentah bermutu untuk part-part berikutnya.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Pilih Model dengan Sadar: 3.1 Pro vs Flash" duration="6">
+        <p>Google AI Pro memberi <strong>akses lebih tinggi ke Gemini 3 Pro</strong> dan batas pemakaian <strong>4x lebih tinggi</strong> dibanding tanpa paket. Tapi &#34;4x&#34; tetap ada batasnya — jadi jangan boros memakai model termahal untuk hal sepele.</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Kebutuhan</p>
+</td><td colspan="1" rowspan="1"><p>Model</p>
+</td><td colspan="1" rowspan="1"><p>Alasan</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Reasoning kompleks, analisis, strategi, kode sulit</p>
+</td><td colspan="1" rowspan="1"><p><strong>Gemini 3.1 Pro</strong></p>
+</td><td colspan="1" rowspan="1"><p>Kualitas penalaran tertinggi</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Tanya-jawab cepat, ringkasan, draf ringan, iterasi</p>
+</td><td colspan="1" rowspan="1"><p><strong>Gemini 3.x Flash</strong></p>
+</td><td colspan="1" rowspan="1"><p>Cepat &amp; hemat kuota</p>
+</td></tr>
+</table>
+<p>Positive : <strong>Prinsip hemat kuota:</strong> pakai Flash untuk 80% pekerjaan sehari-hari, simpan Pro untuk keputusan penting. Dengan pola ini, batas 4x terasa seperti tak terbatas untuk kebanyakan orang.</p>
+<p>Negative : <strong>Deep Think itu tier Ultra, bukan Pro.</strong> Kalau Anda melihat mode &#34;Deep Think&#34; dipromosikan, itu bagian dari <strong>Google AI Ultra</strong>. Di AI Pro, andalan reasoning Anda adalah <strong>Gemini 3.1 Pro + Deep Research</strong> — sudah lebih dari cukup untuk kerja profesional. Cek <a href="https://gemini.google/subscriptions/" target="_blank">gemini.google/subscriptions</a> untuk pembagian fitur per tier terbaru.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Deep Research: Mesin Laporan Bersitasi" duration="10">
+        <p>Ini fitur andalan AI Pro dan <strong>fondasi jasa riset berbayar</strong>. Deep Research menelusuri banyak sumber web, lalu menyusun <strong>laporan multi-halaman lengkap dengan sitasi</strong> — sesuatu yang biasanya butuh berjam-jam kerja manual.</p>
+<p><strong>Kenapa penting untuk cuan:</strong> klien membayar mahal untuk <em>market research</em>, <em>competitor analysis</em>, dan <em>industry brief</em> yang <strong>berdasarkan data terkini dan bisa ditelusuri</strong>. Sitasi Deep Research membuat hasilnya bisa diaudit — itulah yang membedakannya dari sekadar jawaban chatbot.</p>
+<p><strong>Alur kerja yang efektif:</strong></p>
+<ol type="1">
+<li><strong>Tulis brief, bukan pertanyaan pendek.</strong> Sebutkan tujuan, audiens, cakupan, dan format keluaran. Contoh: <em>&#34;Buat laporan lanskap kompetitor untuk 5 aplikasi kasir UMKM di Indonesia: fitur, harga, positioning, dan celah pasar. Sertakan tabel perbandingan dan rekomendasi.&#34;</em></li>
+<li><strong>Tinjau rencana risetnya.</strong> Gemini menampilkan rencana sebelum menjalankan — perbaiki bila melenceng.</li>
+<li><strong>Jalankan, lalu verifikasi.</strong> Ini langkah non-negotiable: buka beberapa sitasi kunci, pastikan angka benar. Ini bagian &#34;amplifier + penilaian manusia&#34; dari Part 1.</li>
+<li><strong>Ekspor &amp; poles.</strong> Kirim ke Canvas atau Google Docs untuk finalisasi.</li>
+</ol>
+<p>Positive : <strong>Jasa nyata yang bisa Anda tawarkan: </strong><em>competitor analysis report</em>, <em>market entry brief</em>, <em>literature review</em>, <em>due diligence ringkas</em>. Paketkan sebagai &#34;Riset X halaman dalam 48 jam&#34; — Deep Research yang mengangkat beban berat, verifikasi &amp; insight Anda yang menaikkan harga.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Gems: Asisten Kustom untuk Alur Berulang" duration="6">
+        <p><strong>Gems</strong> adalah versi Gemini yang sudah Anda beri instruksi tetap — semacam &#34;asisten khusus&#34; yang tidak perlu Anda jelaskan ulang tiap kali. Ini menghemat waktu besar untuk pekerjaan yang polanya sama.</p>
+<p><strong>Contoh Gem yang berguna:</strong></p>
+<ul>
+<li><strong>&#34;Editor Konten SEO&#34;</strong> — instruksi: gaya bahasa, target kata kunci, struktur artikel, aturan tidak boleh mengarang fakta.</li>
+<li><strong>&#34;Analis Balasan Email&#34;</strong> — merangkum thread panjang dan mengusulkan draf balasan sesuai nada Anda.</li>
+<li><strong>&#34;Reviewer Kode&#34;</strong> — memeriksa diff dengan checklist standar Anda (berguna untuk Part 6).</li>
+<li><strong>&#34;Asisten Riset Klien&#34;</strong> — template brief Deep Research untuk niche yang Anda layani.</li>
+</ul>
+<p>Positive : Buat <strong>satu Gem per layanan</strong> yang Anda jual. Ini membuat pengerjaan konsisten dan cepat — kunci saat menangani banyak klien tanpa menurunkan kualitas.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kemampuan Agentic &amp; Canvas" duration="6">
+        <p>Gemini di AI Pro punya <strong>kemampuan agentic</strong> — bisa menjalankan tugas multi-langkah, bukan sekadar menjawab. Dipadu <strong>Canvas</strong>, jawaban bisa langsung menjadi artefak yang bisa dipakai:</p>
+<ul>
+<li><strong>Canvas dokumen</strong> — menulis dan menyunting dokumen panjang secara interaktif (proposal, artikel, laporan).</li>
+<li><strong>Canvas kode/app</strong> — membangun prototipe web kecil langsung dari prompt (jembatan menuju Part 6).</li>
+<li><strong>Alur multi-langkah</strong> — mis. &#34;riset topik → susun outline → tulis draf → buat ringkasan&#34; dalam satu alur.</li>
+</ul>
+<p>Negative : Fitur agentic paling canggih (mis. agen yang mengambil aksi di web) kadang <strong>terbatas wilayah/bahasa</strong> saat peluncuran. Jika sebuah opsi belum muncul di akun Anda, kemungkinan belum tersedia di region Anda — bukan kesalahan setup.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bonus: Search AI Mode untuk Verifikasi Cepat" duration="3">
+        <p>Google AI Pro memberi akses <strong>model Gemini 3 Pro di Penelusuran (AI Mode)</strong> dengan Deep Search. Gunakan ini sebagai <strong>lapisan verifikasi cepat</strong>: saat Deep Research memberi klaim penting, cek silang dengan AI Mode untuk sumber tambahan sebelum menyerahkan ke klien.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Verifikasi Pemahaman" duration="2">
+        <ol type="1">
+<li>Kapan memilih Gemini 3.1 Pro vs Flash, dan kenapa ini soal kuota?</li>
+<li>Sebutkan 4 langkah alur Deep Research — mana langkah yang tidak boleh dilewati?</li>
+<li>Apa itu Gem, dan kenapa &#34;satu Gem per layanan&#34; berguna untuk cuan?</li>
+<li>Fitur mana yang sebenarnya tier Ultra, bukan Pro?</li>
+</ol>
+<p>Positive : <strong>Lanjut ke Part 3 — Workspace Autopilot</strong>, tempat kita bawa kecerdasan ini ke Gmail, Docs, Sheets, Slides, dan Meet untuk mempercepat kerja kantor dan jasa VA.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Sumber" duration="1">
+        <ul>
+<li><a href="https://gemini.google/subscriptions/" target="_blank">Gemini — Subscriptions (resmi)</a></li>
+<li><a href="https://one.google.com/about/google-ai-plans/" target="_blank">Google One — paket Google AI (resmi)</a></li>
+<li><a href="https://support.google.com/googleone/answer/14534406" target="_blank">Use Google AI Pro benefits — Google One Help</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

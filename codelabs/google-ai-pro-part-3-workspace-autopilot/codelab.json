@@ -1,0 +1,36 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T23:54:27+07:00",
+  "id": "google-ai-pro-part-3-workspace-autopilot",
+  "duration": 35,
+  "title": "Maksimalkan Google AI Pro — Part 3: Workspace Autopilot",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 3 dari seri Maksimalkan Google AI Pro — Gemini di Google Workspace sebagai autopilot kerja. Draf \u0026 ringkas di Gmail dan Docs, formula \u0026 analisis di Sheets, deck otomatis di Slides, notulen di Meet, plus memanfaatkan 5 TB dan Search AI Mode. Termasuk cara memaketkannya jadi jasa virtual assistant / admin berbasis Workspace.",
+  "source": "google-ai-pro-part-3-workspace-autopilot.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "productivity",
+    "googleworkspace",
+    "sideincome"
+  ],
+  "tags": [
+    "docs",
+    "gemini",
+    "gmail",
+    "meet",
+    "produktivitas",
+    "sheets",
+    "slides",
+    "virtual-assistant",
+    "workspace"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "google-ai-pro-part-3-workspace-autopilot"
+}

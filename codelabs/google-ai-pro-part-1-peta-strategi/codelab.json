@@ -1,0 +1,36 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T23:52:52+07:00",
+  "id": "google-ai-pro-part-1-peta-strategi",
+  "duration": 40,
+  "title": "Maksimalkan Google AI Pro — Part 1: Peta Ekosistem \u0026 Strategi",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 1 dari seri Maksimalkan Google AI Pro — peta ekosistem dan strategi. Apa saja yang sebenarnya Anda bayar (4x limit, Gemini 3.1 Pro, 5 TB, Flow, NotebookLM, AI Studio, Android Studio, Antigravity), mindset “AI sebagai amplifier”, peta ke tiga tujuan (kerja/cuan/engineering), cara mengaktifkan semua benefit, dan tata kelola data yang aman.",
+  "source": "google-ai-pro-part-1-peta-strategi.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "productivity",
+    "google",
+    "sideincome"
+  ],
+  "tags": [
+    "ai-studio",
+    "antigravity",
+    "flow",
+    "gemini",
+    "google-ai-pro",
+    "notebooklm",
+    "produktivitas",
+    "side-income",
+    "strategi"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "google-ai-pro-part-1-peta-strategi"
+}

@@ -1,0 +1,158 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Maksimalkan Google AI Pro — Part 6: Bangun Software</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="google-ai-pro-part-6-bangun-software"
+                  title="Maksimalkan Google AI Pro — Part 6: Bangun Software"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Outcome &amp; Kenapa Ini Jalur Bernilai Tinggi" duration="4">
+        <p>Setelah part ini Anda bisa:</p>
+<ul>
+<li>Membangun aplikasi web/mobile <strong>dari sebuah prompt</strong> dengan AI Studio Build.</li>
+<li>Men-<em>deploy</em> app ke produksi (Cloud Run / GitHub / ZIP).</li>
+<li>Memakai Gemini API + Managed Agents untuk fitur AI di app Anda.</li>
+<li>Mempercepat pengembangan Android dengan Gemini di Android Studio.</li>
+<li>Mengorkestrasi kerja dengan Antigravity.</li>
+</ul>
+<p><strong>Kenapa ini jalur bernilai tinggi?</strong> Membangun software adalah keahlian dengan bayaran tertinggi di daftar side job. AI Pro memberi batas lebih tinggi di semua tool developer Google — artinya Anda bisa membangun, menguji, dan merilis produk nyata (yang dijual atau dikerjakan untuk klien) jauh lebih cepat daripada sebelumnya.</p>
+<p>Negative : <strong>Snapshot &amp; keamanan.</strong> Nama model dan fitur mengikuti dokumentasi resmi per 20 Agustus 2026 (mis. <strong>Gemini 3.5 Flash</strong> sebagai model frontier terbaru). Terapkan aturan data Part 1: jangan taruh kredensial/PII di prompt; simpan kunci API sebagai <em>server-side secret</em> (didukung otomatis di AI Studio).</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="AI Studio Build: Dari Prompt ke Aplikasi" duration="10">
+        <p><strong>AI Studio Build mode</strong> mengubah deskripsi bahasa biasa menjadi aplikasi yang bisa dijalankan, lengkap dengan <em>live preview</em>. Fitur cerdasnya <strong>ditenagai Antigravity Agent</strong> — ia menjaga konteks prompt &amp; state file sebelumnya dan menangani dependensi lintas banyak file.</p>
+<p><strong>Yang bisa dibuat:</strong></p>
+<ul>
+<li><strong>Web App (default)</strong> — lingkungan <em>full-stack</em> dengan <strong>frontend React</strong> dan <strong>runtime Node.js</strong> sisi server, mendukung panggilan API aman dan paket npm.</li>
+<li><strong>Native Android App</strong> — proyek <strong>Kotlin + Jetpack Compose</strong> dengan preview emulator di browser, instalasi ke perangkat, dan opsi publish ke Play Store.</li>
+</ul>
+<p><strong>Kapabilitas pendukung:</strong> integrasi <strong>Firebase</strong> (Firestore &amp; Authentication), koneksi <strong>Google Workspace API</strong> dengan OAuth otomatis, dukungan multiplayer real-time, dan <strong>manajemen secrets</strong> untuk kunci API.</p>
+<p>Positive : Alur ideal: <strong>deskripsikan app → iterasi lewat chat atau edit kode langsung → preview</strong>. Anda tidak mulai dari halaman kosong. Untuk freelancer, ini memangkas waktu prototipe dari hari ke jam.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Deploy: Cloud Run, GitHub, atau ZIP" duration="6">
+        <p>App tidak menghasilkan uang selama masih di editor. AI Studio menawarkan jalur rilis:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Opsi</p>
+</td><td colspan="1" rowspan="1"><p>Untuk</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>Cloud Run</strong></p>
+</td><td colspan="1" rowspan="1"><p>Deploy produksi yang skalabel, kunci API aman di sisi server</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>GitHub Export</strong></p>
+</td><td colspan="1" rowspan="1"><p>Integrasi ke workflow dev yang sudah ada</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><strong>ZIP Download</strong></p>
+</td><td colspan="1" rowspan="1"><p>Hosting lokal / kontrol penuh, set env manual</p>
+</td></tr>
+</table>
+<p>Positive : Manfaatkan <strong>US$10 kredit Cloud/bulan</strong> dari Google Developer Program (diaktifkan di Part 1) untuk menutup biaya Cloud Run awal. Modal gratis untuk merilis MVP klien.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Gemini API &amp; Managed Agents" duration="6">
+        <p>Untuk menanam kecerdasan <strong>ke dalam</strong> app buatan Anda:</p>
+<ul>
+<li><strong>Gemini API</strong> — panggil model (termasuk <strong>Nano Banana Pro</strong> untuk gambar) dari kode Anda; kunci dikonfigurasi otomatis sebagai secret sisi server.</li>
+<li><strong>Managed Agents</strong> — model deployment baru: dengan <strong>satu panggilan API</strong>, Anda &#34;menyalakan&#34; agen yang bernalar, memakai tool, dan mengeksekusi kode di <strong>lingkungan Linux terisolasi</strong>, ditenagai <strong>Gemini 3.5 Flash</strong>. Anda tidak perlu menyiapkan infrastruktur/orkestrasi sendiri.</li>
+</ul>
+<p>Positive : Ini membuka produk AI-native yang bisa dijual: asisten khusus niche, alat otomasi, bot pemroses dokumen — tanpa Anda mengelola server agen. Nilai jual tinggi untuk klien yang butuh &#34;fitur AI&#34; tetapi tak punya tim.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Gemini di Android Studio" duration="6">
+        <p>Untuk pengembangan Android serius, Gemini di Android Studio (batas lebih tinggi via AI Pro) memberi <strong>Agent Mode</strong> dan lebih banyak:</p>
+<ul>
+<li><strong>Agent Mode</strong> — agen pengembangan otonom untuk Android.</li>
+<li><strong>Create a new project with AI</strong> — buat proyek Android baru otomatis.</li>
+<li><strong>AGENTS.md</strong> &amp; <strong>MCP server</strong> — konfigurasi perilaku agen dan sambungkan tool eksternal.</li>
+<li><strong>Next Edit Prediction</strong> — memprediksi perubahan berikutnya.</li>
+<li><strong>Generate Compose previews</strong> &amp; <strong>UI dari gambar</strong> — percepat pembuatan UI.</li>
+<li><strong>Analisis crash (App Quality Insights)</strong>, <strong>error Logcat</strong>, dan <strong>perbaikan build Gradle</strong> otomatis.</li>
+</ul>
+<p>Positive : Kombinasi kuat: <strong>prototipe di AI Studio (native Android) → ekspor → lanjutkan di Android Studio</strong> dengan Agent Mode untuk fitur &amp; polish tingkat produksi.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Antigravity untuk Orkestrasi" duration="5">
+        <p><strong>Google Antigravity</strong> adalah platform <em>agent-first</em> Google. Rilis <strong>Antigravity 2.0</strong> menghadirkan aplikasi Desktop (rumah interaksi agen), <strong>Antigravity CLI</strong>, dan <strong>SDK</strong>, dengan <strong>subagent dinamis</strong> untuk alur paralel. AI Studio Build bahkan bisa <strong>ekspor langsung ke Antigravity</strong> untuk pengembangan lokal.</p>
+<p>Positive : Kalau Anda ingin mendalami Antigravity secara menyeluruh (memilih surface, Desktop, IDE, CLI, SDK, governance), ikuti seri khusus di situs ini: <a href="antigravity-ecosystem.html" target="_blank">Ekosistem Google Antigravity</a>. Part ini cukup untuk tahu posisinya dalam alur &#34;bangun software&#34;.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Dari Skill ke Cuan" duration="4">
+        <p>Jalur monetisasi engineering (dirinci di Part 7):</p>
+<ul>
+<li><strong>Jual app / SaaS mikro</strong> — bangun MVP cepat, rilis ke Play Store atau Cloud Run, jual langganan.</li>
+<li><strong>Freelance dev</strong> — kerjakan MVP/prototipe klien; kecepatan Anda jadi keunggulan harga.</li>
+<li><strong>Fitur AI untuk bisnis</strong> — integrasikan Gemini API/Managed Agents ke sistem klien.</li>
+<li><strong>Template &amp; starter kit</strong> — jual boilerplate app yang Anda hasilkan.</li>
+</ul>
+<p>Negative : <strong>AI mempercepat, bukan menggantikan tanggung jawab teknik.</strong> Kode buatan AI tetap harus Anda review: keamanan, penanganan error, dan performa. Klien membayar software yang <strong>andal</strong> — reputasi Anda ada pada verifikasi, bukan pada kecepatan generate.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Verifikasi Pemahaman" duration="2">
+        <ol type="1">
+<li>Apa yang bisa dibuat AI Studio Build (web &amp; Android) dan agen apa yang menenagainya?</li>
+<li>Sebutkan tiga opsi deploy dan kapan memakai masing-masing.</li>
+<li>Apa itu Managed Agents dan model apa yang menenagainya?</li>
+<li>Sebutkan tiga kapabilitas Agent Mode di Android Studio.</li>
+</ol>
+<p>Positive : <strong>Lanjut ke Part 7 — Mesin Cuan &amp; Tata Kelola</strong>, tempat semua part disatukan menjadi peluang penghasilan konkret, lengkap dengan pricing, positioning, dan etika.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Sumber" duration="1">
+        <ul>
+<li><a href="https://ai.google.dev/gemini-api/docs/aistudio-build-mode" target="_blank">Build apps in Google AI Studio — Gemini API docs (resmi)</a></li>
+<li><a href="https://developer.android.com/studio/gemini/overview" target="_blank">Gemini in Android Studio — Android Developers (resmi)</a></li>
+<li><a href="https://blog.google/innovation-and-ai/technology/developers-tools/google-io-2026-developer-highlights/" target="_blank">I/O 2026 developer highlights — Google Blog</a></li>
+<li><a href="antigravity-ecosystem.html" target="_blank">Seri: Ekosistem Google Antigravity (situs ini)</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

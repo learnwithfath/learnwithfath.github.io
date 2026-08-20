@@ -1,0 +1,35 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T23:53:44+07:00",
+  "id": "google-ai-pro-part-2-gemini-otak",
+  "duration": 38,
+  "title": "Maksimalkan Google AI Pro — Part 2: Gemini sebagai Otak",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 2 dari seri Maksimalkan Google AI Pro — jadikan Gemini otak riset dan kerja Anda. Kapan memakai Gemini 3.1 Pro vs Flash, cara memanfaatkan batas 4x, Deep Research untuk laporan pasar bersitasi, Gems sebagai asisten kustom, kemampuan agentic \u0026 Canvas, plus Search AI Mode. Termasuk cara mengubahnya jadi jasa riset berbayar.",
+  "source": "google-ai-pro-part-2-gemini-otak.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "productivity",
+    "research",
+    "google"
+  ],
+  "tags": [
+    "agentic",
+    "canvas",
+    "deep-research",
+    "gemini",
+    "gems",
+    "riset",
+    "search-ai-mode",
+    "side-income"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "google-ai-pro-part-2-gemini-otak"
+}

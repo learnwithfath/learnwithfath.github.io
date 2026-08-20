@@ -1,0 +1,35 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-08-20T23:55:48+07:00",
+  "id": "google-ai-pro-part-5-studio-kreatif",
+  "duration": 33,
+  "title": "Maksimalkan Google AI Pro — Part 5: Studio Kreatif",
+  "authors": "LearnWithFath Team",
+  "summary": "Part 5 dari seri Maksimalkan Google AI Pro — studio kreatif untuk jasa dan konten. Google Flow dengan Veo 3.1 (Scenebuilder, Frames/Ingredients to Video, Video Extension), sistem 1.000 kredit/bln, Nano Banana Pro untuk gambar, dan Flow Music untuk audio. Termasuk jasa kreatif konkret: video pendek, iklan UMKM, aset stok, dan konten sosmed — plus caveat 4K upscale hanya di Ultra.",
+  "source": "google-ai-pro-part-5-studio-kreatif.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "creative",
+    "video",
+    "sideincome"
+  ],
+  "tags": [
+    "flow-music",
+    "google-flow",
+    "kreatif",
+    "nano-banana-pro",
+    "side-income",
+    "umkm",
+    "veo",
+    "video-generatif"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "google-ai-pro-part-5-studio-kreatif"
+}

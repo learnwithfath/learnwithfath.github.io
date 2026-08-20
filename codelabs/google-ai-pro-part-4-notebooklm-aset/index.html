@@ -1,0 +1,154 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Maksimalkan Google AI Pro — Part 4: NotebookLM → Aset Konten</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="google-ai-pro-part-4-notebooklm-aset"
+                  title="Maksimalkan Google AI Pro — Part 4: NotebookLM → Aset Konten"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Outcome &amp; Kenapa NotebookLM" duration="4">
+        <p>Setelah part ini Anda bisa:</p>
+<ul>
+<li>Membuat <em>notebook</em> yang <strong>grounded</strong> — jawaban hanya berdasarkan sumber yang Anda unggah, dengan sitasi.</li>
+<li>Menghasilkan <strong>Ringkasan Audio, Video, dan Cinematic Video</strong> dari materi Anda.</li>
+<li>Menyusun <strong>pipeline konten</strong> (mis. faceless YouTube) dan <strong>produk digital</strong> (kursus, ebook) dari riset.</li>
+</ul>
+<p><strong>Kenapa NotebookLM beda dari Gemini biasa?</strong> Gemini menjawab dari pengetahuan umum; <strong>NotebookLM menjawab dari </strong></p>
+<p><strong><em>sumber Anda sendiri</em></strong> dan menautkan setiap klaim ke kutipan aslinya. Untuk konten yang dijual atau dipublikasi, ini krusial — Anda mengendalikan bahan dan mengurangi risiko halusinasi.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Limit Pro yang Sebenarnya (dari Docs Resmi)" duration="5">
+        <p>Banyak artikel pihak ketiga menyebut angka yang salah. Berikut limit <strong>Gemini Notebook</strong> untuk tier Google AI Pro menurut dokumentasi resmi Google:</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Kapasitas</p>
+</td><td colspan="1" rowspan="1"><p>Limit AI Pro</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Sumber per notebook</p>
+</td><td colspan="1" rowspan="1"><p><strong>100 / notebook</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Jumlah notebook</p>
+</td><td colspan="1" rowspan="1"><p><strong>200 / user</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Ringkasan Audio</p>
+</td><td colspan="1" rowspan="1"><p><strong>6 / hari</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Ringkasan Video</p>
+</td><td colspan="1" rowspan="1"><p><strong>6 / hari</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Cinematic Video Overview</p>
+</td><td colspan="1" rowspan="1"><p><strong>6 / hari</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Deep Research (di dalam NotebookLM)</p>
+</td><td colspan="1" rowspan="1"><p><strong>3 / hari</strong></p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Kuis</p>
+</td><td colspan="1" rowspan="1"><p><strong>20 / hari</strong></p>
+</td></tr>
+</table>
+<p>Plus akses lebih tinggi ke model Gemini, prioritas fitur baru, dan kemampuan <strong>menghapus watermark</strong> pada konten yang dihasilkan.</p>
+<p>Negative : Jangan percaya angka dari blog acak (banyak menyebut &#34;300 sumber&#34; atau &#34;20 Deep Research/hari&#34; — itu <strong>keliru</strong>). Selalu rujuk <a href="https://support.google.com/notebooklm/answer/16213268" target="_blank">halaman limit resmi NotebookLM</a>. Angka bisa berubah; snapshot ini per 20 Agustus 2026.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bangun Notebook yang Grounded" duration="6">
+        <ol type="1">
+<li><strong>Kumpulkan sumber berkualitas</strong> — PDF, artikel, transkrip video, catatan, hingga 100 per notebook. Kualitas output = kualitas sumber.</li>
+<li><strong>Tanya dengan sitasi</strong> — setiap jawaban menautkan ke bagian sumber; klik untuk verifikasi.</li>
+<li><strong>Susun materi</strong> — minta outline, poin kunci, FAQ, atau naskah dari sumber tersebut.</li>
+</ol>
+<p>Positive : Untuk jasa riset (Part 2), NotebookLM adalah pelengkap sempurna: Deep Research mengumpulkan sumber terkini, NotebookLM mengunci analisis Anda <strong>hanya</strong> pada sumber terpilih agar hasil konsisten dan bisa dipertanggungjawabkan.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Audio, Video &amp; Cinematic Overview" duration="8">
+        <p>Inilah fitur yang mengubah riset jadi <strong>konten siap tayang</strong>:</p>
+<ul>
+<li><strong>Ringkasan Audio</strong> — ubah materi jadi percakapan gaya podcast dua pembawa acara. Cocok untuk episode podcast, materi belajar audio, atau ringkasan internal.</li>
+<li><strong>Ringkasan Video</strong> — video ringkas berbasis materi Anda; cepat untuk penjelasan/edukasi.</li>
+<li><strong>Cinematic Video Overview</strong> — fitur unggulan: ubah materi jadi <strong>video sinematik bernarasi</strong> bergaya dokumenter dalam sekali klik. Ini memanfaatkan <strong>Gemini 3</strong> untuk struktur naratif dan <strong>Veo 3</strong> untuk visual.</li>
+</ul>
+<p>Positive : Karena tier Pro bisa <strong>menghapus watermark</strong>, output ini layak untuk dipublikasikan atau diserahkan ke klien — bukan sekadar draf internal.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Pipeline Faceless YouTube &amp; Produk Digital" duration="8">
+        <p>Ini salah satu jalur cuan paling nyata dari NotebookLM. Idenya: satu riset → banyak aset → banyak kanal pendapatan.</p>
+<p><strong>Pipeline faceless YouTube (tanpa tampil di kamera):</strong></p>
+<ol type="1">
+<li><strong>Riset niche</strong> dengan Deep Research (Part 2) → kumpulkan sumber kredibel.</li>
+<li><strong>Masukkan ke notebook</strong> → hasilkan <strong>Cinematic Video Overview</strong> atau naskah.</li>
+<li><strong>Poles</strong> — sesuaikan naskah/visual dengan suara brand Anda; tambah intro/outro.</li>
+<li><strong>Publikasikan</strong> — unggah ke YouTube; monetisasi lewat AdSense dan (nanti) sponsorship.</li>
+<li><strong>Ulangi</strong> dengan konsistensi — kanal faceless tumbuh dari volume + niche yang fokus.</li>
+</ol>
+<p><strong>Produk digital dari riset yang sama:</strong></p>
+<ul>
+<li><strong>Kursus mini / ebook</strong> — dari outline &amp; materi notebook.</li>
+<li><strong>Materi belajar berbayar</strong> — kuis (hingga 20/hari) sebagai latihan soal.</li>
+<li><strong>Podcast</strong> — dari Ringkasan Audio.</li>
+</ul>
+<p>Negative : <strong>Etika &amp; orisinalitas.</strong> Faceless bukan berarti mencuri. Gunakan sumber yang boleh dipakai, tambahkan nilai (sudut pandang, kurasi, penjelasan), dan patuhi kebijakan monetisasi YouTube soal konten AI. Konten daur-ulang tanpa nilai tambah berisiko didemonetisasi.</p>
+<p>Positive : <strong>Kunci sukses:</strong> pilih <strong>satu niche</strong> dan konsisten. AI mempercepat produksi, tetapi yang membangun audiens (dan pendapatan) adalah fokus dan kualitas yang stabil dari waktu ke waktu.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Verifikasi Pemahaman" duration="2">
+        <ol type="1">
+<li>Apa perbedaan mendasar NotebookLM vs Gemini biasa?</li>
+<li>Berapa limit sumber per notebook dan Cinematic Video per hari di AI Pro?</li>
+<li>Sebutkan 5 langkah pipeline faceless YouTube.</li>
+<li>Kenapa &#34;watermark bisa dihapus&#34; penting untuk monetisasi?</li>
+</ol>
+<p>Positive : <strong>Lanjut ke Part 5 — Studio Kreatif</strong>, tempat kita masuk lebih dalam ke Flow (Veo 3.1), Nano Banana Pro, dan Flow Music untuk jasa kreatif visual dan audio.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Sumber" duration="1">
+        <ul>
+<li><a href="https://support.google.com/notebooklm/answer/16213268" target="_blank">Limit Gemini Notebook / NotebookLM — Google Help</a></li>
+<li><a href="https://support.google.com/notebooklm" target="_blank">NotebookLM Help Center</a></li>
+<li><a href="https://one.google.com/about/google-ai-plans/" target="_blank">Google One — paket Google AI (resmi)</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
