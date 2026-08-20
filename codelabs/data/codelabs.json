@@ -17,16 +17,68 @@
     },
     {
       "id": "agentic-workflow-dual-mac-setup",
-      "title": "Agentic Workflow Dual-Mac: Setup Terperinci Full Stack Mobile",
+      "title": "Dual-Mac Agentic Workflow — Part 1: Konsep & Arsitektur",
       "icon": "⚡",
-      "summary": "Panduan lengkap dan sangat terperinci setup agentic workflow dual-mac (M1 8GB & Intel 32GB), shared memory (Graphify, Obsidian), agent harness (Pi, Claude Code), dan mobile testing otomatis (Maestro & Mobile-MCP).",
-      "duration": 105,
-      "sections": 10,
-      "tags": ["AI", "Agentic Workflow", "Dual-Mac", "Mobile", "Graphify", "Obsidian", "Pi-Coding-Agent", "Maestro", "Tailscale"],
+      "summary": "Part 1 dari seri Dual-Mac Agentic Workflow. Kenapa memisahkan driver node (M1 8GB) dan compute node (Intel 32GB), peran tiap komponen (Tailscale, remote SSH, Graphify, harness, Maestro), dan kapan pola ini layak dipakai. Fondasi konsep sebelum menyentuh terminal.",
+      "duration": 40,
+      "sections": 6,
+      "tags": ["AI", "Agentic Workflow", "Dual-Mac", "Arsitektur", "Mental Model", "Tailscale", "Remote Development"],
       "categories": ["ai", "developer-tools", "mobile", "architecture"],
-      "searchTerms": "agentic workflow dual mac setup m1 8gb intel 32gb graphify obsidian pi coding agent harness maestro mobile mcp tailscale",
+      "searchTerms": "agentic workflow dual mac konsep arsitektur mental model driver node compute node tailscale remote ssh kenapa",
       "url": "agentic-workflow-dual-mac-setup/",
-      "ctaText": "Mulai Tutorial"
+      "ctaText": "Mulai Part 1"
+    },
+    {
+      "id": "agentic-dual-mac-part-2-provisioning",
+      "title": "Dual-Mac Agentic Workflow — Part 2: Provisioning Dua Mac",
+      "icon": "🛠️",
+      "summary": "Part 2 dari seri. Provisioning kedua Mac dari nol: MacBook 2019 sebagai compute/agent server (power, Homebrew, Docker/OrbStack, emulator headless API 36) dan MacBook M1 sebagai driver node yang ringan dengan uji device fisik via USB.",
+      "duration": 50,
+      "sections": 9,
+      "tags": ["AI", "Agentic Workflow", "Dual-Mac", "Homebrew", "Docker", "OrbStack", "Android Emulator"],
+      "categories": ["ai", "developer-tools", "mobile", "architecture"],
+      "searchTerms": "agentic workflow dual mac provisioning homebrew node 24 docker orbstack android emulator headless api 36 avd usb device",
+      "url": "agentic-dual-mac-part-2-provisioning/",
+      "ctaText": "Mulai Part 2"
+    },
+    {
+      "id": "agentic-dual-mac-part-3-jaringan-remote",
+      "title": "Dual-Mac Agentic Workflow — Part 3: Jaringan & Remote Development",
+      "icon": "🔗",
+      "summary": "Part 3 dari seri. Menyambungkan kedua Mac dengan Tailscale (mesh VPN WireGuard) + SSH key-based auth, lalu Remote-SSH sehingga Anda mengedit di M1 tetapi kompilasi, Docker, dan agent berjalan di RAM 32GB milik 2019.",
+      "duration": 38,
+      "sections": 7,
+      "tags": ["AI", "Agentic Workflow", "Dual-Mac", "Tailscale", "SSH", "Remote Development", "Mosh"],
+      "categories": ["ai", "developer-tools", "architecture"],
+      "searchTerms": "agentic workflow dual mac tailscale wireguard ssh key remote development vscode remote ssh mosh kenapa remote ssh",
+      "url": "agentic-dual-mac-part-3-jaringan-remote/",
+      "ctaText": "Mulai Part 3"
+    },
+    {
+      "id": "agentic-dual-mac-part-4-memory-harness",
+      "title": "Dual-Mac Agentic Workflow — Part 4: Shared Memory & Agent Harness",
+      "icon": "🧠",
+      "summary": "Part 4 dari seri. Shared memory antar-agen (Graphify AST graph + Obsidian LLM wiki) dan agent harness (Pi, Antigravity, Claude Code headless) supaya beberapa agen bekerja paralel tanpa saling menimpa konteks.",
+      "duration": 40,
+      "sections": 11,
+      "tags": ["AI", "Agentic Workflow", "Dual-Mac", "Graphify", "Obsidian", "Agent Harness", "Pi-Coding-Agent", "Claude Code", "MCP"],
+      "categories": ["ai", "developer-tools", "architecture"],
+      "searchTerms": "agentic workflow dual mac shared memory graphify obsidian adr context drift agent harness pi antigravity claude code headless mcp",
+      "url": "agentic-dual-mac-part-4-memory-harness/",
+      "ctaText": "Mulai Part 4"
+    },
+    {
+      "id": "agentic-dual-mac-part-5-testing-e2e",
+      "title": "Dual-Mac Agentic Workflow — Part 5: Autonomous Testing & End-to-End",
+      "icon": "✅",
+      "summary": "Part 5 (penutup) dari seri. Autonomous mobile testing (Maestro + mobile-mcp self-healing loop), alur end-to-end membuat fitur Login OTP dari backend sampai mobile, plus checklist harian dan tips maintenance/thermal.",
+      "duration": 50,
+      "sections": 8,
+      "tags": ["AI", "Agentic Workflow", "Dual-Mac", "Maestro", "Mobile-MCP", "E2E Testing", "Self-Healing"],
+      "categories": ["ai", "developer-tools", "mobile", "testing"],
+      "searchTerms": "agentic workflow dual mac maestro mobile mcp self healing e2e testing login otp backend mobile maintenance thermal checklist",
+      "url": "agentic-dual-mac-part-5-testing-e2e/",
+      "ctaText": "Mulai Part 5"
     },
     {
       "id": "macos-full-keyboard-workflow-yabai-skhd",
@@ -266,7 +318,7 @@
     }
   ],
   "stats": {
-    "totalTutorials": 15,
+    "totalTutorials": 19,
     "totalSubPhases": 57,
     "totalMajorPhases": 14
   }
