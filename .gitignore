@@ -36,3 +36,7 @@ lerna-debug.log*
 # OS
 Thumbs.db
 
+# Local lab clones (learners clone the bundles here for testing; source lives in labs/)
+/agentic-loop-lab/
+/taskforge-agentic/
+
