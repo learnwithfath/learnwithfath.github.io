@@ -1,0 +1,36 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-09-08T06:05:16+07:00",
+  "id": "tmux-tailscale-ssh-remote-agent",
+  "duration": 60,
+  "title": "Akses Terminal \u0026 Coding Agent dari HP: tmux + Tailscale SSH",
+  "authors": "LearnWithFath Team",
+  "summary": "Panduan why-first untuk akses harian ke terminal \u0026 coding agent dari HP memakai tmux + Tailscale SSH — setup sekali, tanpa kode tambahan, tanpa token bot, dan Anda melihat terminal asli (bukan output yang dipotong jadi pesan chat). Termasuk kenapa ini lebih baik dari bot Slack/Telegram untuk pemakaian pribadi, plus mitigasi kelemahan UX ngetik di HP.",
+  "source": "tmux-tailscale-ssh-remote-agent.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "developertools",
+    "networking",
+    "mobile"
+  ],
+  "tags": [
+    "blink-shell",
+    "claude-code",
+    "coding-agent",
+    "mobile",
+    "remote-development",
+    "ssh",
+    "tailscale",
+    "termux",
+    "tmux"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "tmux-tailscale-ssh-remote-agent"
+}

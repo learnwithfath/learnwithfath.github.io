@@ -9,8 +9,23 @@
       "sections": 24,
       "sectionLabel": "Minggu",
       "phases": 8,
-      "tags": ["AI", "Agentic Engineering", "Full Stack", "Mobile", "Backend", "Frontend", "Loop Engineering"],
-      "categories": ["ai", "agentic-engineering", "fullstack", "mobile", "backend", "frontend"],
+      "tags": [
+        "AI",
+        "Agentic Engineering",
+        "Full Stack",
+        "Mobile",
+        "Backend",
+        "Frontend",
+        "Loop Engineering"
+      ],
+      "categories": [
+        "ai",
+        "agentic-engineering",
+        "fullstack",
+        "mobile",
+        "backend",
+        "frontend"
+      ],
       "searchTerms": "agentic engineering roadmap coding agent loop pang ghiath qwen deepseek glm kimi minimax flutter compose swiftui go nestjs next nuxt",
       "url": "agentic-engineering-roadmap.html",
       "ctaText": "Mulai Roadmap 24 Minggu"
@@ -24,8 +39,22 @@
       "sections": 5,
       "sectionLabel": "Part",
       "phases": 5,
-      "tags": ["AI", "Agentic Workflow", "Dual-Mac", "Tailscale", "Remote Development", "Graphify", "Maestro", "Mobile-MCP"],
-      "categories": ["ai", "developer-tools", "mobile", "architecture"],
+      "tags": [
+        "AI",
+        "Agentic Workflow",
+        "Dual-Mac",
+        "Tailscale",
+        "Remote Development",
+        "Graphify",
+        "Maestro",
+        "Mobile-MCP"
+      ],
+      "categories": [
+        "ai",
+        "developer-tools",
+        "mobile",
+        "architecture"
+      ],
       "searchTerms": "dual mac agentic workflow driver node compute node m1 8gb intel 32gb tailscale remote ssh graphify obsidian agent harness maestro mobile mcp provisioning testing e2e seri part",
       "url": "agentic-dual-mac-workflow.html",
       "ctaText": "Buka seri"
@@ -39,8 +68,21 @@
       "sections": 6,
       "sectionLabel": "Part",
       "phases": 6,
-      "tags": ["AI", "Antigravity", "Google", "Gemini", "Agentic Workflow", "CLI", "SDK", "MCP"],
-      "categories": ["ai", "developer-tools", "agentic-engineering"],
+      "tags": [
+        "AI",
+        "Antigravity",
+        "Google",
+        "Gemini",
+        "Agentic Workflow",
+        "CLI",
+        "SDK",
+        "MCP"
+      ],
+      "categories": [
+        "ai",
+        "developer-tools",
+        "agentic-engineering"
+      ],
       "searchTerms": "google antigravity 2.0 desktop ide cli agy sdk python vertex ai ekosistem agent harness gemini 3 surface artifact subagent skill hook plugin mcp governance seri part",
       "url": "antigravity-ecosystem.html",
       "ctaText": "Buka seri"
@@ -54,8 +96,21 @@
       "sections": 7,
       "sectionLabel": "Part",
       "phases": 7,
-      "tags": ["AI", "Google", "Gemini", "Google AI Pro", "NotebookLM", "Flow", "AI Studio", "Side Income"],
-      "categories": ["ai", "productivity", "developer-tools"],
+      "tags": [
+        "AI",
+        "Google",
+        "Gemini",
+        "Google AI Pro",
+        "NotebookLM",
+        "Flow",
+        "AI Studio",
+        "Side Income"
+      ],
+      "categories": [
+        "ai",
+        "productivity",
+        "developer-tools"
+      ],
       "searchTerms": "google ai pro gemini 3.1 pro deep research notebooklm gemini notebook flow veo nano banana pro flow music ai studio android studio antigravity managed agents gemini api workspace gmail docs sheets slides meet 5tb developer program side income uang tambahan freelance faceless youtube fullstack mobile software engineering seri part",
       "url": "google-ai-pro-maksimal.html",
       "ctaText": "Buka seri"
@@ -67,8 +122,25 @@
       "summary": "Panduan mendalam setup macOS 100% keyboard-driven workflow tanpa trackpad — Yabai BSP tiling window manager, skhd hotkey daemon, Homerow & Shortcat, Alacritty & Tmux, dan Vim browsing Surfingkeys.",
       "duration": 92,
       "sections": 10,
-      "tags": ["macOS", "Yabai", "skhd", "Homerow", "Shortcat", "Alacritty", "Tmux", "Surfingkeys", "Keyboard-Driven", "Vim", "Productivity"],
-      "categories": ["macos", "developer-tools", "productivity", "cli"],
+      "tags": [
+        "macOS",
+        "Yabai",
+        "skhd",
+        "Homerow",
+        "Shortcat",
+        "Alacritty",
+        "Tmux",
+        "Surfingkeys",
+        "Keyboard-Driven",
+        "Vim",
+        "Productivity"
+      ],
+      "categories": [
+        "macos",
+        "developer-tools",
+        "productivity",
+        "cli"
+      ],
       "searchTerms": "macos full keyboard workflow yabai skhd homerow shortcat alacritty tmux surfingkeys tiling window manager vim rectangle alternative",
       "url": "macos-full-keyboard-workflow-yabai-skhd/",
       "ctaText": "Mulai Tutorial"
@@ -80,8 +152,22 @@
       "summary": "Panduan lengkap Homerow untuk macOS berdasarkan dokumentasi resmi — Search Workflow, The Tutor, Labels-only mode, Scroll mode HJKL, Hyper Key mapping, dan shortcut keybindings.",
       "duration": 72,
       "sections": 10,
-      "tags": ["macOS", "Homerow", "Keyboard-Navigation", "Vim", "Accessibility", "Hyperkey", "Karabiner", "Productivity"],
-      "categories": ["macos", "developer-tools", "productivity", "keyboard"],
+      "tags": [
+        "macOS",
+        "Homerow",
+        "Keyboard-Navigation",
+        "Vim",
+        "Accessibility",
+        "Hyperkey",
+        "Karabiner",
+        "Productivity"
+      ],
+      "categories": [
+        "macos",
+        "developer-tools",
+        "productivity",
+        "keyboard"
+      ],
       "searchTerms": "homerow macos keyboard navigation click ui without mouse vimium vim scroll hjkl tutor hyperkey karabiner",
       "url": "homerow-macos-keyboard-navigation/",
       "ctaText": "Mulai Tutorial"
@@ -93,8 +179,15 @@
       "summary": "Learn how to use this interactive learning platform. Discover navigation, progress tracking, and best practices for effective learning.",
       "duration": 36,
       "sections": 8,
-      "tags": ["Tutorial", "Beginner", "Platform Guide"],
-      "categories": ["tutorial", "beginner"],
+      "tags": [
+        "Tutorial",
+        "Beginner",
+        "Platform Guide"
+      ],
+      "categories": [
+        "tutorial",
+        "beginner"
+      ],
       "searchTerms": "getting started platform tutorial",
       "url": "getting-started/",
       "ctaText": "Start Learning"
@@ -106,8 +199,22 @@
       "summary": "Tutorial lengkap menggunakan Cline (autonomous AI coding agent) dari setup, Plan/Act mode, penggunaan tools, MCP, CLI, SDK, hingga SpecDriven development.",
       "duration": 60,
       "sections": 15,
-      "tags": ["AI", "Developer Tools", "VS Code", "CLI", "MCP", "SDK"],
-      "categories": ["ai", "developer-tools", "vscode", "cli", "mcp", "sdk"],
+      "tags": [
+        "AI",
+        "Developer Tools",
+        "VS Code",
+        "CLI",
+        "MCP",
+        "SDK"
+      ],
+      "categories": [
+        "ai",
+        "developer-tools",
+        "vscode",
+        "cli",
+        "mcp",
+        "sdk"
+      ],
       "searchTerms": "cline claude dev ai coding agent mcp cli sdk specdriven tutorial",
       "url": "cline-ai-coding-agent-tutorial/",
       "ctaText": "Mulai Tutorial"
@@ -119,8 +226,21 @@
       "summary": "Tutorial lengkap menguasai Wick: AI-first framework & agent host di Go. Pelajari setup, CLI, konfigurasi provider, custom app manifest (wick.yml), command gate, dan deployment.",
       "duration": 65,
       "sections": 7,
-      "tags": ["Go", "AI", "Backend", "Developer Tools", "Slack", "Telegram", "SQLite"],
-      "categories": ["go", "ai", "backend", "developer-tools"],
+      "tags": [
+        "Go",
+        "AI",
+        "Backend",
+        "Developer Tools",
+        "Slack",
+        "Telegram",
+        "SQLite"
+      ],
+      "categories": [
+        "go",
+        "ai",
+        "backend",
+        "developer-tools"
+      ],
       "searchTerms": "wick go framework agent host slack telegram sqlite command gate build dev deploy tutorial",
       "url": "wick-framework-agent-tutorial/",
       "ctaText": "Mulai Tutorial"
@@ -132,8 +252,22 @@
       "summary": "Panduan lengkap menguasai Zed editor secara profesional — instalasi, navigasi, AI features, konfigurasi multi-bahasa, tasks/debugging, dan workflow git khusus untuk full stack mobile developer (Flutter, Kotlin, Swift, TypeScript, Go).",
       "duration": 74,
       "sections": 9,
-      "tags": ["Editor", "Developer Tools", "Mobile", "AI", "Flutter", "Kotlin", "Swift", "Vim"],
-      "categories": ["editor", "developer-tools", "mobile", "ai"],
+      "tags": [
+        "Editor",
+        "Developer Tools",
+        "Mobile",
+        "AI",
+        "Flutter",
+        "Kotlin",
+        "Swift",
+        "Vim"
+      ],
+      "categories": [
+        "editor",
+        "developer-tools",
+        "mobile",
+        "ai"
+      ],
       "searchTerms": "zed editor flutter kotlin swift mobile ai coding vim productivity full stack",
       "url": "zed-editor-pro-tutorial/",
       "ctaText": "Mulai Tutorial"
@@ -145,8 +279,22 @@
       "summary": "Panduan lengkap menguasai Claude Code CLI secara profesional — instalasi, mode interaktif, slash commands, CLAUDE.md, MCP, subagents, hooks, automation, dan workflow git khusus untuk full stack mobile developer (Flutter, Kotlin, Swift, Go).",
       "duration": 73,
       "sections": 10,
-      "tags": ["AI", "Developer Tools", "CLI", "Mobile", "MCP", "Subagents", "Hooks", "Flutter"],
-      "categories": ["ai", "developer-tools", "cli", "mobile"],
+      "tags": [
+        "AI",
+        "Developer Tools",
+        "CLI",
+        "Mobile",
+        "MCP",
+        "Subagents",
+        "Hooks",
+        "Flutter"
+      ],
+      "categories": [
+        "ai",
+        "developer-tools",
+        "cli",
+        "mobile"
+      ],
       "searchTerms": "claude code cli anthropic ai coding agent mcp subagents hooks flutter kotlin swift full stack mobile",
       "url": "claude-code-cli-pro-tutorial/",
       "ctaText": "Mulai Tutorial"
@@ -158,8 +306,20 @@
       "summary": "Master the fundamentals of web development with HTML, CSS, and JavaScript. Build a fully functional task list application from scratch.",
       "duration": 61,
       "sections": 8,
-      "tags": ["Web Development", "HTML", "CSS", "JavaScript", "Beginner"],
-      "categories": ["web", "html", "css", "javascript", "beginner"],
+      "tags": [
+        "Web Development",
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Beginner"
+      ],
+      "categories": [
+        "web",
+        "html",
+        "css",
+        "javascript",
+        "beginner"
+      ],
       "searchTerms": "web development html css javascript",
       "url": "web-dev-basics/",
       "ctaText": "Start Learning"
@@ -173,8 +333,24 @@
       "sections": 20,
       "sectionLabel": "Sub-phases",
       "phases": 7,
-      "tags": ["Backend", "Go", "PostgreSQL", "Redis", "Docker", "Full-Stack", "Indonesia"],
-      "categories": ["qiscus", "backend", "fullstack", "go", "postgresql", "redis", "docker"],
+      "tags": [
+        "Backend",
+        "Go",
+        "PostgreSQL",
+        "Redis",
+        "Docker",
+        "Full-Stack",
+        "Indonesia"
+      ],
+      "categories": [
+        "qiscus",
+        "backend",
+        "fullstack",
+        "go",
+        "postgresql",
+        "redis",
+        "docker"
+      ],
       "searchTerms": "qiscus adopt stack learning path backend fullstack",
       "url": "./learning-path.html",
       "ctaText": "Mulai Learning Path"
@@ -186,8 +362,21 @@
       "summary": "Integrate Qiscus Multichannel Widget into your website. Learn session management, event handling, customization, and production deployment.",
       "duration": 39,
       "sections": 12,
-      "tags": ["Web Development", "JavaScript", "Chat Integration", "Customer Support", "Qiscus"],
-      "categories": ["qiscus", "javascript", "widget", "chat", "multichannel", "customer-support"],
+      "tags": [
+        "Web Development",
+        "JavaScript",
+        "Chat Integration",
+        "Customer Support",
+        "Qiscus"
+      ],
+      "categories": [
+        "qiscus",
+        "javascript",
+        "widget",
+        "chat",
+        "multichannel",
+        "customer-support"
+      ],
       "searchTerms": "qiscus multichannel widget integration chat javascript",
       "url": "qiscus-multichannel-widget-integration/",
       "ctaText": "Start Learning"
@@ -199,8 +388,21 @@
       "summary": "Panduan praktis untuk mobile developer yang merasa tidak PD saat melamar kerja. Pelajari strategi \"Learn While Applying\", gap analysis, dan mindset shift untuk meningkatkan confidence Anda.",
       "duration": 73,
       "sections": 11,
-      "tags": ["Career Advice", "Mobile Development", "Job Search", "Confidence Building", "Indonesia"],
-      "categories": ["career", "advice", "mobile-development", "job-search", "confidence", "imposter-syndrome"],
+      "tags": [
+        "Career Advice",
+        "Mobile Development",
+        "Job Search",
+        "Confidence Building",
+        "Indonesia"
+      ],
+      "categories": [
+        "career",
+        "advice",
+        "mobile-development",
+        "job-search",
+        "confidence",
+        "imposter-syndrome"
+      ],
       "searchTerms": "career advice imposter syndrome job application mobile developer",
       "url": "career-overcome-imposter-syndrome/",
       "ctaText": "Mulai Belajar"
@@ -212,8 +414,21 @@
       "summary": "Panduan lengkap belajar mengemudi mobil manual dari nol sampai mahir. Pelajari teknik starting, perpindahan gigi, tanjakan, dan tips berkendara di berbagai kondisi.",
       "duration": 50,
       "sections": 11,
-      "tags": ["Lifestyle", "Automotive", "Tutorial", "Driving", "Manual Transmission", "Indonesia"],
-      "categories": ["lifestyle", "automotive", "tutorial", "driving", "manual-car"],
+      "tags": [
+        "Lifestyle",
+        "Automotive",
+        "Tutorial",
+        "Driving",
+        "Manual Transmission",
+        "Indonesia"
+      ],
+      "categories": [
+        "lifestyle",
+        "automotive",
+        "tutorial",
+        "driving",
+        "manual-car"
+      ],
       "searchTerms": "belajar mobil manual mengemudi kopling transmisi manual nyetir",
       "url": "belajar-mobil-manual/",
       "ctaText": "Mulai Belajar"
@@ -225,8 +440,21 @@
       "summary": "Panduan lengkap membeli mobil bekas pertama dengan cerdas dan aman. Pelajari cara inspeksi, negosiasi harga, cek surat-surat, dan proses balik nama.",
       "duration": 55,
       "sections": 11,
-      "tags": ["Lifestyle", "Automotive", "Shopping", "Used Car", "Inspection", "Indonesia"],
-      "categories": ["lifestyle", "automotive", "shopping", "used-car", "inspection"],
+      "tags": [
+        "Lifestyle",
+        "Automotive",
+        "Shopping",
+        "Used Car",
+        "Inspection",
+        "Indonesia"
+      ],
+      "categories": [
+        "lifestyle",
+        "automotive",
+        "shopping",
+        "used-car",
+        "inspection"
+      ],
       "searchTerms": "tips membeli mobil bekas second hand car inspeksi negosiasi balik nama",
       "url": "tips-membeli-mobil-bekas/",
       "ctaText": "Mulai Belajar"
@@ -238,8 +466,22 @@
       "summary": "Pelajari cara menerapkan pendekatan functional programming di proyek Dart/Flutter menggunakan paket dartz: Option, Either, TaskEither, koleksi immutable, hingga studi kasus validasi + API.",
       "duration": 52,
       "sections": 9,
-      "tags": ["Dart", "Flutter", "Functional Programming", "Option", "Either", "TaskEither", "Indonesia"],
-      "categories": ["dart", "flutter", "functional-programming", "backend", "mobile"],
+      "tags": [
+        "Dart",
+        "Flutter",
+        "Functional Programming",
+        "Option",
+        "Either",
+        "TaskEither",
+        "Indonesia"
+      ],
+      "categories": [
+        "dart",
+        "flutter",
+        "functional-programming",
+        "backend",
+        "mobile"
+      ],
       "searchTerms": "dartz functional programming option either task either flutter dart",
       "url": "dartz-functional-programming/",
       "ctaText": "Mulai Belajar"
@@ -251,8 +493,20 @@
       "summary": "Panduan terlengkap menguasai Docker dari konsep dasar, arsitektur, perintah CLI, Dockerfile, hingga Docker Compose dan best-practices untuk production.",
       "duration": 45,
       "sections": 8,
-      "tags": ["Docker", "DevOps", "Backend", "Containerization", "Indonesia"],
-      "categories": ["docker", "devops", "backend", "beginner", "advanced"],
+      "tags": [
+        "Docker",
+        "DevOps",
+        "Backend",
+        "Containerization",
+        "Indonesia"
+      ],
+      "categories": [
+        "docker",
+        "devops",
+        "backend",
+        "beginner",
+        "advanced"
+      ],
       "searchTerms": "docker masterclass containerization devops container",
       "url": "docker-masterclass/",
       "ctaText": "Mulai Belajar"
@@ -264,8 +518,22 @@
       "summary": "Praktek langsung (hands-on) membangun microservices dengan Docker Compose, menggunakan database PostgreSQL, Redis Cache, dan optimasi Multi-stage builds.",
       "duration": 75,
       "sections": 8,
-      "tags": ["Docker", "Go", "PostgreSQL", "Redis", "DevOps", "Indonesia"],
-      "categories": ["docker", "go", "postgresql", "redis", "devops", "hands-on"],
+      "tags": [
+        "Docker",
+        "Go",
+        "PostgreSQL",
+        "Redis",
+        "DevOps",
+        "Indonesia"
+      ],
+      "categories": [
+        "docker",
+        "go",
+        "postgresql",
+        "redis",
+        "devops",
+        "hands-on"
+      ],
       "searchTerms": "hands-on docker containerisasi go postgres redis compose multi-stage",
       "url": "docker-go-project/",
       "ctaText": "Mulai Codelab"
@@ -277,8 +545,21 @@
       "summary": "Pelajari cara mengelola banyak akun GitHub (personal & kantor) di satu perangkat menggunakan SSH Key dan config alias host tanpa bentrok identitas.",
       "duration": 45,
       "sections": 7,
-      "tags": ["Git", "SSH", "GitHub", "DevOps", "Tips", "Indonesia"],
-      "categories": ["git", "ssh", "github", "devops", "tips"],
+      "tags": [
+        "Git",
+        "SSH",
+        "GitHub",
+        "DevOps",
+        "Tips",
+        "Indonesia"
+      ],
+      "categories": [
+        "git",
+        "ssh",
+        "github",
+        "devops",
+        "tips"
+      ],
       "searchTerms": "mastering github ssh multiple accounts git config alias identitiesonly",
       "url": "github-ssh-multiple-accounts/",
       "ctaText": "Mulai Belajar"
@@ -290,15 +571,52 @@
       "summary": "Panduan lengkap dan interaktif dari nol. Menguasai variabel, kondisi, fungsi, unit testing, hingga eksplorasi ekosistem Library Populer Python (Data Science, Web Scraping, ML, dll).",
       "duration": 162,
       "sections": 24,
-      "tags": ["Python", "Beginner", "Programming", "Indonesia", "Library", "Ecosystem"],
-      "categories": ["python", "beginner", "programming"],
+      "tags": [
+        "Python",
+        "Beginner",
+        "Programming",
+        "Indonesia",
+        "Library",
+        "Ecosystem"
+      ],
+      "categories": [
+        "python",
+        "beginner",
+        "programming"
+      ],
       "searchTerms": "memulai pemrograman dengan python dasar tutorial beginner unit testing unittest library populer pandas numpy web scraping machine learning",
       "url": "python-dasar/",
       "ctaText": "Mulai Belajar"
+    },
+    {
+      "id": "tmux-tailscale-ssh-remote-agent",
+      "title": "Akses Terminal & Coding Agent dari HP: tmux + Tailscale SSH",
+      "icon": "📱",
+      "summary": "Panduan why-first akses harian ke terminal & coding agent dari HP — tmux + Tailscale SSH: setup sekali, tanpa kode tambahan, tanpa token bot, terminal asli (bukan output dipotong jadi chat), plus mitigasi kelemahan UX ngetik di HP.",
+      "duration": 60,
+      "sections": 9,
+      "tags": [
+        "tmux",
+        "Tailscale",
+        "SSH",
+        "Remote Development",
+        "Coding Agent",
+        "Claude Code",
+        "Mobile"
+      ],
+      "categories": [
+        "ai",
+        "developer-tools",
+        "networking",
+        "mobile"
+      ],
+      "searchTerms": "tmux tailscale ssh remote terminal coding agent claude code mobile termux blink shell termius persistent session permission prompt",
+      "url": "tmux-tailscale-ssh-remote-agent/",
+      "ctaText": "Mulai Tutorial"
     }
   ],
   "stats": {
-    "totalTutorials": 17,
+    "totalTutorials": 18,
     "totalSubPhases": 57,
     "totalMajorPhases": 14
   }

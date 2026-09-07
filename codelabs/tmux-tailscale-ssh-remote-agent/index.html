@@ -1,0 +1,211 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Akses Terminal &amp; Coding Agent dari HP: tmux &#43; Tailscale SSH</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="tmux-tailscale-ssh-remote-agent"
+                  title="Akses Terminal &amp; Coding Agent dari HP: tmux &#43; Tailscale SSH"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Outcome &amp; Kenapa Pendekatan Ini" duration="5">
+        <p>Anda menjalankan coding agent (Claude Code, Codex CLI, atau agent CLI lain) di laptop/server, lalu ingin memantau atau melanjutkannya dari HP saat sedang tidak di depan laptop. Ada beberapa cara untuk melakukan ini — dan pilihannya menentukan seberapa banyak kepercayaan yang harus Anda berikan ke sistem tambahan.</p>
+<p><strong>Opsi yang sering dicoba, dan kenapa bukan pilihan pertama untuk pemakaian pribadi:</strong></p>
+<ul>
+<li><strong>Bot Slack/Telegram yang menjembatani ke agent</strong> — butuh kode tambahan (webhook, parsing pesan, state management), butuh token bot yang harus dijaga keamanannya, dan output terminal dipotong-potong jadi pesan chat. Notifikasi permission (mis. agent minta izin <code>rm</code> atau akses network) sering hilang konteksnya karena sudah diringkas ulang oleh bot.</li>
+<li><strong>Web UI / dashboard custom</strong> — butuh hosting, autentikasi, dan maintenance sendiri. Overkill untuk kebutuhan pribadi harian.</li>
+<li><strong>tmux + Tailscale SSH (pendekatan di tutorial ini)</strong> — setup sekali di awal, nol kode tambahan, nol token bot. Anda <code>ssh</code> langsung ke sesi tmux yang sama persis dengan yang berjalan di laptop — bukan salinan atau ringkasan, tapi <strong>terminal asli</strong>. Kalau agent berhenti dan minta konfirmasi permission, Anda melihatnya persis seperti kalau Anda duduk di depan laptop.</li>
+</ul>
+<pre><code>[HP: SSH client]  ==Tailscale (WireGuard, terenkripsi)==&gt;  [Laptop/Server: sshd + tmux]
+                                                              └── sesi tmux tetap hidup
+                                                                  walau HP disconnect
+</code></pre>
+<p>Positive : Trade-off yang jujur: pendekatan ini <strong>tidak mengubah</strong> terminal jadi tampilan mobile-friendly. Anda tetap melihat teks mentah di layar kecil. Kelemahan itu nyata dan dibahas di bagian <a href="#kelemahan-cara-mengurangi-rasa-sakitnya" target="_blank">Kelemahan &amp; Cara Mengurangi Rasa Sakitnya</a> — tapi untuk pemakaian pribadi, kesederhanaan dan keamanan setup ini biasanya lebih berharga daripada UX yang lebih halus.</p>
+<h2 is-upgraded>Kenapa Dua Lapis: Tailscale + SSH + tmux</h2>
+<p>Tiga komponen ini menjawab tiga masalah berbeda — hilangkan salah satu, dan seluruh alur rusak:</p>
+<ul>
+<li><strong>Tailscale menjawab &#34;di mana laptop/server saya?&#34;</strong> — memberi IP tetap (<code>100.x.y.z</code>) ke laptop Anda, yang tidak berubah walau Anda pindah dari Wi-Fi rumah ke data seluler HP. Tanpa ini, Anda harus tahu IP publik yang berubah-ubah dan membuka port di router (risiko keamanan).</li>
+<li><strong>SSH menjawab &#34;bagaimana masuk dengan aman?&#34;</strong> — sesi terenkripsi untuk membuka shell di laptop, dengan autentikasi berbasis key (bukan password).</li>
+<li><strong>tmux menjawab &#34;bagaimana sesi tidak putus?&#34;</strong> — coding agent Anda berjalan <strong>di dalam</strong> sesi tmux di laptop. Kalau koneksi SSH dari HP putus (masuk terowongan, mati layar, ganti jaringan), sesi tmux tetap hidup di laptop. Begitu Anda <code>ssh</code> lagi dan <code>tmux attach</code>, semua kembali persis seperti Anda tidak pernah pergi — termasuk histori scrollback dan proses agent yang masih berjalan.</li>
+</ul>
+<p>Negative : Tanpa tmux (atau <code>screen</code>), begitu koneksi SSH terputus, proses yang berjalan di dalamnya biasanya ikut mati (menerima sinyal <code>SIGHUP</code>). Itu sebabnya tmux bukan kosmetik di sini — dia komponen inti, bukan pelengkap.</p>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Laptop/server tempat coding agent berjalan (macOS atau Linux).</li>
+<li>HP (iOS atau Android) dengan koneksi internet (Wi-Fi atau data seluler).</li>
+<li>Akun Tailscale gratis (cukup login Google/GitHub/dll).</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 1: Install &amp; Login Tailscale di Kedua Perangkat" duration="10">
+        <p>Tailscale membentuk mesh VPN pribadi berbasis WireGuard antar perangkat yang login dengan akun yang sama — tanpa perlu konfigurasi port forwarding atau firewall rule manual.</p>
+<p><strong>Di laptop/server (macOS):</strong></p>
+<pre><code language="language-bash" class="language-bash">brew install --cask tailscale
+</code></pre>
+<p>Buka aplikasi Tailscale, login, lalu pastikan status <strong>Connected</strong>.</p>
+<p><strong>Di laptop/server (Linux):</strong></p>
+<pre><code language="language-bash" class="language-bash">curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up
+</code></pre>
+<p><strong>Di HP:</strong> Install aplikasi <strong>Tailscale</strong> dari App Store / Play Store, lalu login dengan <strong>akun yang sama</strong> persis seperti di laptop.</p>
+<p>Catat hostname Tailscale laptop Anda (terlihat di aplikasi Tailscale, misalnya <code>mac-server</code>), lalu uji dari HP — buka aplikasi Tailscale dan pastikan laptop terlihat berstatus <strong>Connected</strong> di daftar perangkat.</p>
+<p>Negative : Kalau perangkat tidak saling terlihat, penyebab paling umum adalah login dengan akun Tailscale yang <strong>berbeda</strong> di kedua perangkat. Login ulang dan pastikan email akunnya sama persis.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 2: SSH Key-Based Auth" duration="10">
+        <p>Password SSH bisa ditebak (brute-force) dan merepotkan untuk diketik di keyboard HP. Key-based auth lebih aman sekaligus lebih nyaman — sekali setup, tidak perlu ketik apa pun lagi untuk login.</p>
+<p><strong>Di laptop/server, aktifkan SSH server:</strong></p>
+<p>macOS: System Settings → General → Sharing → aktifkan <strong>Remote Login</strong>.</p>
+<p>Linux:</p>
+<pre><code language="language-bash" class="language-bash">sudo systemctl enable --now ssh
+</code></pre>
+<p><strong>Generate SSH key</strong> (lakukan di perangkat yang akan dipakai untuk connect — di sini kita generate langsung di HP lewat aplikasi SSH client, dibahas di Langkah 4). Jika Anda ingin generate dari laptop lalu salin manual ke HP, jalankan:</p>
+<pre><code language="language-bash" class="language-bash">ssh-keygen -t ed25519 -C &#34;hp-remote-access&#34;
+</code></pre>
+<p>Salin isi file <code>.pub</code> yang dihasilkan ke <code>~/.ssh/authorized_keys</code> di laptop/server:</p>
+<pre><code language="language-bash" class="language-bash"># di laptop/server
+mkdir -p ~/.ssh &amp;&amp; chmod 700 ~/.ssh
+echo &#34;&lt;isi public key dari HP&gt;&#34; &gt;&gt; ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+</code></pre>
+<p>Positive : Setelah key terpasang, uji login dari HP dulu sebelum lanjut ke langkah berikut — pastikan Anda bisa masuk <strong>tanpa diminta password</strong>. Kalau masih diminta password, cek permission folder <code>.ssh</code> (harus <code>700</code>) dan file <code>authorized_keys</code> (harus <code>600</code>) di laptop/server.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 3: Install &amp; Konfigurasi tmux" duration="10">
+        <p><strong>Install tmux di laptop/server:</strong></p>
+<pre><code language="language-bash" class="language-bash"># macOS
+brew install tmux
+
+# Linux (Debian/Ubuntu)
+sudo apt install tmux
+</code></pre>
+<p><strong>Buat sesi tmux bernama, khusus untuk coding agent Anda:</strong></p>
+<pre><code language="language-bash" class="language-bash">tmux new -s agent
+</code></pre>
+<p>Di dalam sesi ini, jalankan coding agent Anda seperti biasa (misalnya <code>claude</code> untuk Claude Code). Untuk keluar dari sesi <strong>tanpa menghentikan proses di dalamnya</strong>, tekan <code>Ctrl+b</code> lalu <code>d</code> (detach) — jangan ketik <code>exit</code> atau tutup terminal langsung, karena itu akan mematikan sesi.</p>
+<p>Untuk kembali ke sesi yang sama nanti (dari laptop atau dari HP):</p>
+<pre><code language="language-bash" class="language-bash">tmux attach -t agent
+</code></pre>
+<p>Positive : Opsional tapi berguna — tambahkan konfigurasi dasar di <code>~/.tmux.conf</code> supaya scrollback lebih panjang (enak untuk membaca output agent yang panjang) dan mouse scroll aktif di terminal yang mendukungnya:</p>
+<pre><code>set -g history-limit 50000
+set -g mouse on
+</code></pre>
+<p>Muat ulang dengan <code>tmux source-file ~/.tmux.conf</code> (atau buat sesi baru).</p>
+<p>Negative : Kalau Anda menjalankan banyak project, beri nama sesi yang jelas per project (<code>tmux new -s agent-projectA</code>, <code>tmux new -s agent-projectB</code>). <code>tmux ls</code> menampilkan semua sesi yang sedang hidup — berguna kalau lupa nama sesi yang sedang dipakai.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 4: Setup SSH Client di HP" duration="10">
+        <p>Anda butuh aplikasi terminal SSH di HP yang mendukung font monospace layak dan koneksi persisten.</p>
+<p><strong>iOS: </strong><a href="https://blink.sh" target="_blank">Blink Shell</a> (berbayar, sangat matang untuk mosh/SSH) atau <strong>Termius</strong> (free tier cukup untuk kebutuhan dasar).</p>
+<p><strong>Android: Termius</strong>, atau <strong>Termux</strong> (open-source, lebih fleksibel karena juga bisa jalankan tool lain langsung di HP kalau suatu saat dibutuhkan).</p>
+<p>Konfigurasi host di aplikasi pilihan Anda:</p>
+<ul>
+<li><strong>Host</strong>: hostname Tailscale laptop/server (misalnya <code>mac-server</code>) — bukan IP lokal, supaya tetap tersambung walau Anda ganti dari Wi-Fi ke data seluler.</li>
+<li><strong>Port</strong>: <code>22</code>.</li>
+<li><strong>Auth</strong>: import private key yang berpasangan dengan public key yang sudah didaftarkan di Langkah 2, atau generate key baru di aplikasi ini lalu daftarkan public key-nya ke laptop/server.</li>
+</ul>
+<p>Uji koneksi:</p>
+<pre><code language="language-bash" class="language-bash">ssh you@mac-server
+</code></pre>
+<p>Positive : Aktifkan Tailscale MagicDNS (di admin console Tailscale, <code>Settings</code> → <code>DNS</code>) supaya Anda cukup ketik hostname pendek (<code>mac-server</code>) tanpa perlu tahu IP <code>100.x.y.z</code>-nya.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Langkah 5: Workflow Harian" duration="5">
+        <p>Setelah setup di atas selesai (sekali saja), rutinitas harian jadi sangat pendek:</p>
+<ol type="1">
+<li>Buka aplikasi SSH di HP, connect ke laptop/server (via Tailscale, otomatis tersambung dari jaringan mana pun).</li>
+<li><code>tmux attach -t agent</code>.</li>
+<li>Anda melihat <strong>layar persis sama</strong> dengan yang ada di laptop — termasuk kalau coding agent sedang berhenti menunggu konfirmasi permission (misalnya mau menjalankan command yang berisiko, akses file di luar folder project, atau memanggil network). Konfirmasi langsung dari sana, seperti biasa Anda lakukan di laptop.</li>
+<li>Selesai memantau/merespons, <code>Ctrl+b</code> lalu <code>d</code> untuk detach — sesi dan proses agent tetap berjalan di laptop.</li>
+</ol>
+<p>Positive : Karena tidak ada lapisan penerjemah (bot, parser pesan), semua fitur interaktif coding agent tetap berfungsi apa adanya — termasuk output berwarna, progress bar, dan prompt konfirmasi bertingkat.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kelemahan &amp; Cara Mengurangi Rasa Sakitnya" duration="5">
+        <p>Kelemahan utama pendekatan ini murni <strong>UX di HP</strong>, bukan soal keamanan atau keandalan:</p>
+<ul>
+<li><strong>Mengetik panjang di layar sentuh melelahkan.</strong> Kalau Anda perlu menulis instruksi panjang ke agent, keyboard on-screen jauh lebih lambat dan salah ketik lebih sering daripada di laptop.</li>
+<li><strong>Layar kecil membuat output panjang sulit dibaca</strong>, terutama diff kode atau log yang lebar.</li>
+</ul>
+<p><strong>Mitigasi yang membantu:</strong></p>
+<ul>
+<li>Sambungkan keyboard fisik Bluetooth ke HP untuk sesi yang butuh mengetik banyak — mengubah pengalaman secara signifikan.</li>
+<li>Simpan instruksi yang sering dipakai berulang (mis. &#34;lanjutkan&#34;, &#34;jalankan test&#34;, &#34;commit dengan pesan conventional commits&#34;) sebagai <strong>snapshot/snippet</strong> di aplikasi SSH Anda (Termius dan Blink Shell punya fitur snippet) supaya tinggal tap, tidak perlu mengetik ulang.</li>
+<li>Untuk sesi yang benar-benar butuh mengetik banyak (menulis spesifikasi, planning panjang), tunda sampai Anda kembali ke laptop — pakai HP untuk memantau progress dan merespons konfirmasi singkat saja, bukan untuk menulis draft panjang.</li>
+<li>Aktifkan mode landscape dan perbesar ukuran font terminal di aplikasi SSH Anda untuk mengurangi kelelahan mata pada log yang panjang.</li>
+</ul>
+<p>Negative : Jangan mencoba &#34;menyelesaikan&#34; kelemahan ini dengan menambahkan UI ringkasan atau bot penerjemah pesan — begitu Anda melakukan itu, Anda kembali kehilangan keuntungan utama pendekatan ini: melihat terminal asli tanpa terpotong, dan tanpa kode tambahan yang perlu dijaga keamanannya.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Verifikasi" duration="3">
+        <p>Pastikan checklist berikut terpenuhi sebelum menganggap setup selesai:</p>
+<ul>
+<li>[ ] Tailscale status <strong>Connected</strong> di laptop/server maupun HP, dengan akun yang sama.</li>
+<li>[ ] <code>ssh you@<hostname-tailscale></code> dari HP berhasil <strong>tanpa</strong> diminta password.</li>
+<li>[ ] Sesi tmux (<code>tmux new -s agent</code>) bisa di-detach (<code>Ctrl+b d</code>) dan di-attach lagi (<code>tmux attach -t agent</code>) tanpa kehilangan proses yang sedang berjalan.</li>
+<li>[ ] Matikan Wi-Fi laptop sebentar (simulasikan network putus), lalu nyalakan lagi — sesi tmux tetap hidup dan bisa di-attach ulang.</li>
+<li>[ ] Coding agent yang sedang berjalan di dalam tmux, kalau meminta konfirmasi permission, terlihat jelas dan bisa direspons langsung dari HP.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan &amp; Langkah Selanjutnya" duration="2">
+        <p>Anda sekarang punya jalur akses pribadi ke terminal &amp; coding agent dari HP — tanpa kode tambahan, tanpa token bot, dengan tampilan terminal asli dan sesi yang tahan putus koneksi.</p>
+<h2 is-upgraded>Yang Anda Pelajari</h2>
+<ul>
+<li>✅ Kenapa tmux + Tailscale SSH lebih cocok untuk pemakaian pribadi dibanding bot chat atau web UI custom.</li>
+<li>✅ Peran masing-masing lapisan: Tailscale (alamat tetap), SSH (masuk aman), tmux (sesi tahan putus).</li>
+<li>✅ Setup key-based SSH auth dan sesi tmux bernama untuk coding agent.</li>
+<li>✅ Cara mengurangi rasa sakit UX mengetik di HP tanpa mengorbankan kesederhanaan setup.</li>
+</ul>
+<h2 is-upgraded>Selanjutnya</h2>
+<p>Kalau Anda ingin menyambungkan dua mesin (laptop ringan sebagai driver, mesin lain sebagai compute node) dengan pola jaringan yang sama, lihat <a href="agentic-dual-mac-part-3-jaringan-remote/" target="_blank">Dual-Mac Agentic Workflow — Part 3: Jaringan &amp; Remote Development</a> untuk pembahasan yang lebih dalam soal Tailscale + SSH di konteks dua mesin.</p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
