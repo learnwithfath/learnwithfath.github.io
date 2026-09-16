@@ -43,7 +43,21 @@ Positive
 ## Inisialisasi Proyek
 Duration: 0:04:00
 
-### 1. Buat modul Go
+### 1. Ambil kodenya — clone repo siap pakai, atau bangun dari nol
+
+**Cara tercepat:** clone langsung repo hasil codelab ini, sudah lengkap dan bisa langsung dijalankan (lihat langkah setup `.env` di bagian "Menjalankan dan Menguji"):
+
+```bash
+git clone https://github.com/amed12/chat-history-proxy.git
+cd chat-history-proxy
+```
+
+Repo ini **public**, jadi tidak perlu SSH key atau akun GitHub apa pun untuk clone — cocok kalau kamu tim klien yang cuma butuh menjalankan/mengadaptasi proxy ini, bukan mengikuti setiap langkah pembuatannya dari awal.
+
+Positive
+: Kalau mau mengikuti setiap langkah dari nol untuk benar-benar memahami setiap bagiannya (disarankan kalau kamu belajar, bukan cuma butuh servicenya jalan), lanjutkan ke langkah "Buat modul Go" di bawah — isinya sama dengan yang sudah ada di repo hasil clone di atas.
+
+### 2. (Alternatif) Buat modul Go dari nol
 
 ```bash
 mkdir chat-history-proxy && cd chat-history-proxy
@@ -54,7 +68,7 @@ go get github.com/golang-jwt/jwt/v5
 
 Kita pakai [`chi`](https://github.com/go-chi/chi) sebagai router — ringan dan cukup untuk proxy sekecil ini — dan `golang-jwt` untuk verifikasi token RS256.
 
-### 2. Struktur folder
+### 3. Struktur folder
 
 ```
 cmd/chat-history-proxy/main.go   # entry point, wiring
@@ -443,6 +457,7 @@ Positive
 ## Sumber
 Duration: 0:01:00
 
+* [Repo hasil codelab ini — chat-history-proxy (siap clone/pakai)](https://github.com/amed12/chat-history-proxy)
 * [Qiscus Omnichannel REST API — get_user_rooms](https://documentation.qiscus.com/multichannel-chat/get-user-rooms)
 * [Qiscus Omnichannel REST API — load_comments](https://documentation.qiscus.com/multichannel-chat/get-room-comments)
 * [go-chi router](https://github.com/go-chi/chi)

@@ -54,14 +54,21 @@
       </google-codelab-step>
     
       <google-codelab-step label="Inisialisasi Proyek" duration="4">
-        <h2 is-upgraded>1. Buat modul Go</h2>
+        <h2 is-upgraded>1. Ambil kodenya — clone repo siap pakai, atau bangun dari nol</h2>
+<p><strong>Cara tercepat:</strong> clone langsung repo hasil codelab ini, sudah lengkap dan bisa langsung dijalankan (lihat langkah setup <code>.env</code> di bagian &#34;Menjalankan dan Menguji&#34;):</p>
+<pre><code language="language-bash" class="language-bash">git clone https://github.com/amed12/chat-history-proxy.git
+cd chat-history-proxy
+</code></pre>
+<p>Repo ini <strong>public</strong>, jadi tidak perlu SSH key atau akun GitHub apa pun untuk clone — cocok kalau kamu tim klien yang cuma butuh menjalankan/mengadaptasi proxy ini, bukan mengikuti setiap langkah pembuatannya dari awal.</p>
+<p>Positive : Kalau mau mengikuti setiap langkah dari nol untuk benar-benar memahami setiap bagiannya (disarankan kalau kamu belajar, bukan cuma butuh servicenya jalan), lanjutkan ke langkah &#34;Buat modul Go&#34; di bawah — isinya sama dengan yang sudah ada di repo hasil clone di atas.</p>
+<h2 is-upgraded>2. (Alternatif) Buat modul Go dari nol</h2>
 <pre><code language="language-bash" class="language-bash">mkdir chat-history-proxy &amp;&amp; cd chat-history-proxy
 go mod init github.com/yourname/chat-history-proxy
 go get github.com/go-chi/chi/v5
 go get github.com/golang-jwt/jwt/v5
 </code></pre>
 <p>Kita pakai <a href="https://github.com/go-chi/chi" target="_blank"><code>chi</code></a> sebagai router — ringan dan cukup untuk proxy sekecil ini — dan <code>golang-jwt</code> untuk verifikasi token RS256.</p>
-<h2 is-upgraded>2. Struktur folder</h2>
+<h2 is-upgraded>3. Struktur folder</h2>
 <pre><code>cmd/chat-history-proxy/main.go   # entry point, wiring
 internal/proxy/
   config/     # loader environment
@@ -397,6 +404,7 @@ GET /api/v1/sessions/{room_id}/messages
     
       <google-codelab-step label="Sumber" duration="1">
         <ul>
+<li><a href="https://github.com/amed12/chat-history-proxy" target="_blank">Repo hasil codelab ini — chat-history-proxy (siap clone/pakai)</a></li>
 <li><a href="https://documentation.qiscus.com/multichannel-chat/get-user-rooms" target="_blank">Qiscus Omnichannel REST API — get_user_rooms</a></li>
 <li><a href="https://documentation.qiscus.com/multichannel-chat/get-room-comments" target="_blank">Qiscus Omnichannel REST API — load_comments</a></li>
 <li><a href="https://github.com/go-chi/chi" target="_blank">go-chi router</a></li>
