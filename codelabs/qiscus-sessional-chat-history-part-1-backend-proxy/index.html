@@ -1,0 +1,418 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Qiscus Sessional Chat History — Part 1: Backend Proxy Generik dengan Go</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="qiscus-sessional-chat-history-part-1-backend-proxy"
+                  title="Qiscus Sessional Chat History — Part 1: Backend Proxy Generik dengan Go"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Overview" duration="3">
+        <p>Selamat datang di Part 1 dari seri <strong>Qiscus Sessional Chat History</strong>. Di seri ini kita membangun ulang sesuatu yang nyata dikerjakan: fitur &#34;riwayat percakapan lintas sesi&#34; untuk app yang memakai Qiscus dalam mode <strong>sessional</strong>.</p>
+<h2 is-upgraded>Masalahnya</h2>
+<p>App yang berjalan dalam mode Qiscus <em>sessional</em> mengganti room chat aktifnya setiap kali sebuah sesi selesai (<em>resolved</em>). Widget/SDK sisi app cuma menyimpan referensi ke <strong>satu</strong> room aktif — begitu sesi lama resolved, app tidak lagi punya cara membaca isi room lama itu lewat token user biasa (token itu sudah tidak valid untuk room yang bukan room aktifnya).</p>
+<p>Kabar baiknya: Qiscus <strong>tidak menghapus</strong> data room lama, dan punya REST API admin (<code>get_user_rooms</code>, <code>load_comments</code>) yang bisa membaca riwayat itu — asal dipanggil dengan <strong>kredensial server</strong> (App ID + Secret Key), bukan token user.</p>
+<h2 is-upgraded>Kenapa proxy, bukan langsung dari app</h2>
+<p>Kredensial server Qiscus (<code>QISCUS_SECRET_KEY</code>) <strong>tidak boleh</strong> ada di kode app (mobile/web) — siapa pun yang decompile app bisa mencurinya dan membaca riwayat chat user lain. Solusinya: sebuah layanan backend kecil yang memegang kredensial itu, memverifikasi identitas user lewat JWT-nya sendiri, lalu meneruskan hasil query ke app.</p>
+<h2 is-upgraded>Apa yang Akan Anda Bangun</h2>
+<ul>
+<li>Backend Go mandiri, <strong>tanpa database, tanpa webhook</strong> — riwayat diambil langsung dari Qiscus saat diminta.</li>
+<li>Endpoint <code>GET /api/v1/sessions</code> (daftar sesi) dan <code>GET /api/v1/sessions/{room_id}/messages</code> (transkrip).</li>
+<li>Autentikasi JWT RS256 dengan verifikasi kepemilikan room.</li>
+<li>Konfigurasi 100% lewat environment variable — ganti klien tanpa ganti kode.</li>
+</ul>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Go 1.22+ terinstal</li>
+<li>Familiar dengan REST API dan konsep JWT</li>
+<li>Akun Qiscus Omnichannel dengan App ID &amp; Secret Key (opsional untuk mengikuti — bisa pakai nilai dummy sampai tahap testing)</li>
+</ul>
+<p>Positive : Arsitektur ini disebut <strong>Opsi A</strong> (proxy read-only) dibanding <strong>Opsi B</strong> (webhook + database sendiri). Opsi A dipilih karena tidak menambah beban infra di kedua sisi — tidak ada tabel yang perlu di-maintain, tidak ada webhook yang bisa gagal diam-diam.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Inisialisasi Proyek" duration="4">
+        <h2 is-upgraded>1. Buat modul Go</h2>
+<pre><code language="language-bash" class="language-bash">mkdir chat-history-proxy &amp;&amp; cd chat-history-proxy
+go mod init github.com/yourname/chat-history-proxy
+go get github.com/go-chi/chi/v5
+go get github.com/golang-jwt/jwt/v5
+</code></pre>
+<p>Kita pakai <a href="https://github.com/go-chi/chi" target="_blank"><code>chi</code></a> sebagai router — ringan dan cukup untuk proxy sekecil ini — dan <code>golang-jwt</code> untuk verifikasi token RS256.</p>
+<h2 is-upgraded>2. Struktur folder</h2>
+<pre><code>cmd/chat-history-proxy/main.go   # entry point, wiring
+internal/proxy/
+  config/     # loader environment
+  qiscus/     # klien REST admin Qiscus
+  cache/      # TTL cache in-memory
+  middleware/ # verifikasi JWT RS256
+  handler/    # HTTP handlers
+</code></pre>
+<p>Negative : Jangan taruh semua logic di <code>main.go</code>. Proxy ini kecil, tapi tetap pisahkan per tanggung jawab — begitu nanti ada bug (dan akan ada, lihat bagian selanjutnya), kamu butuh unit test yang bisa jalan tanpa server HTTP nyala.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Konfigurasi — Gagal Cepat, Jangan Diam-diam Salah" duration="6">
+        <p>Prinsip paling penting di proxy ini: <strong>semua nilai yang beda per klien dibaca dari environment variable, dan service menolak start kalau kredensial wajib kosong.</strong></p>
+<h2 is-upgraded><code>internal/proxy/config/config.go</code></h2>
+<pre><code language="language-go" class="language-go">package config
+
+import (
+	&#34;fmt&#34;
+	&#34;os&#34;
+	&#34;strconv&#34;
+)
+
+type Config struct {
+	Port             string
+	QiscusAppID      string
+	QiscusSecretKey  string
+	QiscusBaseURL    string
+	JWTPublicKeyPEM  string
+	CacheTTLSeconds  int
+}
+
+var requiredEnvVars = []string{&#34;QISCUS_APP_ID&#34;, &#34;QISCUS_SECRET_KEY&#34;, &#34;JWT_PUBLIC_KEY&#34;}
+
+func Load() (Config, error) {
+	for _, name := range requiredEnvVars {
+		if os.Getenv(name) == &#34;&#34; {
+			return Config{}, fmt.Errorf(&#34;missing required environment variable: %s&#34;, name)
+		}
+	}
+
+	ttl, err := strconv.Atoi(getEnvOr(&#34;CACHE_TTL_SECONDS&#34;, &#34;60&#34;))
+	if err != nil {
+		return Config{}, fmt.Errorf(&#34;CACHE_TTL_SECONDS must be a number: %w&#34;, err)
+	}
+
+	return Config{
+		Port:            getEnvOr(&#34;APP_PORT&#34;, &#34;8081&#34;),
+		QiscusAppID:     os.Getenv(&#34;QISCUS_APP_ID&#34;),
+		QiscusSecretKey: os.Getenv(&#34;QISCUS_SECRET_KEY&#34;),
+		QiscusBaseURL:   getEnvOr(&#34;QISCUS_BASE_URL&#34;, &#34;https://api3.qiscus.com&#34;),
+		JWTPublicKeyPEM: os.Getenv(&#34;JWT_PUBLIC_KEY&#34;),
+		CacheTTLSeconds: ttl,
+	}, nil
+}
+
+func getEnvOr(name, fallback string) string {
+	if v := os.Getenv(name); v != &#34;&#34; {
+		return v
+	}
+	return fallback
+}
+</code></pre>
+<p>Kenapa ini penting: kalau <code>QISCUS_SECRET_KEY</code> kosong dan kita biarkan lolos dengan nilai default kosong, service akan tetap <strong>jalan</strong> tapi setiap request ke Qiscus akan gagal dengan error yang membingungkan (401 dari Qiscus, bukan error konfigurasi yang jelas). Fail-fast di startup jauh lebih mudah didiagnosis.</p>
+<h2 is-upgraded>Test-nya</h2>
+<pre><code language="language-go" class="language-go">package config
+
+import &#34;testing&#34;
+
+func TestLoad_MissingRequiredVars(t *testing.T) {
+	t.Setenv(&#34;QISCUS_APP_ID&#34;, &#34;&#34;)
+	t.Setenv(&#34;QISCUS_SECRET_KEY&#34;, &#34;&#34;)
+	t.Setenv(&#34;JWT_PUBLIC_KEY&#34;, &#34;&#34;)
+
+	_, err := Load()
+	if err == nil {
+		t.Fatal(&#34;expected an error when required env vars are missing&#34;)
+	}
+}
+</code></pre>
+<p>Positive : Field yang aman punya default (<code>APP_PORT</code>, <code>CACHE_TTL_SECONDS</code>) boleh fallback ke nilai wajar. Kredensial (App ID, Secret, public key JWT) <strong>tidak boleh</strong> punya default — itu yang bikin &#34;ganti klien = ganti <code>.env</code>&#34; benar-benar aman, bukan cuma slogan.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Klien REST Qiscus — Dua Bug Nyata yang Ditemukan Saat Verifikasi" duration="12">
+        <p>Bagian ini yang paling berharga dari seri ini: <strong>dua bug nyata</strong> yang lolos dari asumsi awal (berdasarkan dokumentasi REST admin Qiscus yang generik) dan baru ketahuan setelah dicoba ke Qiscus sungguhan.</p>
+<h2 is-upgraded>Asumsi awal (SALAH)</h2>
+<p>Dokumentasi umum REST admin Qiscus menyarankan bentuk respons seperti ini untuk <code>get_user_rooms</code>:</p>
+<pre><code language="language-json" class="language-json">{ &#34;results&#34;: { &#34;rooms_info&#34;: [ { &#34;room_id&#34;: &#34;...&#34;, &#34;is_resolved&#34;: true, &#34;last_comment&#34;: {...} } ] } }
+</code></pre>
+<h2 is-upgraded>Kenyataan (setelah dicoba ke app Qiscus sungguhan)</h2>
+<pre><code language="language-json" class="language-json">{
+  &#34;results&#34;: {
+    &#34;rooms&#34;: [
+      {
+        &#34;room_id&#34;: &#34;369260357&#34;,
+        &#34;room_name&#34;: &#34;Guest 1001&#34;,
+        &#34;room_options&#34;: &#34;{\&#34;is_resolved\&#34;: false, \&#34;channel\&#34;: \&#34;qiscus\&#34;}&#34;
+      }
+    ]
+  }
+}
+</code></pre>
+<p>Tiga perbedaan nyata:</p>
+<ol type="1">
+<li>Key array-nya <code>rooms</code>, <strong>bukan </strong><code>rooms_info</code>.</li>
+<li><code>is_resolved</code> ada <strong>di dalam </strong><code>room_options</code>, dan <code>room_options</code> itu sendiri adalah <strong>string JSON</strong>, bukan objek langsung — perlu <code>json.Unmarshal</code> dua kali.</li>
+<li>Tidak ada <code>last_comment</code> atau <code>room_created_at</code> sama sekali — endpoint ini <strong>tidak</strong> menyediakan pesan terakhir atau waktu mulai sesi.</li>
+</ol>
+<pre><code language="language-go" class="language-go">type getUserRoomsResponse struct {
+	Results struct {
+		Rooms []struct {
+			RoomID      string `json:&#34;room_id&#34;`
+			RoomName    string `json:&#34;room_name&#34;`
+			RoomOptions string `json:&#34;room_options&#34;`
+		} `json:&#34;rooms&#34;`
+	} `json:&#34;results&#34;`
+}
+
+type roomOptions struct {
+	IsResolved bool   `json:&#34;is_resolved&#34;`
+	Topic      string `json:&#34;topic&#34;`
+}
+
+func (c *Client) GetUserRooms(userID string) ([]Session, error) {
+	endpoint := fmt.Sprintf(&#34;%s/api/v2.1/rest/get_user_rooms?user_id=%s&#34;, c.baseURL, url.QueryEscape(userID))
+
+	var body getUserRoomsResponse
+	if err := c.getJSON(endpoint, &amp;body); err != nil {
+		return nil, fmt.Errorf(&#34;qiscus: get_user_rooms: %w&#34;, err)
+	}
+
+	sessions := make([]Session, 0, len(body.Results.Rooms))
+	for _, room := range body.Results.Rooms {
+		var opts roomOptions
+		_ = json.Unmarshal([]byte(room.RoomOptions), &amp;opts) // best-effort: room tetap ditampilkan kalau ini gagal
+
+		session := Session{RoomID: room.RoomID, Name: room.RoomName, IsResolved: opts.IsResolved, Topic: opts.Topic}
+
+		if messages, err := c.GetRoomMessages(room.RoomID); err == nil &amp;&amp; len(messages) &gt; 0 {
+			session.StartedAt = messages[0].CreatedAt
+			session.LastMessage = lastDisplayableMessage(messages)
+		}
+		sessions = append(sessions, session)
+	}
+	return sessions, nil
+}
+</code></pre>
+<p>Karena <code>get_user_rooms</code> tidak menyediakan pesan terakhir, kita menutup gap itu dengan <strong>satu panggilan tambahan </strong><code>load_comments</code> per room. Ini biaya nyata (N+1 request untuk N room) — diterima di skala jumlah room per user yang wajar, dan dicatat jujur sebagai batasan, bukan disembunyikan.</p>
+<h2 is-upgraded>Bug kedua: urutan pesan yang terbalik</h2>
+<p>Load comments diasumsikan mengembalikan pesan <strong>oldest-first</strong> (dari lama ke baru) — asumsi ini bahkan sempat &#34;diverifikasi&#34; dengan fixture 2 pesan yang kebetulan urut ascending, jadi lolos test. Begitu dicoba ke room dengan riwayat panjang (<code>curl</code> langsung), ternyata:</p>
+<pre><code>4638469007  2026-09-16T04:50:44Z  Mohon isi survey...      &lt;- pesan TERBARU, tapi array index [0]
+4638468790  2026-09-16T04:50:41Z  This conversation...
+3512112756  2025-11-18T16:53:38Z  we                       &lt;- pesan TERLAMA, array index terakhir
+</code></pre>
+<p>Qiscus mengembalikan <strong>newest-first (descending)</strong>. Kalau tidak dibalik, <code>StartedAt</code> (baca index 0) malah dapat pesan <strong>terbaru</strong>, dan pencarian &#34;pesan terakhir yang bukan system event&#34; (mencari dari belakang array) malah mendarat di pesan <strong>paling lama</strong> — persis kebalikannya dari yang dimaksud.</p>
+<pre><code language="language-go" class="language-go">// GetRoomMessages returns every message in roomID, oldest first.
+// load_comments dari Qiscus sendiri mengembalikan NEWEST FIRST — dibalik di
+// sini sekali, supaya semua pemanggil lain bisa asumsikan ascending.
+func (c *Client) GetRoomMessages(roomID string) ([]Message, error) {
+	// ... fetch body.Results.Comments seperti biasa ...
+
+	comments := body.Results.Comments
+	messages := make([]Message, len(comments))
+	for i, comment := range comments {
+		messages[len(comments)-1-i] = Message{ /* ... */ }
+	}
+	return messages, nil
+}
+</code></pre>
+<p>Negative : <strong>Pelajaran paling penting di seri ini:</strong> komentar kode yang bilang &#34;verified against a live API&#34; tidak otomatis benar selamanya. Verifikasi pertama cuma pakai fixture 2 pesan yang kebetulan urut benar secara kebetulan — tidak pernah ke-exercise dengan data yang representatif (banyak pesan, span waktu jauh) sampai ada yang benar-benar mencoba. <strong>Selalu </strong></p>
+<p><strong><code>curl</code></strong></p>
+<p><strong> langsung ke data nyata sebelum percaya asumsi urutan/bentuk API</strong>, terutama untuk API pihak ketiga yang dokumentasinya generik.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Cache TTL dan Bug &#34;Room Baru Tidak Muncul&#34;" duration="7">
+        <p>Untuk membatasi beban ke Qiscus, daftar sesi di-cache in-memory per user selama beberapa puluh detik.</p>
+<pre><code language="language-go" class="language-go">type TTLCache[V any] struct {
+	mu      sync.RWMutex
+	entries map[string]entry[V]
+	ttl     time.Duration
+	now     func() time.Time
+}
+
+func (c *TTLCache[V]) Get(key string) (V, bool) {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	e, ok := c.entries[key]
+	if !ok || c.now().After(e.expiresAt) {
+		var zero V
+		return zero, false
+	}
+	return e.value, true
+}
+</code></pre>
+<p>Masalahnya: kalau user baru saja membuat sesi baru lalu langsung minta daftar sesi lagi, cache lama (dari <strong>sebelum</strong> room itu ada) masih dilayani sampai TTL habis — room baru itu kelihatan &#34;tidak muncul&#34;, padahal datanya sudah ada di Qiscus. Bahkan <strong>pull-to-refresh manual pun tidak menyelesaikan ini</strong> kalau masih dalam window cache yang sama.</p>
+<p>Solusinya: query param <code>?fresh=1</code> yang melewati cache (tapi tetap mengisinya ulang untuk request berikutnya):</p>
+<pre><code language="language-go" class="language-go">func (h *SessionsHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// ...
+	bypassCache := r.URL.Query().Get(&#34;fresh&#34;) == &#34;1&#34;
+	sessions, err := h.getSessions(userID, bypassCache)
+	// ...
+}
+
+func (h *SessionsHandler) getSessions(userID string, bypassCache bool) ([]Session, error) {
+	if h.Cache != nil &amp;&amp; !bypassCache {
+		if cached, ok := h.Cache.Get(userID); ok {
+			return cached, nil
+		}
+	}
+	sessions, err := h.Lister.GetUserRooms(userID)
+	if err != nil {
+		return nil, err
+	}
+	if h.Cache != nil {
+		h.Cache.Set(userID, sessions)
+	}
+	return sessions, nil
+}
+</code></pre>
+<p>Sisi klien (app) yang tahu kapan dia baru saja membuat room baru — jadi dia yang memutuskan kapan mengirim <code>?fresh=1</code>. Kita bahas ini lagi di Part 2.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Autentikasi JWT RS256 dan Verifikasi Kepemilikan Room" duration="8">
+        <h2 is-upgraded>Kenapa RS256, bukan token dari layanan ini sendiri</h2>
+<p>Token yang dipakai untuk memanggil proxy ini <strong>diterbitkan oleh backend auth klien sendiri</strong>, bukan oleh proxy. Proxy hanya perlu <strong>public key</strong>-nya (<code>JWT_PUBLIC_KEY</code>, dari environment) untuk memverifikasi tanda tangan — private key tidak pernah ada di proxy ini.</p>
+<pre><code language="language-go" class="language-go">func JWTAuthRS256(publicKey *rsa.PublicKey) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			tokenString := strings.TrimPrefix(r.Header.Get(&#34;Authorization&#34;), &#34;Bearer &#34;)
+			if tokenString == &#34;&#34; {
+				http.Error(w, &#34;missing Authorization header&#34;, http.StatusUnauthorized)
+				return
+			}
+
+			token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+				return publicKey, nil
+			}, jwt.WithValidMethods([]string{&#34;RS256&#34;}))
+			if err != nil || !token.Valid {
+				http.Error(w, &#34;invalid token&#34;, http.StatusUnauthorized)
+				return
+			}
+
+			claims, _ := token.Claims.(jwt.MapClaims)
+			userID, _ := claims[&#34;sub&#34;].(string)
+			if userID == &#34;&#34; {
+				http.Error(w, &#34;token missing sub claim&#34;, http.StatusUnauthorized)
+				return
+			}
+
+			ctx := context.WithValue(r.Context(), UserIDKey, userID)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
+}
+</code></pre>
+<h2 is-upgraded>Verifikasi kepemilikan room — jangan percaya <code>room_id</code> dari klien</h2>
+<p>Endpoint transkrip (<code>GET /api/v1/sessions/{room_id}/messages</code>) <strong>tidak</strong> boleh langsung mengambil <code>room_id</code> dari URL dan mengambil isinya. Sebelum itu, cek apakah room itu ada di daftar sesi milik <code>sub</code> dari JWT:</p>
+<pre><code language="language-go" class="language-go">func (h *MessagesHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	userID, _ := megamiddleware.UserIDFromContext(r.Context())
+	roomID := chi.URLParam(r, &#34;room_id&#34;)
+
+	sessions, err := (&amp;SessionsHandler{Lister: h.Lister, Cache: h.Cache}).getSessions(userID, false)
+	if err != nil {
+		writeUpstreamError(w, &#34;failed to verify room ownership&#34;, err)
+		return
+	}
+	if !ownsRoom(sessions, roomID) {
+		http.NotFound(w, r) // 404, BUKAN 403 — jangan bocorkan keberadaan room orang lain
+		return
+	}
+	// ... lanjut ambil transkrip
+}
+</code></pre>
+<p>Negative : <code>404</code> dipilih dengan sengaja, bukan <code>403</code>. Kalau membalas <code>403 Forbidden</code> untuk room yang bukan milik user, itu membocorkan informasi &#34;room ini ADA, cuma kamu tidak boleh baca&#34; — memudahkan orang menebak <code>room_id</code> valid lewat brute force. <code>404</code> membuat &#34;tidak ada&#34; dan &#34;bukan punyamu&#34; tidak bisa dibedakan dari luar.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Menjalankan dan Menguji" duration="6">
+        <h2 is-upgraded>Setup environment</h2>
+<pre><code language="language-bash" class="language-bash">cp .env.example .env
+# isi QISCUS_APP_ID, QISCUS_SECRET_KEY, dan JWT_PUBLIC_KEY (RSA PEM)
+set -a; source .env; set +a
+go run ./cmd/chat-history-proxy
+</code></pre>
+<h2 is-upgraded>Testing tanpa backend auth klien asli</h2>
+<p>Untuk mencoba endpoint tanpa harus punya backend auth klien beneran, buat tool kecil yang menandatangani JWT dev dengan key lokal:</p>
+<pre><code language="language-bash" class="language-bash">openssl genrsa -out .dev/jwt_private.pem 2048
+openssl rsa -in .dev/jwt_private.pem -pubout -out .dev/jwt_public.pem
+export JWT_PUBLIC_KEY=&#34;$(cat .dev/jwt_public.pem)&#34;
+
+TOKEN=$(go run ./cmd/devtools/gen-dev-jwt -key .dev/jwt_private.pem -sub some-user-id -ttl 168h)
+curl -H &#34;Authorization: Bearer $TOKEN&#34; &#34;http://localhost:8081/api/v1/sessions?fresh=1&#34;
+</code></pre>
+<p>Positive : <code>.dev/</code> masuk <code>.gitignore</code> — key ini murni lokal untuk testing, tidak pernah dipakai di deployment sungguhan. Pola ini (script generator token dev, terpisah dari kode produksi) berguna dipakai ulang di proyek lain yang butuh testing JWT tanpa auth server asli.</p>
+<h2 is-upgraded>Jalankan test</h2>
+<pre><code language="language-bash" class="language-bash">go build ./...
+go vet ./...
+go test ./...
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan dan Lanjut ke Part 2" duration="2">
+        <h2 is-upgraded>Yang Sudah Anda Bangun</h2>
+<ul>
+<li>✅ Backend Go tanpa database yang membaca riwayat chat lintas sesi dari Qiscus.</li>
+<li>✅ Konfigurasi 100% environment-driven, fail-fast kalau kredensial kosong.</li>
+<li>✅ Dua bug nyata diperbaiki: bentuk respons <code>get_user_rooms</code> (dan <code>room_options</code> sebagai string JSON bersarang), dan urutan <code>load_comments</code> yang newest-first.</li>
+<li>✅ Cache TTL dengan mekanisme bypass (<code>?fresh=1</code>) untuk sesi yang baru dibuat.</li>
+<li>✅ Autentikasi JWT RS256 dan verifikasi kepemilikan room (404, bukan 403).</li>
+</ul>
+<h2 is-upgraded>Kontrak API yang dihasilkan</h2>
+<pre><code>GET /api/v1/sessions
+  -&gt; { &#34;data&#34;: [ { &#34;room_id&#34;, &#34;name&#34;, &#34;started_at&#34;, &#34;is_resolved&#34;, &#34;last_message&#34;, &#34;topic&#34; } ] }
+
+GET /api/v1/sessions/{room_id}/messages
+  -&gt; { &#34;data&#34;: [ { &#34;id&#34;, &#34;sender_role&#34;, &#34;sender_name&#34;, &#34;type&#34;, &#34;text&#34;, &#34;payload&#34;, &#34;created_at&#34; } ] }
+</code></pre>
+<p>Backend ini sekarang siap dipakai — tapi belum ada yang memanggilnya. Di <strong>Part 2</strong>, kita integrasikan proxy ini ke dalam app React Native yang memakai <code>@qiscus-community/react-native-multichannel-widget</code>, termasuk beberapa bug UI/navigasi nyata (layar putih setelah reload, tombol back yang salah logout) dan cara membuat sesi baru dengan topik.</p>
+<p>Positive : <strong>Lanjut ke Part 2 — Integrasi di React Native App: </strong><a href="https://learnwithfath.github.io/codelabs/qiscus-sessional-chat-history-part-2-react-native-app/" target="_blank">learnwithfath.github.io/codelabs/qiscus-sessional-chat-history-part-2-react-native-app/</a></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Sumber" duration="1">
+        <ul>
+<li><a href="https://documentation.qiscus.com/multichannel-chat/get-user-rooms" target="_blank">Qiscus Omnichannel REST API — get_user_rooms</a></li>
+<li><a href="https://documentation.qiscus.com/multichannel-chat/get-room-comments" target="_blank">Qiscus Omnichannel REST API — load_comments</a></li>
+<li><a href="https://github.com/go-chi/chi" target="_blank">go-chi router</a></li>
+<li><a href="https://github.com/golang-jwt/jwt" target="_blank">golang-jwt/jwt</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

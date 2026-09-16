@@ -1,0 +1,34 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-09-16T15:17:30+07:00",
+  "id": "qiscus-sessional-chat-history-part-1-backend-proxy",
+  "duration": 49,
+  "title": "Qiscus Sessional Chat History — Part 1: Backend Proxy Generik dengan Go",
+  "summary": "Part 1 dari seri Qiscus Sessional Chat History — bangun backend proxy Go generik, tanpa database, yang membuat riwayat chat lintas sesi bisa dibaca lagi setelah room sessional di Qiscus resolved. Termasuk dua bug nyata yang ditemukan saat verifikasi ke Qiscus asli (bentuk respons API dan urutan pesan) dan cara menghindarinya.",
+  "source": "qiscus-sessional-chat-history-part-1-backend-proxy.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "golang",
+    "backend",
+    "qiscus",
+    "api"
+  ],
+  "tags": [
+    "chat-history",
+    "go",
+    "golang",
+    "jwt",
+    "qiscus",
+    "rest-api",
+    "sessional",
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "qiscus-sessional-chat-history-part-1-backend-proxy"
+}
