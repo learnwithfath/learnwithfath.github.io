@@ -15,7 +15,7 @@ Duration: 0:03:00
 Ini Part 2 dari seri **Qiscus Sessional Chat History**. Kalau belum mengikuti Part 1, disarankan mulai dari sana — backend proxy yang dibangun di sana adalah kontrak data yang dipakai di seluruh codelab ini.
 
 Positive
-: **Belum baca Part 1?** Mulai dari sini: [learnwithfath.github.io/codelabs/qiscus-sessional-chat-history-part-1-backend-proxy/](https://learnwithfath.github.io/codelabs/qiscus-sessional-chat-history-part-1-backend-proxy/)
+: **Belum baca Part 1?** Mulai dari sini: [learnwithfath.github.io/qiscus-sessional-chat-history-part-1-backend-proxy/#0](https://learnwithfath.github.io/qiscus-sessional-chat-history-part-1-backend-proxy/#0)
 
 ### Apa yang Akan Anda Bangun
 
@@ -411,7 +411,7 @@ Duration: 0:02:00
 Kalau kamu melewatkan Part 1 atau mau baca ulang detail bug di sisi backend (bentuk respons `get_user_rooms`, urutan `load_comments`, dan cache TTL), kembali ke sana:
 
 Positive
-: **Kembali ke Part 1 — Backend Proxy Generik dengan Go:** [learnwithfath.github.io/codelabs/qiscus-sessional-chat-history-part-1-backend-proxy/](https://learnwithfath.github.io/codelabs/qiscus-sessional-chat-history-part-1-backend-proxy/)
+: **Kembali ke Part 1 — Backend Proxy Generik dengan Go:** [learnwithfath.github.io/qiscus-sessional-chat-history-part-1-backend-proxy/#0](https://learnwithfath.github.io/qiscus-sessional-chat-history-part-1-backend-proxy/#0)
 
 ## Sumber
 Duration: 0:01:00

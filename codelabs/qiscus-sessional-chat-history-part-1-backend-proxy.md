@@ -468,7 +468,7 @@ GET /api/v1/sessions/{room_id}/messages
 Backend ini sekarang siap dipakai — tapi belum ada yang memanggilnya. Di **Part 2**, kita integrasikan proxy ini ke dalam app React Native yang memakai `@qiscus-community/react-native-multichannel-widget`, termasuk beberapa bug UI/navigasi nyata (layar putih setelah reload, tombol back yang salah logout) dan cara membuat sesi baru dengan topik.
 
 Positive
-: **Lanjut ke Part 2 — Integrasi di React Native App:** [learnwithfath.github.io/codelabs/qiscus-sessional-chat-history-part-2-react-native-app/](https://learnwithfath.github.io/codelabs/qiscus-sessional-chat-history-part-2-react-native-app/)
+: **Lanjut ke Part 2 — Integrasi di React Native App:** [learnwithfath.github.io/qiscus-sessional-chat-history-part-2-react-native-app/#0](https://learnwithfath.github.io/qiscus-sessional-chat-history-part-2-react-native-app/#0)
 
 ## Sumber
 Duration: 0:01:00
