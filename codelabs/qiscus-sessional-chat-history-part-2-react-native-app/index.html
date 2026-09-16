@@ -1,0 +1,381 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Qiscus Sessional Chat History — Part 2: Integrasi di React Native App</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14" ga4id=""></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  codelab-ga4id=""
+                  id="qiscus-sessional-chat-history-part-2-react-native-app"
+                  title="Qiscus Sessional Chat History — Part 2: Integrasi di React Native App"
+                  environment="web"
+                  feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
+    
+      <google-codelab-step label="Overview" duration="3">
+        <p>Ini Part 2 dari seri <strong>Qiscus Sessional Chat History</strong>. Kalau belum mengikuti Part 1, disarankan mulai dari sana — backend proxy yang dibangun di sana adalah kontrak data yang dipakai di seluruh codelab ini.</p>
+<p>Positive : <strong>Belum baca Part 1?</strong> Mulai dari sini: <a href="https://learnwithfath.github.io/codelabs/qiscus-sessional-chat-history-part-1-backend-proxy/" target="_blank">learnwithfath.github.io/codelabs/qiscus-sessional-chat-history-part-1-backend-proxy/</a></p>
+<h2 is-upgraded>Apa yang Akan Anda Bangun</h2>
+<p>Sebuah layar <strong>&#34;Riwayat Percakapan&#34;</strong> di app React Native yang memakai <code>@qiscus-community/react-native-multichannel-widget</code>, tanpa mengubah satu baris pun kode library itu sendiri:</p>
+<ul>
+<li>Daftar sesi (aktif + selesai), dengan judul = topik percakapan, subjudul = pesan terakhir.</li>
+<li>Transkrip read-only untuk sesi yang sudah selesai.</li>
+<li>Tombol &#34;mulai percakapan baru&#34; dengan dialog topik singkat.</li>
+<li>Semua nilai spesifik klien (App ID, Channel ID, base URL backend) lewat satu file konfigurasi — ganti klien, ganti satu file.</li>
+</ul>
+<h2 is-upgraded>Prasyarat</h2>
+<ul>
+<li>Sudah menyelesaikan Part 1 (backend proxy jalan di <code>localhost:8081</code>)</li>
+<li>Project React Native yang sudah memakai <code>@qiscus-community/react-native-multichannel-widget</code></li>
+<li>Familiar dengan React hooks dan TypeScript</li>
+</ul>
+<p>Negative : Seri ini <strong>tidak</strong> mengubah kode library (<code>src/</code>) sama sekali. Semua yang dibangun di sini murni memanfaatkan hook publik yang sudah diekspor library — pola ini penting kalau kamu bekerja dengan dependency yang di-maintain tim lain: jangan fork, cari hook/API publiknya.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Kontrak Data dan API Client" duration="5">
+        <h2 is-upgraded>Tipe data yang sinkron dengan backend</h2>
+<pre><code language="language-typescript" class="language-typescript">// history/types.ts
+export type Session = {
+  room_id: string;
+  name: string;
+  started_at: string;
+  is_resolved: boolean;
+  last_message: string;
+  topic: string; // kosong untuk sesi lama yang dibuat sebelum fitur topik ada
+};
+
+export type ArchivedMessage = {
+  id: string;
+  sender_role: &#39;user&#39; | &#39;agent&#39; | &#39;bot&#39; | &#39;system&#39;;
+  sender_name: string;
+  type: string;
+  text: string;
+  payload: unknown;
+  created_at: string;
+};
+
+export type Paginated&lt;T&gt; = { data: T[]; next_cursor: string | null };
+</code></pre>
+<h2 is-upgraded>API client — dan kenapa <code>fresh</code> bukan opsional dari sudut pandang UI</h2>
+<p>Ingat bug cache di Part 1: room baru bisa &#34;hilang&#34; sampai TTL cache habis. Klien yang tahu kapan ini terjadi (mount pertama, pull-to-refresh, atau baru saja membuat sesi) — jadi parameter <code>fresh</code> ada di level API client, bukan disembunyikan di backend.</p>
+<pre><code language="language-typescript" class="language-typescript">// history/api.ts
+export function fetchSessions(
+  userId: string,
+  cursor?: string | null,
+  fresh?: boolean
+): Promise&lt;Paginated&lt;Session&gt;&gt; {
+  const params = new URLSearchParams();
+  if (cursor) params.set(&#39;cursor&#39;, cursor);
+  if (fresh) params.set(&#39;fresh&#39;, &#39;1&#39;);
+  const query = params.toString();
+  return get(`/api/v1/sessions${query ? `?${query}` : &#39;&#39;}`, userId);
+}
+</code></pre>
+<pre><code language="language-typescript" class="language-typescript">// history/useSessions.ts
+export function useSessions(userId: string) {
+  const [state, setState] = useState&lt;State&gt;({ sessions: [], loading: true, error: null, nextCursor: null });
+
+  const load = useCallback(async (cursor?: string | null) =&gt; {
+    setState((prev) =&gt; ({ ...prev, loading: true, error: null }));
+    try {
+      // &#34;First page&#34; load (cursor == null) SELALU fresh — mencakup mount awal,
+      // pull-to-refresh, dan balik ke sini setelah membuat sesi baru.
+      // Pagination (loadMore) tetap pakai cache.
+      const page = await fetchSessions(userId, cursor, cursor == null);
+      setState((prev) =&gt; ({
+        sessions: cursor ? [...prev.sessions, ...page.data] : page.data,
+        loading: false, error: null, nextCursor: page.next_cursor,
+      }));
+    } catch (e) {
+      setState((prev) =&gt; ({ ...prev, loading: false, error: String(e) }));
+    }
+  }, [userId]);
+
+  useEffect(() =&gt; { load(null); }, [load]);
+
+  return { sessions: state.sessions, loading: state.loading, error: state.error,
+           hasMore: state.nextCursor != null, refresh: () =&gt; load(null), loadMore: () =&gt; load(state.nextCursor) };
+}
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Konfigurasi yang Mudah Diganti Antar Klien" duration="4">
+        <p>Prinsip yang sama seperti backend di Part 1: <strong>ganti klien = ganti satu file, bukan ganti kode.</strong></p>
+<pre><code language="language-typescript" class="language-typescript">// env.example.ts (di-commit, template)
+export const QISCUS_APP_ID = &#39;your-qiscus-app-id&#39;;
+export const QISCUS_CHANNEL_ID = &#39;your-channel-id&#39;;
+export const HISTORY_API_BASE_URL_ANDROID = &#39;http://10.0.2.2:8081&#39;;
+export const HISTORY_API_BASE_URL_DEFAULT = &#39;http://localhost:8081&#39;;
+export const DEV_AUTH_TOKENS: Record&lt;string, string&gt; = {};
+</code></pre>
+<pre><code language="language-typescript" class="language-typescript">// env.ts (di-commit) — re-export dari file lokal yang di-gitignore
+export * from &#39;./env.local&#39;;
+</code></pre>
+<pre><code language="language-bash" class="language-bash">cp env.example.ts env.local.ts
+# isi env.local.ts dengan App ID, Channel ID, dan base URL milikmu
+</code></pre>
+<p>Negative : <code>env.local.ts</code> <strong>wajib</strong> masuk <code>.gitignore</code>. Jangan pernah commit token/App ID asli — bahkan untuk App ID yang &#34;cuma identifier&#34; sekalipun, biasakan memisahkan nilai per-deployment dari kode sejak awal, supaya kebiasaan ini otomatis berlaku juga untuk nilai yang benar-benar rahasia.</p>
+<h2 is-upgraded>Kenapa alamat backend beda per platform</h2>
+<pre><code language="language-typescript" class="language-typescript">export function getHistoryApiBaseUrl(): string {
+  const { Platform } = require(&#39;react-native&#39;);
+  return Platform.select({
+    android: HISTORY_API_BASE_URL_ANDROID, // 10.0.2.2 — alias emulator Android ke host machine
+    default: HISTORY_API_BASE_URL_DEFAULT,  // localhost — iOS Simulator berbagi network namespace dgn host
+  });
+}
+</code></pre>
+<p>Kalau alamat ini salah (misal pakai <code>10.0.2.2</code> di iOS Simulator), gejalanya <strong>bukan</strong> error langsung — <code>fetch()</code> akan menggantung menunggu koneksi yang tidak akan pernah connect, sampai timeout. Dari sudut pandang user, ini kelihatan seperti &#34;loading terus&#34;, bukan error. Kalau ketemu gejala ini, cek dulu alamat host sebelum menduga bug lain.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Membangun Layar Riwayat" duration="10">
+        <h2 is-upgraded>Kenapa tidak pakai <code>Header</code> bawaan library</h2>
+<p>Godaan pertama saat butuh header konsisten adalah reuse <code>Header</code> yang sudah diekspor library. <strong>Jangan</strong> — komponen itu didesain khusus untuk layar chat aktif:</p>
+<pre><code language="language-typescript" class="language-typescript">// Header bawaan library membaca state GLOBAL milik chat-room:
+function useSubtitle(subtitle?: string) {
+  return useComputedAtomValue((get) =&gt; {
+    const isTyping = get(typingStatusAtom);        // status &#34;typing&#34; chat aktif
+    if (isTyping) return &#39;Typing...&#39;;
+    return get(subtitleAtom);                        // daftar partisipan chat aktif
+  });
+}
+</code></pre>
+<p>Kalau dipakai di layar SessionList, subtitle-nya akan menampilkan <strong>sisa data partisipan chat terakhir</strong> yang bocor dari state global — bukan apa yang kamu maksudkan. Solusinya: bikin header sendiri, sederhana, yang title/subtitle-nya murni dari props:</p>
+<pre><code language="language-typescript" class="language-typescript">// HistoryHeader.tsx — komponen sendiri, BUKAN dari library
+export function HistoryHeader(props: { title: string; subtitle?: string; onBack?: () =&gt; void }) {
+  return (
+    &lt;View style={styles.container}&gt;
+      {props.onBack != null &amp;&amp; (
+        &lt;TouchableOpacity onPress={props.onBack}&gt;&lt;Text style={styles.backIcon}&gt;‹&lt;/Text&gt;&lt;/TouchableOpacity&gt;
+      )}
+      &lt;View style={styles.content}&gt;
+        &lt;Text style={styles.title} numberOfLines={1}&gt;{props.title}&lt;/Text&gt;
+        {props.subtitle != null &amp;&amp; &lt;Text style={styles.subtitle} numberOfLines={1}&gt;{props.subtitle}&lt;/Text&gt;}
+      &lt;/View&gt;
+    &lt;/View&gt;
+  );
+}
+</code></pre>
+<h2 is-upgraded>SessionList — judul dari topik, bukan nama user</h2>
+<pre><code language="language-typescript" class="language-typescript">// SessionList.tsx (potongan)
+&lt;Text style={styles.itemTitle} numberOfLines={1}&gt;
+  {item.topic || item.name}
+&lt;/Text&gt;
+&lt;Text style={styles.itemLastMessage} numberOfLines={1}&gt;
+  {item.last_message || &#39;Belum ada pesan&#39;}
+&lt;/Text&gt;
+</code></pre>
+<p>Nama user tidak informatif sebagai judul kalau app-nya cuma dipakai satu user untuk semua sesi (kasus umum saat testing). Topik lebih menjelaskan &#34;sesi ini soal apa&#34; — dan supaya topik itu <strong>awet</strong> (tidak hilang begitu chat berlanjut panjang dan <code>last_message</code> berubah), topik disimpan di tempat yang berbeda dari pesan biasa. Kita bahas caranya di bagian berikutnya.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bug #1 — Layar Putih Setelah Reload" duration="8">
+        <p>Ini bug yang paling instruktif di seri ini, karena murni bug <strong>logika kondisi render</strong>, bukan sesuatu yang kelihatan jelas dari luar.</p>
+<h2 is-upgraded>Gejala</h2>
+<p>App jalan normal setelah login manual. Tapi begitu di-reload (Cmd+R, atau app di-relaunch), layar jadi <strong>putih total</strong> — tidak ada error di console, tidak ada crash.</p>
+<h2 is-upgraded>Root cause</h2>
+<pre><code language="language-typescript" class="language-typescript">// App.tsx — versi BERMASALAH
+const [userId, setUserId] = useState&lt;string | null&gt;(null); // state lokal terpisah!
+
+// ...
+onLogin={async (loginUserId, displayName) =&gt; {
+  setUserId(loginUserId); // cuma keisi lewat jalur login manual
+  // ...
+}}
+</code></pre>
+<p>Library punya mekanisme sendiri: <code>useCurrentUser()</code> (dari state global) <strong>otomatis di-restore dari </strong></p>
+<p><strong><code>AsyncStorage</code></strong> setiap kali app di-mount ulang — tanpa lewat <code>onLogin</code>. Jadi begitu reload:</p>
+<ul>
+<li><code>currentUser</code> (dari library) → terisi lagi dari <code>AsyncStorage</code>, <strong>bukan </strong><strong><code>null</code></strong>.</li>
+<li><code>userId</code> (state lokal App.tsx) → reset ke <code>null</code>, karena tidak pernah direstore.</li>
+</ul>
+<p>Lihat kondisi render-nya:</p>
+<pre><code language="language-typescript" class="language-typescript">{currentUser == null &amp;&amp; &lt;Login /&gt;}                                          // false — currentUser sudah ada
+{currentUser != null &amp;&amp; userId != null &amp;&amp; screen === &#39;sessions&#39; &amp;&amp; &lt;SessionList /&gt;}  // false — userId null!
+{currentUser != null &amp;&amp; screen === &#39;chat&#39; &amp;&amp; &lt;Chat /&gt;}                       // false — screen direset ke &#39;sessions&#39;
+</code></pre>
+<p><strong>Tidak ada satu kondisi pun yang match</strong> — tidak ada yang di-render sama sekali. Layar putih.</p>
+<h2 is-upgraded>Fix</h2>
+<pre><code language="language-typescript" class="language-typescript">// App.tsx — versi BENAR
+// Diturunkan dari currentUser (bukan state lokal terpisah), supaya tetap
+// sinkron ketika library restore sesi dari AsyncStorage saat reload.
+const userId = currentUser?.id ?? null;
+</code></pre>
+<p>Positive : <strong>Pelajaran umum:</strong> kalau sebuah nilai bisa direstore secara implisit oleh library/framework di luar kendali komponenmu (session restore, cache hydration, dll), jangan simpan salinan lokalnya sendiri yang cuma diisi lewat satu jalur (misal <code>onLogin</code>). Turunkan dari sumber yang sama yang dipakai proses restore itu.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bug #2 — Tombol Back Salah Logout" duration="5">
+        <h2 is-upgraded>Gejala</h2>
+<p>Tombol back di layar chat aktif langsung logout user, padahal seharusnya cuma balik ke daftar sesi.</p>
+<h2 is-upgraded>Root cause</h2>
+<pre><code language="language-typescript" class="language-typescript">// Chat.tsx — versi lama, sisa dari sebelum ada SessionList
+return &lt;MultichannelWidget onBack={() =&gt; widget.clearUser()} /&gt;;
+</code></pre>
+<p>Ini sisa kode dari sebelum ada layar daftar sesi — waktu itu Chat adalah satu-satunya layar setelah login, jadi &#34;back&#34; secara wajar berarti logout. Begitu ditambah SessionList sebagai layar navigasi baru, semantik &#34;back&#34; berubah, tapi kode ini tidak ikut diupdate.</p>
+<h2 is-upgraded>Fix — plus dialog konfirmasi yang konsisten</h2>
+<pre><code language="language-typescript" class="language-typescript">// Chat.tsx
+type IProps = { onBack: () =&gt; void }; // dioper dari parent, bukan hardcode clearUser
+export function Chat(props: IProps) {
+  return &lt;MultichannelWidget onBack={props.onBack} /&gt;;
+}
+
+// App.tsx
+&lt;Chat onBack={() =&gt; setScreen({ name: &#39;sessions&#39; })} /&gt;
+</code></pre>
+<p>Logout sekarang cuma terjadi dari tombol back di header <code>SessionList</code> — dan itu pun lewat dialog konfirmasi tema custom (bukan <code>Alert.alert</code> bawaan OS yang gaya visualnya beda-beda), dipakai bersama oleh tombol header <strong>dan</strong> hardware back Android, supaya dua jalur itu konsisten:</p>
+<pre><code language="language-typescript" class="language-typescript">&lt;ConfirmDialog
+  visible={showLogoutConfirm}
+  title=&#34;Keluar dari akun?&#34;
+  destructive
+  onConfirm={() =&gt; { setShowLogoutConfirm(false); widget.clearUser(); }}
+  onCancel={() =&gt; setShowLogoutConfirm(false)}
+/&gt;
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Bug #3 — &#34;Mulai Percakapan Baru&#34; yang Diam-diam Tidak Ngapa-ngapain" duration="8">
+        <h2 is-upgraded>Gejala</h2>
+<p>Kalau semua sesi sudah &#34;Selesai&#34;, tidak ada cara jelas untuk mulai chat baru — dan mencoba panggil <code>widget.initiateChat()</code> lagi (yang biasa dipakai saat login pertama) tidak menghasilkan apa-apa.</p>
+<h2 is-upgraded>Root cause</h2>
+<pre><code language="language-typescript" class="language-typescript">// use-multichannel-widget.ts (di dalam library)
+const initiateChat = useAtomCallbackWithDeps(async (get) =&gt; {
+  if (isLoggedIn) return; // &lt;- diam-diam no-op kalau user sudah login!
+  // ...
+}, [appId]);
+</code></pre>
+<p>Guard ini masuk akal untuk mencegah panggilan ganda saat login pertama — tapi efek sampingnya, memanggil <code>widget.initiateChat()</code> lagi setelah user sudah login <strong>tidak melakukan apa-apa sama sekali</strong>, tanpa error.</p>
+<h2 is-upgraded>Fix — pakai hook level rendah yang diekspor publik</h2>
+<p>Library juga mengekspor <code>useInitiateChat()</code> — versi tanpa guard itu, yang benar-benar mengecek status resolved dan membuka room baru kalau perlu:</p>
+<pre><code language="language-typescript" class="language-typescript">const initiateChat = useInitiateChat(); // hook publik, level rendah
+
+async function startNewConversation(topic: string) {
+  // Kalau room terakhir masih aktif (belum resolved), ini cuma reuse room
+  // yang sama — tidak akan membuat duplikat percakapan aktif.
+  await initiateChat({ userId: currentUser.id, name: currentUser.name, channelId: CHANNEL_ID });
+  setPendingTopic(topic || null);
+  setScreen({ name: &#39;chat&#39; });
+}
+</code></pre>
+<p>Positive : <strong>Pelajaran umum:</strong> kalau sebuah fungsi publik &#34;sengaja no-op&#34; untuk mencegah efek samping tertentu (di sini: panggilan ganda saat login), cek dulu apakah library juga mengekspor versi level-rendah tanpa guard itu — daripada menyimpulkan fitur itu &#34;tidak mungkin dilakukan&#34;.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Topik yang Bertahan — Menyimpan di 
+room.extras, Bukan Cuma Pesan" duration="7">
+        <p>Topik yang cuma jadi pesan pertama akan &#34;terkubur&#34; begitu chat berlanjut panjang (<code>last_message</code> berubah menunjuk ke pesan lain). Solusi yang lebih awet: simpan topik di <strong>room-level </strong></p>
+<p><strong><code>extras</code></strong> lewat <code>qiscus.updateChatRoom(...)</code> — field yang sama yang dibaca backend sebagai <code>room_options.topic</code> di Part 1.</p>
+<h2 is-upgraded>Risiko yang harus dimitigasi: overwrite <code>is_resolved</code></h2>
+<p><code>is_resolved</code> (yang seluruh logic sessional bergantung padanya) hidup di JSON blob yang <strong>sama</strong> dengan <code>topic</code>. Kalau <code>updateChatRoom</code> mengirim objek baru tanpa menyertakan field lama, risikonya field itu ter-overwrite tanpa sengaja.</p>
+<pre><code language="language-typescript" class="language-typescript">// Chat.tsx — dikirim SETELAH room benar-benar siap (bukan langsung di App.tsx,
+// untuk menghindari race condition timing React state vs promise initiateChat)
+useEffect(() =&gt; {
+  if (room == null || pendingTopic == null) return;
+
+  (async () =&gt; {
+    // 1. Kirim sebagai pesan pertama — natural di transkrip, otomatis jadi last_message.
+    const message = qiscus.generateMessage({ roomId: room.id, text: pendingTopic });
+    await sendMessage(message);
+
+    // 2. SPREAD extras yang ADA dulu, baru tambahkan topic — supaya is_resolved
+    //    dan field lain yang dikelola Qiscus tidak ikut hilang.
+    await qiscus.updateChatRoom(room.id, room.name, room.avatarUrl, {
+      ...room.extras,
+      topic: pendingTopic,
+    });
+  })();
+}, [room, pendingTopic]);
+</code></pre>
+<p>Negative : Selalu <strong>baca state yang ada dulu, gabungkan, baru tulis</strong> — bukan tulis objek baru dari nol — setiap kali API pihak ketiga menyimpan beberapa field custom di satu blob JSON yang sama. Ini pola umum di banyak platform (metadata/extras/custom fields), bukan cuma spesifik Qiscus.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Menjalankan Test" duration="4">
+        <h2 is-upgraded>Bug tersembunyi lain: dua instance React di Jest</h2>
+<pre><code>Cannot read properties of null (reading &#39;useState&#39;)
+</code></pre>
+<p><code>example/</code> (folder demo di monorepo) punya salinan <code>react</code> sendiri di <code>node_modules</code> bersarang, berbeda instance dari <code>react</code> di root — bikin hooks gagal lintas boundary saat <code>react-test-renderer</code> dipakai. Fix-nya di level konfigurasi Jest, bukan di kode fitur:</p>
+<pre><code language="language-json" class="language-json">{
+  &#34;jest&#34;: {
+    &#34;moduleNameMapper&#34;: {
+      &#34;^react$&#34;: &#34;&lt;rootDir&gt;/node_modules/react&#34;,
+      &#34;^react-test-renderer$&#34;: &#34;&lt;rootDir&gt;/node_modules/react-test-renderer&#34;
+    }
+  }
+}
+</code></pre>
+<pre><code language="language-bash" class="language-bash">yarn typecheck
+yarn lint
+yarn jest example/src/history
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Ringkasan" duration="2">
+        <h2 is-upgraded>Yang Sudah Anda Bangun</h2>
+<ul>
+<li>✅ Layar riwayat percakapan lengkap: daftar sesi, transkrip read-only, mulai sesi baru dengan topik.</li>
+<li>✅ Tiga bug nyata diperbaiki: layar putih setelah reload (state lokal vs restore session), tombol back yang salah logout, dan <code>initiateChat</code> yang diam-diam no-op.</li>
+<li>✅ Topik percakapan tersimpan awet di <code>room.extras</code>, dengan mitigasi merge yang aman.</li>
+<li>✅ Konfigurasi client-agnostic — ganti klien lewat satu file <code>env.local.ts</code>.</li>
+</ul>
+<h2 is-upgraded>Apa Selanjutnya</h2>
+<ul>
+<li>Ulangi Part 1 dengan kredensial Qiscus App ID milikmu sendiri, lalu sambungkan ke app dari Part 2 ini.</li>
+<li>Coba pola <code>getAuthToken</code> yang WAJIB diganti untuk produksi — hubungkan ke backend auth klien sungguhan, bukan token dev statis.</li>
+<li>Eksplorasi pola &#34;baca-gabung-tulis&#34; untuk <code>extras</code>/metadata di API pihak ketiga lain yang kamu pakai — ini bukan pola khusus Qiscus.</li>
+</ul>
+<p>Kalau kamu melewatkan Part 1 atau mau baca ulang detail bug di sisi backend (bentuk respons <code>get_user_rooms</code>, urutan <code>load_comments</code>, dan cache TTL), kembali ke sana:</p>
+<p>Positive : <strong>Kembali ke Part 1 — Backend Proxy Generik dengan Go: </strong><a href="https://learnwithfath.github.io/codelabs/qiscus-sessional-chat-history-part-1-backend-proxy/" target="_blank">learnwithfath.github.io/codelabs/qiscus-sessional-chat-history-part-1-backend-proxy/</a></p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Sumber" duration="1">
+        <ul>
+<li><a href="https://github.com/qiscus-community/react-native-multichannel-widget" target="_blank">react-native-multichannel-widget (Qiscus Community)</a></li>
+<li><a href="https://jotai.org/" target="_blank">Jotai — state management yang dipakai library ini</a></li>
+<li><a href="https://reactnative.dev/docs/platform" target="_blank">React Native Platform module</a></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2026-09-16T15:18:59+07:00",
+  "id": "qiscus-sessional-chat-history-part-2-react-native-app",
+  "duration": 57,
+  "title": "Qiscus Sessional Chat History — Part 2: Integrasi di React Native App",
+  "summary": "Part 2 dari seri Qiscus Sessional Chat History — integrasikan backend proxy dari Part 1 ke app React Native yang memakai @qiscus-community/react-native-multichannel-widget. Termasuk tiga bug nyata (layar putih setelah reload, tombol back yang salah trigger logout, initiateChat yang diam-diam no-op) dan cara membuat sesi baru dengan topik tersimpan di SDK.",
+  "source": "qiscus-sessional-chat-history-part-2-react-native-app.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "reactnative",
+    "mobile",
+    "qiscus",
+    "api"
+  ],
+  "tags": [
+    "chat-history",
+    "jest",
+    "mobile",
+    "qiscus",
+    "react-native",
+    "sessional",
+    "web"
+  ],
+  "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
+  "url": "qiscus-sessional-chat-history-part-2-react-native-app"
+}
