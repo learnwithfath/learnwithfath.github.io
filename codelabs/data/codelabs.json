@@ -613,6 +613,54 @@
       "searchTerms": "tmux tailscale ssh remote terminal coding agent claude code mobile termux blink shell termius persistent session permission prompt",
       "url": "tmux-tailscale-ssh-remote-agent/",
       "ctaText": "Mulai Tutorial"
+    },
+    {
+      "id": "qiscus-sessional-chat-history-part-1-backend-proxy",
+      "title": "Qiscus Sessional Chat History — Part 1: Backend Proxy Generik dengan Go",
+      "icon": "🗄️",
+      "summary": "Bangun backend proxy Go generik, tanpa database, yang membuat riwayat chat lintas sesi bisa dibaca lagi setelah room sessional di Qiscus resolved. Termasuk dua bug nyata yang ditemukan saat verifikasi ke Qiscus asli (bentuk respons API dan urutan pesan) dan cara menghindarinya.",
+      "duration": 49,
+      "sections": 9,
+      "tags": [
+        "Golang",
+        "Backend",
+        "Qiscus",
+        "API",
+        "JWT"
+      ],
+      "categories": [
+        "golang",
+        "backend",
+        "qiscus",
+        "api"
+      ],
+      "searchTerms": "qiscus sessional chat history backend proxy go golang jwt rs256 cache ttl get_user_rooms load_comments",
+      "url": "qiscus-sessional-chat-history-part-1-backend-proxy/",
+      "ctaText": "Mulai Part 1"
+    },
+    {
+      "id": "qiscus-sessional-chat-history-part-2-react-native-app",
+      "title": "Qiscus Sessional Chat History — Part 2: Integrasi di React Native App",
+      "icon": "📱",
+      "summary": "Integrasikan backend proxy dari Part 1 ke app React Native yang memakai @qiscus-community/react-native-multichannel-widget. Termasuk tiga bug nyata (layar putih setelah reload, tombol back yang salah trigger logout, initiateChat yang diam-diam no-op) dan cara membuat sesi baru dengan topik tersimpan di SDK.",
+      "duration": 57,
+      "sections": 11,
+      "tags": [
+        "React Native",
+        "Mobile",
+        "Qiscus",
+        "API",
+        "Jest"
+      ],
+      "categories": [
+        "react-native",
+        "mobile",
+        "qiscus",
+        "api"
+      ],
+      "searchTerms": "qiscus sessional chat history react native mobile widget session restore initiate chat topic room extras jest",
+      "url": "qiscus-sessional-chat-history-part-2-react-native-app/",
+      "ctaText": "Mulai Part 2"
     }
   ],
   "stats": {
