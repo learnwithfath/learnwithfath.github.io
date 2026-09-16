@@ -35,6 +35,24 @@ Sebuah layar **"Riwayat Percakapan"** di app React Native yang memakai `@qiscus-
 Negative
 : Seri ini **tidak** mengubah kode library (`src/`) sama sekali. Semua yang dibangun di sini murni memanfaatkan hook publik yang sudah diekspor library — pola ini penting kalau kamu bekerja dengan dependency yang di-maintain tim lain: jangan fork, cari hook/API publiknya.
 
+### Ambil kodenya — clone versi yang sudah jadi
+
+**Cara tercepat:** clone branch hasil codelab ini langsung, sudah lengkap dengan semua file di `example/src/history/*` yang dibahas di bagian selanjutnya:
+
+```bash
+git clone --branch feature/chat-history-viewer --single-branch \
+  https://github.com/amed12/react-native-multichannel-widget.git
+cd react-native-multichannel-widget
+yarn install
+cp example/src/env.example.ts example/src/env.local.ts
+# isi env.local.ts dengan App ID, Channel ID, dan base URL backend milikmu
+```
+
+Repo ini **public**, tidak perlu SSH key atau akun GitHub apa pun untuk clone. Branch `feature/chat-history-viewer` sengaja terpisah dari `main` — `main` di fork ini tetap sinkron dengan [library resminya](https://github.com/qiscus-community/react-native-multichannel-widget), jadi kode contoh riwayat chat tidak tercampur dengan kode library yang sebenarnya.
+
+Positive
+: Kalau mau memahami setiap bagian dari nol (disarankan kalau kamu belajar), lanjutkan baca bagian-bagian di bawah — isinya sama persis dengan yang ada di branch hasil clone di atas, dijelaskan potongan demi potongan.
+
 ## Kontrak Data dan API Client
 Duration: 0:05:00
 
@@ -416,6 +434,7 @@ Positive
 ## Sumber
 Duration: 0:01:00
 
+* [Versi siap pakai — branch `feature/chat-history-viewer`](https://github.com/amed12/react-native-multichannel-widget/tree/feature/chat-history-viewer)
 * [react-native-multichannel-widget (Qiscus Community)](https://github.com/qiscus-community/react-native-multichannel-widget)
 * [Jotai — state management yang dipakai library ini](https://jotai.org/)
 * [React Native Platform module](https://reactnative.dev/docs/platform)

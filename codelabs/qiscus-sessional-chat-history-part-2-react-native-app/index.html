@@ -46,6 +46,17 @@
 <li>Familiar dengan React hooks dan TypeScript</li>
 </ul>
 <p>Negative : Seri ini <strong>tidak</strong> mengubah kode library (<code>src/</code>) sama sekali. Semua yang dibangun di sini murni memanfaatkan hook publik yang sudah diekspor library — pola ini penting kalau kamu bekerja dengan dependency yang di-maintain tim lain: jangan fork, cari hook/API publiknya.</p>
+<h2 is-upgraded>Ambil kodenya — clone versi yang sudah jadi</h2>
+<p><strong>Cara tercepat:</strong> clone branch hasil codelab ini langsung, sudah lengkap dengan semua file di <code>example/src/history/*</code> yang dibahas di bagian selanjutnya:</p>
+<pre><code language="language-bash" class="language-bash">git clone --branch feature/chat-history-viewer --single-branch \
+  https://github.com/amed12/react-native-multichannel-widget.git
+cd react-native-multichannel-widget
+yarn install
+cp example/src/env.example.ts example/src/env.local.ts
+# isi env.local.ts dengan App ID, Channel ID, dan base URL backend milikmu
+</code></pre>
+<p>Repo ini <strong>public</strong>, tidak perlu SSH key atau akun GitHub apa pun untuk clone. Branch <code>feature/chat-history-viewer</code> sengaja terpisah dari <code>main</code> — <code>main</code> di fork ini tetap sinkron dengan <a href="https://github.com/qiscus-community/react-native-multichannel-widget" target="_blank">library resminya</a>, jadi kode contoh riwayat chat tidak tercampur dengan kode library yang sebenarnya.</p>
+<p>Positive : Kalau mau memahami setiap bagian dari nol (disarankan kalau kamu belajar), lanjutkan baca bagian-bagian di bawah — isinya sama persis dengan yang ada di branch hasil clone di atas, dijelaskan potongan demi potongan.</p>
 
 
       </google-codelab-step>
@@ -361,6 +372,7 @@ yarn jest example/src/history
     
       <google-codelab-step label="Sumber" duration="1">
         <ul>
+<li><a href="https://github.com/amed12/react-native-multichannel-widget/tree/feature/chat-history-viewer" target="_blank">Versi siap pakai — branch <code>feature/chat-history-viewer</code></a></li>
 <li><a href="https://github.com/qiscus-community/react-native-multichannel-widget" target="_blank">react-native-multichannel-widget (Qiscus Community)</a></li>
 <li><a href="https://jotai.org/" target="_blank">Jotai — state management yang dipakai library ini</a></li>
 <li><a href="https://reactnative.dev/docs/platform" target="_blank">React Native Platform module</a></li>
