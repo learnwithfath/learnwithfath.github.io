@@ -371,6 +371,16 @@ TOKEN=$(go run ./cmd/devtools/gen-dev-jwt -key .dev/jwt_private.pem -sub some-us
 curl -H &#34;Authorization: Bearer $TOKEN&#34; &#34;http://localhost:8081/api/v1/sessions?fresh=1&#34;
 </code></pre>
 <p>Positive : <code>.dev/</code> masuk <code>.gitignore</code> — key ini murni lokal untuk testing, tidak pernah dipakai di deployment sungguhan. Pola ini (script generator token dev, terpisah dari kode produksi) berguna dipakai ulang di proyek lain yang butuh testing JWT tanpa auth server asli.</p>
+<h2 is-upgraded>Best practice di real case — <code>JWT_PUBLIC_KEY</code> statis vs JWKS endpoint</h2>
+<p>Pendekatan di codelab ini (satu public key ditempel sebagai env var) sudah <strong>benar secara desain</strong> untuk skala kecil: proxy ini hanya perlu <strong>memverifikasi</strong>, tidak pernah menerbitkan token, jadi RS256 (asimetris) memang pilihan yang tepat dibanding HS256 — kalau proxy ini yang membocorkan key-nya, penyerang cuma bisa memverifikasi token, bukan membuat token baru. Ini beda jauh dari HS256, di mana key yang sama dipakai untuk sign <strong>dan</strong> verify — siapa pun yang bisa verify juga bisa forge token.</p>
+<p>Yang <strong>belum</strong> ikut disiapkan proxy ini (dan wajib dipertimbangkan sebelum production sungguhan dengan lebih dari satu klien atau butuh rotasi key tanpa downtime):</p>
+<ul>
+<li><strong>JWKS endpoint</strong> (<code>https://auth.klien.com/.well-known/jwks.json</code>) — backend auth klien mempublikasikan kumpulan public key di URL standar ini, tiap key punya <code>kid</code> (key ID) yang juga disisipkan di header JWT. Proxy tinggal fetch &amp; cache JWKS itu, cocokkan <code>kid</code>-nya, alih-alih hardcode satu <code>JWT_PUBLIC_KEY</code> statis di env var.</li>
+<li><strong>Rotasi key tanpa downtime</strong> — auth server mulai sign dengan key baru sambil key lama masih ada di JWKS untuk periode transisi (sampai semua token lama yang ditandatangani key lama expired), baru key lama dihapus. Kalau pakai env var statis seperti codelab ini, mengganti key berarti restart service dan ada window token lama langsung invalid.</li>
+<li><strong>Validasi tambahan yang disiplin</strong> — proxy ini sudah memaksa algoritma lewat <code>jwt.WithValidMethods([]string{"RS256"})</code> (mencegah <a href="https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/" target="_blank">algorithm confusion attack</a> di mana penyerang menukar header <code>alg</code> jadi <code>none</code> atau HS256 lalu sign pakai public key sebagai secret) — tapi di real case, verifier juga sebaiknya memvalidasi <code>iss</code>/<code>aud</code>, dan menolak header yang mencoba override sumber key (<code>jku</code>, <code>jwk</code>, <code>x5u</code>, <code>x5c</code>).</li>
+</ul>
+<p>Negative : Jangan simpulkan &#34;pakai RS256 = sudah aman&#34;. Algoritma yang benar cuma satu bagian — pinning algoritma, validasi klaim (<code>iss</code>/<code>aud</code>/<code>exp</code>), dan strategi rotasi key yang jelas sama pentingnya. <a href="https://datatracker.ietf.org/doc/html/rfc8725" target="_blank">RFC 8725 — JSON Web Token Best Current Practices</a> (IETF, BCP 225) adalah rujukan resmi paling lengkap untuk semua ini.</p>
+<p>Positive : Untuk memahami lebih detail JWKS dan strategi rotasi key di production (termasuk integrasi dengan AWS KMS/GCP KMS/Azure Key Vault), baca <a href="https://workos.com/blog/rs256-vs-hs256-jwt-signing-algorithms" target="_blank">RS256 vs HS256: A deep dive into JWT signing algorithms (WorkOS)</a> dan <a href="https://www.qcecuring.com/blog/jwks-rotation-runbook" target="_blank">JWKS Rotation Runbook</a>.</p>
 <h2 is-upgraded>Jalankan test</h2>
 <pre><code language="language-bash" class="language-bash">go build ./...
 go vet ./...
@@ -409,6 +419,10 @@ GET /api/v1/sessions/{room_id}/messages
 <li><a href="https://documentation.qiscus.com/multichannel-chat/get-room-comments" target="_blank">Qiscus Omnichannel REST API — load_comments</a></li>
 <li><a href="https://github.com/go-chi/chi" target="_blank">go-chi router</a></li>
 <li><a href="https://github.com/golang-jwt/jwt" target="_blank">golang-jwt/jwt</a></li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc8725" target="_blank">RFC 8725 — JSON Web Token Best Current Practices (IETF)</a></li>
+<li><a href="https://workos.com/blog/rs256-vs-hs256-jwt-signing-algorithms" target="_blank">RS256 vs HS256: A deep dive into JWT signing algorithms (WorkOS)</a></li>
+<li><a href="https://www.qcecuring.com/blog/jwks-rotation-runbook" target="_blank">JWKS Rotation Runbook</a></li>
+<li><a href="https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/" target="_blank">Critical vulnerabilities in JSON Web Token libraries (Auth0)</a></li>
 </ul>
 
 

@@ -420,6 +420,22 @@ curl -H "Authorization: Bearer $TOKEN" "http://localhost:8081/api/v1/sessions?fr
 Positive
 : `.dev/` masuk `.gitignore` — key ini murni lokal untuk testing, tidak pernah dipakai di deployment sungguhan. Pola ini (script generator token dev, terpisah dari kode produksi) berguna dipakai ulang di proyek lain yang butuh testing JWT tanpa auth server asli.
 
+### Best practice di real case — `JWT_PUBLIC_KEY` statis vs JWKS endpoint
+
+Pendekatan di codelab ini (satu public key ditempel sebagai env var) sudah **benar secara desain** untuk skala kecil: proxy ini hanya perlu **memverifikasi**, tidak pernah menerbitkan token, jadi RS256 (asimetris) memang pilihan yang tepat dibanding HS256 — kalau proxy ini yang membocorkan key-nya, penyerang cuma bisa memverifikasi token, bukan membuat token baru. Ini beda jauh dari HS256, di mana key yang sama dipakai untuk sign **dan** verify — siapa pun yang bisa verify juga bisa forge token.
+
+Yang **belum** ikut disiapkan proxy ini (dan wajib dipertimbangkan sebelum production sungguhan dengan lebih dari satu klien atau butuh rotasi key tanpa downtime):
+
+* **JWKS endpoint** (`https://auth.klien.com/.well-known/jwks.json`) — backend auth klien mempublikasikan kumpulan public key di URL standar ini, tiap key punya `kid` (key ID) yang juga disisipkan di header JWT. Proxy tinggal fetch & cache JWKS itu, cocokkan `kid`-nya, alih-alih hardcode satu `JWT_PUBLIC_KEY` statis di env var.
+* **Rotasi key tanpa downtime** — auth server mulai sign dengan key baru sambil key lama masih ada di JWKS untuk periode transisi (sampai semua token lama yang ditandatangani key lama expired), baru key lama dihapus. Kalau pakai env var statis seperti codelab ini, mengganti key berarti restart service dan ada window token lama langsung invalid.
+* **Validasi tambahan yang disiplin** — proxy ini sudah memaksa algoritma lewat `jwt.WithValidMethods([]string{"RS256"})` (mencegah [algorithm confusion attack](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/) di mana penyerang menukar header `alg` jadi `none` atau HS256 lalu sign pakai public key sebagai secret) — tapi di real case, verifier juga sebaiknya memvalidasi `iss`/`aud`, dan menolak header yang mencoba override sumber key (`jku`, `jwk`, `x5u`, `x5c`).
+
+Negative
+: Jangan simpulkan "pakai RS256 = sudah aman". Algoritma yang benar cuma satu bagian — pinning algoritma, validasi klaim (`iss`/`aud`/`exp`), dan strategi rotasi key yang jelas sama pentingnya. [RFC 8725 — JSON Web Token Best Current Practices](https://datatracker.ietf.org/doc/html/rfc8725) (IETF, BCP 225) adalah rujukan resmi paling lengkap untuk semua ini.
+
+Positive
+: Untuk memahami lebih detail JWKS dan strategi rotasi key di production (termasuk integrasi dengan AWS KMS/GCP KMS/Azure Key Vault), baca [RS256 vs HS256: A deep dive into JWT signing algorithms (WorkOS)](https://workos.com/blog/rs256-vs-hs256-jwt-signing-algorithms) dan [JWKS Rotation Runbook](https://www.qcecuring.com/blog/jwks-rotation-runbook).
+
 ### Jalankan test
 
 ```bash
@@ -462,3 +478,7 @@ Duration: 0:01:00
 * [Qiscus Omnichannel REST API — load_comments](https://documentation.qiscus.com/multichannel-chat/get-room-comments)
 * [go-chi router](https://github.com/go-chi/chi)
 * [golang-jwt/jwt](https://github.com/golang-jwt/jwt)
+* [RFC 8725 — JSON Web Token Best Current Practices (IETF)](https://datatracker.ietf.org/doc/html/rfc8725)
+* [RS256 vs HS256: A deep dive into JWT signing algorithms (WorkOS)](https://workos.com/blog/rs256-vs-hs256-jwt-signing-algorithms)
+* [JWKS Rotation Runbook](https://www.qcecuring.com/blog/jwks-rotation-runbook)
+* [Critical vulnerabilities in JSON Web Token libraries (Auth0)](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/)
