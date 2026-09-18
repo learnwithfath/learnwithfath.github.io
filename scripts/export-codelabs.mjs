@@ -29,4 +29,7 @@ child.on('error', error => {
     process.exit(1);
 });
 
-child.on('exit', code => process.exit(code ?? 1));
+child.on('exit', async code => {
+    if (code !== 0) process.exit(code ?? 1);
+    await import('./fix-codelab-assets.mjs');
+});
