@@ -1,7 +1,7 @@
 class DualMacWorkflow {
     constructor(dataUrl) {
         this.dataUrl = dataUrl;
-        this.storageKey = 'dual-mac-workflow-progress-v1';
+        this.storageKey = 'dual-mac-workflow-progress-v2';
         this.completed = new Set(this.readProgress());
         this.filter = 'all';
         this.totalSteps = 0;
@@ -63,7 +63,7 @@ class DualMacWorkflow {
             <div class="week-section"><strong>Yang dikerjakan</strong><p>${step.detail}</p></div>
             <div class="week-section"><strong>Hasil</strong><p>${step.outcome}</p></div>
             <div class="lab-actions">
-                <a class="lab-link" href="${part.moduleUrl}#${step.step}">Buka panduan →</a>
+                <a class="lab-link" href="${part.moduleUrl}#${step.step - 1}">Buka panduan →</a>
             </div>
             <label class="complete-label"><input type="checkbox" data-step="${id}" ${done ? 'checked' : ''}> Tandai selesai</label>
         </article>`;

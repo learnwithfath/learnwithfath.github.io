@@ -1,0 +1,164 @@
+{
+  "checked_at": "2026-10-08T09:31:33.550561+00:00",
+  "repositories": [
+    {
+      "full_name": "tailscale/tailscale",
+      "html_url": "https://github.com/tailscale/tailscale",
+      "stargazers_count": 37261,
+      "archived": false,
+      "pushed_at": "2026-10-08T09:06:42Z",
+      "license": "BSD-3-Clause",
+      "latest_release": {
+        "tag_name": "v1.104.1",
+        "published_at": "2026-10-07T22:09:57Z",
+        "html_url": "https://github.com/tailscale/tailscale/releases/tag/v1.104.1"
+      },
+      "latest_commit": {
+        "sha": "156ff9e43961f456f5308901c76caee39e6db3ad",
+        "date": "2026-10-08T09:04:24Z"
+      }
+    },
+    {
+      "full_name": "tmux/tmux",
+      "html_url": "https://github.com/tmux/tmux",
+      "stargazers_count": 49835,
+      "archived": false,
+      "pushed_at": "2026-10-08T07:26:47Z",
+      "license": "ISC",
+      "latest_release": {
+        "tag_name": "3.8",
+        "published_at": "2026-09-09T12:55:58Z",
+        "html_url": "https://github.com/tmux/tmux/releases/tag/3.8"
+      },
+      "latest_commit": {
+        "sha": "48bbaa1172051a3c05626a588491429b9ca2ffc4",
+        "date": "2026-10-08T07:06:59Z"
+      }
+    },
+    {
+      "full_name": "coder/code-server",
+      "html_url": "https://github.com/coder/code-server",
+      "stargazers_count": 79560,
+      "archived": false,
+      "pushed_at": "2026-10-08T08:21:59Z",
+      "license": "MIT",
+      "latest_release": {
+        "tag_name": "v4.141.0",
+        "published_at": "2026-10-08T08:02:54Z",
+        "html_url": "https://github.com/coder/code-server/releases/tag/v4.141.0"
+      },
+      "latest_commit": {
+        "sha": "8b41915d25547e2edd553bab03ea4cbd621f98c5",
+        "date": "2026-10-08T06:54:47Z"
+      }
+    },
+    {
+      "full_name": "abiosoft/colima",
+      "html_url": "https://github.com/abiosoft/colima",
+      "stargazers_count": 31127,
+      "archived": false,
+      "pushed_at": "2026-10-02T14:39:13Z",
+      "license": "MIT",
+      "latest_release": {
+        "tag_name": "v0.10.3",
+        "published_at": "2026-06-04T17:14:15Z",
+        "html_url": "https://github.com/abiosoft/colima/releases/tag/v0.10.3"
+      },
+      "latest_commit": {
+        "sha": "49dfe87aecc1645905d0fb8a0e43ce29e12138f6",
+        "date": "2026-10-02T14:39:13Z"
+      }
+    },
+    {
+      "full_name": "anomalyco/opencode",
+      "html_url": "https://github.com/anomalyco/opencode",
+      "stargazers_count": 212294,
+      "archived": false,
+      "pushed_at": "2026-10-08T09:21:02Z",
+      "license": "MIT",
+      "latest_release": {
+        "tag_name": "v1.18.35",
+        "published_at": "2026-10-06T20:18:39Z",
+        "html_url": "https://github.com/anomalyco/opencode/releases/tag/v1.18.35"
+      },
+      "latest_commit": {
+        "sha": "5d9cd9b259f0456522f318a7435501d03cfbee79",
+        "date": "2026-10-08T06:10:26Z"
+      }
+    },
+    {
+      "full_name": "restic/restic",
+      "html_url": "https://github.com/restic/restic",
+      "stargazers_count": 36467,
+      "archived": false,
+      "pushed_at": "2026-10-01T01:44:09Z",
+      "license": "BSD-2-Clause",
+      "latest_release": {
+        "tag_name": "v0.19.1",
+        "published_at": "2026-07-05T08:13:33Z",
+        "html_url": "https://github.com/restic/restic/releases/tag/v0.19.1"
+      },
+      "latest_commit": {
+        "sha": "5127c4abf921857fde4ae51f566c86028c8c2911",
+        "date": "2026-09-25T20:08:18Z"
+      }
+    },
+    {
+      "full_name": "mobile-dev-inc/Maestro",
+      "html_url": "https://github.com/mobile-dev-inc/Maestro",
+      "stargazers_count": 15985,
+      "archived": false,
+      "pushed_at": "2026-10-08T06:55:43Z",
+      "license": "Apache-2.0",
+      "latest_release": {
+        "tag_name": "cli-2.11.0",
+        "published_at": "2026-09-29T13:36:34Z",
+        "html_url": "https://github.com/mobile-dev-inc/Maestro/releases/tag/cli-2.11.0"
+      },
+      "latest_commit": {
+        "sha": "c73b1202c7c83b9d2e8a60c39ea0ad53039ec507",
+        "date": "2026-10-08T06:55:41Z"
+      }
+    },
+    {
+      "full_name": "mobile-next/mobile-mcp",
+      "html_url": "https://github.com/mobile-next/mobile-mcp",
+      "stargazers_count": 8763,
+      "archived": false,
+      "pushed_at": "2026-10-07T20:38:18Z",
+      "license": "Apache-2.0",
+      "latest_release": {
+        "tag_name": "1.0.8",
+        "published_at": "2026-10-02T13:55:52Z",
+        "html_url": "https://github.com/mobile-next/mobile-mcp/releases/tag/1.0.8"
+      },
+      "latest_commit": {
+        "sha": "a13fba6fee9806088b3aae0ba8a9aa5e8916bbaa",
+        "date": "2026-10-07T20:38:18Z"
+      }
+    },
+    {
+      "full_name": "louislam/uptime-kuma",
+      "html_url": "https://github.com/louislam/uptime-kuma",
+      "stargazers_count": 92206,
+      "archived": false,
+      "pushed_at": "2026-10-08T05:01:04Z",
+      "license": "MIT",
+      "latest_release": {
+        "tag_name": "2.5.5",
+        "published_at": "2026-09-16T13:31:07Z",
+        "html_url": "https://github.com/louislam/uptime-kuma/releases/tag/2.5.5"
+      },
+      "latest_commit": {
+        "sha": "0d9728993df67b50505aeb0aff89dfd27b96fa06",
+        "date": "2026-10-08T05:00:59Z"
+      }
+    }
+  ],
+  "method": "Public GitHub REST API: repository, releases?per_page=1, commits?per_page=1. Stars indicate interest, not active-user counts.",
+  "source_endpoints": [
+    "https://api.github.com/repos/{owner}/{repo}",
+    "https://api.github.com/repos/{owner}/{repo}/releases?per_page=1",
+    "https://api.github.com/repos/{owner}/{repo}/commits?per_page=1"
+  ]
+}

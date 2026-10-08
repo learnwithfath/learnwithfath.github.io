@@ -1,80 +1,300 @@
 {
   "meta": {
     "title": "Dual-Mac Agentic Workflow",
-    "subtitle": "Seri 5-part why-first: pisahkan driver node (M1 8GB) dari compute node (Intel 32GB), lalu bangun workflow agentik yang dingin, hemat, dan bisa dioperasikan dari mana saja.",
+    "subtitle": "M1 kantor 8 GB sebagai hub ringan 24/7; Intel pribadi 32 GB sebagai worker sesuai kebutuhan. Akses HP/tablet, agent open source, backup, dan recovery.",
     "parts": 5,
-    "steps": 23,
+    "steps": 27,
     "macs": 2,
-    "hours": "3–4",
-    "snapshot": "2026-08-20"
+    "hours": "3–4 + observasi 24 jam",
+    "snapshot": "2026-10-08"
   },
   "parts": [
     {
-      "id": "arsitektur",
+      "id": "agentic-workflow-dual-mac-setup",
       "number": 1,
       "title": "Konsep & Arsitektur",
-      "summary": "Mental model sebelum menyentuh terminal: kenapa memisahkan tempat mengetik dari tempat komputasi, dan peran tiap komponen.",
+      "summary": "M1 kantor 8 GB sebagai hub ringan 24/7; Intel pribadi 32 GB sebagai worker sesuai kebutuhan. Pilihan open source, bukti aktivitas GitHub, dan pembagian beban realistis.",
       "moduleUrl": "agentic-workflow-dual-mac-setup/",
       "steps": [
-        {"step": 1, "title": "Masalah yang diselesaikan", "tracks": ["konsep"], "detail": "Kenapa satu laptop M1 8GB tidak cukup untuk Docker + emulator + agent paralel, dan kenapa laptop lama justru aset.", "outcome": "Paham gejala memory thrashing dan ide pemisahan beban."},
-        {"step": 2, "title": "Driver node vs compute node", "tracks": ["konsep"], "detail": "Pembagian peran: M1 sebagai driver tipis, Intel 2019 sebagai compute/agent server.", "outcome": "Bisa menjelaskan analogi thin client + workstation."},
-        {"step": 3, "title": "Peran tiap komponen", "tracks": ["konsep"], "detail": "Tailscale, remote SSH, Graphify+Obsidian, harness, Maestro — masing-masing menjawab satu masalah spesifik.", "outcome": "Bisa jawab 'guna remote SSH ini apa' tanpa melihat catatan."},
-        {"step": 4, "title": "Kapan pola ini layak (dan tidak)", "tracks": ["konsep"], "detail": "Trade-off jujur: kapan dual-mac berlebihan, dan alternatif cloud VM bila tak ada perangkat kedua.", "outcome": "Keputusan sadar sebelum menambah kompleksitas."}
+        {
+          "step": 1,
+          "title": "Target dan Perangkat",
+          "tracks": [
+            "konsep"
+          ],
+          "detail": "Identifikasi M1 kantor 8 GB dan Intel pribadi 32 GB.",
+          "outcome": "Peran perangkat sesuai kepemilikan dan tujuan 24/7."
+        },
+        {
+          "step": 2,
+          "title": "Pembagian Beban dan Batas Data",
+          "tracks": [
+            "konsep"
+          ],
+          "detail": "Hub ringan selalu tersedia; worker menangani beban besar sesuai izin data.",
+          "outcome": "Tahu lokasi eksekusi dan batas kapasitas."
+        },
+        {
+          "step": 3,
+          "title": "Stack Open Source dan Bukti Aktivitas",
+          "tracks": [
+            "konsep"
+          ],
+          "detail": "Periksa lisensi, stars, rilis, dan commit pada snapshot GitHub.",
+          "outcome": "Memilih tool berdasarkan bukti dan kebutuhan."
+        },
+        {
+          "step": 4,
+          "title": "Rute Belajar dan Kriteria Sukses",
+          "tracks": [
+            "konsep"
+          ],
+          "detail": "Ikuti lima part dan siapkan pengamatan 24 jam.",
+          "outcome": "Kriteria keberhasilan terukur."
+        }
       ]
     },
     {
-      "id": "provisioning",
+      "id": "agentic-dual-mac-part-2-provisioning",
       "number": 2,
       "title": "Provisioning Dua Mac",
-      "summary": "Siapkan compute node (2019) dan driver node (M1) dari nol sampai siap dihubungkan.",
+      "summary": "Siapkan M1 sebagai hub ringan yang selalu tersedia, Intel sebagai worker Colima opsional, serta power dan recovery yang dapat diverifikasi.",
       "moduleUrl": "agentic-dual-mac-part-2-provisioning/",
       "steps": [
-        {"step": 1, "title": "Power & remote access (2019)", "tracks": ["server"], "detail": "Aktifkan SSH, cegah sleep saat clamshell dengan pmset, jaring pengaman Amphetamine.", "outcome": "Server tidak pernah tidur di tengah build."},
-        {"step": 2, "title": "Toolchain & Homebrew (2019)", "tracks": ["server"], "detail": "Node 24 LTS, Python 3.13 via uv, ripgrep/jq/htop/mosh/tree-sitter.", "outcome": "Bahasa & utilitas dasar siap."},
-        {"step": 3, "title": "Container runtime (2019)", "tracks": ["server"], "detail": "OrbStack yang hemat CPU/baterai untuk mesin yang menyala seharian.", "outcome": "docker ps jalan tanpa error."},
-        {"step": 4, "title": "Emulator Android headless (2019)", "tracks": ["server"], "detail": "System image x86_64 native di Intel, target API 36 (Android 16), mode no-window.", "outcome": "agent_runner terdeteksi adb sebagai device."},
-        {"step": 5, "title": "Editor & client tools (M1)", "tracks": ["driver"], "detail": "Pasang seminimal mungkin: terminal modern, tailscale, satu editor.", "outcome": "Driver node tetap ramping & dingin."},
-        {"step": 6, "title": "Uji device fisik via USB (M1)", "tracks": ["driver"], "detail": "Uji di HP asli, bukan emulator — nol beban RAM, lebih akurat.", "outcome": "HP fisik muncul di adb devices."}
+        {
+          "step": 1,
+          "title": "Inventaris Sebelum Instalasi",
+          "tracks": [
+            "konsep"
+          ],
+          "detail": "Catat OS, arsitektur, power awal, dan ruang disk.",
+          "outcome": "Baseline tersedia sebelum konfigurasi."
+        },
+        {
+          "step": 2,
+          "title": "M1 — Power untuk Hub 24/7",
+          "tracks": [
+            "hub"
+          ],
+          "detail": "Atur AC power dengan lid terbuka dan layar boleh mati.",
+          "outcome": "Hub dapat diuji saat layar mati; rollback jelas."
+        },
+        {
+          "step": 3,
+          "title": "M1 — Toolchain Minimum dan Remote Login",
+          "tracks": [
+            "hub"
+          ],
+          "detail": "Pasang Git, tmux, code-server, restic, Tailscale; aktifkan SSH terbatas.",
+          "outcome": "Hub memiliki tool minimum."
+        },
+        {
+          "step": 4,
+          "title": "Intel — Worker Container Sesuai Kebutuhan",
+          "tracks": [
+            "worker"
+          ],
+          "detail": "Siapkan Colima pada Intel dan hentikan saat tidak dibutuhkan.",
+          "outcome": "docker ps berhasil di worker yang benar."
+        },
+        {
+          "step": 5,
+          "title": "Intel — Android Opsional",
+          "tracks": [
+            "worker"
+          ],
+          "detail": "Pasang SDK tools dan AVD x86_64 hanya bila perlu.",
+          "outcome": "Emulator selesai boot dan dapat dihentikan."
+        },
+        {
+          "step": 6,
+          "title": "Restart, Login, dan Verifikasi",
+          "tracks": [
+            "hub"
+          ],
+          "detail": "Catat batas LaunchAgent, FileVault, dan kebutuhan login.",
+          "outcome": "Recovery setelah restart dapat dijalankan."
+        }
       ]
     },
     {
-      "id": "jaringan-remote",
+      "id": "agentic-dual-mac-part-3-jaringan-remote",
       "number": 3,
-      "title": "Jaringan & Remote Development",
-      "summary": "Sambungkan kedua Mac: edit di M1, jalankan kompilasi/Docker/agent di RAM 32GB milik 2019.",
+      "title": "Jaringan & Akses Semua Perangkat",
+      "summary": "SSH dan tmux untuk sesi tahan putus; code-server lewat HTTPS privat Tailscale untuk laptop, HP, dan tablet.",
       "moduleUrl": "agentic-dual-mac-part-3-jaringan-remote/",
       "steps": [
-        {"step": 1, "title": "Install & login Tailscale", "tracks": ["jaringan"], "detail": "Mesh VPN WireGuard: IP tetap 100.x.y.z yang tidak berubah walau ganti jaringan.", "outcome": "tailscale ping mac-server berhasil dari mana saja."},
-        {"step": 2, "title": "SSH key-based authentication", "tracks": ["jaringan"], "detail": "ssh-keygen + ssh-copy-id: login instan tanpa password, lebih aman.", "outcome": "Public key terpasang di server."},
-        {"step": 3, "title": "Konfigurasi ~/.ssh/config", "tracks": ["jaringan"], "detail": "Alias mac-server, keepalive, ForwardAgent — cukup ketik ssh mac-server.", "outcome": "ssh mac-server masuk tanpa password."},
-        {"step": 4, "title": "Remote development di editor", "tracks": ["jaringan"], "detail": "Remote-SSH: file tetap di 2019, editor di M1, terminal & build jalan di server.", "outcome": "hostname di terminal editor = 2019, bukan M1."}
+        {
+          "step": 1,
+          "title": "Hub, Worker, dan Client",
+          "tracks": [
+            "jaringan"
+          ],
+          "detail": "Pilih SSH atau browser dari client yang diizinkan.",
+          "outcome": "Lokasi file dan terminal dipahami."
+        },
+        {
+          "step": 2,
+          "title": "Tailscale dan Pembatasan Akses",
+          "tracks": [
+            "jaringan"
+          ],
+          "detail": "Uji MagicDNS dan access controls pada tailnet.",
+          "outcome": "Client berizin dapat mengakses hub."
+        },
+        {
+          "step": 3,
+          "title": "SSH Key dan Identitas Host",
+          "tracks": [
+            "jaringan"
+          ],
+          "detail": "Pasang key khusus dan periksa fingerprint; agent forwarding nonaktif.",
+          "outcome": "SSH menuju user dan host yang benar."
+        },
+        {
+          "step": 4,
+          "title": "tmux dan Editor Remote",
+          "tracks": [
+            "jaringan"
+          ],
+          "detail": "Buka satu sesi tmux dan lanjutkan setelah client putus.",
+          "outcome": "Task tetap berjalan selama host hidup."
+        },
+        {
+          "step": 5,
+          "title": "code-server melalui HTTPS Privat",
+          "tracks": [
+            "jaringan"
+          ],
+          "detail": "Jalankan code-server loopback dan Tailscale Serve dengan autentikasi.",
+          "outcome": "HP/tablet membuka editor melalui HTTPS privat."
+        },
+        {
+          "step": 6,
+          "title": "Uji Penerimaan Akses",
+          "tracks": [
+            "jaringan"
+          ],
+          "detail": "Uji seluler, izin akses, hostname, dan worker offline.",
+          "outcome": "Akses lintas perangkat terbukti."
+        }
       ]
     },
     {
-      "id": "memory-harness",
+      "id": "agentic-dual-mac-part-4-memory-harness",
       "number": 4,
       "title": "Shared Memory & Agent Harness",
-      "summary": "Cegah antar-agen saling menimpa konteks, lalu pasang runtime agent-nya.",
+      "summary": "OpenCode sebagai harness open source, Markdown dan Git sebagai memori, satu worktree per task, serta batas biaya dan handoff antarhost.",
       "moduleUrl": "agentic-dual-mac-part-4-memory-harness/",
       "steps": [
-        {"step": 1, "title": "Obsidian Vault di dalam repo", "tracks": ["memori"], "detail": "Memori keputusan: ADR, kontrak API, learnings — ikut di-commit agar selalu sinkron.", "outcome": ".knowledge/ terisi dan bisa dibuka Graph View."},
-        {"step": 2, "title": "Graphify di compute node", "tracks": ["memori"], "detail": "Peta AST deterministik (IMPORTS/CALLS/EXTENDS) tanpa membuang token.", "outcome": "graphify-out/GRAPH_REPORT.md terbentuk."},
-        {"step": 3, "title": "Aturan interaksi agent dengan memori", "tracks": ["memori"], "detail": "Pre-task check, contract-first, post-task learnings di AGENTS.md/CLAUDE.md.", "outcome": "Agent membaca memori sebelum & sesudah task."},
-        {"step": 4, "title": "Memasang agent harness", "tracks": ["harness"], "detail": "Pi (ramping), Antigravity (subagent), atau Claude Code headless sebagai backbone.", "outcome": "Minimal satu harness jalan & membaca aturan memori."}
+        {
+          "step": 1,
+          "title": "Mulai dari Satu Agent",
+          "tracks": [
+            "harness"
+          ],
+          "detail": "Mulai satu agent dengan provider yang disetujui.",
+          "outcome": "Beban M1 dan pemakaian API terkontrol."
+        },
+        {
+          "step": 2,
+          "title": "Instalasi dan Permission",
+          "tracks": [
+            "harness"
+          ],
+          "detail": "Pasang OpenCode dan gunakan permission ask untuk baseline.",
+          "outcome": "Sesi agent terautentikasi dan dapat diawasi."
+        },
+        {
+          "step": 3,
+          "title": "Memori yang Ikut Git",
+          "tracks": [
+            "memori"
+          ],
+          "detail": "Tulis AGENTS.md, catatan task, ADR, dan kontrak dalam Markdown.",
+          "outcome": "Konteks dapat dilanjutkan lintas sesi."
+        },
+        {
+          "step": 4,
+          "title": "Isolasi Task dan Handoff ke Worker",
+          "tracks": [
+            "worker"
+          ],
+          "detail": "Gunakan worktree dan handoff commit ke worker yang diizinkan.",
+          "outcome": "Tidak ada dua agent menulis task yang sama."
+        },
+        {
+          "step": 5,
+          "title": "Pekerjaan Malam yang Terukur",
+          "tracks": [
+            "harness"
+          ],
+          "detail": "Mulai job deterministik; tetapkan budget dan kondisi berhenti.",
+          "outcome": "Pekerjaan malam memiliki batas dan bukti hasil."
+        },
+        {
+          "step": 6,
+          "title": "Verifikasi Harness",
+          "tracks": [
+            "harness"
+          ],
+          "detail": "Uji perubahan kecil, permission, dan reconnect.",
+          "outcome": "Diff serta hasil test dapat ditinjau."
+        }
       ]
     },
     {
-      "id": "testing-e2e",
+      "id": "agentic-dual-mac-part-5-testing-e2e",
       "number": 5,
-      "title": "Autonomous Testing & End-to-End",
-      "summary": "Tutup loop dengan uji UI mandiri, lalu jalankan satu fitur nyata dari backend sampai mobile.",
+      "title": "Pengujian & Operasi 24/7",
+      "summary": "Uji satu task dari HP sampai worker, backup dan restore dengan restic, recovery setelah restart, serta checklist pengamatan 24 jam.",
       "moduleUrl": "agentic-dual-mac-part-5-testing-e2e/",
       "steps": [
-        {"step": 1, "title": "Maestro CLI", "tracks": ["testing"], "detail": "Uji UI deklaratif berbasis YAML yang mudah ditulis & dibaca AI.", "outcome": "maestro terpasang di compute node."},
-        {"step": 2, "title": "Skenario flow test", "tracks": ["testing"], "detail": "YAML alur login OTP: launch, assert, tap, input, verify.", "outcome": "maestro test jalan lokal."},
-        {"step": 3, "title": "mobile-mcp untuk inspeksi UI", "tracks": ["testing"], "detail": "Memberi agent 'mata': akses accessibility tree via MCP.", "outcome": "mobile-mcp terdaftar di MCP client."},
-        {"step": 4, "title": "Alur end-to-end Login OTP", "tracks": ["testing"], "detail": "Kontrak → backend → mobile → self-healing loop → verifikasi HP fisik.", "outcome": "Satu fitur mengalir tanpa memindahkan file/memberati M1."},
-        {"step": 5, "title": "Maintenance & checklist harian", "tracks": ["testing"], "detail": "Rutinitas memulai kerja, tips thermal, dan larangan Docker di M1 8GB.", "outcome": "Setup awet & aman dipakai harian."}
+        {
+          "step": 1,
+          "title": "Uji Satu Task dari Ujung ke Ujung",
+          "tracks": [
+            "testing"
+          ],
+          "detail": "Jalankan task dari HP, lanjutkan di client lain, lalu verifikasi commit.",
+          "outcome": "Hasil task punya SHA, command, dan exit code."
+        },
+        {
+          "step": 2,
+          "title": "Mobile E2E Opsional",
+          "tracks": [
+            "testing"
+          ],
+          "detail": "Gunakan Maestro dan fixture test; pindahkan APK sebelum uji USB client.",
+          "outcome": "Alur mobile sesuai host dan perangkat nyata."
+        },
+        {
+          "step": 3,
+          "title": "Backup dan Uji Restore",
+          "tracks": [
+            "operasi"
+          ],
+          "detail": "Backup ke tujuan terpisah dan restore ke folder baru.",
+          "outcome": "Snapshot serta file hasil restore terbukti."
+        },
+        {
+          "step": 4,
+          "title": "Pemantauan dan Recovery",
+          "tracks": [
+            "operasi"
+          ],
+          "detail": "Periksa service, RAM, swap, disk, dan prosedur recovery.",
+          "outcome": "Masalah dapat ditelusuri tanpa job duplikat."
+        },
+        {
+          "step": 5,
+          "title": "Soak Test 24 Jam",
+          "tracks": [
+            "operasi"
+          ],
+          "detail": "Amati akses, restart, resource, backup, dan biaya selama 24 jam.",
+          "outcome": "Kesiapan operasi dicatat berdasarkan pengamatan."
+        }
       ]
     }
   ]

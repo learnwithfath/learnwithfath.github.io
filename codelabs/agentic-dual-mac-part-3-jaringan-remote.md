@@ -1,139 +1,143 @@
-summary: Part 3 dari seri Dual-Mac Agentic Workflow — jaringan dan remote development. Menyambungkan kedua Mac dengan Tailscale, SSH key-based auth, dan Remote-SSH sehingga Anda mengedit di M1 tetapi kompilasi, Docker, dan agent berjalan di MacBook 2019.
+summary: SSH dan tmux untuk sesi tahan putus; code-server lewat HTTPS privat Tailscale untuk laptop, HP, dan tablet.
 id: agentic-dual-mac-part-3-jaringan-remote
-categories: AI, Developer Tools, Architecture, macOS, Networking
-tags: agentic-workflow, dual-mac, tailscale, wireguard, ssh, remote-development, vscode-remote, mosh
+categories: AI, Developer Tools, macOS, Remote Development
+tags: dual-mac, always-on, m1, intel, tailscale, tmux, code-server, colima, opencode, restic
 status: Published
 authors: LearnWithFath Team
 Feedback Link: https://github.com/learnwithfath/learnwithfath.github.io/issues
 
-# Dual-Mac Agentic Workflow — Part 3: Jaringan & Remote Development
+# Dual-Mac Agentic Workflow — Part 3: Jaringan & Akses Semua Perangkat
 
-## Outcome & Prasyarat
+## Hub, Worker, dan Client
 Duration: 5
 
-Ini part yang mewujudkan janji seri: **duduk di M1 yang dingin, tetapi seluruh komputasi berjalan di RAM 32 GB milik 2019.** Di [Part 1](agentic-workflow-dual-mac-setup/) kita bahas *kenapa*; di sini kita bahas *bagaimana*.
+[Part 2](../agentic-dual-mac-part-2-provisioning/) menyiapkan M1 **office-hub** dan Intel **personal-worker**. Sekarang uji akses dari Intel, laptop lain, HP, atau tablet yang diizinkan.
 
-Di akhir part ini:
-* Kedua Mac saling terhubung aman dari jaringan mana pun (rumah/kantor/kafe).
-* Anda bisa `ssh mac-server` tanpa password.
-* Editor di M1 membuka folder project yang fisiknya ada di 2019, dengan terminal & build yang berjalan di 2019.
+Perangkat client memerlukan konektivitas ke tailnet: pasang Tailscale pada OS yang didukung dan gunakan akun/akses perangkat yang diizinkan admin. “Dari perangkat mana pun” berarti perangkat yang diotorisasi, bukan komputer publik tanpa identitas. Browser HP cukup untuk review dan pekerjaan kecil; keyboard eksternal membantu untuk coding.
 
-**Prasyarat:** [Part 2](agentic-dual-mac-part-2-provisioning/) selesai — SSH aktif di 2019, `tailscale` terpasang di M1.
+Pada laptop, gunakan SSH + tmux atau browser code-server. Pada HP/tablet, gunakan browser code-server dan client SSH pilihan Anda. Terminal yang dibuka di browser menjalankan command pada host code-server.
 
-## Kenapa Dua Lapis: Tailscale + SSH
-Duration: 5
-
-Sering ada kebingungan: "kalau sudah SSH, kenapa perlu Tailscale? Kalau sudah Tailscale, kenapa perlu SSH?" Keduanya menjawab masalah berbeda:
-
-* **Tailscale menjawab "di mana server-nya?"** — memberi 2019 sebuah alamat IP tetap (`100.x.y.z`) yang tidak berubah walau Anda pindah Wi-Fi. Tanpa ini, IP lokal berubah tiap ganti jaringan dan koneksi putus.
-* **SSH menjawab "bagaimana masuk dengan aman?"** — sesi terenkripsi untuk menjalankan perintah dan meneruskan editor. SSH butuh alamat yang stabil; Tailscale menyediakannya.
-
-```
-[MacBook M1: 100.64.0.2] <==== Encrypted WireGuard Tunnel ====> [MacBook 2019: 100.64.0.3]
-```
-
-Positive
-: Tailscale memakai WireGuard sehingga trafik terenkripsi ujung ke ujung. Anda tidak perlu membuka port di router atau mengekspos 2019 ke internet publik — jauh lebih aman daripada port forwarding manual.
-
-## Langkah 1: Install & Login Tailscale
-Duration: 5
-
-Di **kedua Mac**:
-
-```bash
-brew install --cask tailscale
-```
-
-Lalu buka aplikasi Tailscale di masing-masing Mac dan **login dengan akun yang sama** (Google/GitHub/dll). Catat IP yang diberikan:
-
-* MacBook 2019 → misal `100.100.20.50` (hostname `mac-server`)
-* MacBook M1 → misal `100.100.20.51` (hostname `mac-m1`)
-
-Uji keduanya saling terlihat, dari M1:
-```bash
-tailscale ping mac-server
-```
-
-Negative
-: Kalau `tailscale ping` gagal, pastikan kedua Mac login akun yang **sama** dan status Tailscale "Connected". Perangkat di akun berbeda tidak akan saling melihat.
-
-## Langkah 2: SSH Key-Based Authentication
+## Tailscale dan Pembatasan Akses
 Duration: 8
 
-**Kenapa key, bukan password:** Anda akan menyambung berkali-kali setiap hari. Password melelahkan dan lebih lemah. SSH key memberi login instan tanpa password sekaligus lebih aman.
-
-Di **MacBook M1**:
+Buka aplikasi Tailscale pada kedua Mac dan client. Gunakan tailnet yang disetujui atau sharing yang telah diatur; bukan sekadar login akun sembarang. Aktifkan MagicDNS bila ingin memakai nama pendek.
 
 ```bash
-# Buat key (tekan Enter untuk lokasi default ~/.ssh/id_ed25519)
-ssh-keygen -t ed25519 -C "m1-to-intel-server"
-
-# Kirim public key ke 2019 (ganti user & IP sesuai milik Anda)
-ssh-copy-id username@100.100.20.50
+# Jalankan di client; bila CLI belum ada di PATH, gunakan path aplikasi di Part 2.
+tailscale status
+tailscale ping office-hub
 ```
 
-`ssh-copy-id` menyalin *public* key Anda ke daftar tepercaya di 2019. Private key tidak pernah meninggalkan M1.
+Bila GUI macOS tidak menyediakan `tailscale` di PATH, command yang sama dapat dijalankan dengan `/Applications/Tailscale.app/Contents/MacOS/Tailscale`. Selesaikan setup CLI sesuai varian sebelum mengikuti contoh `tailscale` berikutnya.
 
-## Langkah 3: Konfigurasi `~/.ssh/config`
-Duration: 5
+Tailscale menyediakan koneksi jaringan, OpenSSH menyediakan login. **Panduan ini tidak mengaktifkan `tailscale up --ssh`.** Server Tailscale SSH memiliki batas dukungan varian macOS; OpenSSH bawaan macOS dapat dipakai melalui alamat tailnet. [Dukungan Tailscale SSH](https://tailscale.com/docs/features/tailscale-ssh).
 
-**Kenapa:** supaya Anda cukup mengetik `ssh mac-server`, bukan menghafal IP dan flag. Ini juga yang dibaca editor untuk Remote-SSH.
+Di access controls tailnet, batasi client/operator yang boleh menuju hub port 22 dan 443; akses worker hanya untuk pihak yang memerlukannya. Uji juga bahwa perangkat yang tidak diberi izin gagal mengakses. Konfigurasi tailnet bawaan bisa lebih luas daripada kebutuhan Anda. Jangan menganggap Remote Login macOS hanya mendengarkan jaringan Tailscale: periksa akses LAN dan firewall sesuai kebijakan.
 
-Di **MacBook M1**, edit `~/.ssh/config`:
+## SSH Key dan Identitas Host
+Duration: 8
+
+Di **client laptop**, buat key khusus tanpa menimpa key lama:
+
+```bash
+ssh-keygen -t ed25519 -f "$HOME/.ssh/id_ed25519_office_hub" -C "office-hub-client"
+```
+
+Gunakan passphrase. Cocokkan fingerprint host pada koneksi pertama melalui operator hub. Di hub, fingerprint dapat dilihat dengan `ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub`. Ganti `operator` dengan user macOS sebenarnya:
+
+```bash
+cat "$HOME/.ssh/id_ed25519_office_hub.pub" | ssh operator@office-hub 'umask 077; mkdir -p ~/.ssh; cat >> ~/.ssh/authorized_keys'
+```
+
+Satu kali pemasangan menggunakan autentikasi yang sudah tersedia; jangan mengulang penambahan key tanpa memeriksa duplikat. Tambahkan blok berikut ke `~/.ssh/config` **client**:
 
 ```ssh
-Host mac-server
-    HostName 100.100.20.50
-    User username
-    IdentityFile ~/.ssh/id_ed25519
+Host office-hub
+    HostName office-hub
+    User operator
+    IdentityFile ~/.ssh/id_ed25519_office_hub
+    IdentitiesOnly yes
+    ForwardAgent no
     ServerAliveInterval 30
-    ServerAliveCountMax 5
-    ForwardAgent yes
+    ServerAliveCountMax 3
 ```
 
-`ServerAliveInterval`/`CountMax` menjaga koneksi tetap hidup saat jaringan sesaat goyah. Uji:
+Jika MagicDNS tidak tersedia, ganti `HostName` dengan IP Tailscale hub. Buat key/alias terpisah untuk `personal-worker` hanya jika perlu. Private key tetap di client; gunakan kredensial Git scoped pada host yang mengerjakan repo.
 
 ```bash
-ssh mac-server   # harus masuk tanpa menanyakan password
+ssh office-hub 'hostname; uname -m'
 ```
 
-Positive
-: Kalau butuh sesi terminal yang tahan putus-sambung (mis. laptop sleep sebentar atau ganti jaringan), gunakan `mosh mac-server` alih-alih `ssh`. Mosh (dipasang di Part 2) melanjutkan sesi otomatis tanpa reconnect manual.
+Hasil harus mengidentifikasi M1/`arm64`. Key authentication masih dapat meminta passphrase key; itu berbeda dari password akun remote.
 
-## Langkah 4: Remote Development di Editor
-Duration: 7
+## tmux dan Editor Remote
+Duration: 8
 
-Inilah bagian yang menjawab **"guna remote SSH untuk apa"** secara konkret. Alih-alih menyalin file antar-laptop, editor Anda membuka folder yang fisiknya ada di 2019 — dan menjalankan semua proses di sana.
+Dari client:
 
-Di **MacBook M1**:
-1. Buka VS Code / Antigravity.
-2. Pasang ekstensi **Remote - SSH** (`ms-vscode-remote.remote-ssh`).
-3. `Cmd + Shift + P` → **Remote-SSH: Connect to Host…** → pilih **mac-server**.
-4. Buka folder project Anda yang ada di 2019 (mis. `~/projects/my-mobile-project`).
+```bash
+ssh -t office-hub 'tmux new-session -A -s work'
+```
 
-Sekarang perhatikan apa yang terjadi saat Anda bekerja:
-* **Membuka & mengedit file** — UI di M1, file di 2019. Tidak ada salinan ganda.
-* **Terminal terintegrasi** — sebenarnya shell di 2019. `docker compose up` menjalankan Docker **di server**.
-* **Build, indexing, ekstensi bahasa** — semua memakai CPU/RAM 2019.
+Di tmux, buka project dan agent. Tekan `Ctrl-b`, lalu `d` untuk detach. Sambungkan lagi dengan command yang sama. Uji menutup client atau mengganti Wi-Fi ke seluler: proses di hub tetap berjalan selama hub/prosesnya sendiri tidak mati.
 
-Positive
-: Hasil akhirnya: M1 tetap dingin dan hening, baterai tahan 12+ jam, sementara pekerjaan berat memakai memori 32 GB milik 2019. Inilah seluruh nilai pola dual-mac, dan alasan remote SSH menjadi tulang punggungnya.
+**tmux tidak menyelamatkan proses saat host reboot.** Ia menjaga terminal terhadap putusnya koneksi client. Catatan task dan Git di Part 4 dipakai untuk pemulihan setelah reboot.
 
-## Verifikasi
-Duration: 3
+Untuk editor desktop, [VS Code Remote - SSH](https://code.visualstudio.com/docs/remote/ssh) dapat membuka folder di hub/worker sesuai target. Ekstensi remote dapat memiliki lisensi tersendiri. Cek `hostname` pada terminal editor setiap berpindah host. Bila kebutuhan utamanya browser dan komponen open source, ikuti code-server di langkah berikutnya.
 
-Dari **MacBook M1**, pastikan seluruh rantai ini jalan:
+Panduan tmux tambahan: [tmux + Tailscale + SSH](../tmux-tailscale-ssh-remote-agent/).
 
-- [ ] `tailscale ping mac-server` berhasil dari jaringan apa pun.
-- [ ] `ssh mac-server` masuk tanpa password.
-- [ ] Editor terhubung via Remote-SSH dan membuka folder project di 2019.
-- [ ] Di terminal editor, `hostname` mengembalikan nama **2019**, bukan M1.
-- [ ] `docker ps` di terminal editor menampilkan Docker milik 2019.
+## code-server melalui HTTPS Privat
+Duration: 12
 
-Item terakhir adalah bukti paling meyakinkan: Anda mengetik di M1, tetapi command berjalan di server.
+Di **M1**, jalankan pertama kali untuk membuat konfigurasi:
 
-Negative
-: Kalau terminal editor menunjukkan hostname M1, berarti Anda membuka folder lokal, bukan sesi remote. Ulangi Remote-SSH: Connect to Host.
+```bash
+code-server
+```
 
-Positive
-: **Lanjut ke Part 4 — Shared Memory & Agent Harness**, tempat kita mencegah antar-agen saling menimpa konteks dan memasang runtime agent-nya.
+Buka `http://127.0.0.1:8080` di M1, lalu hentikan proses dengan `Ctrl-C`. Periksa `~/.config/code-server/config.yaml` di editor lokal. Pertahankan `bind-addr: 127.0.0.1:8080`, `auth: password`, password unik yang dihasilkan, dan `cert: false` karena TLS disediakan proxy. Jangan memasukkan file ini ke Git atau membagikan password lewat log.
+
+```bash
+chmod 600 "$HOME/.config/code-server/config.yaml"
+brew services start code-server
+brew services list
+curl -I http://127.0.0.1:8080
+```
+
+Respons redirect ke login dapat diterima; error koneksi berarti service belum siap. Selanjutnya, di hub:
+
+```bash
+tailscale serve --bg http://127.0.0.1:8080
+tailscale serve status
+```
+
+Ikuti instruksi admin untuk mengaktifkan HTTPS/MagicDNS bila diminta. Buka **URL HTTPS persis yang dicetak**, misalnya `https://office-hub.nama-tailnet.ts.net`, dari browser client yang terhubung Tailscale. Tetap gunakan login code-server. Serve membagikan layanan dalam tailnet; jangan mengaktifkan Funnel untuk skenario privat ini.
+
+Dari browser HP, buka terminal dan jalankan `hostname`, lalu `tmux new-session -A -s work`. Dari laptop lain, sesi yang sama dapat dilanjutkan. Jangan mengedit file yang sama secara bersamaan dari beberapa sesi.
+
+Open VSX dan marketplace VS Code tidak identik; beberapa ekstensi tidak tersedia/diizinkan di code-server. Pengujian UI mobile dan perangkat USB tetap dilakukan pada host/perangkat yang terhubung secara fisik.
+
+Rollback layanan:
+
+```bash
+# Menghapus route HTTPS 443 contoh ini; cek status dahulu jika ada route lain.
+tailscale serve --https=443 off
+brew services stop code-server
+```
+
+[Rujukan instalasi code-server](https://coder.com/docs/code-server/install) · [Akses aman](https://coder.com/docs/code-server/guide) · [Tailscale Serve](https://tailscale.com/docs/reference/tailscale-cli/serve).
+
+## Uji Penerimaan Akses
+Duration: 5
+
+- [ ] HP menggunakan data seluler + Tailscale dapat membuka HTTPS hub dan login.
+- [ ] Browser terminal menghasilkan hostname M1.
+- [ ] tmux dapat di-attach kembali setelah client putus.
+- [ ] Client tanpa izin tailnet tidak dapat membuka hub.
+- [ ] Worker mati tidak memutus akses ke hub.
+- [ ] Setelah reboot/login M1, operator memeriksa Tailscale, `brew services list`, dan `tailscale serve status`.
+
+Jika akses gagal: cek hub menyala → Tailscale connected → MagicDNS/izin → port/service → login. Jika SSH bisa tetapi browser gagal, uji `curl -I http://127.0.0.1:8080` di hub sebelum mengubah jaringan.
+
+[Lanjut Part 4: agent, memori, dan handoff](../agentic-dual-mac-part-4-memory-harness/).

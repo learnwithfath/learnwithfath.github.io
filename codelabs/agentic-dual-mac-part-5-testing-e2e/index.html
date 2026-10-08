@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <meta name="theme-color" content="#4F7DC9">
   <meta charset="UTF-8">
-  <title>Dual-Mac Agentic Workflow — Part 5: Autonomous Testing &amp; Alur End-to-End</title>
+  <title>Dual-Mac Agentic Workflow — Part 5: Pengujian &amp; Operasi 24/7</title>
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
   <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="../vendor/codelab-elements/codelab-elements.css">
@@ -24,183 +24,166 @@
   <google-codelab codelab-gaid=""
                   codelab-ga4id=""
                   id="agentic-dual-mac-part-5-testing-e2e"
-                  title="Dual-Mac Agentic Workflow — Part 5: Autonomous Testing &amp; Alur End-to-End"
+                  title="Dual-Mac Agentic Workflow — Part 5: Pengujian &amp; Operasi 24/7"
                   environment="web"
                   feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
     
-      <google-codelab-step label="Outcome &amp; Prasyarat" duration="5">
-        <p>Ini part penutup: kita menutup <em>loop</em> agentic sehingga agent bisa <strong>melihat</strong> hasil kerjanya dan memperbaiki diri, lalu menjalankan satu fitur nyata dari ujung ke ujung.</p>
-<p>Di akhir part ini:</p>
-<ul>
-<li>Agent bisa menjalankan uji UI mandiri dan memperbaiki kegagalan tanpa Anda menyetir tiap langkah.</li>
-<li>Anda pernah menjalankan satu fitur lengkap (Login OTP) backend→mobile→test→device.</li>
-<li>Anda punya checklist harian dan tahu cara merawat setup.</li>
-</ul>
-<p><strong>Prasyarat:</strong> Part 2–4 selesai (server, remote, memory + harness).</p>
+      <google-codelab-step label="Uji Satu Task dari Ujung ke Ujung" duration="10">
+        <p>Prasyarat: <a href="../agentic-dual-mac-part-2-provisioning/" target="_blank">Part 2</a>, <a href="../agentic-dual-mac-part-3-jaringan-remote/" target="_blank">Part 3</a>, dan <a href="../agentic-dual-mac-part-4-memory-harness/" target="_blank">Part 4</a> sudah diuji. Gunakan repo latihan/open source atau repo kerja yang diizinkan.</p>
+<ol type="1">
+<li>Dari HP di jaringan seluler, sambungkan Tailscale dan buka HTTPS code-server M1.</li>
+<li>Buka terminal, periksa <code>hostname</code>, lalu attach tmux.</li>
+<li>Pilih perubahan kecil dengan acceptance criteria konkret, misalnya memperbaiki satu tautan rusak beserta pemeriksaannya.</li>
+<li>Agent membuat patch dalam worktree. Operator menjalankan test/build repo dan meninjau diff.</li>
+<li>Putuskan koneksi HP, tunggu beberapa menit, lalu attach kembali dari Intel/client lain.</li>
+<li>Jika memerlukan worker, lakukan handoff commit melalui Git sebagaimana Part 4. Catat hasil test di worker dan SHA yang diuji.</li>
+<li>Simpan task sebagai <code>done</code> hanya jika acceptance criteria terpenuhi; <code>blocked</code> bila gagal dan perlu keputusan.</li>
+</ol>
+<p>Hasil yang dicatat: hostname, SHA, command, exit code, durasi, dan biaya bila memakai model API. Task tidak dianggap berhasil hanya karena agent berkata selesai.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Kenapa Testing Perlu Perlakuan Khusus" duration="5">
-        <p>Kelemahan terbesar AI pada aplikasi mobile: <strong>ia tidak bisa melihat hasil render UI</strong>. Ia menulis kode UI &#34;buta&#34;, lalu tidak tahu apakah tombolnya benar-benar muncul. Dua alat menutup celah ini:</p>
-<ul>
-<li><strong>Maestro</strong> — uji UI deklaratif berbasis YAML. Mudah ditulis &amp; dibaca AI, dan memberi sinyal lulus/gagal yang jelas.</li>
-<li><strong>mobile-mcp</strong> — memberi agent akses ke <em>accessibility tree</em> aplikasi via Model Context Protocol, sehingga agent bisa &#34;membaca&#34; isi layar secara real-time.</li>
-</ul>
-<p>Gabungan keduanya menghasilkan <strong>self-healing loop</strong>:</p>
-<pre><code>[AI Coding Agent] ──&gt; [mobile-mcp] ──&gt; [Android/iOS Accessibility Tree]
-       │                                            │
-       ▼                                            ▼
-[Edit Code UI] ───&gt; [Run Maestro YAML] ───&gt; [Pass / Fail Assertion]
-       ▲                                            │
-       └────────────── [Self-Healing Loop] ─────────┘
+      <google-codelab-step label="Mobile E2E Opsional" duration="12">
+        <p>Untuk repo mobile yang telah memiliki aplikasi dan test environment, jalankan emulator/ADB di <strong>Intel</strong> yang disiapkan di Part 2. Pasang Maestro dengan <a href="https://github.com/mobile-dev-inc/Maestro" target="_blank">instruksi upstream</a>, periksa prasyarat Java dari rilis yang dipilih, lalu:</p>
+<pre><code language="language-bash" class="language-bash">maestro --version
+adb devices
+maestro test .maestro/auth_login_flow.yaml
 </code></pre>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Langkah 1: Maestro CLI" duration="5">
-        <p>Di MacBook 2019 (compute node):</p>
-<pre><code language="language-bash" class="language-bash">curl -Ls &#34;https://get.maestro.mobile.dev&#34; | bash
-export PATH=&#34;$PATH:$HOME/.maestro/bin&#34;
-</code></pre>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Langkah 2: Skenario Flow Test" duration="6">
-        <p><strong>Kenapa YAML:</strong> formatnya cukup sederhana sehingga agent bisa menulis dan mengubahnya sendiri, tapi cukup ekspresif untuk alur nyata. Buat <code>.maestro/auth_login_flow.yaml</code>:</p>
+<p>File flow berikut adalah <strong>template untuk app yang Anda implementasikan</strong>, bukan demo OTP lengkap yang otomatis berjalan. <code>appId</code> dan label harus sesuai aplikasi; akun/OTP berasal dari fixture backend test, tidak dari layanan produksi.</p>
 <pre><code language="language-yaml" class="language-yaml">appId: com.example.myfullstackapp
 ---
 - launchApp:
     clearState: true
 - assertVisible: &#34;Selamat Datang&#34;
 - tapOn: &#34;Input Email&#34;
-- inputText: &#34;developer@learnwithfath.com&#34;
+- inputText: &#34;tester@example.test&#34;
 - tapOn: &#34;Kirim OTP&#34;
 - assertVisible: &#34;Masukkan Kode OTP&#34;
-- inputText: &#34;123456&#34;
+- tapOn: &#34;Input OTP&#34;
+- inputText: &#34;${TEST_OTP}&#34;
 - tapOn: &#34;Verifikasi&#34;
 - assertVisible: &#34;Dashboard Utama&#34;
 </code></pre>
-<p>Uji lokal di server:</p>
-<pre><code language="language-bash" class="language-bash">maestro test .maestro/auth_login_flow.yaml
+<p>Ambil <code>TEST_OTP</code> dari fixture test Anda dan berikan melalui mekanisme environment/parameter Maestro yang didukung versi terpasang. Jangan menambahkan OTP tetap ke logika produksi agar test lulus.</p>
+<p>Jika perlu inspeksi UI oleh agent, evaluasi <a href="https://github.com/mobile-next/mobile-mcp" target="_blank">mobile-next/mobile-mcp</a>, bukan alamat <code>lobehub/mobile-mcp</code> dari edisi lama. Ikuti README upstream dan pin versi paket setelah uji. Maestro juga menyediakan integrasi MCP; gunakan satu integrasi dahulu. Jumlah stars mobile-mcp lebih kecil daripada stack inti dan ia tetap opsional.</p>
+<p>Saat test gagal, periksa screenshot, accessibility tree, fixture, dan app. Jangan menghapus assertion atau mengganti ekspektasi hanya untuk memperoleh PASS. Batasi tiga percobaan perbaikan lalu laporkan blocker.</p>
+<p>Bila APK dibuat di Intel dan HP terpasang di <strong>client M1</strong>, salin artifact terlebih dahulu melalui koneksi yang diizinkan. Contoh dijalankan <strong>di M1</strong> setelah menyiapkan alias SSH worker dan memasang Android Platform-Tools:</p>
+<pre><code language="language-bash" class="language-bash">scp personal-worker:~/projects/app/build/app/outputs/flutter-apk/app-debug.apk /tmp/app-debug.apk
+adb devices
+adb install -r /tmp/app-debug.apk
 </code></pre>
+<p>Sesuaikan path hasil build dan serial perangkat jika ada beberapa device. ADB di Intel tidak otomatis melihat USB yang terpasang di M1. Untuk iOS, verifikasi dukungan Xcode dan perangkat sesuai versi; ADB hanya untuk Android.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Langkah 3: mobile-mcp untuk Inspeksi UI" duration="6">
-        <p><strong>Kenapa MCP:</strong> ini yang memberi agent &#34;mata&#34;. Tanpa mobile-mcp, agent hanya menebak isi layar; dengan itu, ia bisa membaca elemen yang benar-benar ter-render.</p>
-<p>Di MacBook 2019:</p>
-<pre><code language="language-bash" class="language-bash">git clone https://github.com/lobehub/mobile-mcp.git ~/.tools/mobile-mcp
-cd ~/.tools/mobile-mcp &amp;&amp; npm install &amp;&amp; npm run build
+      <google-codelab-step label="Backup dan Uji Restore" duration="10">
+        <p>Git menyimpan commit; file belum di-commit dan catatan operasional juga perlu backup. Gunakan destination yang diizinkan dan terpisah dari disk sumber. Contoh restic memakai disk eksternal khusus; <strong>jangan salin repo kantor ke storage pribadi tanpa izin</strong>.</p>
+<p>Sebelum contoh berikut, buat password backup kuat di password manager dan simpan salinannya sebagai file privat <code>~/.config/restic/password</code> dengan permission <code>600</code>. Pastikan volume <code>/Volumes/Backup</code> benar-benar terpasang, bukan folder pada disk internal.</p>
+<pre><code language="language-bash" class="language-bash">export RESTIC_REPOSITORY=&#34;/Volumes/Backup/office-hub-restic&#34;
+export RESTIC_PASSWORD_FILE=&#34;$HOME/.config/restic/password&#34;
+restic init
 </code></pre>
-<p>Daftarkan ke konfigurasi MCP client agent Anda:</p>
-<pre><code language="language-json" class="language-json">{
-  &#34;mcpServers&#34;: {
-    &#34;mobile&#34;: {
-      &#34;command&#34;: &#34;node&#34;,
-      &#34;args&#34;: [&#34;/Users/username/.tools/mobile-mcp/dist/index.js&#34;]
-    }
-  }
-}
+<p><code>init</code> hanya untuk repository baru. Backup harian dapat mengulang command berikut:</p>
+<pre><code language="language-bash" class="language-bash">restic backup &#34;$HOME/projects&#34; \
+  --exclude &#39;**/node_modules&#39; \
+  --exclude &#39;**/.gradle&#39; \
+  --exclude &#39;**/build&#39; \
+  --exclude &#39;**/.env&#39; \
+  --exclude &#39;**/.env.*&#39;
+restic snapshots
+restic check
 </code></pre>
+<p>Sesuaikan exclusion dengan data Anda; pola di atas bukan detektor seluruh secret. Contoh mengecualikan file env sehingga pemulihan kredensial harus dilakukan dari secret manager. Database aktif memerlukan dump/backup konsisten milik database; menyalin file volume yang sedang ditulis bukan bukti backup valid.</p>
+<p>Uji restore ke direktori baru, tanpa menimpa project aktif:</p>
+<pre><code language="language-bash" class="language-bash">RESTORE_DIR=$(mktemp -d &#34;$HOME/restic-restore-check.XXXXXX&#34;)
+restic restore latest --target &#34;$RESTORE_DIR&#34;
+</code></pre>
+<p>Buka satu file penting di hasil restore dan bandingkan dengan sumber. Catat snapshot ID, waktu, jumlah file, dan hasil pemeriksaan. Buat kebijakan retensi sesudah ukuran/umur backup dipahami; jangan langsung menambahkan <code>forget --prune</code> ke setup pertama.</p>
+<p><a href="https://restic.readthedocs.io/en/stable/040_backup.html" target="_blank">Rujukan restic backup</a> · <a href="https://restic.readthedocs.io/en/stable/050_restore.html" target="_blank">Restore</a>.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Langkah 4: Alur End-to-End — Fitur Login OTP" duration="15">
-        <p>Sekarang semua komponen bekerja bersama. Kita implementasikan <strong>Login OTP</strong> dari backend sampai mobile, memakai memori (Part 4), harness (Part 4), dan testing (part ini).</p>
-<h2 is-upgraded>Tahap 1 — Perencanaan &amp; Kontrak</h2>
-<ol type="1">
-<li>Dari M1, buka sesi agent lewat Remote-SSH ke 2019.</li>
-<li>Instruksi ke agent: <em>&#34;Kita membuat fitur Login OTP. Pertama, buat kontrak API di </em><em><code>.knowledge/contracts/otp-auth.md</code></em><em> dan catat keputusan di </em><em><code>.knowledge/adr/ADR-003-otp.md</code></em><em>.&#34;</em></li>
-<li>Agent menyusun skema request/response dan alur verifikasi token — <strong>kontrak dulu, kode kemudian</strong>.</li>
-</ol>
-<h2 is-upgraded>Tahap 2 — Backend (task berat di 32 GB)</h2>
-<ol type="1">
-<li>Backend subagent membuat endpoint <code>/api/v1/auth/request-otp</code> dan <code>/api/v1/auth/verify-otp</code>.</li>
-<li>Test di container Docker (yang jalan di 2019): <pre><code language="language-bash" class="language-bash">docker compose exec backend go test ./internal/auth/...
+      <google-codelab-step label="Pemantauan dan Recovery" duration="8">
+        <p>Di M1, periksa setelah login dan setelah update:</p>
+<pre><code language="language-bash" class="language-bash">uptime
+pmset -g batt
+memory_pressure
+sysctl vm.swapusage
+df -h /
+brew services list
+tailscale status
+tailscale serve status
+curl -I http://127.0.0.1:8080
 </code></pre>
-</li>
-</ol>
-<h2 is-upgraded>Tahap 3 — Mobile Client</h2>
-<ol type="1">
-<li>Mobile subagent membaca <code>.knowledge/contracts/otp-auth.md</code> (sinkron karena contract-first).</li>
-<li>Membuat screen OTP + state management (Flutter/RN/Compose).</li>
-<li>Build incremental.</li>
-</ol>
-<h2 is-upgraded>Tahap 4 — Autonomous Testing &amp; Self-Healing</h2>
-<ol type="1">
-<li>Agent menjalankan E2E di emulator 2019: <pre><code language="language-bash" class="language-bash">maestro test .maestro/auth_login_flow.yaml
-</code></pre>
-</li>
-<li><strong>Skenario error</strong>: tombol punya id <code>btn_submit</code>, tapi Maestro mencari teks <code>"Verifikasi"</code>.</li>
-<li>Test gagal → agent membaca log → memperbaiki identifier di kode UI → menjalankan ulang <code>maestro test</code>.</li>
-<li>Assertion <strong>PASS</strong> — tanpa Anda menyetir tiap langkah.</li>
-</ol>
-<h2 is-upgraded>Tahap 5 — Verifikasi di HP Fisik</h2>
-<p>Tanpa emulator berat di M1, pasang APK ke HP yang tercolok di M1:</p>
-<pre><code language="language-bash" class="language-bash">adb install -r build/app/outputs/flutter-apk/app-debug.apk
-</code></pre>
-<p>Verifikasi animasi &amp; haptic di perangkat asli.</p>
-<p>Positive : Perhatikan bagaimana kelima part menyatu: konsep (P1) → infrastruktur (P2–P3) → memori &amp; harness (P4) → loop mandiri (P5). Fitur mengalir tanpa Anda memindahkan file atau menunggu build memberati M1.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Maintenance &amp; Checklist Harian" duration="5">
-        <h2 is-upgraded>Rutinitas memulai kerja</h2>
+<p>Catat baseline idle dan saat satu job berjalan. Memory Pressure yang terus kuning/merah atau swap yang terus naik menjadi alasan mengurangi concurrency, menutup browser/extension berat, atau memindahkan job ke worker yang diizinkan. Jangan menjanjikan angka RAM, baterai, atau kecepatan yang belum diukur.</p>
+<p>Untuk alert, <a href="https://github.com/louislam/uptime-kuma" target="_blank">Uptime Kuma</a> opsional pada host lain yang selalu tersedia di tailnet. Monitor di M1 sendiri tidak dapat melaporkan ketika M1 mati total. Intel yang dimatikan juga bukan monitor 24/7. Tentukan jalur notifikasi dan hindari menambah daemon hanya untuk mengisi laptop.</p>
 <table>
-<tr><td colspan="1" rowspan="1"><p>No</p>
-</td><td colspan="1" rowspan="1"><p>Aktivitas</p>
-</td><td colspan="1" rowspan="1"><p>Device</p>
-</td><td colspan="1" rowspan="1"><p>Command / Cara</p>
+<tr><td colspan="1" rowspan="1"><p>Gejala</p>
+</td><td colspan="1" rowspan="1"><p>Pemeriksaan dan pemulihan</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>1</p>
-</td><td colspan="1" rowspan="1"><p>Wake server</p>
-</td><td colspan="1" rowspan="1"><p>Intel 2019</p>
-</td><td colspan="1" rowspan="1"><p>Pastikan charger terpasang &amp; Amphetamine aktif</p>
+<tr><td colspan="1" rowspan="1"><p>Hub tidak terlihat</p>
+</td><td colspan="1" rowspan="1"><p>Pastikan daya, lid, jaringan, unlock/login, lalu status Tailscale</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>2</p>
-</td><td colspan="1" rowspan="1"><p>Verifikasi Tailscale</p>
-</td><td colspan="1" rowspan="1"><p>M1</p>
-</td><td colspan="1" rowspan="1"><p><code>tailscale ping mac-server</code></p>
+<tr><td colspan="1" rowspan="1"><p>SSH bisa, browser gagal</p>
+</td><td colspan="1" rowspan="1"><p>Cek loopback 8080, <code>brew services list</code>, konfigurasi dan log code-server, lalu Serve</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>3</p>
-</td><td colspan="1" rowspan="1"><p>Jalankan backend stack</p>
-</td><td colspan="1" rowspan="1"><p>Intel 2019</p>
-</td><td colspan="1" rowspan="1"><p><code>ssh mac-server "cd ~/projects/app && docker compose up -d"</code></p>
+<tr><td colspan="1" rowspan="1"><p>Client putus</p>
+</td><td colspan="1" rowspan="1"><p>Attach tmux kembali; jangan menjalankan task duplikat</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>4</p>
-</td><td colspan="1" rowspan="1"><p>Buka remote editor</p>
-</td><td colspan="1" rowspan="1"><p>M1</p>
-</td><td colspan="1" rowspan="1"><p>Remote-SSH ke mac-server</p>
+<tr><td colspan="1" rowspan="1"><p>Host reboot</p>
+</td><td colspan="1" rowspan="1"><p>Unlock/login bila dibutuhkan, verifikasi service, baca task terakhir, ulangi hanya langkah yang belum selesai</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>5</p>
-</td><td colspan="1" rowspan="1"><p>Update peta Graphify</p>
-</td><td colspan="1" rowspan="1"><p>Intel 2019</p>
-</td><td colspan="1" rowspan="1"><p><code>/graphify . --update</code> setelah merge branch baru</p>
+<tr><td colspan="1" rowspan="1"><p>Worker tidak tersedia</p>
+</td><td colspan="1" rowspan="1"><p>Tandai <code>waiting-worker</code>; hub tetap menerima pekerjaan ringan</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Biaya API melewati budget</p>
+</td><td colspan="1" rowspan="1"><p>Hentikan sesi/job dan periksa provider usage sebelum melanjutkan</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Disk menipis</p>
+</td><td colspan="1" rowspan="1"><p>Identifikasi cache/log/artifact; hapus hanya data yang telah dipastikan dapat dibuat ulang</p>
 </td></tr>
 </table>
-<h2 is-upgraded>Tips efisiensi &amp; thermal</h2>
-<p>Positive : <strong>Thermal 2019:</strong> pakai <em>vertical laptop stand</em> aluminium agar sirkulasi udara di bawah bodi tetap baik saat komputasi berat berjalan seharian.</p>
-<p>Negative : <strong>Jangan Docker + emulator di M1 8 GB.</strong> Menjalankan keduanya bersamaan di M1 memicu swap SSD puluhan GB. Biarkan M1 murni sebagai <em>thin client</em>.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Ringkasan Seri" duration="3">
-        <p>Selamat — Anda telah membangun <strong>Agentic Workflow Dual-Mac</strong> yang utuh:</p>
-<ul>
-<li>✅ <strong>Utilisasi optimal 2 Mac</strong> — M1 (8 GB) dingin &amp; responsif sebagai driver; 2019 (32 GB) menangani Docker, emulator, dan multi-agent swarm.</li>
-<li>✅ <strong>Zero-config mesh network</strong> — SSH aman dari mana saja via Tailscale.</li>
-<li>✅ <strong>Shared memory</strong> — kolaborasi antar-agen rapi dengan Graphify (AST) + Obsidian (ADR/wiki).</li>
-<li>✅ <strong>Agent harness modern</strong> — Pi, Antigravity, dan Claude Code dengan efisiensi token.</li>
-<li>✅ <strong>Autonomous verification loop</strong> — uji UI mandiri dengan Maestro + mobile-mcp.</li>
-</ul>
-<p>Kembali ke part mana pun untuk mendalami: <a href="agentic-workflow-dual-mac-setup/" target="_blank">Part 1 Konsep</a> · <a href="agentic-dual-mac-part-2-provisioning/" target="_blank">Part 2 Provisioning</a> · <a href="agentic-dual-mac-part-3-jaringan-remote/" target="_blank">Part 3 Jaringan &amp; Remote</a> · <a href="agentic-dual-mac-part-4-memory-harness/" target="_blank">Part 4 Memory &amp; Harness</a>.</p>
+      <google-codelab-step label="Soak Test 24 Jam" duration="5">
+        <p>Catat hasil pada awal, setelah satu job nyata, setelah client pindah jaringan, dan setelah 24 jam. Pengamatan berlangsung 24 jam; durasi langkah ini hanya waktu membaca/menyiapkan tabel.</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Pengujian</p>
+</td><td colspan="1" rowspan="1"><p>Bukti yang harus diisi operator</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Layar hub mati, charger terpasang</p>
+</td><td colspan="1" rowspan="1"><p>Waktu cek + akses SSH/HTTPS dari client</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>HP di jaringan seluler</p>
+</td><td colspan="1" rowspan="1"><p>URL privat dapat dibuka + hostname benar</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Client disconnect/reconnect</p>
+</td><td colspan="1" rowspan="1"><p>Sesi tmux dan proses task yang sama</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Intel dimatikan</p>
+</td><td colspan="1" rowspan="1"><p>Hub tetap tersedia; task worker tertunda jelas</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Restart M1 terencana</p>
+</td><td colspan="1" rowspan="1"><p>Durasi downtime + langkah unlock/login + status service</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Backup dan restore</p>
+</td><td colspan="1" rowspan="1"><p>Snapshot ID + file hasil restore tervalidasi</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Satu job nyata</p>
+</td><td colspan="1" rowspan="1"><p>SHA + hasil test + durasi + biaya</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Beban 24 jam</p>
+</td><td colspan="1" rowspan="1"><p>Memory Pressure, tren swap, disk, suhu/kipas yang diamati</p>
+</td></tr>
+</table>
+<p>Restart dilakukan saat tidak ada job penting. Catat kebutuhan operator fisik, bukan mengklaim pemulihan otomatis tanpa mengujinya. Jadwalkan update OS/tool di jendela pemeliharaan. Setelah update, ulangi smoke test SSH/browser/agent; bandingkan versi dengan catatan sebelumnya.</p>
+<p><strong>Checklist selesai:</strong> koneksi privat bekerja, job tidak terduplikasi, hub responsif, backup dapat dipulihkan, budget terukur, dan recovery terdokumentasi. Laptop tetap memiliki keterbatasan daya, jaringan, login, dan mobilitas; kebutuhan SLA lebih tinggi memerlukan host yang memang dikelola sebagai server.</p>
+<p><a href="../agentic-dual-mac-workflow.html" target="_blank">Kembali ke peta seri</a> · <a href="../data/dual-mac-projects.json" target="_blank">Bukti proyek open source</a>.</p>
 
 
       </google-codelab-step>

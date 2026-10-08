@@ -34,20 +34,21 @@
       "id": "agentic-dual-mac-workflow",
       "title": "Dual-Mac Agentic Workflow",
       "icon": "⚡",
-      "summary": "Seri 5-part why-first: pisahkan driver node (MacBook M1 8GB) dari compute node (MacBook 2019 32GB), lalu bangun workflow agentik yang dingin, hemat baterai, dan bisa dioperasikan dari mana saja — provisioning, jaringan & remote (Tailscale/SSH), shared memory (Graphify/Obsidian), agent harness, dan autonomous mobile testing (Maestro/mobile-mcp).",
-      "duration": 218,
+      "summary": "M1 kantor 8 GB sebagai hub ringan 24/7; Intel pribadi 32 GB sebagai worker sesuai kebutuhan. Akses HP/tablet, agent open source, backup, dan recovery.",
+      "duration": 214,
       "sections": 5,
       "sectionLabel": "Part",
       "phases": 5,
       "tags": [
         "AI",
-        "Agentic Workflow",
         "Dual-Mac",
+        "24/7",
         "Tailscale",
-        "Remote Development",
-        "Graphify",
-        "Maestro",
-        "Mobile-MCP"
+        "tmux",
+        "code-server",
+        "OpenCode",
+        "Colima",
+        "Backup"
       ],
       "categories": [
         "ai",
@@ -55,7 +56,7 @@
         "mobile",
         "architecture"
       ],
-      "searchTerms": "dual mac agentic workflow driver node compute node m1 8gb intel 32gb tailscale remote ssh graphify obsidian agent harness maestro mobile mcp provisioning testing e2e seri part",
+      "searchTerms": "dual mac kantor pribadi m1 8gb intel i9 32gb hub worker server 24/7 always on open source github tailscale ssh tmux code-server opencode colima restic backup remote hp tablet",
       "url": "agentic-dual-mac-workflow.html",
       "ctaText": "Buka seri"
     },

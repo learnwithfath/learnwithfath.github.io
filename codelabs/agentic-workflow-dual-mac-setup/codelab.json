@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2026-08-20T15:38:19+07:00",
+  "updated": "2026-10-08T16:40:12+07:00",
   "id": "agentic-workflow-dual-mac-setup",
-  "duration": 40,
+  "duration": 28,
   "title": "Dual-Mac Agentic Workflow — Part 1: Konsep \u0026 Arsitektur",
   "authors": "LearnWithFath Team",
-  "summary": "Part 1 dari seri Dual-Mac Agentic Workflow — konsep dan arsitektur. Kenapa memisahkan driver node (MacBook M1 8GB) dan compute node (MacBook 2019 32GB), peran tiap komponen (Tailscale, SSH, Graphify, harness, Maestro), dan kapan pola ini layak dipakai.",
+  "summary": "M1 kantor 8 GB sebagai hub ringan 24/7; Intel pribadi 32 GB sebagai worker sesuai kebutuhan. Pilihan open source, bukti aktivitas GitHub, dan pembagian beban realistis.",
   "source": "agentic-workflow-dual-mac-setup.md",
   "theme": "",
   "status": [
@@ -17,19 +17,20 @@
   "category": [
     "ai",
     "developertools",
-    "mobile",
-    "architecture",
-    "macos"
+    "macos",
+    "remotedevelopment"
   ],
   "tags": [
-    "agentic-workflow",
-    "apple-silicon",
-    "arsitektur",
+    "always-on",
+    "code-server",
+    "colima",
     "dual-mac",
-    "intel-mac",
-    "mental-model",
-    "remote-development",
-    "tailscale"
+    "intel",
+    "m1",
+    "opencode",
+    "restic",
+    "tailscale",
+    "tmux"
   ],
   "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
   "url": "agentic-workflow-dual-mac-setup"

@@ -28,136 +28,127 @@
                   environment="web"
                   feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
     
-      <google-codelab-step label="Tentang Seri Ini" duration="5">
-        <p>Seri ini memecah setup <strong>agentic workflow dual-mac</strong> menjadi lima part yang bisa dikerjakan bertahap. Setiap part berdiri sendiri, punya outcome dan checklist verifikasi, dan dijelaskan dari <strong>kenapa</strong> dulu — baru <strong>bagaimana</strong>.</p>
+      <google-codelab-step label="Target dan Perangkat" duration="5">
+        <p><strong>Snapshot riset: 8 Oktober 2026.</strong> Seri ini memaksimalkan dua laptop untuk kerja AI dan akses dari perangkat lain. Contoh perangkat: <strong>MacBook Pro M1 2020 8 GB milik kantor</strong> dan <strong>MacBook Pro Intel i9 2019 32 GB milik pribadi</strong>. Periksa OS dan arsitektur aktual sebelum mengikuti command; konfigurasi perangkat berbeda dapat memerlukan penyesuaian.</p>
 <table>
-<tr><td colspan="1" rowspan="1"><p>Part</p>
-</td><td colspan="1" rowspan="1"><p>Fokus</p>
-</td><td colspan="1" rowspan="1"><p>Outcome</p>
+<tr><td colspan="1" rowspan="1"><p>Perangkat</p>
+</td><td colspan="1" rowspan="1"><p>Nama contoh</p>
+</td><td colspan="1" rowspan="1"><p>Peran utama</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p><strong>Part 1 (ini)</strong></p>
-</td><td colspan="1" rowspan="1"><p>Konsep &amp; arsitektur</p>
-</td><td colspan="1" rowspan="1"><p>Paham peran tiap komponen dan alasannya sebelum menyentuh terminal</p>
+<tr><td colspan="1" rowspan="1"><p>M1 8 GB</p>
+</td><td colspan="1" rowspan="1"><p><code>office-hub</code></p>
+</td><td colspan="1" rowspan="1"><p>Hub ringan yang tersedia 24/7: SSH, tmux, browser editor, satu sesi agent dengan model API</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>Part 2</p>
-</td><td colspan="1" rowspan="1"><p>Provisioning dua Mac</p>
-</td><td colspan="1" rowspan="1"><p>Server node &amp; driver node siap pakai</p>
+<tr><td colspan="1" rowspan="1"><p>Intel i9 32 GB</p>
+</td><td colspan="1" rowspan="1"><p><code>personal-worker</code></p>
+</td><td colspan="1" rowspan="1"><p>Workstation harian dan worker build/container/Android sesuai kebutuhan</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>Part 3</p>
-</td><td colspan="1" rowspan="1"><p>Jaringan &amp; remote development</p>
-</td><td colspan="1" rowspan="1"><p>Kedua Mac tersambung aman; edit di M1, jalan di 2019</p>
-</td></tr>
-<tr><td colspan="1" rowspan="1"><p>Part 4</p>
-</td><td colspan="1" rowspan="1"><p>Shared memory &amp; agent harness</p>
-</td><td colspan="1" rowspan="1"><p>Antar-agen berbagi konteks; harness terpasang</p>
-</td></tr>
-<tr><td colspan="1" rowspan="1"><p>Part 5</p>
-</td><td colspan="1" rowspan="1"><p>Autonomous testing &amp; alur end-to-end</p>
-</td><td colspan="1" rowspan="1"><p>Loop uji mandiri + praktik fitur nyata</p>
+<tr><td colspan="1" rowspan="1"><p>HP, tablet, laptop lain</p>
+</td><td colspan="1" rowspan="1"><p>Client</p>
+</td><td colspan="1" rowspan="1"><p>Mengakses terminal/browser lewat tailnet yang diizinkan</p>
 </td></tr>
 </table>
-<p>Positive : <strong>Part 1 tidak berisi command.</strong> Tujuannya membangun <em>mental model</em>. Kalau Anda sudah paham alasannya, command di part berikutnya jadi masuk akal — bukan sekadar copy-paste.</p>
+<p><strong>Koreksi dari edisi sebelumnya:</strong> M1 bukan hanya terminal pasif dan Intel tidak wajib menyala sepanjang hari. RAM Intel berguna untuk beban besar, sedangkan hub M1 harus tetap responsif untuk pekerjaan kantor. Ketersediaan 24/7 berarti layanan siap menerima pekerjaan; agent tidak perlu terus memanggil model ketika tidak ada tugas.</p>
+<p>Materi ini mengonfigurasi pola penggunaan. Ia tidak membuktikan kedua laptop Anda sudah terpasang layanan atau sudah lulus uji 24 jam.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Masalah yang Kita Selesaikan" duration="8">
-        <p>Sebagai Full Stack Mobile Developer, satu laptop harus menanggung tiga beban sekaligus:</p>
-<ul>
-<li><strong>Mobile Stack</strong> — Android Studio / Xcode, emulator/simulator, build Gradle/CocoaPods, Flutter/React Native/Kotlin/Swift.</li>
-<li><strong>Backend Stack</strong> — Docker, database (PostgreSQL/MySQL), Redis, API server (Go/NestJS/Node).</li>
-<li><strong>AI Agentic Layer</strong> — coding agent yang haus konteks (Claude Code, Antigravity, Pi, Cursor), MCP server, indexer kode, dan test runner otonom.</li>
-</ul>
-<p>Jalankan semuanya di satu <strong>MacBook M1 8 GB</strong> dan Anda menabrak dinding: <em>memory thrashing</em> — swap SSD membengkak, UI macet, build gagal di tengah jalan. Menaikkan RAM tidak mungkin (Apple Silicon disolder).</p>
-<p>Di sisi lain, banyak dari kita punya laptop lama yang menganggur — misalnya <strong>MacBook Pro 2019 16&#34; dengan RAM 32 GB</strong>. RAM-nya besar, tapi boros baterai, panas, dan berisik kalau dipangku seharian.</p>
-<p>Negative : Menjalankan Docker + emulator + agent AI secara paralel di M1 8 GB adalah penyebab paling umum laptop &#34;ngadat&#34; saat kerja agentic. Ini bukan masalah kalau ditata dengan benar.</p>
-<p><strong>Ide intinya:</strong> pisahkan <em>tempat Anda mengetik</em> dari <em>tempat komputasi berat berjalan</em>. Laptop lama yang menganggur itu justru aset — jadikan ia server.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Arsitektur: Driver Node vs Compute Node" duration="10">
-        <p>Kita membelah peran menjadi dua node:</p>
-<pre><code>┌──────────────────────────────────────┐       Tailscale Mesh VPN       ┌─────────────────────────────────────────┐
-│     MacBook Pro M1 (RAM 8 GB)        │ ────────────────────────────── │   MacBook Pro 2019 16&#34; (RAM 32 GB)      │
-│      [CLIENT / DRIVER NODE]          │        (Zero-Config SSH)       │     [COMPUTE &amp; AGENT SERVER NODE]       │
-│                                      │                                │                                         │
-│ • Antigravity CLI / Cursor / VS Code │                                │ • Docker Stack (DB, Redis, Backend API) │
-│ • Interactive Prompting &amp; Planning   │                                │ • Claude Code headless + Subagent Swarm │
-│ • Physical Device Testing (USB)      │                                │ • Heavy Emulators &amp; Headless Simulators │
-│ • Apple Universal Control &amp; Display  │                                │ • Graphify (AST) &amp; Obsidian LLM Wiki    │
-│ • Baterai awet, dingin, &amp; super cepat│                                │ • Maestro MCP + mobile-mcp (self-heal)  │
-└──────────────────────────────────────┘                                └─────────────────────────────────────────┘
+      <google-codelab-step label="Pembagian Beban dan Batas Data" duration="8">
+        <pre><code language="language-text" class="language-text">HP / tablet / laptop tepercaya
+       | Tailscale + HTTPS atau SSH
+       v
+M1 kantor: office-hub (8 GB, tersedia selama jam operasional 24/7)
+  SSH + tmux + code-server + satu agent API
+       |
+       | Git/SSH untuk proyek yang diizinkan
+       v
+Intel pribadi: personal-worker (32 GB, dinyalakan saat dibutuhkan)
+  Colima + test/build + satu emulator Android
 </code></pre>
-<p><strong>Driver Node (M1 8 GB)</strong> — tempat Anda berada. Fungsinya <em>tipis</em>: editor, terminal, prompting, dan device fisik lewat USB. Karena beban berat tidak di sini, laptop tetap dingin dan baterai tahan seharian.</p>
-<p><strong>Compute Node (2019 32 GB)</strong> — &#34;otot&#34;-nya. Colok charger, taruh di meja, tutup layar (<em>clamshell</em>). Semua yang rakus memori hidup di sini: Docker, emulator, indexer kode, dan agent yang berjalan lama.</p>
-<p>Positive : Analoginya seperti <em>thin client</em> + <em>workstation</em>. Anda mengetik di perangkat ringan, tetapi CPU/RAM 32 GB yang bekerja. Yang berpindah lewat jaringan hanyalah teks dan perintah — bukan beban komputasi.</p>
+<p>Dari Intel, Anda bisa membuka browser editor M1 sambil menjalankan proyek pribadi secara lokal. Untuk proyek yang boleh memakai kedua perangkat, gunakan Git sebagai perpindahan versi: commit di satu mesin, fetch/checkout commit yang sama di mesin lain. Jangan menyinkronkan direktori kerja yang sedang diubah agent pada dua mesin.</p>
+<p><strong>Batas kepemilikan:</strong> kode, kredensial, dan data kantor hanya boleh berada pada perangkat serta provider AI yang disetujui organisasi. Bila perangkat pribadi tidak boleh menerima repo kantor, jalankan worker pekerjaan kantor di mesin/CI milik kantor. Intel tetap berguna untuk proyek pribadi, open source, dan latihan menggunakan data sintetis. Jangan membuat akses perangkat pribadi sebagai syarat agar hub kantor berfungsi.</p>
+<p>Mulai dengan <strong>satu job agent per mesin</strong>. Di Intel, contoh alokasi awal Colima 4 CPU/8 GiB dan satu emulator; ini anggaran awal yang harus diukur. Pada M1, jalankan CLI agent dengan model API dan hindari menumpuk VM, emulator, serta model lokal bersamaan. Model API memakai komputasi provider; tool, file, dan test tetap memakai mesin host.</p>
+<p><strong>Intel tidak otomatis lebih cepat dari M1.</strong> Pilih lokasi build berdasarkan kompatibilitas, RAM, waktu build, suhu, dan biaya listrik yang benar-benar diukur. Untuk iOS, cocokkan versi macOS/Xcode/SDK pada <a href="https://developer.apple.com/support/xcode/" target="_blank">dukungan Xcode Apple</a>; jangan mengasumsikan Intel 2019 menjalankan SDK terbaru.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Peran Tiap Komponen (dan Kenapa Ada)" duration="10">
-        <p>Ini bagian terpenting. Sebelum menginstal apa pun, pahami <strong>untuk apa</strong> setiap potongan ada. Tiap komponen menjawab satu masalah spesifik:</p>
-<h2 is-upgraded>Tailscale — &#34;kenapa perlu VPN?&#34;</h2>
-<p>Kedua Mac harus bisa saling menemukan <strong>di mana pun Anda berada</strong> — Wi-Fi rumah, kantor, atau tethering di kafe. Tanpa ini, alamat IP berubah tiap pindah jaringan dan koneksi putus. Tailscale membuat <em>mesh VPN</em> terenkripsi (WireGuard): tiap Mac dapat IP tetap (<code>100.x.y.z</code>) yang tidak berubah walau jaringan fisiknya berganti. Jadi &#34;server&#34; Anda selalu bisa dihubungi dengan alamat yang sama.</p>
-<h2 is-upgraded>SSH &amp; Remote Development — &#34;guna remote SSH ini apa?&#34;</h2>
-<p>Ini pertanyaan kunci. <strong>SSH adalah jembatan yang membuat Anda bisa duduk di M1 tapi seolah bekerja langsung di dalam MacBook 2019.</strong></p>
-<p>Tanpa remote development, Anda harus:</p>
+      <google-codelab-step label="Stack Open Source dan Bukti Aktivitas" duration="10">
+        <p>Prioritas pemilihan: cocok dengan tugas → masih dipelihara → lisensi jelas → komunitas besar → biaya operasional. Snapshot GitHub API menyimpan stars, lisensi, status archived, commit terakhir, dan rilis terbaru. Angka adalah hasil pengambilan pada tanggal di atas, bukan penghitung live.</p>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Proyek</p>
+</td><td colspan="1" rowspan="1"><p>Stars</p>
+</td><td colspan="1" rowspan="1"><p>Lisensi</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><a href="https://github.com/tailscale/tailscale" target="_blank">tailscale/tailscale</a></p>
+</td><td colspan="1" rowspan="1"><p>37,261</p>
+</td><td colspan="1" rowspan="1"><p>BSD-3-Clause</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><a href="https://github.com/tmux/tmux" target="_blank">tmux/tmux</a></p>
+</td><td colspan="1" rowspan="1"><p>49,835</p>
+</td><td colspan="1" rowspan="1"><p>ISC</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><a href="https://github.com/coder/code-server" target="_blank">coder/code-server</a></p>
+</td><td colspan="1" rowspan="1"><p>79,560</p>
+</td><td colspan="1" rowspan="1"><p>MIT</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><a href="https://github.com/abiosoft/colima" target="_blank">abiosoft/colima</a></p>
+</td><td colspan="1" rowspan="1"><p>31,127</p>
+</td><td colspan="1" rowspan="1"><p>MIT</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><a href="https://github.com/anomalyco/opencode" target="_blank">anomalyco/opencode</a></p>
+</td><td colspan="1" rowspan="1"><p>212,294</p>
+</td><td colspan="1" rowspan="1"><p>MIT</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><a href="https://github.com/restic/restic" target="_blank">restic/restic</a></p>
+</td><td colspan="1" rowspan="1"><p>36,467</p>
+</td><td colspan="1" rowspan="1"><p>BSD-2-Clause</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><a href="https://github.com/mobile-dev-inc/Maestro" target="_blank">mobile-dev-inc/Maestro</a></p>
+</td><td colspan="1" rowspan="1"><p>15,985</p>
+</td><td colspan="1" rowspan="1"><p>Apache-2.0</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><a href="https://github.com/mobile-next/mobile-mcp" target="_blank">mobile-next/mobile-mcp</a></p>
+</td><td colspan="1" rowspan="1"><p>8,763</p>
+</td><td colspan="1" rowspan="1"><p>Apache-2.0</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p><a href="https://github.com/louislam/uptime-kuma" target="_blank">louislam/uptime-kuma</a></p>
+</td><td colspan="1" rowspan="1"><p>92,206</p>
+</td><td colspan="1" rowspan="1"><p>MIT</p>
+</td></tr>
+</table>
+<p>Rilis dan commit terakhir (UTC), dicatat terpisah agar mudah dibaca di HP:</p>
 <ul>
-<li>pindah fisik ke laptop 2019 setiap mau menjalankan build/test, atau</li>
-<li>menyalin file bolak-balik antar laptop (rawan file basi/konflik).</li>
+<li><strong>tailscale/tailscale — Jaringan privat: </strong><a href="https://github.com/tailscale/tailscale/releases/tag/v1.104.1" target="_blank">v1.104.1</a> terbit 2026-10-07; commit terakhir 2026-10-08.</li>
+<li><strong>tmux/tmux — Sesi terminal: </strong><a href="https://github.com/tmux/tmux/releases/tag/3.8" target="_blank">3.8</a> terbit 2026-09-09; commit terakhir 2026-10-08.</li>
+<li><strong>coder/code-server — Editor browser: </strong><a href="https://github.com/coder/code-server/releases/tag/v4.141.0" target="_blank">v4.141.0</a> terbit 2026-10-08; commit terakhir 2026-10-08.</li>
+<li><strong>abiosoft/colima — Container worker: </strong><a href="https://github.com/abiosoft/colima/releases/tag/v0.10.3" target="_blank">v0.10.3</a> terbit 2026-06-04; commit terakhir 2026-10-02.</li>
+<li><strong>anomalyco/opencode — Coding agent: </strong><a href="https://github.com/anomalyco/opencode/releases/tag/v1.18.35" target="_blank">v1.18.35</a> terbit 2026-10-06; commit terakhir 2026-10-08.</li>
+<li><strong>restic/restic — Backup terenkripsi: </strong><a href="https://github.com/restic/restic/releases/tag/v0.19.1" target="_blank">v0.19.1</a> terbit 2026-07-05; commit terakhir 2026-09-25.</li>
+<li><strong>mobile-dev-inc/Maestro — Mobile E2E opsional: </strong><a href="https://github.com/mobile-dev-inc/Maestro/releases/tag/cli-2.11.0" target="_blank">cli-2.11.0</a> terbit 2026-09-29; commit terakhir 2026-10-08.</li>
+<li><strong>mobile-next/mobile-mcp — Inspeksi mobile opsional: </strong><a href="https://github.com/mobile-next/mobile-mcp/releases/tag/1.0.8" target="_blank">1.0.8</a> terbit 2026-10-02; commit terakhir 2026-10-07.</li>
+<li><strong>louislam/uptime-kuma — Monitor opsional di host lain: </strong><a href="https://github.com/louislam/uptime-kuma/releases/tag/2.5.5" target="_blank">2.5.5</a> terbit 2026-09-16; commit terakhir 2026-10-08.</li>
 </ul>
-<p>Dengan remote SSH (lewat ekstensi <em>Remote - SSH</em> di VS Code/Antigravity):</p>
-<ul>
-<li><strong>Kode tinggal di 2019.</strong> Tidak ada duplikasi file, tidak ada sinkronisasi manual.</li>
-<li><strong>Editor jalan di M1</strong> (ringan, responsif), tapi kompilasi, indexing, Docker, dan eksekusi agent semuanya terjadi di 32 GB milik 2019.</li>
-<li><strong>Terminal di editor Anda sebenarnya terminal di 2019.</strong> Ketik <code>docker compose up</code> — yang jalan adalah Docker di server, bukan di M1.</li>
-</ul>
-<p>Jadi jawabannya: remote SSH menghilangkan pemisahan yang tadi kita buat dari sisi pengalaman. Anda mendapat kenyamanan satu layar (M1 yang dingin) dengan tenaga mesin lain (2019 yang bertenaga). Ini seluruh inti dari pola dual-mac. Detail konfigurasinya ada di <strong>Part 3</strong>.</p>
-<h2 is-upgraded>Graphify + Obsidian — &#34;kenapa perlu shared memory?&#34;</h2>
-<p>Saat beberapa agent bekerja pada repo yang sama, mereka gampang <strong>kehilangan konteks</strong> (<em>context drift</em>): agent A mengubah kontrak API, agent B tidak tahu, hasilnya tabrakan. Dua layar memori mengatasinya:</p>
-<ul>
-<li><strong>Graphify</strong> — peta struktural kode berbasis AST (siapa memanggil siapa), deterministik, tanpa membuang token.</li>
-<li><strong>Obsidian Vault</strong> — memori keputusan: ADR, kontrak API, catatan bug. Dibaca manusia <em>dan</em> agent.</li>
-</ul>
-<p>Detailnya di <strong>Part 4</strong>.</p>
-<h2 is-upgraded>Agent Harness (Pi / Antigravity / Claude Code) — &#34;kenapa tidak langsung pakai chat?&#34;</h2>
-<p>Harness adalah runtime yang membungkus LLM: mengelola loop eksekusi tool, pemangkasan konteks, dan percabangan sesi. Inilah yang mengubah &#34;chat yang memberi saran&#34; menjadi &#34;agent yang benar-benar mengedit, menjalankan test, dan memperbaiki dirinya&#34;. Detailnya di <strong>Part 4</strong>.</p>
-<h2 is-upgraded>Maestro + mobile-mcp — &#34;kenapa perlu testing khusus?&#34;</h2>
-<p>Kelemahan terbesar AI pada aplikasi mobile: <strong>ia tidak bisa melihat hasil render UI</strong>. Maestro (uji UI deklaratif YAML) + <code>mobile-mcp</code> (memberi agent akses ke accessibility tree) menutup celah ini, memungkinkan <em>self-healing loop</em>: agent mengubah UI → jalankan test → baca kegagalan → perbaiki → ulang. Detailnya di <strong>Part 5</strong>.</p>
+<p><a href="../data/dual-mac-projects.json" target="_blank">Buka bukti JSON yang dapat diperiksa</a>. Seluruh proyek dalam snapshot tidak berstatus archived saat diperiksa. Rilis/commit terbaru adalah bukti pemeliharaan publik; <strong>stars bukan jumlah pengguna aktif</strong>. Kecocokan produksi harus dibuktikan dengan uji pada perangkat Anda.</p>
+<p><strong>Stack minimum:</strong> Tailscale + OpenSSH bawaan macOS + tmux. Tambahkan code-server bila perlu browser, OpenCode untuk agent, Colima hanya pada worker yang perlu container, dan restic untuk backup. Maestro bersifat opsional untuk pekerjaan mobile. Uptime Kuma dan mobile-mcp adalah opsi tambahan, bukan daemon wajib di M1 8 GB.</p>
+<p>Tailscale memiliki client open source, tetapi layanan koordinasi hosted dan paket bisnisnya merupakan produk terpisah. <a href="https://github.com/juanfont/headscale" target="_blank">Headscale</a> dapat dievaluasi jika perlu koordinasi yang dikelola sendiri; ia menambah beban operasi. macOS, provider model API, dan beberapa ekstensi editor juga tidak menjadi open source hanya karena CLI yang dipakai open source.</p>
+<p>OrbStack/Obsidian/agent komersial dapat tetap dipakai jika memang diperlukan. Seri ini menggunakan Colima dan Markdown biasa sebagai baseline agar alurnya tidak bergantung pada produk tersebut. Graphify bukan prasyarat; tambahkan indexer hanya setelah kebutuhan pencarian repo terukur.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Kapan Pola Ini Layak (dan Tidak)" duration="5">
-        <p>Jujur soal trade-off supaya Anda tidak menghabiskan waktu untuk setup yang tidak Anda butuhkan.</p>
-<p><strong>Layak dipakai bila:</strong></p>
-<ul>
-<li>Anda punya laptop kedua yang menganggur dengan RAM besar.</li>
-<li>Beban kerja Anda memang berat: Docker + emulator + agent paralel.</li>
-<li>Anda ingin baterai laptop utama tahan lama dan tetap dingin.</li>
-</ul>
-<p><strong>Tidak perlu (atau berlebihan) bila:</strong></p>
-<ul>
-<li>Laptop utama Anda sudah 32 GB+ dan nyaman menjalankan semuanya sendiri.</li>
-<li>Anda hanya sesekali memakai agent untuk perubahan kecil.</li>
-<li>Anda tidak punya perangkat kedua — dalam hal ini, sewa cloud VM Linux bisa jadi alternatif compute node (konsepnya sama; hanya SSH target-nya berbeda).</li>
-</ul>
-<p>Negative : Pola ini menambah satu lapis kompleksitas (jaringan + remote). Jangan pasang kalau masalah RAM Anda belum nyata. Optimasi yang tidak dibutuhkan hanya menambah titik kegagalan.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Verifikasi Pemahaman" duration="2">
-        <p>Sebelum lanjut ke Part 2, pastikan Anda bisa menjawab ini tanpa melihat catatan:</p>
-<ol type="1">
-<li>Apa beda peran <strong>driver node</strong> dan <strong>compute node</strong>, dan kenapa M1 8 GB dijadikan driver?</li>
-<li>Apa fungsi <strong>Tailscale</strong>, dan kenapa IP biasa tidak cukup?</li>
-<li><strong>Guna remote SSH</strong> dalam alur ini apa — apa yang berpindah lewat jaringan dan apa yang tetap di tempat?</li>
-<li>Kenapa emulator berat ditaruh di 2019 (Intel), bukan di M1?</li>
+      <google-codelab-step label="Rute Belajar dan Kriteria Sukses" duration="5">
+        <ol type="1">
+<li><a href="../agentic-dual-mac-part-2-provisioning/" target="_blank">Part 2: Provisioning</a> — power, toolchain minimum, worker opsional, batas restart.</li>
+<li><a href="../agentic-dual-mac-part-3-jaringan-remote/" target="_blank">Part 3: Remote</a> — Tailscale, SSH, tmux, code-server dari HP/tablet.</li>
+<li><a href="../agentic-dual-mac-part-4-memory-harness/" target="_blank">Part 4: Memory &amp; Harness</a> — OpenCode, worktree, catatan task, budget dan handoff.</li>
+<li><a href="../agentic-dual-mac-part-5-testing-e2e/" target="_blank">Part 5: Operasi &amp; Pengujian</a> — uji end-to-end, recovery, backup/restore, dan soak test 24 jam.</li>
 </ol>
-<p>Kalau keempatnya sudah jelas, Anda siap membangunnya.</p>
-<p>Positive : <strong>Lanjut ke Part 2 — Provisioning Dua Mac</strong>, tempat kita menyiapkan compute node (2019) dan driver node (M1) dari nol.</p>
+<p>Alokasikan 3–4 jam untuk setup dasar, lalu 24 jam pengamatan terpisah. Stack mobile membutuhkan unduhan dan setup tambahan.</p>
+<p>Selesai bila akses dari jaringan seluler bekerja, task bertahan saat client putus, restart memiliki prosedur recovery yang diuji, backup berhasil direstore, serta latensi/RAM/biaya dicatat. CPU 100% sepanjang hari bukan target keberhasilan.</p>
+<p><strong>Jika Intel sedang mati:</strong> hub M1 tetap bisa menerima sesi ringan; job berat ditandai menunggu worker, tidak dianggap sudah berjalan. Jika M1 dibawa bepergian atau tidur, layanan hub ikut tidak tersedia. Untuk SLA tanpa operator, gunakan server/CI khusus yang dikelola organisasi.</p>
+<p><a href="../agentic-dual-mac-workflow.html" target="_blank">Kembali ke peta seri</a>.</p>
 
 
       </google-codelab-step>

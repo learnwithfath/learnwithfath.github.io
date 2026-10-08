@@ -28,151 +28,109 @@
                   environment="web"
                   feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
     
-      <google-codelab-step label="Outcome &amp; Prasyarat" duration="5">
-        <p>Di <a href="agentic-workflow-dual-mac-setup/" target="_blank">Part 1</a> kita menetapkan pembagian peran: <strong>2019 = compute node</strong>, <strong>M1 = driver node</strong>. Sekarang kita menyiapkan keduanya sampai siap dihubungkan.</p>
-<p>Di akhir part ini:</p>
-<ul>
-<li>MacBook 2019 tidak pernah tidur, punya toolchain lengkap, Docker, dan emulator headless yang berjalan.</li>
-<li>MacBook M1 ramping — hanya editor, terminal, dan jalur uji device fisik.</li>
-</ul>
-<p><strong>Prasyarat:</strong> kedua Mac menyala, akses admin (sudo), dan koneksi internet. Belum perlu jaringan antar-Mac — itu Part 3.</p>
-<p>Positive : Kerjakan seluruh bagian &#34;Compute Node&#34; <strong>di MacBook 2019</strong>, dan bagian &#34;Driver Node&#34; <strong>di MacBook M1</strong>. Command diberi label perangkatnya.</p>
+      <google-codelab-step label="Inventaris Sebelum Instalasi" duration="5">
+        <p>Ikuti pembagian peran <a href="../agentic-workflow-dual-mac-setup/" target="_blank">Part 1</a>. Command di halaman ini adalah instruksi untuk operator, bukan konfigurasi yang otomatis sudah diterapkan.</p>
+<p>Di <strong>kedua Mac</strong>:</p>
+<pre><code language="language-bash" class="language-bash">sw_vers
+uname -m
+sysctl -n hw.memsize
+pmset -g custom
+df -h /
+</code></pre>
+<p>M1 seharusnya <code>arm64</code>, Intel <code>x86_64</code>. Simpan hasil sebelum perubahan, termasuk konfigurasi power awal. Pilih nama perangkat mudah dikenali (<code>office-hub</code>/<code>personal-worker</code>) di pengaturan Sharing/Tailscale. Jangan memasukkan serial number atau kredensial ke repo publik.</p>
+<p>Siapkan akses admin untuk instalasi dan pastikan remote access sesuai kebijakan perangkat kantor. Instal <a href="https://brew.sh/" target="_blank">Homebrew dari dokumentasi resminya</a> jika belum tersedia; gunakan <code>brew --prefix</code> agar tidak mencampur <code>/opt/homebrew</code> di M1 dengan <code>/usr/local</code> di Intel.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Compute Node — Langkah 1: Power &amp; Remote Access" duration="8">
-        <p><strong>Kenapa duluan:</strong> server yang tidur di tengah build sama saja tidak ada. Kita pastikan 2019 tetap terjaga saat layar ditutup (<em>clamshell</em>) dan bisa dihidupi lewat SSH.</p>
-<p>Di MacBook 2019:</p>
-<ol type="1">
-<li>Buka <strong>System Settings → General → Sharing</strong>.</li>
-<li>Aktifkan <strong>Remote Login (SSH)</strong> → <em>Allow access for</em> pilih user Anda. (Ini yang membuat 2019 bisa dihubungi dari M1 nanti di Part 3.)</li>
-<li>Jalankan konfigurasi power di Terminal:</li>
-</ol>
-<pre><code language="language-bash" class="language-bash"># Cegah sistem sleep saat charger terpasang
+      <google-codelab-step label="M1 — Power untuk Hub 24/7" duration="8">
+        <p>Di <strong>M1 kantor</strong>, sambungkan charger, gunakan permukaan berventilasi, dan biarkan lid terbuka dengan layar dapat mati. Aktifkan pengaturan <strong>Prevent automatic sleeping on power adapter when the display is off</strong> bila tersedia di Battery → Options. Nama opsi dapat berbeda menurut OS.</p>
+<pre><code language="language-bash" class="language-bash"># Simpan nilai awal; jangan menimpa file ini pada pengulangan setup.
+pmset -g custom &gt; &#34;$HOME/pmset-before-hub.txt&#34;
 sudo pmset -c sleep 0
-sudo pmset -c disablesleep 1
-
-# Nonaktifkan power nap dan disk sleep untuk stabilitas server
-sudo pmset -c disksleep 0
-sudo pmset -c displaysleep 15
+sudo pmset -c displaysleep 10
+pmset -g custom
 </code></pre>
-<p>Positive : Utilitas <strong>Amphetamine</strong> (gratis, Mac App Store) bisa dipakai sebagai jaring pengaman — ia menjaga sistem tetap terjaga selama charger terpasang, lengkap dengan trigger berbasis status daya.</p>
-<p>Negative : <code>disablesleep 1</code> membuat laptop <strong>tidak tidur meski layar ditutup</strong>. Pastikan sirkulasi udara cukup (lihat tips thermal di Part 5) dan charger selalu terpasang.</p>
+<p>Opsi <code>-c</code> menargetkan adaptor AC. Jangan mengubah konfigurasi baterai untuk memaksa laptop tetap menyala saat tidak ada daya. Untuk satu pekerjaan sementara, <code>caffeinate -i nama-command</code> dapat menjaga idle sleep selama command berjalan.</p>
+<p><strong>Lid tertutup bukan jaminan tetap online.</strong> Konfigurasi closed-display membutuhkan kondisi hardware yang sesuai. <code>sleep 0</code> atau <code>caffeinate</code> tidak boleh dianggap sebagai solusi universal untuk lid sleep. Hindari <code>disablesleep 1</code> sebagai baseline. Uji layar mati dari perangkat lain sebelum meninggalkan mesin.</p>
+<p>Rollback: baca <code>~/pmset-before-hub.txt</code>, lalu kembalikan nilai AC dengan <code>sudo pmset -c sleep NILAI_LAMA displaysleep NILAI_LAMA</code>. Isi angka dari catatan awal, bukan nilai tebakan. <a href="https://support.apple.com/guide/mac-help/set-sleep-and-wake-settings-mchle41a6ccd/mac" target="_blank">Rujukan pengaturan sleep Apple</a>.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Compute Node — Langkah 2: Toolchain &amp; Homebrew" duration="7">
-        <p><strong>Kenapa:</strong> compute node yang menjalankan build, indexer, dan agent butuh bahasa dan utilitas dasar. Kita pasang versi yang masih didukung per 2026.</p>
-<p>Di MacBook 2019:</p>
-<pre><code language="language-bash" class="language-bash"># 1. Command Line Tools
-xcode-select --install
-
-# 2. Homebrew (lewati jika sudah ada)
-/bin/bash -c &#34;$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)&#34;
-
-# 3. Bahasa &amp; utilitas esensial
-# Node 24 = LTS aktif per 2026 (node@22 sudah masuk fase maintenance).
-# uv dipakai untuk memasang CLI Python modern seperti Graphify (Part 4).
-brew install git node@24 go python@3.13 uv tree-sitter ripgrep jq htop mosh
+      <google-codelab-step label="M1 — Toolchain Minimum dan Remote Login" duration="8">
+        <p>Instal Command Line Tools bila belum ada, tunggu proses GUI selesai:</p>
+<pre><code language="language-bash" class="language-bash">xcode-select --install
 </code></pre>
-<p>Ringkasan kenapa tiap paket ada: <code>ripgrep</code> mempercepat pencarian kode yang dipakai agent; <code>jq</code> untuk mengolah output JSON; <code>htop</code> memantau beban server; <code>mosh</code> menjaga sesi terminal tetap hidup saat jaringan goyah; <code>tree-sitter</code> adalah fondasi parsing Graphify.</p>
+<p>Kemudian:</p>
+<pre><code language="language-bash" class="language-bash">brew install git tmux jq ripgrep code-server restic
+brew install --cask tailscale
+mkdir -p &#34;$HOME/projects&#34; &#34;$HOME/Library/Logs/dual-mac&#34;
+git --version
+tmux -V
+code-server --version
+restic version
+</code></pre>
+<p>Buka Tailscale, login ke tailnet yang disetujui. Gunakan <strong>satu varian Tailscale</strong>; jangan memasang formula daemon dan aplikasi GUI sekaligus tanpa kebutuhan khusus. Bila command <code>tailscale</code> belum berada di PATH, gunakan CLI aplikasi:</p>
+<pre><code language="language-bash" class="language-bash">/Applications/Tailscale.app/Contents/MacOS/Tailscale version
+</code></pre>
+<p>Di System Settings → General → Sharing → <strong>Remote Login</strong>, izinkan hanya user operator yang diperlukan. Panduan memakai OpenSSH bawaan macOS melalui jaringan Tailscale. Tailscale SSH adalah fitur lain dengan batas dukungan varian macOS.</p>
+<p>Instal bahasa sesuai repo yang akan dikerjakan, bukan semua bahasa sekaligus. Hormati <code>.tool-versions</code>, <code>.nvmrc</code>, atau lockfile repo. Jangan upgrade runtime seluruh project hanya karena tutorial menggunakan versi terbaru.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Compute Node — Langkah 3: Container Runtime" duration="5">
-        <p><strong>Kenapa OrbStack, bukan Docker Desktop:</strong> di macOS, OrbStack jauh lebih hemat CPU/baterai dan booting lebih cepat — penting untuk mesin yang menyala seharian.</p>
-<p>Di MacBook 2019:</p>
-<pre><code language="language-bash" class="language-bash">brew install --cask orbstack
-
-# Verifikasi engine berjalan
+      <google-codelab-step label="Intel — Worker Container Sesuai Kebutuhan" duration="10">
+        <p>Di <strong>Intel pribadi</strong>, pasang Git/Tailscale/tmux seperti langkah sebelumnya. Aktifkan Remote Login hanya bila perlu menerima job remote. Untuk container:</p>
+<pre><code language="language-bash" class="language-bash">brew install colima docker docker-compose
+colima start --cpu 4 --memory 8 --disk 60
+docker context show
+docker version
 docker ps
 </code></pre>
-<p><code>docker ps</code> yang menampilkan tabel kosong (tanpa error) berarti runtime siap. Backend stack (DB, Redis, API) akan hidup di sini pada Part 5.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Compute Node — Langkah 4: Emulator Android Headless" duration="10">
-        <p><strong>Kenapa emulator di 2019, bukan M1:</strong> di CPU Intel, system image <code>x86_64</code> berjalan <strong>native</strong> tanpa translasi. Di Apple Silicon Anda harus pakai image <code>arm64</code> atau menanggung penalti Rosetta 20–30% — ditambah RAM M1 hanya 8 GB. Maka: emulator berat di server Intel; M1 cukup menguji di HP fisik (Langkah driver node di bawah).</p>
-<p>Kita target <strong>API 36 (Android 16)</strong> karena sejak 31 Agustus 2026 Google Play mewajibkan app baru &amp; update menargetkan API level 36.</p>
-<p>Di MacBook 2019:</p>
-<pre><code language="language-bash" class="language-bash"># Direktori Android SDK
-mkdir -p ~/Android/sdk/cmdline-tools
-
-# Environment variables
-cat &lt;&lt; &#39;EOF&#39; &gt;&gt; ~/.zshrc
-export ANDROID_HOME=$HOME/Android/sdk
-export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator
-EOF
-source ~/.zshrc
-
-# platform-tools, emulator, dan system image x86_64 (Android 16 / API 36)
-sdkmanager --install &#34;platform-tools&#34; &#34;emulator&#34; &#34;platforms;android-36&#34; &#34;system-images;android-36;google_apis;x86_64&#34;
-
-# Buat AVD bernama &#39;agent_runner&#39;
-avdmanager create avd -n agent_runner -k &#34;system-images;android-36;google_apis;x86_64&#34; --device &#34;pixel_7&#34;
+<p>Colima menyediakan VM/runtime; Docker CLI adalah client. Pastikan konteks yang aktif menunjuk instance Colima yang dimaksud. Gunakan <code>docker-compose version</code> untuk formula Compose standalone. Jika memilih sintaks <code>docker compose</code>, ikuti petunjuk plugin dari <code>brew info docker-compose</code> lalu verifikasi <code>docker compose version</code> sebelum menjalankan project.</p>
+<p>Jalankan stack repo yang sudah ada dan telah direview, kemudian hentikan VM saat tidak diperlukan:</p>
+<pre><code language="language-bash" class="language-bash">colima status
+colima stop
 </code></pre>
-<p>Uji jalankan tanpa jendela (<em>headless</em>):</p>
-<pre><code language="language-bash" class="language-bash">emulator -avd agent_runner -no-window -no-audio -no-boot-anim &amp;
-adb devices   # harus muncul dengan status: device
+<p>Alokasi 4 CPU/8 GiB/60 GiB adalah titik awal, bukan klaim optimal untuk semua repo. Image container Intel menggunakan <code>linux/amd64</code>; M1 biasanya <code>linux/arm64</code>. Hindari asumsi binary hasil build dapat dipindahkan antararsitektur tanpa rebuild. <a href="https://github.com/abiosoft/colima" target="_blank">Rujukan Colima</a>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Intel — Android Opsional" duration="12">
+        <p>Lewati bagian ini bila tugas Anda bukan mobile. Pasang Android Studio yang masih mendukung OS/Intel Anda. Melalui <strong>SDK Manager</strong>, instal Android SDK Command-line Tools (latest), Platform-Tools, Emulator, dan platform yang cocok dengan proyek. Ini menyediakan <code>sdkmanager</code> yang tidak otomatis muncul hanya karena folder SDK dibuat.</p>
+<p>Gunakan bundled JDK Android Studio atau JDK yang disyaratkan project. Di terminal Intel:</p>
+<pre><code language="language-bash" class="language-bash">export ANDROID_HOME=&#34;$HOME/Library/Android/sdk&#34;
+export PATH=&#34;$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator:$PATH&#34;
+java -version
+sdkmanager --list
+sdkmanager --licenses
 </code></pre>
-<p>Negative : Kalau <code>adb devices</code> kosong, emulator belum selesai boot. Tunggu 30–60 detik lalu ulangi. Jangan lanjut sebelum statusnya <code>device</code>.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Driver Node — Langkah 1: Editor &amp; Client Tools" duration="5">
-        <p>Pindah ke <strong>MacBook M1</strong>. Filosofinya: pasang sesedikit mungkin. Semua yang berat ada di server.</p>
-<pre><code language="language-bash" class="language-bash"># Terminal &amp; shell modern
-brew install ghostty mosh tailscale
-
-# Editor (Antigravity, Cursor, atau VS Code — pilih satu)
-brew install --cask visual-studio-code
+<p>Contoh AVD memakai API 36, <strong>bukan klaim kewajiban target Google Play</strong>. Pastikan paket tercantum di <code>--list</code> dan sesuaikan dengan matriks tes aplikasi:</p>
+<pre><code language="language-bash" class="language-bash">sdkmanager &#34;platform-tools&#34; &#34;emulator&#34; &#34;platforms;android-36&#34; &#34;system-images;android-36;google_apis;x86_64&#34;
+avdmanager create avd -n agent_runner -k &#34;system-images;android-36;google_apis;x86_64&#34;
+emulator -accel-check
+emulator -avd agent_runner -no-window -no-audio -no-boot-anim
 </code></pre>
-<p><code>tailscale</code> kita pasang di sini karena dibutuhkan di Part 3 untuk menyambung ke server.</p>
+<p>Di terminal kedua, verifikasi <code>adb devices</code> dan <code>adb -s emulator-5554 shell getprop sys.boot_completed</code> menghasilkan <code>1</code>; ganti serial dengan hasil <code>adb devices</code>. Hentikan dengan <code>adb -s emulator-5554 emu kill</code> saat selesai.</p>
+<p>Intel menggunakan image <code>x86_64</code>; Apple Silicon menggunakan <code>arm64-v8a</code> bila tersedia. Keduanya dapat memakai akselerasi native dengan image yang tepat. Pilihan Intel di sini karena kapasitas RAM, bukan karena M1 membutuhkan Rosetta untuk semua emulator. <a href="https://developer.android.com/tools/sdkmanager" target="_blank">SDK Manager</a> · <a href="https://developer.android.com/studio/run/emulator-acceleration" target="_blank">Akselerasi emulator</a>.</p>
 
 
       </google-codelab-step>
     
-      <google-codelab-step label="Driver Node — Langkah 2: Uji Device Fisik (USB)" duration="5">
-        <p><strong>Kenapa:</strong> menyalakan emulator di M1 membuang 3–4 GB RAM sia-sia. Sebagai gantinya, uji di HP asli — lebih cepat, lebih akurat (haptic, kamera, sensor nyata), dan nol beban RAM.</p>
-<p>Di MacBook M1:</p>
-<ol type="1">
-<li>Hubungkan HP Android/iPhone via kabel USB.</li>
-<li>Aktifkan <strong>Developer Options + USB Debugging</strong> (Android) atau <strong>Developer Mode</strong> (iOS).</li>
-<li>Verifikasi:</li>
-</ol>
-<pre><code language="language-bash" class="language-bash">adb devices   # HP fisik muncul sebagai &#39;device&#39;
-</code></pre>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Driver Node — Langkah 3: Universal Control (opsional)" duration="3">
-        <p>Kalau kedua laptop berdampingan di meja, Universal Control membuat satu mouse/keyboard bisa menyeberang ke layar keduanya, lengkap dengan berbagi clipboard.</p>
-<p>Di kedua Mac: <strong>System Settings → Displays → Advanced</strong> → centang <strong>&#34;Link to Mac or iPad&#34;</strong> dan <strong>&#34;Allow pointer and keyboard to move between any nearby Mac or iPad&#34;</strong>. Pastikan Bluetooth + Wi-Fi aktif dan Apple ID sama.</p>
-<p>Positive : Ini murni kenyamanan fisik. Alur kerja utama (edit di M1, jalan di 2019) tetap lewat remote SSH di Part 3 — jadi Universal Control bukan syarat.</p>
-
-
-      </google-codelab-step>
-    
-      <google-codelab-step label="Verifikasi" duration="2">
-        <p>Centang sebelum lanjut:</p>
-<p><strong>MacBook 2019 (compute node):</strong></p>
+      <google-codelab-step label="Restart, Login, dan Verifikasi" duration="7">
+        <p>Homebrew services tanpa <code>sudo</code> memakai LaunchAgent user: otomatis dimulai saat login user, <strong>bukan bukti layanan hidup sebelum login setelah reboot</strong>. FileVault, autentikasi awal, jaringan, dan aplikasi Tailscale dapat membuat mesin belum dapat diakses. Siapkan operator lokal untuk unlock/login setelah restart; pertahankan FileVault. Uji recovery nyata sebelum mengandalkan akses jarak jauh. <a href="https://docs.brew.sh/Manpage#services-subcommand" target="_blank">Rujukan brew services</a>.</p>
+<p>Checklist provisioning:</p>
 <ul>
-<li>[ ] Remote Login (SSH) aktif.</li>
-<li>[ ] <code>docker ps</code> jalan tanpa error.</li>
-<li>[ ] <code>adb devices</code> menampilkan <code>agent_runner</code> sebagai <code>device</code>.</li>
+<li>[ ] M1 tetap dapat diakses saat layar mati dan charger terpasang.</li>
+<li>[ ] SSH dibatasi ke user yang diperlukan.</li>
+<li>[ ] Arsitektur, versi OS, runtime, dan power awal dicatat.</li>
+<li>[ ] Intel bisa menjalankan <code>docker ps</code> bila container dibutuhkan.</li>
+<li>[ ] Android opsional benar-benar selesai boot, bukan hanya terdaftar offline.</li>
+<li>[ ] Operator memahami recovery setelah reboot dan saat listrik terputus.</li>
 </ul>
-<p><strong>MacBook M1 (driver node):</strong></p>
-<ul>
-<li>[ ] Editor + <code>tailscale</code> terpasang.</li>
-<li>[ ] <code>adb devices</code> menampilkan HP fisik saat dicolok.</li>
-</ul>
-<p>Positive : <strong>Lanjut ke Part 3 — Jaringan &amp; Remote Development</strong>, tempat kedua Mac disambungkan dan Anda mulai mengedit di M1 sambil menjalankan semuanya di 2019.</p>
+<p><a href="../agentic-dual-mac-part-3-jaringan-remote/" target="_blank">Lanjut Part 3: akses dari perangkat lain</a>.</p>
 
 
       </google-codelab-step>

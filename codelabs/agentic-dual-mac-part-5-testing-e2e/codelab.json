@@ -3,12 +3,12 @@
   "format": "html",
   "prefix": "https://storage.googleapis.com",
   "mainga": "UA-49880327-14",
-  "updated": "2026-08-20T15:41:39+07:00",
+  "updated": "2026-10-08T16:34:53+07:00",
   "id": "agentic-dual-mac-part-5-testing-e2e",
-  "duration": 50,
-  "title": "Dual-Mac Agentic Workflow — Part 5: Autonomous Testing \u0026 Alur End-to-End",
+  "duration": 45,
+  "title": "Dual-Mac Agentic Workflow — Part 5: Pengujian \u0026 Operasi 24/7",
   "authors": "LearnWithFath Team",
-  "summary": "Part 5 dari seri Dual-Mac Agentic Workflow — autonomous mobile testing (Maestro + mobile-mcp self-healing loop), alur end-to-end membuat fitur Login OTP dari backend sampai mobile, plus checklist harian dan tips maintenance/thermal.",
+  "summary": "Uji satu task dari HP sampai worker, backup dan restore dengan restic, recovery setelah restart, serta checklist pengamatan 24 jam.",
   "source": "agentic-dual-mac-part-5-testing-e2e.md",
   "theme": "",
   "status": [
@@ -17,19 +17,20 @@
   "category": [
     "ai",
     "developertools",
-    "mobile",
-    "testing",
-    "macos"
+    "macos",
+    "remotedevelopment"
   ],
   "tags": [
-    "agentic-workflow",
+    "always-on",
+    "code-server",
+    "colima",
     "dual-mac",
-    "e2e-testing",
-    "maestro",
-    "maintenance",
-    "mcp",
-    "mobile-mcp",
-    "self-healing"
+    "intel",
+    "m1",
+    "opencode",
+    "restic",
+    "tailscale",
+    "tmux"
   ],
   "feedback": "https://github.com/learnwithfath/learnwithfath.github.io/issues",
   "url": "agentic-dual-mac-part-5-testing-e2e"

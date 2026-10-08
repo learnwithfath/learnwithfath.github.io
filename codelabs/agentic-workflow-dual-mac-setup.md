@@ -1,136 +1,101 @@
-summary: Part 1 dari seri Dual-Mac Agentic Workflow — konsep dan arsitektur. Kenapa memisahkan driver node (MacBook M1 8GB) dan compute node (MacBook 2019 32GB), peran tiap komponen (Tailscale, SSH, Graphify, harness, Maestro), dan kapan pola ini layak dipakai.
+summary: M1 kantor 8 GB sebagai hub ringan 24/7; Intel pribadi 32 GB sebagai worker sesuai kebutuhan. Pilihan open source, bukti aktivitas GitHub, dan pembagian beban realistis.
 id: agentic-workflow-dual-mac-setup
-categories: AI, Developer Tools, Mobile, Architecture, macOS
-tags: agentic-workflow, dual-mac, apple-silicon, intel-mac, arsitektur, tailscale, remote-development, mental-model
+categories: AI, Developer Tools, macOS, Remote Development
+tags: dual-mac, always-on, m1, intel, tailscale, tmux, code-server, colima, opencode, restic
 status: Published
 authors: LearnWithFath Team
 Feedback Link: https://github.com/learnwithfath/learnwithfath.github.io/issues
 
 # Dual-Mac Agentic Workflow — Part 1: Konsep & Arsitektur
 
-## Tentang Seri Ini
+## Target dan Perangkat
 Duration: 5
 
-Seri ini memecah setup **agentic workflow dual-mac** menjadi lima part yang bisa dikerjakan bertahap. Setiap part berdiri sendiri, punya outcome dan checklist verifikasi, dan dijelaskan dari **kenapa** dulu — baru **bagaimana**.
+**Snapshot riset: 8 Oktober 2026.** Seri ini memaksimalkan dua laptop untuk kerja AI dan akses dari perangkat lain. Contoh perangkat: **MacBook Pro M1 2020 8 GB milik kantor** dan **MacBook Pro Intel i9 2019 32 GB milik pribadi**. Periksa OS dan arsitektur aktual sebelum mengikuti command; konfigurasi perangkat berbeda dapat memerlukan penyesuaian.
 
-| Part | Fokus | Outcome |
+| Perangkat | Nama contoh | Peran utama |
 |---|---|---|
-| **Part 1 (ini)** | Konsep & arsitektur | Paham peran tiap komponen dan alasannya sebelum menyentuh terminal |
-| Part 2 | Provisioning dua Mac | Server node & driver node siap pakai |
-| Part 3 | Jaringan & remote development | Kedua Mac tersambung aman; edit di M1, jalan di 2019 |
-| Part 4 | Shared memory & agent harness | Antar-agen berbagi konteks; harness terpasang |
-| Part 5 | Autonomous testing & alur end-to-end | Loop uji mandiri + praktik fitur nyata |
+| M1 8 GB | `office-hub` | Hub ringan yang tersedia 24/7: SSH, tmux, browser editor, satu sesi agent dengan model API |
+| Intel i9 32 GB | `personal-worker` | Workstation harian dan worker build/container/Android sesuai kebutuhan |
+| HP, tablet, laptop lain | Client | Mengakses terminal/browser lewat tailnet yang diizinkan |
 
-Positive
-: **Part 1 tidak berisi command.** Tujuannya membangun *mental model*. Kalau Anda sudah paham alasannya, command di part berikutnya jadi masuk akal — bukan sekadar copy-paste.
+**Koreksi dari edisi sebelumnya:** M1 bukan hanya terminal pasif dan Intel tidak wajib menyala sepanjang hari. RAM Intel berguna untuk beban besar, sedangkan hub M1 harus tetap responsif untuk pekerjaan kantor. Ketersediaan 24/7 berarti layanan siap menerima pekerjaan; agent tidak perlu terus memanggil model ketika tidak ada tugas.
 
-## Masalah yang Kita Selesaikan
+Materi ini mengonfigurasi pola penggunaan. Ia tidak membuktikan kedua laptop Anda sudah terpasang layanan atau sudah lulus uji 24 jam.
+
+## Pembagian Beban dan Batas Data
 Duration: 8
 
-Sebagai Full Stack Mobile Developer, satu laptop harus menanggung tiga beban sekaligus:
-
-* **Mobile Stack** — Android Studio / Xcode, emulator/simulator, build Gradle/CocoaPods, Flutter/React Native/Kotlin/Swift.
-* **Backend Stack** — Docker, database (PostgreSQL/MySQL), Redis, API server (Go/NestJS/Node).
-* **AI Agentic Layer** — coding agent yang haus konteks (Claude Code, Antigravity, Pi, Cursor), MCP server, indexer kode, dan test runner otonom.
-
-Jalankan semuanya di satu **MacBook M1 8 GB** dan Anda menabrak dinding: *memory thrashing* — swap SSD membengkak, UI macet, build gagal di tengah jalan. Menaikkan RAM tidak mungkin (Apple Silicon disolder).
-
-Di sisi lain, banyak dari kita punya laptop lama yang menganggur — misalnya **MacBook Pro 2019 16" dengan RAM 32 GB**. RAM-nya besar, tapi boros baterai, panas, dan berisik kalau dipangku seharian.
-
-Negative
-: Menjalankan Docker + emulator + agent AI secara paralel di M1 8 GB adalah penyebab paling umum laptop "ngadat" saat kerja agentic. Ini bukan masalah kalau ditata dengan benar.
-
-**Ide intinya:** pisahkan *tempat Anda mengetik* dari *tempat komputasi berat berjalan*. Laptop lama yang menganggur itu justru aset — jadikan ia server.
-
-## Arsitektur: Driver Node vs Compute Node
-Duration: 10
-
-Kita membelah peran menjadi dua node:
-
-```
-┌──────────────────────────────────────┐       Tailscale Mesh VPN       ┌─────────────────────────────────────────┐
-│     MacBook Pro M1 (RAM 8 GB)        │ ────────────────────────────── │   MacBook Pro 2019 16" (RAM 32 GB)      │
-│      [CLIENT / DRIVER NODE]          │        (Zero-Config SSH)       │     [COMPUTE & AGENT SERVER NODE]       │
-│                                      │                                │                                         │
-│ • Antigravity CLI / Cursor / VS Code │                                │ • Docker Stack (DB, Redis, Backend API) │
-│ • Interactive Prompting & Planning   │                                │ • Claude Code headless + Subagent Swarm │
-│ • Physical Device Testing (USB)      │                                │ • Heavy Emulators & Headless Simulators │
-│ • Apple Universal Control & Display  │                                │ • Graphify (AST) & Obsidian LLM Wiki    │
-│ • Baterai awet, dingin, & super cepat│                                │ • Maestro MCP + mobile-mcp (self-heal)  │
-└──────────────────────────────────────┘                                └─────────────────────────────────────────┘
+```text
+HP / tablet / laptop tepercaya
+       | Tailscale + HTTPS atau SSH
+       v
+M1 kantor: office-hub (8 GB, tersedia selama jam operasional 24/7)
+  SSH + tmux + code-server + satu agent API
+       |
+       | Git/SSH untuk proyek yang diizinkan
+       v
+Intel pribadi: personal-worker (32 GB, dinyalakan saat dibutuhkan)
+  Colima + test/build + satu emulator Android
 ```
 
-**Driver Node (M1 8 GB)** — tempat Anda berada. Fungsinya *tipis*: editor, terminal, prompting, dan device fisik lewat USB. Karena beban berat tidak di sini, laptop tetap dingin dan baterai tahan seharian.
+Dari Intel, Anda bisa membuka browser editor M1 sambil menjalankan proyek pribadi secara lokal. Untuk proyek yang boleh memakai kedua perangkat, gunakan Git sebagai perpindahan versi: commit di satu mesin, fetch/checkout commit yang sama di mesin lain. Jangan menyinkronkan direktori kerja yang sedang diubah agent pada dua mesin.
 
-**Compute Node (2019 32 GB)** — "otot"-nya. Colok charger, taruh di meja, tutup layar (*clamshell*). Semua yang rakus memori hidup di sini: Docker, emulator, indexer kode, dan agent yang berjalan lama.
+**Batas kepemilikan:** kode, kredensial, dan data kantor hanya boleh berada pada perangkat serta provider AI yang disetujui organisasi. Bila perangkat pribadi tidak boleh menerima repo kantor, jalankan worker pekerjaan kantor di mesin/CI milik kantor. Intel tetap berguna untuk proyek pribadi, open source, dan latihan menggunakan data sintetis. Jangan membuat akses perangkat pribadi sebagai syarat agar hub kantor berfungsi.
 
-Positive
-: Analoginya seperti *thin client* + *workstation*. Anda mengetik di perangkat ringan, tetapi CPU/RAM 32 GB yang bekerja. Yang berpindah lewat jaringan hanyalah teks dan perintah — bukan beban komputasi.
+Mulai dengan **satu job agent per mesin**. Di Intel, contoh alokasi awal Colima 4 CPU/8 GiB dan satu emulator; ini anggaran awal yang harus diukur. Pada M1, jalankan CLI agent dengan model API dan hindari menumpuk VM, emulator, serta model lokal bersamaan. Model API memakai komputasi provider; tool, file, dan test tetap memakai mesin host.
 
-## Peran Tiap Komponen (dan Kenapa Ada)
+**Intel tidak otomatis lebih cepat dari M1.** Pilih lokasi build berdasarkan kompatibilitas, RAM, waktu build, suhu, dan biaya listrik yang benar-benar diukur. Untuk iOS, cocokkan versi macOS/Xcode/SDK pada [dukungan Xcode Apple](https://developer.apple.com/support/xcode/); jangan mengasumsikan Intel 2019 menjalankan SDK terbaru.
+
+## Stack Open Source dan Bukti Aktivitas
 Duration: 10
 
-Ini bagian terpenting. Sebelum menginstal apa pun, pahami **untuk apa** setiap potongan ada. Tiap komponen menjawab satu masalah spesifik:
+Prioritas pemilihan: cocok dengan tugas → masih dipelihara → lisensi jelas → komunitas besar → biaya operasional. Snapshot GitHub API menyimpan stars, lisensi, status archived, commit terakhir, dan rilis terbaru. Angka adalah hasil pengambilan pada tanggal di atas, bukan penghitung live.
 
-### Tailscale — "kenapa perlu VPN?"
-Kedua Mac harus bisa saling menemukan **di mana pun Anda berada** — Wi-Fi rumah, kantor, atau tethering di kafe. Tanpa ini, alamat IP berubah tiap pindah jaringan dan koneksi putus. Tailscale membuat *mesh VPN* terenkripsi (WireGuard): tiap Mac dapat IP tetap (`100.x.y.z`) yang tidak berubah walau jaringan fisiknya berganti. Jadi "server" Anda selalu bisa dihubungi dengan alamat yang sama.
+| Proyek | Stars | Lisensi |
+|---|---:|---|
+| [tailscale/tailscale](https://github.com/tailscale/tailscale) | 37,261 | BSD-3-Clause |
+| [tmux/tmux](https://github.com/tmux/tmux) | 49,835 | ISC |
+| [coder/code-server](https://github.com/coder/code-server) | 79,560 | MIT |
+| [abiosoft/colima](https://github.com/abiosoft/colima) | 31,127 | MIT |
+| [anomalyco/opencode](https://github.com/anomalyco/opencode) | 212,294 | MIT |
+| [restic/restic](https://github.com/restic/restic) | 36,467 | BSD-2-Clause |
+| [mobile-dev-inc/Maestro](https://github.com/mobile-dev-inc/Maestro) | 15,985 | Apache-2.0 |
+| [mobile-next/mobile-mcp](https://github.com/mobile-next/mobile-mcp) | 8,763 | Apache-2.0 |
+| [louislam/uptime-kuma](https://github.com/louislam/uptime-kuma) | 92,206 | MIT |
 
-### SSH & Remote Development — "guna remote SSH ini apa?"
-Ini pertanyaan kunci. **SSH adalah jembatan yang membuat Anda bisa duduk di M1 tapi seolah bekerja langsung di dalam MacBook 2019.**
+Rilis dan commit terakhir (UTC), dicatat terpisah agar mudah dibaca di HP:
 
-Tanpa remote development, Anda harus:
-- pindah fisik ke laptop 2019 setiap mau menjalankan build/test, atau
-- menyalin file bolak-balik antar laptop (rawan file basi/konflik).
+- **tailscale/tailscale — Jaringan privat:** [v1.104.1](https://github.com/tailscale/tailscale/releases/tag/v1.104.1) terbit 2026-10-07; commit terakhir 2026-10-08.
+- **tmux/tmux — Sesi terminal:** [3.8](https://github.com/tmux/tmux/releases/tag/3.8) terbit 2026-09-09; commit terakhir 2026-10-08.
+- **coder/code-server — Editor browser:** [v4.141.0](https://github.com/coder/code-server/releases/tag/v4.141.0) terbit 2026-10-08; commit terakhir 2026-10-08.
+- **abiosoft/colima — Container worker:** [v0.10.3](https://github.com/abiosoft/colima/releases/tag/v0.10.3) terbit 2026-06-04; commit terakhir 2026-10-02.
+- **anomalyco/opencode — Coding agent:** [v1.18.35](https://github.com/anomalyco/opencode/releases/tag/v1.18.35) terbit 2026-10-06; commit terakhir 2026-10-08.
+- **restic/restic — Backup terenkripsi:** [v0.19.1](https://github.com/restic/restic/releases/tag/v0.19.1) terbit 2026-07-05; commit terakhir 2026-09-25.
+- **mobile-dev-inc/Maestro — Mobile E2E opsional:** [cli-2.11.0](https://github.com/mobile-dev-inc/Maestro/releases/tag/cli-2.11.0) terbit 2026-09-29; commit terakhir 2026-10-08.
+- **mobile-next/mobile-mcp — Inspeksi mobile opsional:** [1.0.8](https://github.com/mobile-next/mobile-mcp/releases/tag/1.0.8) terbit 2026-10-02; commit terakhir 2026-10-07.
+- **louislam/uptime-kuma — Monitor opsional di host lain:** [2.5.5](https://github.com/louislam/uptime-kuma/releases/tag/2.5.5) terbit 2026-09-16; commit terakhir 2026-10-08.
 
-Dengan remote SSH (lewat ekstensi *Remote - SSH* di VS Code/Antigravity):
-- **Kode tinggal di 2019.** Tidak ada duplikasi file, tidak ada sinkronisasi manual.
-- **Editor jalan di M1** (ringan, responsif), tapi kompilasi, indexing, Docker, dan eksekusi agent semuanya terjadi di 32 GB milik 2019.
-- **Terminal di editor Anda sebenarnya terminal di 2019.** Ketik `docker compose up` — yang jalan adalah Docker di server, bukan di M1.
+[Buka bukti JSON yang dapat diperiksa](../data/dual-mac-projects.json). Seluruh proyek dalam snapshot tidak berstatus archived saat diperiksa. Rilis/commit terbaru adalah bukti pemeliharaan publik; **stars bukan jumlah pengguna aktif**. Kecocokan produksi harus dibuktikan dengan uji pada perangkat Anda.
 
-Jadi jawabannya: remote SSH menghilangkan pemisahan yang tadi kita buat dari sisi pengalaman. Anda mendapat kenyamanan satu layar (M1 yang dingin) dengan tenaga mesin lain (2019 yang bertenaga). Ini seluruh inti dari pola dual-mac. Detail konfigurasinya ada di **Part 3**.
+**Stack minimum:** Tailscale + OpenSSH bawaan macOS + tmux. Tambahkan code-server bila perlu browser, OpenCode untuk agent, Colima hanya pada worker yang perlu container, dan restic untuk backup. Maestro bersifat opsional untuk pekerjaan mobile. Uptime Kuma dan mobile-mcp adalah opsi tambahan, bukan daemon wajib di M1 8 GB.
 
-### Graphify + Obsidian — "kenapa perlu shared memory?"
-Saat beberapa agent bekerja pada repo yang sama, mereka gampang **kehilangan konteks** (*context drift*): agent A mengubah kontrak API, agent B tidak tahu, hasilnya tabrakan. Dua layar memori mengatasinya:
-- **Graphify** — peta struktural kode berbasis AST (siapa memanggil siapa), deterministik, tanpa membuang token.
-- **Obsidian Vault** — memori keputusan: ADR, kontrak API, catatan bug. Dibaca manusia *dan* agent.
+Tailscale memiliki client open source, tetapi layanan koordinasi hosted dan paket bisnisnya merupakan produk terpisah. [Headscale](https://github.com/juanfont/headscale) dapat dievaluasi jika perlu koordinasi yang dikelola sendiri; ia menambah beban operasi. macOS, provider model API, dan beberapa ekstensi editor juga tidak menjadi open source hanya karena CLI yang dipakai open source.
 
-Detailnya di **Part 4**.
+OrbStack/Obsidian/agent komersial dapat tetap dipakai jika memang diperlukan. Seri ini menggunakan Colima dan Markdown biasa sebagai baseline agar alurnya tidak bergantung pada produk tersebut. Graphify bukan prasyarat; tambahkan indexer hanya setelah kebutuhan pencarian repo terukur.
 
-### Agent Harness (Pi / Antigravity / Claude Code) — "kenapa tidak langsung pakai chat?"
-Harness adalah runtime yang membungkus LLM: mengelola loop eksekusi tool, pemangkasan konteks, dan percabangan sesi. Inilah yang mengubah "chat yang memberi saran" menjadi "agent yang benar-benar mengedit, menjalankan test, dan memperbaiki dirinya". Detailnya di **Part 4**.
-
-### Maestro + mobile-mcp — "kenapa perlu testing khusus?"
-Kelemahan terbesar AI pada aplikasi mobile: **ia tidak bisa melihat hasil render UI**. Maestro (uji UI deklaratif YAML) + `mobile-mcp` (memberi agent akses ke accessibility tree) menutup celah ini, memungkinkan *self-healing loop*: agent mengubah UI → jalankan test → baca kegagalan → perbaiki → ulang. Detailnya di **Part 5**.
-
-## Kapan Pola Ini Layak (dan Tidak)
+## Rute Belajar dan Kriteria Sukses
 Duration: 5
 
-Jujur soal trade-off supaya Anda tidak menghabiskan waktu untuk setup yang tidak Anda butuhkan.
+1. [Part 2: Provisioning](../agentic-dual-mac-part-2-provisioning/) — power, toolchain minimum, worker opsional, batas restart.
+2. [Part 3: Remote](../agentic-dual-mac-part-3-jaringan-remote/) — Tailscale, SSH, tmux, code-server dari HP/tablet.
+3. [Part 4: Memory & Harness](../agentic-dual-mac-part-4-memory-harness/) — OpenCode, worktree, catatan task, budget dan handoff.
+4. [Part 5: Operasi & Pengujian](../agentic-dual-mac-part-5-testing-e2e/) — uji end-to-end, recovery, backup/restore, dan soak test 24 jam.
 
-**Layak dipakai bila:**
-- Anda punya laptop kedua yang menganggur dengan RAM besar.
-- Beban kerja Anda memang berat: Docker + emulator + agent paralel.
-- Anda ingin baterai laptop utama tahan lama dan tetap dingin.
+Alokasikan 3–4 jam untuk setup dasar, lalu 24 jam pengamatan terpisah. Stack mobile membutuhkan unduhan dan setup tambahan.
 
-**Tidak perlu (atau berlebihan) bila:**
-- Laptop utama Anda sudah 32 GB+ dan nyaman menjalankan semuanya sendiri.
-- Anda hanya sesekali memakai agent untuk perubahan kecil.
-- Anda tidak punya perangkat kedua — dalam hal ini, sewa cloud VM Linux bisa jadi alternatif compute node (konsepnya sama; hanya SSH target-nya berbeda).
+Selesai bila akses dari jaringan seluler bekerja, task bertahan saat client putus, restart memiliki prosedur recovery yang diuji, backup berhasil direstore, serta latensi/RAM/biaya dicatat. CPU 100% sepanjang hari bukan target keberhasilan.
 
-Negative
-: Pola ini menambah satu lapis kompleksitas (jaringan + remote). Jangan pasang kalau masalah RAM Anda belum nyata. Optimasi yang tidak dibutuhkan hanya menambah titik kegagalan.
+**Jika Intel sedang mati:** hub M1 tetap bisa menerima sesi ringan; job berat ditandai menunggu worker, tidak dianggap sudah berjalan. Jika M1 dibawa bepergian atau tidur, layanan hub ikut tidak tersedia. Untuk SLA tanpa operator, gunakan server/CI khusus yang dikelola organisasi.
 
-## Verifikasi Pemahaman
-Duration: 2
-
-Sebelum lanjut ke Part 2, pastikan Anda bisa menjawab ini tanpa melihat catatan:
-
-1. Apa beda peran **driver node** dan **compute node**, dan kenapa M1 8 GB dijadikan driver?
-2. Apa fungsi **Tailscale**, dan kenapa IP biasa tidak cukup?
-3. **Guna remote SSH** dalam alur ini apa — apa yang berpindah lewat jaringan dan apa yang tetap di tempat?
-4. Kenapa emulator berat ditaruh di 2019 (Intel), bukan di M1?
-
-Kalau keempatnya sudah jelas, Anda siap membangunnya.
-
-Positive
-: **Lanjut ke Part 2 — Provisioning Dua Mac**, tempat kita menyiapkan compute node (2019) dan driver node (M1) dari nol.
+[Kembali ke peta seri](../agentic-dual-mac-workflow.html).
