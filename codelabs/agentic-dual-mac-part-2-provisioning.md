@@ -1,4 +1,4 @@
-summary: Siapkan M1 sebagai hub ringan yang selalu tersedia, Intel sebagai worker Colima opsional, serta power dan recovery yang dapat diverifikasi.
+summary: Siapkan MacBook Pro 2019 Intel sebagai server 24/7, M1 sebagai client ringan, serta power dan recovery yang dapat diverifikasi.
 id: agentic-dual-mac-part-2-provisioning
 categories: AI, Developer Tools, macOS, Remote Development
 tags: dual-mac, always-on, m1, intel, tailscale, tmux, code-server, colima, opencode, restic
@@ -23,18 +23,20 @@ pmset -g custom
 df -h /
 ```
 
-M1 seharusnya `arm64`, Intel `x86_64`. Simpan hasil sebelum perubahan, termasuk konfigurasi power awal. Pilih nama perangkat mudah dikenali (`office-hub`/`personal-worker`) di pengaturan Sharing/Tailscale. Jangan memasukkan serial number atau kredensial ke repo publik.
+M1 seharusnya `arm64`, Intel `x86_64`. Simpan hasil sebelum perubahan, termasuk konfigurasi power awal. Pilih nama perangkat mudah dikenali (`mac-server` untuk Intel, `mac-client` untuk M1) di pengaturan Sharing/Tailscale. Jangan memasukkan serial number atau kredensial ke repo publik.
 
 Siapkan akses admin untuk instalasi dan pastikan remote access sesuai kebijakan perangkat kantor. Instal [Homebrew dari dokumentasi resminya](https://brew.sh/) jika belum tersedia; gunakan `brew --prefix` agar tidak mencampur `/opt/homebrew` di M1 dengan `/usr/local` di Intel.
 
-## M1 — Power untuk Hub 24/7
+Di **M1 sebagai client**, pasang Tailscale dan gunakan SSH bawaan macOS/browser. Bila memilih editor desktop, pasang editor serta ekstensi Remote-SSH yang sesuai. Client tidak memerlukan Colima, code-server, atau agent server untuk alur ini. Biarkan pengaturan sleep/baterai M1 mengikuti kebutuhan harian.
+
+## Intel 2019 — Power untuk Server 24/7
 Duration: 8
 
-Di **M1 kantor**, sambungkan charger, gunakan permukaan berventilasi, dan biarkan lid terbuka dengan layar dapat mati. Aktifkan pengaturan **Prevent automatic sleeping on power adapter when the display is off** bila tersedia di Battery → Options. Nama opsi dapat berbeda menurut OS.
+Di **MacBook Pro 2019 Intel**, sambungkan charger, gunakan permukaan berventilasi, dan biarkan lid terbuka dengan layar dapat mati. Aktifkan pengaturan **Prevent automatic sleeping on power adapter when the display is off** bila tersedia di Battery → Options. Nama opsi dapat berbeda menurut OS.
 
 ```bash
 # Simpan nilai awal; jangan menimpa file ini pada pengulangan setup.
-pmset -g custom > "$HOME/pmset-before-hub.txt"
+pmset -g custom > "$HOME/pmset-before-server.txt"
 sudo pmset -c sleep 0
 sudo pmset -c displaysleep 10
 pmset -g custom
@@ -44,9 +46,9 @@ Opsi `-c` menargetkan adaptor AC. Jangan mengubah konfigurasi baterai untuk mema
 
 **Lid tertutup bukan jaminan tetap online.** Konfigurasi closed-display membutuhkan kondisi hardware yang sesuai. `sleep 0` atau `caffeinate` tidak boleh dianggap sebagai solusi universal untuk lid sleep. Hindari `disablesleep 1` sebagai baseline. Uji layar mati dari perangkat lain sebelum meninggalkan mesin.
 
-Rollback: baca `~/pmset-before-hub.txt`, lalu kembalikan nilai AC dengan `sudo pmset -c sleep NILAI_LAMA displaysleep NILAI_LAMA`. Isi angka dari catatan awal, bukan nilai tebakan. [Rujukan pengaturan sleep Apple](https://support.apple.com/guide/mac-help/set-sleep-and-wake-settings-mchle41a6ccd/mac).
+Rollback: baca `~/pmset-before-server.txt`, lalu kembalikan nilai AC dengan `sudo pmset -c sleep NILAI_LAMA displaysleep NILAI_LAMA`. Isi angka dari catatan awal, bukan nilai tebakan. [Rujukan pengaturan sleep Apple](https://support.apple.com/guide/mac-help/set-sleep-and-wake-settings-mchle41a6ccd/mac).
 
-## M1 — Toolchain Minimum dan Remote Login
+## Intel 2019 — Toolchain dan Remote Login
 Duration: 8
 
 Instal Command Line Tools bila belum ada, tunggu proses GUI selesai:
@@ -77,10 +79,10 @@ Di System Settings → General → Sharing → **Remote Login**, izinkan hanya u
 
 Instal bahasa sesuai repo yang akan dikerjakan, bukan semua bahasa sekaligus. Hormati `.tool-versions`, `.nvmrc`, atau lockfile repo. Jangan upgrade runtime seluruh project hanya karena tutorial menggunakan versi terbaru.
 
-## Intel — Worker Container Sesuai Kebutuhan
+## Intel — Container Sesuai Kebutuhan
 Duration: 10
 
-Di **Intel pribadi**, pasang Git/Tailscale/tmux seperti langkah sebelumnya. Aktifkan Remote Login hanya bila perlu menerima job remote. Untuk container:
+Di **server Intel 2019**, Git/Tailscale/tmux dan Remote Login sudah disiapkan. Tambahkan container runtime bila project memerlukannya:
 
 ```bash
 brew install colima docker docker-compose
@@ -92,7 +94,7 @@ docker ps
 
 Colima menyediakan VM/runtime; Docker CLI adalah client. Pastikan konteks yang aktif menunjuk instance Colima yang dimaksud. Gunakan `docker-compose version` untuk formula Compose standalone. Jika memilih sintaks `docker compose`, ikuti petunjuk plugin dari `brew info docker-compose` lalu verifikasi `docker compose version` sebelum menjalankan project.
 
-Jalankan stack repo yang sudah ada dan telah direview, kemudian hentikan VM saat tidak diperlukan:
+Jalankan stack repo yang sudah ada dan telah direview, kemudian hentikan VM saat tidak diperlukan. Server Intel dan layanan SSH/code-server tetap menyala:
 
 ```bash
 colima status
@@ -136,7 +138,7 @@ Homebrew services tanpa `sudo` memakai LaunchAgent user: otomatis dimulai saat l
 
 Checklist provisioning:
 
-- [ ] M1 tetap dapat diakses saat layar mati dan charger terpasang.
+- [ ] Intel 2019 tetap dapat diakses saat layar mati dan charger terpasang.
 - [ ] SSH dibatasi ke user yang diperlukan.
 - [ ] Arsitektur, versi OS, runtime, dan power awal dicatat.
 - [ ] Intel bisa menjalankan `docker ps` bila container dibutuhkan.

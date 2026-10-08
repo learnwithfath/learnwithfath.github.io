@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="M1 kantor 8 GB sebagai hub ringan 24/7; Intel pribadi 32 GB sebagai worker sesuai kebutuhan. Akses HP/tablet, agent open source, backup, dan recovery.">
+    <meta name="description" content="MacBook Pro 2019 Intel 32 GB sebagai server 24/7; M1 8 GB sebagai perangkat harian/client. Akses HP/tablet, agent open source, backup, dan recovery.">
     <title>Dual-Mac Agentic Workflow — Learn with Fath</title>
     <link rel="stylesheet" href="agentic-engineering-roadmap.css">
 </head>
@@ -16,8 +16,8 @@
 
         <header class="hero">
             <div class="eyebrow">Seri praktik · snapshot 8 Oktober 2026</div>
-            <h1>M1 siap 24/7. Intel bekerja saat dibutuhkan.</h1>
-            <p class="hero-copy">M1 kantor 8 GB sebagai hub ringan 24/7; Intel pribadi 32 GB sebagai worker sesuai kebutuhan. Akses HP/tablet, agent open source, backup, dan recovery. Lima part dari setup hingga uji operasional, dengan pilihan tool berdasarkan lisensi, aktivitas, dan popularitas GitHub.</p>
+            <h1>MacBook Pro 2019 berjalan 24/7. M1 sebagai client.</h1>
+            <p class="hero-copy">MacBook Pro 2019 Intel 32 GB sebagai server 24/7; M1 8 GB sebagai perangkat harian/client. Akses HP/tablet, agent open source, backup, dan recovery. Lima part dari setup hingga uji operasional, dengan pilihan tool berdasarkan lisensi, aktivitas, dan popularitas GitHub.</p>
             <div class="hero-stats" aria-label="Ringkasan seri">
                 <div class="hero-stat"><strong>5</strong><span>Part</span></div>
                 <div class="hero-stat"><strong>27</strong><span>Langkah</span></div>
@@ -34,8 +34,7 @@
             <div class="controls" aria-label="Filter langkah">
                 <button class="filter active" data-filter="all">Semua</button>
                 <button class="filter" data-filter="konsep">Konsep</button>
-                <button class="filter" data-filter="hub">Hub (M1)</button>
-                <button class="filter" data-filter="worker">Worker (Intel)</button>
+                <button class="filter" data-filter="hub">Server (Intel 2019)</button>
                 <button class="filter" data-filter="jaringan">Jaringan</button>
                 <button class="filter" data-filter="memori">Memori</button>
                 <button class="filter" data-filter="harness">Harness</button>
@@ -51,15 +50,15 @@
             <div class="prereq-grid">
                 <div class="note">
                     <h2>Untuk siapa</h2>
-                    <p>Developer yang ingin laptop kantor tetap berguna sebagai hub ringan dan dapat diakses dari perangkat lain. Alokasikan <strong>3–4 jam setup</strong>, ditambah pengamatan 24 jam; mobile bersifat opsional.</p>
+                    <p>Developer yang ingin MacBook Pro 2019 tersedia 24/7 sebagai server dan dapat diakses dari perangkat lain. Alokasikan <strong>3–4 jam setup</strong>, ditambah pengamatan 24 jam; mobile bersifat opsional.</p>
                 </div>
                 <div class="note alt">
                     <h2>Perangkat</h2>
-                    <p><strong>M1 kantor 8 GB</strong> menjadi hub ringan. <strong>Intel pribadi i9 32 GB</strong> menjadi workstation/worker sesuai kebutuhan. Repo kantor hanya boleh diproses pada perangkat yang disetujui organisasi.</p>
+                    <p><strong>MacBook Pro 2019 Intel i9 32 GB</strong> menjadi server 24/7. <strong>M1 8 GB</strong> menjadi perangkat harian/client. Repo kantor hanya boleh diproses pada perangkat yang disetujui organisasi.</p>
                 </div>
                 <div class="note">
                     <h2>Prasyarat toolchain</h2>
-                    <p>Mulai dengan Tailscale, SSH, dan tmux. Tambahkan code-server, OpenCode, dan restic di hub; Colima dan Android opsional di worker. Stars dan rilis dicatat dalam snapshot GitHub.</p>
+                    <p>Mulai dengan Tailscale, SSH, dan tmux. Tambahkan code-server, OpenCode, dan restic di server Intel; Colima dan Android opsional pada mesin yang sama. Stars dan rilis dicatat dalam snapshot GitHub.</p>
                 </div>
                 <div class="note alt">
                     <h2>Cara pakai</h2>
@@ -71,7 +70,7 @@
         <div class="legend">
             <section class="note">
                 <h2>Inti pola</h2>
-                <p>Hub M1 siap menerima sesi ringan. Intel menjalankan job berat bila dibutuhkan. Akses lewat SSH atau browser privat; matikan worker saat tidak ada pekerjaan. Ukur RAM, durasi, dan biaya untuk menilai hasilnya.</p>
+                <p>Intel 2019 tetap menyala untuk SSH, browser editor, agent, dan komputasi. M1 boleh tidur atau dimatikan; pekerjaan di server terus berjalan. Hentikan container/emulator yang sedang tidak diperlukan. Ukur RAM, durasi, dan biaya untuk menilai hasilnya.</p>
             </section>
             <section class="note alt">
                 <h2>Aturan belajar</h2>

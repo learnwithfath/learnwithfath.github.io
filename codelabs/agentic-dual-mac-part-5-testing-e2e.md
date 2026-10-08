@@ -1,4 +1,4 @@
-summary: Uji satu task dari HP sampai worker, backup dan restore dengan restic, recovery setelah restart, serta checklist pengamatan 24 jam.
+summary: Uji satu task dari HP sampai server Intel, backup dan restore dengan restic, recovery setelah restart, serta checklist pengamatan 24 jam.
 id: agentic-dual-mac-part-5-testing-e2e
 categories: AI, Developer Tools, macOS, Remote Development
 tags: dual-mac, always-on, m1, intel, tailscale, tmux, code-server, colima, opencode, restic
@@ -13,12 +13,12 @@ Duration: 10
 
 Prasyarat: [Part 2](../agentic-dual-mac-part-2-provisioning/), [Part 3](../agentic-dual-mac-part-3-jaringan-remote/), dan [Part 4](../agentic-dual-mac-part-4-memory-harness/) sudah diuji. Gunakan repo latihan/open source atau repo kerja yang diizinkan.
 
-1. Dari HP di jaringan seluler, sambungkan Tailscale dan buka HTTPS code-server M1.
+1. Dari HP di jaringan seluler, sambungkan Tailscale dan buka HTTPS code-server Intel 2019.
 2. Buka terminal, periksa `hostname`, lalu attach tmux.
 3. Pilih perubahan kecil dengan acceptance criteria konkret, misalnya memperbaiki satu tautan rusak beserta pemeriksaannya.
 4. Agent membuat patch dalam worktree. Operator menjalankan test/build repo dan meninjau diff.
-5. Putuskan koneksi HP, tunggu beberapa menit, lalu attach kembali dari Intel/client lain.
-6. Jika memerlukan worker, lakukan handoff commit melalui Git sebagaimana Part 4. Catat hasil test di worker dan SHA yang diuji.
+5. Putuskan koneksi HP, tunggu beberapa menit, lalu attach kembali dari M1/client lain.
+6. Jalankan build/test pada server Intel melalui sesi remote. Jika memakai clone lokal terpisah, ikuti handoff Git di Part 4 dan catat SHA yang diuji.
 7. Simpan task sebagai `done` hanya jika acceptance criteria terpenuhi; `blocked` bila gagal dan perlu keputusan.
 
 Hasil yang dicatat: hostname, SHA, command, exit code, durasi, dan biaya bila memakai model API. Task tidak dianggap berhasil hanya karena agent berkata selesai.
@@ -58,10 +58,10 @@ Jika perlu inspeksi UI oleh agent, evaluasi [mobile-next/mobile-mcp](https://git
 
 Saat test gagal, periksa screenshot, accessibility tree, fixture, dan app. Jangan menghapus assertion atau mengganti ekspektasi hanya untuk memperoleh PASS. Batasi tiga percobaan perbaikan lalu laporkan blocker.
 
-Bila APK dibuat di Intel dan HP terpasang di **client M1**, salin artifact terlebih dahulu melalui koneksi yang diizinkan. Contoh dijalankan **di M1** setelah menyiapkan alias SSH worker dan memasang Android Platform-Tools:
+Bila APK dibuat di Intel dan HP terpasang di **client M1**, salin artifact terlebih dahulu melalui koneksi yang diizinkan. Contoh dijalankan **di M1** setelah menyiapkan alias SSH server Intel dan memasang Android Platform-Tools:
 
 ```bash
-scp personal-worker:~/projects/app/build/app/outputs/flutter-apk/app-debug.apk /tmp/app-debug.apk
+scp mac-server:~/projects/app/build/app/outputs/flutter-apk/app-debug.apk /tmp/app-debug.apk
 adb devices
 adb install -r /tmp/app-debug.apk
 ```
@@ -76,7 +76,7 @@ Git menyimpan commit; file belum di-commit dan catatan operasional juga perlu ba
 Sebelum contoh berikut, buat password backup kuat di password manager dan simpan salinannya sebagai file privat `~/.config/restic/password` dengan permission `600`. Pastikan volume `/Volumes/Backup` benar-benar terpasang, bukan folder pada disk internal.
 
 ```bash
-export RESTIC_REPOSITORY="/Volumes/Backup/office-hub-restic"
+export RESTIC_REPOSITORY="/Volumes/Backup/mac-server-restic"
 export RESTIC_PASSWORD_FILE="$HOME/.config/restic/password"
 restic init
 ```
@@ -110,7 +110,7 @@ Buka satu file penting di hasil restore dan bandingkan dengan sumber. Catat snap
 ## Pemantauan dan Recovery
 Duration: 8
 
-Di M1, periksa setelah login dan setelah update:
+Di server Intel 2019, periksa setelah login dan setelah update:
 
 ```bash
 uptime
@@ -124,17 +124,17 @@ tailscale serve status
 curl -I http://127.0.0.1:8080
 ```
 
-Catat baseline idle dan saat satu job berjalan. Memory Pressure yang terus kuning/merah atau swap yang terus naik menjadi alasan mengurangi concurrency, menutup browser/extension berat, atau memindahkan job ke worker yang diizinkan. Jangan menjanjikan angka RAM, baterai, atau kecepatan yang belum diukur.
+Catat baseline idle dan saat satu job berjalan. Memory Pressure yang terus kuning/merah atau swap yang terus naik menjadi alasan mengurangi concurrency, menutup browser/extension berat, atau menjadwalkan job berat secara bergantian. Jangan menjanjikan angka RAM, baterai, atau kecepatan yang belum diukur.
 
-Untuk alert, [Uptime Kuma](https://github.com/louislam/uptime-kuma) opsional pada host lain yang selalu tersedia di tailnet. Monitor di M1 sendiri tidak dapat melaporkan ketika M1 mati total. Intel yang dimatikan juga bukan monitor 24/7. Tentukan jalur notifikasi dan hindari menambah daemon hanya untuk mengisi laptop.
+Untuk alert, [Uptime Kuma](https://github.com/louislam/uptime-kuma) opsional pada host lain yang selalu tersedia di tailnet. Monitor di server Intel sendiri tidak dapat melaporkan ketika Intel mati total. M1 yang bisa tidur juga bukan monitor 24/7. Tentukan jalur notifikasi dan hindari menambah daemon hanya untuk mengisi laptop.
 
 | Gejala | Pemeriksaan dan pemulihan |
 |---|---|
-| Hub tidak terlihat | Pastikan daya, lid, jaringan, unlock/login, lalu status Tailscale |
+| Server Intel tidak terlihat | Pastikan daya, lid, jaringan, unlock/login, lalu status Tailscale |
 | SSH bisa, browser gagal | Cek loopback 8080, `brew services list`, konfigurasi dan log code-server, lalu Serve |
 | Client putus | Attach tmux kembali; jangan menjalankan task duplikat |
 | Host reboot | Unlock/login bila dibutuhkan, verifikasi service, baca task terakhir, ulangi hanya langkah yang belum selesai |
-| Worker tidak tersedia | Tandai `waiting-worker`; hub tetap menerima pekerjaan ringan |
+| Server Intel tidak tersedia | Tandai `waiting-server`; pulihkan daya/jaringan/login sebelum melanjutkan job |
 | Biaya API melewati budget | Hentikan sesi/job dan periksa provider usage sebelum melanjutkan |
 | Disk menipis | Identifikasi cache/log/artifact; hapus hanya data yang telah dipastikan dapat dibuat ulang |
 
@@ -145,17 +145,17 @@ Catat hasil pada awal, setelah satu job nyata, setelah client pindah jaringan, d
 
 | Pengujian | Bukti yang harus diisi operator |
 |---|---|
-| Layar hub mati, charger terpasang | Waktu cek + akses SSH/HTTPS dari client |
+| Layar server Intel mati, charger terpasang | Waktu cek + akses SSH/HTTPS dari client |
 | HP di jaringan seluler | URL privat dapat dibuka + hostname benar |
 | Client disconnect/reconnect | Sesi tmux dan proses task yang sama |
-| Intel dimatikan | Hub tetap tersedia; task worker tertunda jelas |
-| Restart M1 terencana | Durasi downtime + langkah unlock/login + status service |
+| M1 dimatikan | Server Intel dan job tetap berjalan; client lain dapat masuk |
+| Restart Intel 2019 terencana | Durasi downtime + langkah unlock/login + status service |
 | Backup dan restore | Snapshot ID + file hasil restore tervalidasi |
 | Satu job nyata | SHA + hasil test + durasi + biaya |
 | Beban 24 jam | Memory Pressure, tren swap, disk, suhu/kipas yang diamati |
 
 Restart dilakukan saat tidak ada job penting. Catat kebutuhan operator fisik, bukan mengklaim pemulihan otomatis tanpa mengujinya. Jadwalkan update OS/tool di jendela pemeliharaan. Setelah update, ulangi smoke test SSH/browser/agent; bandingkan versi dengan catatan sebelumnya.
 
-**Checklist selesai:** koneksi privat bekerja, job tidak terduplikasi, hub responsif, backup dapat dipulihkan, budget terukur, dan recovery terdokumentasi. Laptop tetap memiliki keterbatasan daya, jaringan, login, dan mobilitas; kebutuhan SLA lebih tinggi memerlukan host yang memang dikelola sebagai server.
+**Checklist selesai:** koneksi privat bekerja, job tidak terduplikasi, server Intel responsif, backup dapat dipulihkan, budget terukur, dan recovery terdokumentasi. Laptop tetap memiliki keterbatasan daya, jaringan, login, dan mobilitas; kebutuhan SLA lebih tinggi memerlukan host yang memang dikelola sebagai server.
 
 [Kembali ke peta seri](../agentic-dual-mac-workflow.html) · [Bukti proyek open source](../data/dual-mac-projects.json).

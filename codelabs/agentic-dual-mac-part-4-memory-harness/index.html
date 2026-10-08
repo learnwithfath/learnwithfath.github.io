@@ -29,15 +29,15 @@
                   feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
     
       <google-codelab-step label="Mulai dari Satu Agent" duration="5">
-        <p>Setelah <a href="../agentic-dual-mac-part-3-jaringan-remote/" target="_blank">Part 3</a>, Anda dapat masuk ke M1 dari client mana pun yang diizinkan. Mulai dengan <strong>satu sesi OpenCode pada satu repo latihan</strong>. Hub tersedia 24/7; pemanggilan model hanya terjadi ketika ada pekerjaan.</p>
+        <p>Setelah <a href="../agentic-dual-mac-part-3-jaringan-remote/" target="_blank">Part 3</a>, Anda dapat masuk ke server Intel 2019 dari client mana pun yang diizinkan. Mulai dengan <strong>satu sesi OpenCode pada satu repo latihan</strong>. Server tersedia 24/7; pemanggilan model hanya terjadi ketika ada pekerjaan.</p>
 <p>OpenCode dipilih karena kode sumber MIT dan komunitas GitHub besar yang tercatat di <a href="../agentic-workflow-dual-mac-setup/" target="_blank">snapshot Part 1</a>. Harness open source tidak berarti inference gratis atau data selalu lokal. Provider yang digunakan menentukan biaya serta pemrosesan prompt/kode. Gunakan provider yang diizinkan untuk data project Anda.</p>
-<p>Model lokal pada M1 8 GB adalah eksperimen terpisah: ukur RAM dan kualitas sebelum menjadikannya layanan. Jangan memasang model besar atau beberapa agent paralel sebagai langkah awal.</p>
+<p>Model lokal pada Intel adalah eksperimen terpisah: ukur kecepatan inference, RAM, dan kualitas sebelum menjadikannya layanan. RAM 32 GB tidak menjamin inference cepat. Jangan memasang model besar atau beberapa agent paralel sebagai langkah awal.</p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="Instalasi dan Permission" duration="10">
-        <p>Di <strong>hub M1</strong>:</p>
+        <p>Di <strong>server Intel 2019</strong>:</p>
 <pre><code language="language-bash" class="language-bash">brew install anomalyco/tap/opencode
 opencode --version
 opencode auth login
@@ -86,7 +86,7 @@ Host dan direktori:
 Branch dan base commit:
 Versi tool/model:
 Batas waktu dan biaya provider:
-Status: planned / running / waiting-worker / blocked / done
+Status: planned / running / waiting-server / blocked / done
 Command terakhir + exit code:
 Hasil pengujian:
 Langkah berikutnya:
@@ -95,15 +95,16 @@ Langkah berikutnya:
 
       </google-codelab-step>
     
-      <google-codelab-step label="Isolasi Task dan Handoff ke Worker" duration="10">
+      <google-codelab-step label="Isolasi Task pada Server Intel" duration="10">
         <p>Di repo latihan pada <strong>host yang akan mengerjakan task</strong>, pastikan working tree bersih lalu buat worktree:</p>
 <pre><code language="language-bash" class="language-bash">git status --short
 git worktree add ../repo-task-example -b task/example
 cd ../repo-task-example
 </code></pre>
 <p>Satu task memiliki satu pemilik dan satu worktree aktif. Dokumentasikan acceptance criteria sebelum meminta agent mengubah kode. Setelah perubahan, jalankan test yang relevan, tinjau diff, dan commit file yang memang milik task.</p>
-<p>Jika repo boleh diproses Intel, handoff lewat remote Git yang diotorisasi: simpan dan push branch task dari host sumber; pada worker fetch branch tersebut dan gunakan worktree terpisah. Catat <code>git rev-parse HEAD</code> di kedua host dan pastikan commit sama. Jangan mengarahkan dua agent menulis branch yang sama secara bersamaan.</p>
-<p>Jika worker belum hidup, tandai <code>waiting-worker</code>. Jika repo kantor dilarang berada di laptop pribadi, kirim task ke worker/CI organisasi yang diizinkan. Membuka terminal Intel dari M1 tidak memindahkan izin kepemilikan data.</p>
+<p>Untuk alur normal, worktree tetap di server Intel: M1, HP, dan tablet hanya mengakses sesi remote yang sama. Menutup M1 tidak memindahkan atau menghentikan job di Intel.</p>
+<p>Jika Anda juga mengubah clone lokal di M1, handoff lewat remote Git yang diotorisasi: commit/push branch sumber lalu fetch commit tersebut pada server. Catat <code>git rev-parse HEAD</code> agar versi yang diuji jelas. Jangan mengarahkan dua agent menulis task yang sama secara bersamaan.</p>
+<p>Jika server offline, tandai <code>waiting-server</code> dan pulihkan Intel sebelum melanjutkan. Jika repo kantor dilarang berada di laptop pribadi, gunakan worker/CI organisasi yang diizinkan untuk repo tersebut.</p>
 <p>Tidak perlu Graphify atau vector database untuk memulai. Gunakan <code>rg</code>, struktur repo, kontrak, dan test. Tambahkan indexer hanya jika ia memperbaiki masalah pencarian yang nyata dan hasilnya dapat ditelusuri.</p>
 
 
@@ -133,7 +134,7 @@ cd ../repo-task-example
 <li>[ ] Tidak ada secret di diff/catatan/log yang akan dipublikasikan.</li>
 <li>[ ] Client dapat putus lalu melanjutkan sesi yang sama.</li>
 <li>[ ] Biaya dan durasi job dicatat; task selesai tidak memicu loop baru.</li>
-<li>[ ] Handoff worker menggunakan commit identik dan aturan data yang sesuai.</li>
+<li>[ ] Worktree berada di server Intel; handoff clone lokal bila ada menggunakan commit identik.</li>
 </ul>
 <p><a href="../agentic-dual-mac-part-5-testing-e2e/" target="_blank">Lanjut Part 5: pengujian dan operasi 24/7</a>.</p>
 

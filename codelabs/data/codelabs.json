@@ -34,7 +34,7 @@
       "id": "agentic-dual-mac-workflow",
       "title": "Dual-Mac Agentic Workflow",
       "icon": "⚡",
-      "summary": "M1 kantor 8 GB sebagai hub ringan 24/7; Intel pribadi 32 GB sebagai worker sesuai kebutuhan. Akses HP/tablet, agent open source, backup, dan recovery.",
+      "summary": "MacBook Pro 2019 Intel 32 GB sebagai server 24/7; M1 8 GB sebagai perangkat harian/client. Akses HP/tablet, agent open source, backup, dan recovery.",
       "duration": 214,
       "sections": 5,
       "sectionLabel": "Part",
@@ -56,7 +56,7 @@
         "mobile",
         "architecture"
       ],
-      "searchTerms": "dual mac kantor pribadi m1 8gb intel i9 32gb hub worker server 24/7 always on open source github tailscale ssh tmux code-server opencode colima restic backup remote hp tablet",
+      "searchTerms": "dual mac macbook pro 2019 server 24/7 intel i9 32gb m1 8gb client always on open source github tailscale ssh tmux code-server opencode colima restic backup remote hp tablet",
       "url": "agentic-dual-mac-workflow.html",
       "ctaText": "Buka seri"
     },

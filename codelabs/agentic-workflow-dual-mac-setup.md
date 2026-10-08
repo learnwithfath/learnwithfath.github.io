@@ -1,4 +1,4 @@
-summary: M1 kantor 8 GB sebagai hub ringan 24/7; Intel pribadi 32 GB sebagai worker sesuai kebutuhan. Pilihan open source, bukti aktivitas GitHub, dan pembagian beban realistis.
+summary: MacBook Pro 2019 Intel 32 GB sebagai server 24/7; M1 8 GB sebagai perangkat harian/client. Pilihan open source, bukti aktivitas GitHub, dan pembagian beban realistis.
 id: agentic-workflow-dual-mac-setup
 categories: AI, Developer Tools, macOS, Remote Development
 tags: dual-mac, always-on, m1, intel, tailscale, tmux, code-server, colima, opencode, restic
@@ -15,11 +15,11 @@ Duration: 5
 
 | Perangkat | Nama contoh | Peran utama |
 |---|---|---|
-| M1 8 GB | `office-hub` | Hub ringan yang tersedia 24/7: SSH, tmux, browser editor, satu sesi agent dengan model API |
-| Intel i9 32 GB | `personal-worker` | Workstation harian dan worker build/container/Android sesuai kebutuhan |
-| HP, tablet, laptop lain | Client | Mengakses terminal/browser lewat tailnet yang diizinkan |
+| Intel i9 2019 32 GB | `mac-server` | Server 24/7: SSH, tmux, code-server, agent, build, container dan Android sesuai kebutuhan |
+| M1 8 GB | `mac-client` | Perangkat harian: browser/editor remote, terminal, dan uji perangkat fisik |
+| HP, tablet, laptop lain | Client | Mengakses server lewat tailnet yang diizinkan |
 
-**Koreksi dari edisi sebelumnya:** M1 bukan hanya terminal pasif dan Intel tidak wajib menyala sepanjang hari. RAM Intel berguna untuk beban besar, sedangkan hub M1 harus tetap responsif untuk pekerjaan kantor. Ketersediaan 24/7 berarti layanan siap menerima pekerjaan; agent tidak perlu terus memanggil model ketika tidak ada tugas.
+**MacBook Pro 2019 adalah mesin yang berjalan 24/7.** M1 boleh tidur, dimatikan, atau dibawa bepergian tanpa menghentikan pekerjaan pada server. Ketersediaan 24/7 berarti layanan siap menerima pekerjaan; agent tidak perlu terus memanggil model ketika tidak ada tugas.
 
 Materi ini mengonfigurasi pola penggunaan. Ia tidak membuktikan kedua laptop Anda sudah terpasang layanan atau sudah lulus uji 24 jam.
 
@@ -27,25 +27,22 @@ Materi ini mengonfigurasi pola penggunaan. Ia tidak membuktikan kedua laptop And
 Duration: 8
 
 ```text
-HP / tablet / laptop tepercaya
+M1 8 GB / HP / tablet / laptop tepercaya
+  Browser atau editor remote + terminal
        | Tailscale + HTTPS atau SSH
        v
-M1 kantor: office-hub (8 GB, tersedia selama jam operasional 24/7)
-  SSH + tmux + code-server + satu agent API
-       |
-       | Git/SSH untuk proyek yang diizinkan
-       v
-Intel pribadi: personal-worker (32 GB, dinyalakan saat dibutuhkan)
-  Colima + test/build + satu emulator Android
+MacBook Pro 2019 Intel i9 32 GB: mac-server (24/7)
+  SSH + tmux + code-server + OpenCode + backup
+  Colima + build/test + emulator Android saat diperlukan
 ```
 
-Dari Intel, Anda bisa membuka browser editor M1 sambil menjalankan proyek pribadi secara lokal. Untuk proyek yang boleh memakai kedua perangkat, gunakan Git sebagai perpindahan versi: commit di satu mesin, fetch/checkout commit yang sama di mesin lain. Jangan menyinkronkan direktori kerja yang sedang diubah agent pada dua mesin.
+Dari M1, buka browser editor atau Remote-SSH ke Intel. File project, terminal agent, build, dan test tinggal di server Intel. Tidak perlu memindahkan repo antarhost untuk alur remote biasa. Jika benar-benar mengerjakan clone lokal di M1, gunakan Git untuk memindahkan commit; jangan menyinkronkan direktori yang sedang ditulis agent pada dua mesin.
 
-**Batas kepemilikan:** kode, kredensial, dan data kantor hanya boleh berada pada perangkat serta provider AI yang disetujui organisasi. Bila perangkat pribadi tidak boleh menerima repo kantor, jalankan worker pekerjaan kantor di mesin/CI milik kantor. Intel tetap berguna untuk proyek pribadi, open source, dan latihan menggunakan data sintetis. Jangan membuat akses perangkat pribadi sebagai syarat agar hub kantor berfungsi.
+**Batas data:** kode, kredensial, dan data kantor hanya boleh berada pada perangkat serta provider AI yang disetujui organisasi. Bila Intel pribadi tidak boleh menerima repo kantor, gunakan server Intel untuk proyek pribadi/open source dan worker organisasi untuk repo kantor. Pembagian peran hardware tidak mengubah aturan akses data.
 
-Mulai dengan **satu job agent per mesin**. Di Intel, contoh alokasi awal Colima 4 CPU/8 GiB dan satu emulator; ini anggaran awal yang harus diukur. Pada M1, jalankan CLI agent dengan model API dan hindari menumpuk VM, emulator, serta model lokal bersamaan. Model API memakai komputasi provider; tool, file, dan test tetap memakai mesin host.
+Mulai dengan **satu job agent pada server Intel**. Contoh alokasi awal Colima 4 CPU/8 GiB dan satu emulator; ukur pemakaian bersama macOS, editor server, serta build sebelum menaikkan concurrency. M1 cukup menjalankan client; hindari menumpuk VM, emulator, dan model lokal pada RAM 8 GB. Model API memakai komputasi provider; tool, file, dan test tetap memakai server Intel.
 
-**Intel tidak otomatis lebih cepat dari M1.** Pilih lokasi build berdasarkan kompatibilitas, RAM, waktu build, suhu, dan biaya listrik yang benar-benar diukur. Untuk iOS, cocokkan versi macOS/Xcode/SDK pada [dukungan Xcode Apple](https://developer.apple.com/support/xcode/); jangan mengasumsikan Intel 2019 menjalankan SDK terbaru.
+**Intel tidak otomatis lebih cepat dari M1.** Server dipilih karena peran 24/7 dan kapasitas RAM. Ukur waktu build, suhu, dan biaya listrik. Untuk iOS, cocokkan versi macOS/Xcode/SDK pada [dukungan Xcode Apple](https://developer.apple.com/support/xcode/); jangan mengasumsikan Intel 2019 menjalankan SDK terbaru. Build yang membutuhkan SDK di luar dukungan Intel dapat dijalankan pada mesin Apple Silicon/CI yang sesuai.
 
 ## Stack Open Source dan Bukti Aktivitas
 Duration: 10
@@ -78,7 +75,7 @@ Rilis dan commit terakhir (UTC), dicatat terpisah agar mudah dibaca di HP:
 
 [Buka bukti JSON yang dapat diperiksa](../data/dual-mac-projects.json). Seluruh proyek dalam snapshot tidak berstatus archived saat diperiksa. Rilis/commit terbaru adalah bukti pemeliharaan publik; **stars bukan jumlah pengguna aktif**. Kecocokan produksi harus dibuktikan dengan uji pada perangkat Anda.
 
-**Stack minimum:** Tailscale + OpenSSH bawaan macOS + tmux. Tambahkan code-server bila perlu browser, OpenCode untuk agent, Colima hanya pada worker yang perlu container, dan restic untuk backup. Maestro bersifat opsional untuk pekerjaan mobile. Uptime Kuma dan mobile-mcp adalah opsi tambahan, bukan daemon wajib di M1 8 GB.
+**Stack minimum:** Tailscale + OpenSSH bawaan macOS + tmux. Tambahkan code-server bila perlu browser, OpenCode untuk agent, Colima pada server Intel bila perlu container, dan restic untuk backup. Maestro bersifat opsional untuk pekerjaan mobile. Uptime Kuma dan mobile-mcp adalah opsi tambahan, dipasang hanya jika dibutuhkan pada server.
 
 Tailscale memiliki client open source, tetapi layanan koordinasi hosted dan paket bisnisnya merupakan produk terpisah. [Headscale](https://github.com/juanfont/headscale) dapat dievaluasi jika perlu koordinasi yang dikelola sendiri; ia menambah beban operasi. macOS, provider model API, dan beberapa ekstensi editor juga tidak menjadi open source hanya karena CLI yang dipakai open source.
 
@@ -87,7 +84,7 @@ OrbStack/Obsidian/agent komersial dapat tetap dipakai jika memang diperlukan. Se
 ## Rute Belajar dan Kriteria Sukses
 Duration: 5
 
-1. [Part 2: Provisioning](../agentic-dual-mac-part-2-provisioning/) — power, toolchain minimum, worker opsional, batas restart.
+1. [Part 2: Provisioning](../agentic-dual-mac-part-2-provisioning/) — power, toolchain minimum, container/emulator opsional, batas restart.
 2. [Part 3: Remote](../agentic-dual-mac-part-3-jaringan-remote/) — Tailscale, SSH, tmux, code-server dari HP/tablet.
 3. [Part 4: Memory & Harness](../agentic-dual-mac-part-4-memory-harness/) — OpenCode, worktree, catatan task, budget dan handoff.
 4. [Part 5: Operasi & Pengujian](../agentic-dual-mac-part-5-testing-e2e/) — uji end-to-end, recovery, backup/restore, dan soak test 24 jam.
@@ -96,6 +93,6 @@ Alokasikan 3–4 jam untuk setup dasar, lalu 24 jam pengamatan terpisah. Stack m
 
 Selesai bila akses dari jaringan seluler bekerja, task bertahan saat client putus, restart memiliki prosedur recovery yang diuji, backup berhasil direstore, serta latensi/RAM/biaya dicatat. CPU 100% sepanjang hari bukan target keberhasilan.
 
-**Jika Intel sedang mati:** hub M1 tetap bisa menerima sesi ringan; job berat ditandai menunggu worker, tidak dianggap sudah berjalan. Jika M1 dibawa bepergian atau tidur, layanan hub ikut tidak tersedia. Untuk SLA tanpa operator, gunakan server/CI khusus yang dikelola organisasi.
+**Jika Intel sedang mati:** seluruh layanan server tidak tersedia sampai daya, jaringan, login, dan service pulih. Jika M1 tidur atau dibawa bepergian, server Intel tetap bekerja dan dapat diakses dari client lain. Untuk SLA tanpa operator, gunakan host khusus yang dikelola sebagai server.
 
 [Kembali ke peta seri](../agentic-dual-mac-workflow.html).

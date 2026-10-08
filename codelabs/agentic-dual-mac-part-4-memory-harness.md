@@ -11,16 +11,16 @@ Feedback Link: https://github.com/learnwithfath/learnwithfath.github.io/issues
 ## Mulai dari Satu Agent
 Duration: 5
 
-Setelah [Part 3](../agentic-dual-mac-part-3-jaringan-remote/), Anda dapat masuk ke M1 dari client mana pun yang diizinkan. Mulai dengan **satu sesi OpenCode pada satu repo latihan**. Hub tersedia 24/7; pemanggilan model hanya terjadi ketika ada pekerjaan.
+Setelah [Part 3](../agentic-dual-mac-part-3-jaringan-remote/), Anda dapat masuk ke server Intel 2019 dari client mana pun yang diizinkan. Mulai dengan **satu sesi OpenCode pada satu repo latihan**. Server tersedia 24/7; pemanggilan model hanya terjadi ketika ada pekerjaan.
 
 OpenCode dipilih karena kode sumber MIT dan komunitas GitHub besar yang tercatat di [snapshot Part 1](../agentic-workflow-dual-mac-setup/). Harness open source tidak berarti inference gratis atau data selalu lokal. Provider yang digunakan menentukan biaya serta pemrosesan prompt/kode. Gunakan provider yang diizinkan untuk data project Anda.
 
-Model lokal pada M1 8 GB adalah eksperimen terpisah: ukur RAM dan kualitas sebelum menjadikannya layanan. Jangan memasang model besar atau beberapa agent paralel sebagai langkah awal.
+Model lokal pada Intel adalah eksperimen terpisah: ukur kecepatan inference, RAM, dan kualitas sebelum menjadikannya layanan. RAM 32 GB tidak menjamin inference cepat. Jangan memasang model besar atau beberapa agent paralel sebagai langkah awal.
 
 ## Instalasi dan Permission
 Duration: 10
 
-Di **hub M1**:
+Di **server Intel 2019**:
 
 ```bash
 brew install anomalyco/tap/opencode
@@ -89,13 +89,13 @@ Host dan direktori:
 Branch dan base commit:
 Versi tool/model:
 Batas waktu dan biaya provider:
-Status: planned / running / waiting-worker / blocked / done
+Status: planned / running / waiting-server / blocked / done
 Command terakhir + exit code:
 Hasil pengujian:
 Langkah berikutnya:
 ```
 
-## Isolasi Task dan Handoff ke Worker
+## Isolasi Task pada Server Intel
 Duration: 10
 
 Di repo latihan pada **host yang akan mengerjakan task**, pastikan working tree bersih lalu buat worktree:
@@ -108,9 +108,11 @@ cd ../repo-task-example
 
 Satu task memiliki satu pemilik dan satu worktree aktif. Dokumentasikan acceptance criteria sebelum meminta agent mengubah kode. Setelah perubahan, jalankan test yang relevan, tinjau diff, dan commit file yang memang milik task.
 
-Jika repo boleh diproses Intel, handoff lewat remote Git yang diotorisasi: simpan dan push branch task dari host sumber; pada worker fetch branch tersebut dan gunakan worktree terpisah. Catat `git rev-parse HEAD` di kedua host dan pastikan commit sama. Jangan mengarahkan dua agent menulis branch yang sama secara bersamaan.
+Untuk alur normal, worktree tetap di server Intel: M1, HP, dan tablet hanya mengakses sesi remote yang sama. Menutup M1 tidak memindahkan atau menghentikan job di Intel.
 
-Jika worker belum hidup, tandai `waiting-worker`. Jika repo kantor dilarang berada di laptop pribadi, kirim task ke worker/CI organisasi yang diizinkan. Membuka terminal Intel dari M1 tidak memindahkan izin kepemilikan data.
+Jika Anda juga mengubah clone lokal di M1, handoff lewat remote Git yang diotorisasi: commit/push branch sumber lalu fetch commit tersebut pada server. Catat `git rev-parse HEAD` agar versi yang diuji jelas. Jangan mengarahkan dua agent menulis task yang sama secara bersamaan.
+
+Jika server offline, tandai `waiting-server` dan pulihkan Intel sebelum melanjutkan. Jika repo kantor dilarang berada di laptop pribadi, gunakan worker/CI organisasi yang diizinkan untuk repo tersebut.
 
 Tidak perlu Graphify atau vector database untuk memulai. Gunakan `rg`, struktur repo, kontrak, dan test. Tambahkan indexer hanya jika ia memperbaiki masalah pencarian yang nyata dan hasilnya dapat ditelusuri.
 
@@ -140,6 +142,6 @@ Duration: 4
 - [ ] Tidak ada secret di diff/catatan/log yang akan dipublikasikan.
 - [ ] Client dapat putus lalu melanjutkan sesi yang sama.
 - [ ] Biaya dan durasi job dicatat; task selesai tidak memicu loop baru.
-- [ ] Handoff worker menggunakan commit identik dan aturan data yang sesuai.
+- [ ] Worktree berada di server Intel; handoff clone lokal bila ada menggunakan commit identik.
 
 [Lanjut Part 5: pengujian dan operasi 24/7](../agentic-dual-mac-part-5-testing-e2e/).

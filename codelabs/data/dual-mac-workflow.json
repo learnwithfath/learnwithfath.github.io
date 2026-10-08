@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "Dual-Mac Agentic Workflow",
-    "subtitle": "M1 kantor 8 GB sebagai hub ringan 24/7; Intel pribadi 32 GB sebagai worker sesuai kebutuhan. Akses HP/tablet, agent open source, backup, dan recovery.",
+    "subtitle": "MacBook Pro 2019 Intel 32 GB sebagai server 24/7; M1 8 GB sebagai perangkat harian/client. Akses HP/tablet, agent open source, backup, dan recovery.",
     "parts": 5,
     "steps": 27,
     "macs": 2,
@@ -13,7 +13,7 @@
       "id": "agentic-workflow-dual-mac-setup",
       "number": 1,
       "title": "Konsep & Arsitektur",
-      "summary": "M1 kantor 8 GB sebagai hub ringan 24/7; Intel pribadi 32 GB sebagai worker sesuai kebutuhan. Pilihan open source, bukti aktivitas GitHub, dan pembagian beban realistis.",
+      "summary": "MacBook Pro 2019 Intel 32 GB sebagai server 24/7; M1 8 GB sebagai perangkat harian/client. Pilihan open source, bukti aktivitas GitHub, dan pembagian beban realistis.",
       "moduleUrl": "agentic-workflow-dual-mac-setup/",
       "steps": [
         {
@@ -22,7 +22,7 @@
           "tracks": [
             "konsep"
           ],
-          "detail": "Identifikasi M1 kantor 8 GB dan Intel pribadi 32 GB.",
+          "detail": "Tetapkan Intel 2019 32 GB sebagai server 24/7 dan M1 8 GB sebagai client.",
           "outcome": "Peran perangkat sesuai kepemilikan dan tujuan 24/7."
         },
         {
@@ -31,7 +31,7 @@
           "tracks": [
             "konsep"
           ],
-          "detail": "Hub ringan selalu tersedia; worker menangani beban besar sesuai izin data.",
+          "detail": "Intel 2019 menjalankan layanan 24/7 dan komputasi; M1 mengaksesnya sebagai client.",
           "outcome": "Tahu lokasi eksekusi dan batas kapasitas."
         },
         {
@@ -58,7 +58,7 @@
       "id": "agentic-dual-mac-part-2-provisioning",
       "number": 2,
       "title": "Provisioning Dua Mac",
-      "summary": "Siapkan M1 sebagai hub ringan yang selalu tersedia, Intel sebagai worker Colima opsional, serta power dan recovery yang dapat diverifikasi.",
+      "summary": "Siapkan MacBook Pro 2019 Intel sebagai server 24/7, M1 sebagai client ringan, serta power dan recovery yang dapat diverifikasi.",
       "moduleUrl": "agentic-dual-mac-part-2-provisioning/",
       "steps": [
         {
@@ -72,36 +72,36 @@
         },
         {
           "step": 2,
-          "title": "M1 — Power untuk Hub 24/7",
+          "title": "Intel 2019 — Power untuk Server 24/7",
           "tracks": [
             "hub"
           ],
           "detail": "Atur AC power dengan lid terbuka dan layar boleh mati.",
-          "outcome": "Hub dapat diuji saat layar mati; rollback jelas."
+          "outcome": "Server Intel dapat diuji saat layar mati; rollback jelas."
         },
         {
           "step": 3,
-          "title": "M1 — Toolchain Minimum dan Remote Login",
+          "title": "Intel 2019 — Toolchain dan Remote Login",
           "tracks": [
             "hub"
           ],
-          "detail": "Pasang Git, tmux, code-server, restic, Tailscale; aktifkan SSH terbatas.",
-          "outcome": "Hub memiliki tool minimum."
+          "detail": "Pasang Git, tmux, code-server, restic, Tailscale, dan SSH di Intel; siapkan M1 sebagai client.",
+          "outcome": "Server Intel memiliki tool minimum; M1 siap sebagai client."
         },
         {
           "step": 4,
-          "title": "Intel — Worker Container Sesuai Kebutuhan",
+          "title": "Intel — Container Sesuai Kebutuhan",
           "tracks": [
-            "worker"
+            "hub"
           ],
           "detail": "Siapkan Colima pada Intel dan hentikan saat tidak dibutuhkan.",
-          "outcome": "docker ps berhasil di worker yang benar."
+          "outcome": "docker ps berhasil pada server Intel."
         },
         {
           "step": 5,
           "title": "Intel — Android Opsional",
           "tracks": [
-            "worker"
+            "hub"
           ],
           "detail": "Pasang SDK tools dan AVD x86_64 hanya bila perlu.",
           "outcome": "Emulator selesai boot dan dapat dihentikan."
@@ -126,7 +126,7 @@
       "steps": [
         {
           "step": 1,
-          "title": "Hub, Worker, dan Client",
+          "title": "Server Intel dan Client",
           "tracks": [
             "jaringan"
           ],
@@ -140,7 +140,7 @@
             "jaringan"
           ],
           "detail": "Uji MagicDNS dan access controls pada tailnet.",
-          "outcome": "Client berizin dapat mengakses hub."
+          "outcome": "Client berizin dapat mengakses server Intel."
         },
         {
           "step": 3,
@@ -175,7 +175,7 @@
           "tracks": [
             "jaringan"
           ],
-          "detail": "Uji seluler, izin akses, hostname, dan worker offline.",
+          "detail": "Uji seluler, izin akses, hostname Intel, dan M1 offline.",
           "outcome": "Akses lintas perangkat terbukti."
         }
       ]
@@ -194,7 +194,7 @@
             "harness"
           ],
           "detail": "Mulai satu agent dengan provider yang disetujui.",
-          "outcome": "Beban M1 dan pemakaian API terkontrol."
+          "outcome": "Beban server Intel dan pemakaian API terkontrol."
         },
         {
           "step": 2,
@@ -216,11 +216,11 @@
         },
         {
           "step": 4,
-          "title": "Isolasi Task dan Handoff ke Worker",
+          "title": "Isolasi Task pada Server Intel",
           "tracks": [
-            "worker"
+            "hub"
           ],
-          "detail": "Gunakan worktree dan handoff commit ke worker yang diizinkan.",
+          "detail": "Simpan worktree di server Intel; gunakan Git jika ada clone lokal terpisah.",
           "outcome": "Tidak ada dua agent menulis task yang sama."
         },
         {
@@ -247,7 +247,7 @@
       "id": "agentic-dual-mac-part-5-testing-e2e",
       "number": 5,
       "title": "Pengujian & Operasi 24/7",
-      "summary": "Uji satu task dari HP sampai worker, backup dan restore dengan restic, recovery setelah restart, serta checklist pengamatan 24 jam.",
+      "summary": "Uji satu task dari HP sampai server Intel, backup dan restore dengan restic, recovery setelah restart, serta checklist pengamatan 24 jam.",
       "moduleUrl": "agentic-dual-mac-part-5-testing-e2e/",
       "steps": [
         {

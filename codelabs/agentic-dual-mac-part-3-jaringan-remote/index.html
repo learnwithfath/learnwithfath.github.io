@@ -28,8 +28,8 @@
                   environment="web"
                   feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
     
-      <google-codelab-step label="Hub, Worker, dan Client" duration="5">
-        <p><a href="../agentic-dual-mac-part-2-provisioning/" target="_blank">Part 2</a> menyiapkan M1 <strong>office-hub</strong> dan Intel <strong>personal-worker</strong>. Sekarang uji akses dari Intel, laptop lain, HP, atau tablet yang diizinkan.</p>
+      <google-codelab-step label="Server Intel dan Client" duration="5">
+        <p><a href="../agentic-dual-mac-part-2-provisioning/" target="_blank">Part 2</a> menyiapkan Intel 2019 <strong>mac-server</strong> sebagai server 24/7 dan M1 sebagai client. Sekarang uji akses dari M1, laptop lain, HP, atau tablet yang diizinkan.</p>
 <p>Perangkat client memerlukan konektivitas ke tailnet: pasang Tailscale pada OS yang didukung dan gunakan akun/akses perangkat yang diizinkan admin. &#34;Dari perangkat mana pun&#34; berarti perangkat yang diotorisasi, bukan komputer publik tanpa identitas. Browser HP cukup untuk review dan pekerjaan kecil; keyboard eksternal membantu untuk coding.</p>
 <p>Pada laptop, gunakan SSH + tmux atau browser code-server. Pada HP/tablet, gunakan browser code-server dan client SSH pilihan Anda. Terminal yang dibuka di browser menjalankan command pada host code-server.</p>
 
@@ -40,69 +40,69 @@
         <p>Buka aplikasi Tailscale pada kedua Mac dan client. Gunakan tailnet yang disetujui atau sharing yang telah diatur; bukan sekadar login akun sembarang. Aktifkan MagicDNS bila ingin memakai nama pendek.</p>
 <pre><code language="language-bash" class="language-bash"># Jalankan di client; bila CLI belum ada di PATH, gunakan path aplikasi di Part 2.
 tailscale status
-tailscale ping office-hub
+tailscale ping mac-server
 </code></pre>
 <p>Bila GUI macOS tidak menyediakan <code>tailscale</code> di PATH, command yang sama dapat dijalankan dengan <code>/Applications/Tailscale.app/Contents/MacOS/Tailscale</code>. Selesaikan setup CLI sesuai varian sebelum mengikuti contoh <code>tailscale</code> berikutnya.</p>
 <p>Tailscale menyediakan koneksi jaringan, OpenSSH menyediakan login. <strong>Panduan ini tidak mengaktifkan </strong></p>
 <p><strong><code>tailscale up --ssh</code></strong></p>
 <p><strong>.</strong> Server Tailscale SSH memiliki batas dukungan varian macOS; OpenSSH bawaan macOS dapat dipakai melalui alamat tailnet. <a href="https://tailscale.com/docs/features/tailscale-ssh" target="_blank">Dukungan Tailscale SSH</a>.</p>
-<p>Di access controls tailnet, batasi client/operator yang boleh menuju hub port 22 dan 443; akses worker hanya untuk pihak yang memerlukannya. Uji juga bahwa perangkat yang tidak diberi izin gagal mengakses. Konfigurasi tailnet bawaan bisa lebih luas daripada kebutuhan Anda. Jangan menganggap Remote Login macOS hanya mendengarkan jaringan Tailscale: periksa akses LAN dan firewall sesuai kebijakan.</p>
+<p>Di access controls tailnet, batasi client/operator yang boleh menuju server Intel port 22 dan 443. Uji juga bahwa perangkat yang tidak diberi izin gagal mengakses. Konfigurasi tailnet bawaan bisa lebih luas daripada kebutuhan Anda. Jangan menganggap Remote Login macOS hanya mendengarkan jaringan Tailscale: periksa akses LAN dan firewall sesuai kebijakan.</p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="SSH Key dan Identitas Host" duration="8">
         <p>Di <strong>client laptop</strong>, buat key khusus tanpa menimpa key lama:</p>
-<pre><code language="language-bash" class="language-bash">ssh-keygen -t ed25519 -f &#34;$HOME/.ssh/id_ed25519_office_hub&#34; -C &#34;office-hub-client&#34;
+<pre><code language="language-bash" class="language-bash">ssh-keygen -t ed25519 -f &#34;$HOME/.ssh/id_ed25519_mac_server&#34; -C &#34;mac-server-client&#34;
 </code></pre>
-<p>Gunakan passphrase. Cocokkan fingerprint host pada koneksi pertama melalui operator hub. Di hub, fingerprint dapat dilihat dengan <code>ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub</code>. Ganti <code>operator</code> dengan user macOS sebenarnya:</p>
-<pre><code language="language-bash" class="language-bash">cat &#34;$HOME/.ssh/id_ed25519_office_hub.pub&#34; | ssh operator@office-hub &#39;umask 077; mkdir -p ~/.ssh; cat &gt;&gt; ~/.ssh/authorized_keys&#39;
+<p>Gunakan passphrase. Cocokkan fingerprint host pada koneksi pertama melalui operator server. Di server Intel, fingerprint dapat dilihat dengan <code>ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub</code>. Ganti <code>operator</code> dengan user macOS sebenarnya:</p>
+<pre><code language="language-bash" class="language-bash">cat &#34;$HOME/.ssh/id_ed25519_mac_server.pub&#34; | ssh operator@mac-server &#39;umask 077; mkdir -p ~/.ssh; cat &gt;&gt; ~/.ssh/authorized_keys&#39;
 </code></pre>
 <p>Satu kali pemasangan menggunakan autentikasi yang sudah tersedia; jangan mengulang penambahan key tanpa memeriksa duplikat. Tambahkan blok berikut ke <code>~/.ssh/config</code> <strong>client</strong>:</p>
-<pre><code language="language-ssh" class="language-ssh">Host office-hub
-    HostName office-hub
+<pre><code language="language-ssh" class="language-ssh">Host mac-server
+    HostName mac-server
     User operator
-    IdentityFile ~/.ssh/id_ed25519_office_hub
+    IdentityFile ~/.ssh/id_ed25519_mac_server
     IdentitiesOnly yes
     ForwardAgent no
     ServerAliveInterval 30
     ServerAliveCountMax 3
 </code></pre>
-<p>Jika MagicDNS tidak tersedia, ganti <code>HostName</code> dengan IP Tailscale hub. Buat key/alias terpisah untuk <code>personal-worker</code> hanya jika perlu. Private key tetap di client; gunakan kredensial Git scoped pada host yang mengerjakan repo.</p>
-<pre><code language="language-bash" class="language-bash">ssh office-hub &#39;hostname; uname -m&#39;
+<p>Jika MagicDNS tidak tersedia, ganti <code>HostName</code> dengan IP Tailscale server Intel. Private key tetap di client; gunakan kredensial Git scoped pada host yang mengerjakan repo.</p>
+<pre><code language="language-bash" class="language-bash">ssh mac-server &#39;hostname; uname -m&#39;
 </code></pre>
-<p>Hasil harus mengidentifikasi M1/<code>arm64</code>. Key authentication masih dapat meminta passphrase key; itu berbeda dari password akun remote.</p>
+<p>Hasil harus mengidentifikasi server Intel/<code>x86_64</code>. Key authentication masih dapat meminta passphrase key; itu berbeda dari password akun remote.</p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="tmux dan Editor Remote" duration="8">
         <p>Dari client:</p>
-<pre><code language="language-bash" class="language-bash">ssh -t office-hub &#39;tmux new-session -A -s work&#39;
+<pre><code language="language-bash" class="language-bash">ssh -t mac-server &#39;tmux new-session -A -s work&#39;
 </code></pre>
-<p>Di tmux, buka project dan agent. Tekan <code>Ctrl-b</code>, lalu <code>d</code> untuk detach. Sambungkan lagi dengan command yang sama. Uji menutup client atau mengganti Wi-Fi ke seluler: proses di hub tetap berjalan selama hub/prosesnya sendiri tidak mati.</p>
+<p>Di tmux, buka project dan agent. Tekan <code>Ctrl-b</code>, lalu <code>d</code> untuk detach. Sambungkan lagi dengan command yang sama. Uji menutup client atau mengganti Wi-Fi ke seluler: proses di server Intel tetap berjalan selama server/prosesnya sendiri tidak mati.</p>
 <p><strong>tmux tidak menyelamatkan proses saat host reboot.</strong> Ia menjaga terminal terhadap putusnya koneksi client. Catatan task dan Git di Part 4 dipakai untuk pemulihan setelah reboot.</p>
-<p>Untuk editor desktop, <a href="https://code.visualstudio.com/docs/remote/ssh" target="_blank">VS Code Remote - SSH</a> dapat membuka folder di hub/worker sesuai target. Ekstensi remote dapat memiliki lisensi tersendiri. Cek <code>hostname</code> pada terminal editor setiap berpindah host. Bila kebutuhan utamanya browser dan komponen open source, ikuti code-server di langkah berikutnya.</p>
+<p>Untuk editor desktop, <a href="https://code.visualstudio.com/docs/remote/ssh" target="_blank">VS Code Remote - SSH</a> dapat membuka folder di server Intel. Ekstensi remote dapat memiliki lisensi tersendiri. Cek <code>hostname</code> pada terminal editor setiap berpindah host. Bila kebutuhan utamanya browser dan komponen open source, ikuti code-server di langkah berikutnya.</p>
 <p>Panduan tmux tambahan: <a href="../tmux-tailscale-ssh-remote-agent/" target="_blank">tmux + Tailscale + SSH</a>.</p>
 
 
       </google-codelab-step>
     
       <google-codelab-step label="code-server melalui HTTPS Privat" duration="12">
-        <p>Di <strong>M1</strong>, jalankan pertama kali untuk membuat konfigurasi:</p>
+        <p>Di <strong>server Intel 2019</strong>, jalankan pertama kali untuk membuat konfigurasi:</p>
 <pre><code language="language-bash" class="language-bash">code-server
 </code></pre>
-<p>Buka <code>http://127.0.0.1:8080</code> di M1, lalu hentikan proses dengan <code>Ctrl-C</code>. Periksa <code>~/.config/code-server/config.yaml</code> di editor lokal. Pertahankan <code>bind-addr: 127.0.0.1:8080</code>, <code>auth: password</code>, password unik yang dihasilkan, dan <code>cert: false</code> karena TLS disediakan proxy. Jangan memasukkan file ini ke Git atau membagikan password lewat log.</p>
+<p>Buka <code>http://127.0.0.1:8080</code> di Intel, lalu hentikan proses dengan <code>Ctrl-C</code>. Periksa <code>~/.config/code-server/config.yaml</code> di editor lokal. Pertahankan <code>bind-addr: 127.0.0.1:8080</code>, <code>auth: password</code>, password unik yang dihasilkan, dan <code>cert: false</code> karena TLS disediakan proxy. Jangan memasukkan file ini ke Git atau membagikan password lewat log.</p>
 <pre><code language="language-bash" class="language-bash">chmod 600 &#34;$HOME/.config/code-server/config.yaml&#34;
 brew services start code-server
 brew services list
 curl -I http://127.0.0.1:8080
 </code></pre>
-<p>Respons redirect ke login dapat diterima; error koneksi berarti service belum siap. Selanjutnya, di hub:</p>
+<p>Respons redirect ke login dapat diterima; error koneksi berarti service belum siap. Selanjutnya, di server Intel:</p>
 <pre><code language="language-bash" class="language-bash">tailscale serve --bg http://127.0.0.1:8080
 tailscale serve status
 </code></pre>
-<p>Ikuti instruksi admin untuk mengaktifkan HTTPS/MagicDNS bila diminta. Buka <strong>URL HTTPS persis yang dicetak</strong>, misalnya <code>https://office-hub.nama-tailnet.ts.net</code>, dari browser client yang terhubung Tailscale. Tetap gunakan login code-server. Serve membagikan layanan dalam tailnet; jangan mengaktifkan Funnel untuk skenario privat ini.</p>
+<p>Ikuti instruksi admin untuk mengaktifkan HTTPS/MagicDNS bila diminta. Buka <strong>URL HTTPS persis yang dicetak</strong>, misalnya <code>https://mac-server.nama-tailnet.ts.net</code>, dari browser client yang terhubung Tailscale. Tetap gunakan login code-server. Serve membagikan layanan dalam tailnet; jangan mengaktifkan Funnel untuk skenario privat ini.</p>
 <p>Dari browser HP, buka terminal dan jalankan <code>hostname</code>, lalu <code>tmux new-session -A -s work</code>. Dari laptop lain, sesi yang sama dapat dilanjutkan. Jangan mengedit file yang sama secara bersamaan dari beberapa sesi.</p>
 <p>Open VSX dan marketplace VS Code tidak identik; beberapa ekstensi tidak tersedia/diizinkan di code-server. Pengujian UI mobile dan perangkat USB tetap dilakukan pada host/perangkat yang terhubung secara fisik.</p>
 <p>Rollback layanan:</p>
@@ -117,14 +117,14 @@ brew services stop code-server
     
       <google-codelab-step label="Uji Penerimaan Akses" duration="5">
         <ul>
-<li>[ ] HP menggunakan data seluler + Tailscale dapat membuka HTTPS hub dan login.</li>
-<li>[ ] Browser terminal menghasilkan hostname M1.</li>
+<li>[ ] HP menggunakan data seluler + Tailscale dapat membuka HTTPS server Intel dan login.</li>
+<li>[ ] Browser terminal menghasilkan hostname Intel 2019.</li>
 <li>[ ] tmux dapat di-attach kembali setelah client putus.</li>
-<li>[ ] Client tanpa izin tailnet tidak dapat membuka hub.</li>
-<li>[ ] Worker mati tidak memutus akses ke hub.</li>
-<li>[ ] Setelah reboot/login M1, operator memeriksa Tailscale, <code>brew services list</code>, dan <code>tailscale serve status</code>.</li>
+<li>[ ] Client tanpa izin tailnet tidak dapat membuka server Intel.</li>
+<li>[ ] M1 tidur atau dimatikan tidak memutus layanan server Intel.</li>
+<li>[ ] Setelah reboot/login Intel 2019, operator memeriksa Tailscale, <code>brew services list</code>, dan <code>tailscale serve status</code>.</li>
 </ul>
-<p>Jika akses gagal: cek hub menyala → Tailscale connected → MagicDNS/izin → port/service → login. Jika SSH bisa tetapi browser gagal, uji <code>curl -I http://127.0.0.1:8080</code> di hub sebelum mengubah jaringan.</p>
+<p>Jika akses gagal: cek server Intel menyala → Tailscale connected → MagicDNS/izin → port/service → login. Jika SSH bisa tetapi browser gagal, uji <code>curl -I http://127.0.0.1:8080</code> di server sebelum mengubah jaringan.</p>
 <p><a href="../agentic-dual-mac-part-4-memory-harness/" target="_blank">Lanjut Part 4: agent, memori, dan handoff</a>.</p>
 
 

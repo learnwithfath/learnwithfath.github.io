@@ -31,12 +31,12 @@
       <google-codelab-step label="Uji Satu Task dari Ujung ke Ujung" duration="10">
         <p>Prasyarat: <a href="../agentic-dual-mac-part-2-provisioning/" target="_blank">Part 2</a>, <a href="../agentic-dual-mac-part-3-jaringan-remote/" target="_blank">Part 3</a>, dan <a href="../agentic-dual-mac-part-4-memory-harness/" target="_blank">Part 4</a> sudah diuji. Gunakan repo latihan/open source atau repo kerja yang diizinkan.</p>
 <ol type="1">
-<li>Dari HP di jaringan seluler, sambungkan Tailscale dan buka HTTPS code-server M1.</li>
+<li>Dari HP di jaringan seluler, sambungkan Tailscale dan buka HTTPS code-server Intel 2019.</li>
 <li>Buka terminal, periksa <code>hostname</code>, lalu attach tmux.</li>
 <li>Pilih perubahan kecil dengan acceptance criteria konkret, misalnya memperbaiki satu tautan rusak beserta pemeriksaannya.</li>
 <li>Agent membuat patch dalam worktree. Operator menjalankan test/build repo dan meninjau diff.</li>
-<li>Putuskan koneksi HP, tunggu beberapa menit, lalu attach kembali dari Intel/client lain.</li>
-<li>Jika memerlukan worker, lakukan handoff commit melalui Git sebagaimana Part 4. Catat hasil test di worker dan SHA yang diuji.</li>
+<li>Putuskan koneksi HP, tunggu beberapa menit, lalu attach kembali dari M1/client lain.</li>
+<li>Jalankan build/test pada server Intel melalui sesi remote. Jika memakai clone lokal terpisah, ikuti handoff Git di Part 4 dan catat SHA yang diuji.</li>
 <li>Simpan task sebagai <code>done</code> hanya jika acceptance criteria terpenuhi; <code>blocked</code> bila gagal dan perlu keputusan.</li>
 </ol>
 <p>Hasil yang dicatat: hostname, SHA, command, exit code, durasi, dan biaya bila memakai model API. Task tidak dianggap berhasil hanya karena agent berkata selesai.</p>
@@ -68,8 +68,8 @@ maestro test .maestro/auth_login_flow.yaml
 <p>Ambil <code>TEST_OTP</code> dari fixture test Anda dan berikan melalui mekanisme environment/parameter Maestro yang didukung versi terpasang. Jangan menambahkan OTP tetap ke logika produksi agar test lulus.</p>
 <p>Jika perlu inspeksi UI oleh agent, evaluasi <a href="https://github.com/mobile-next/mobile-mcp" target="_blank">mobile-next/mobile-mcp</a>, bukan alamat <code>lobehub/mobile-mcp</code> dari edisi lama. Ikuti README upstream dan pin versi paket setelah uji. Maestro juga menyediakan integrasi MCP; gunakan satu integrasi dahulu. Jumlah stars mobile-mcp lebih kecil daripada stack inti dan ia tetap opsional.</p>
 <p>Saat test gagal, periksa screenshot, accessibility tree, fixture, dan app. Jangan menghapus assertion atau mengganti ekspektasi hanya untuk memperoleh PASS. Batasi tiga percobaan perbaikan lalu laporkan blocker.</p>
-<p>Bila APK dibuat di Intel dan HP terpasang di <strong>client M1</strong>, salin artifact terlebih dahulu melalui koneksi yang diizinkan. Contoh dijalankan <strong>di M1</strong> setelah menyiapkan alias SSH worker dan memasang Android Platform-Tools:</p>
-<pre><code language="language-bash" class="language-bash">scp personal-worker:~/projects/app/build/app/outputs/flutter-apk/app-debug.apk /tmp/app-debug.apk
+<p>Bila APK dibuat di Intel dan HP terpasang di <strong>client M1</strong>, salin artifact terlebih dahulu melalui koneksi yang diizinkan. Contoh dijalankan <strong>di M1</strong> setelah menyiapkan alias SSH server Intel dan memasang Android Platform-Tools:</p>
+<pre><code language="language-bash" class="language-bash">scp mac-server:~/projects/app/build/app/outputs/flutter-apk/app-debug.apk /tmp/app-debug.apk
 adb devices
 adb install -r /tmp/app-debug.apk
 </code></pre>
@@ -81,7 +81,7 @@ adb install -r /tmp/app-debug.apk
       <google-codelab-step label="Backup dan Uji Restore" duration="10">
         <p>Git menyimpan commit; file belum di-commit dan catatan operasional juga perlu backup. Gunakan destination yang diizinkan dan terpisah dari disk sumber. Contoh restic memakai disk eksternal khusus; <strong>jangan salin repo kantor ke storage pribadi tanpa izin</strong>.</p>
 <p>Sebelum contoh berikut, buat password backup kuat di password manager dan simpan salinannya sebagai file privat <code>~/.config/restic/password</code> dengan permission <code>600</code>. Pastikan volume <code>/Volumes/Backup</code> benar-benar terpasang, bukan folder pada disk internal.</p>
-<pre><code language="language-bash" class="language-bash">export RESTIC_REPOSITORY=&#34;/Volumes/Backup/office-hub-restic&#34;
+<pre><code language="language-bash" class="language-bash">export RESTIC_REPOSITORY=&#34;/Volumes/Backup/mac-server-restic&#34;
 export RESTIC_PASSWORD_FILE=&#34;$HOME/.config/restic/password&#34;
 restic init
 </code></pre>
@@ -107,7 +107,7 @@ restic restore latest --target &#34;$RESTORE_DIR&#34;
       </google-codelab-step>
     
       <google-codelab-step label="Pemantauan dan Recovery" duration="8">
-        <p>Di M1, periksa setelah login dan setelah update:</p>
+        <p>Di server Intel 2019, periksa setelah login dan setelah update:</p>
 <pre><code language="language-bash" class="language-bash">uptime
 pmset -g batt
 memory_pressure
@@ -118,13 +118,13 @@ tailscale status
 tailscale serve status
 curl -I http://127.0.0.1:8080
 </code></pre>
-<p>Catat baseline idle dan saat satu job berjalan. Memory Pressure yang terus kuning/merah atau swap yang terus naik menjadi alasan mengurangi concurrency, menutup browser/extension berat, atau memindahkan job ke worker yang diizinkan. Jangan menjanjikan angka RAM, baterai, atau kecepatan yang belum diukur.</p>
-<p>Untuk alert, <a href="https://github.com/louislam/uptime-kuma" target="_blank">Uptime Kuma</a> opsional pada host lain yang selalu tersedia di tailnet. Monitor di M1 sendiri tidak dapat melaporkan ketika M1 mati total. Intel yang dimatikan juga bukan monitor 24/7. Tentukan jalur notifikasi dan hindari menambah daemon hanya untuk mengisi laptop.</p>
+<p>Catat baseline idle dan saat satu job berjalan. Memory Pressure yang terus kuning/merah atau swap yang terus naik menjadi alasan mengurangi concurrency, menutup browser/extension berat, atau menjadwalkan job berat secara bergantian. Jangan menjanjikan angka RAM, baterai, atau kecepatan yang belum diukur.</p>
+<p>Untuk alert, <a href="https://github.com/louislam/uptime-kuma" target="_blank">Uptime Kuma</a> opsional pada host lain yang selalu tersedia di tailnet. Monitor di server Intel sendiri tidak dapat melaporkan ketika Intel mati total. M1 yang bisa tidur juga bukan monitor 24/7. Tentukan jalur notifikasi dan hindari menambah daemon hanya untuk mengisi laptop.</p>
 <table>
 <tr><td colspan="1" rowspan="1"><p>Gejala</p>
 </td><td colspan="1" rowspan="1"><p>Pemeriksaan dan pemulihan</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>Hub tidak terlihat</p>
+<tr><td colspan="1" rowspan="1"><p>Server Intel tidak terlihat</p>
 </td><td colspan="1" rowspan="1"><p>Pastikan daya, lid, jaringan, unlock/login, lalu status Tailscale</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>SSH bisa, browser gagal</p>
@@ -136,8 +136,8 @@ curl -I http://127.0.0.1:8080
 <tr><td colspan="1" rowspan="1"><p>Host reboot</p>
 </td><td colspan="1" rowspan="1"><p>Unlock/login bila dibutuhkan, verifikasi service, baca task terakhir, ulangi hanya langkah yang belum selesai</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>Worker tidak tersedia</p>
-</td><td colspan="1" rowspan="1"><p>Tandai <code>waiting-worker</code>; hub tetap menerima pekerjaan ringan</p>
+<tr><td colspan="1" rowspan="1"><p>Server Intel tidak tersedia</p>
+</td><td colspan="1" rowspan="1"><p>Tandai <code>waiting-server</code>; pulihkan daya/jaringan/login sebelum melanjutkan job</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>Biaya API melewati budget</p>
 </td><td colspan="1" rowspan="1"><p>Hentikan sesi/job dan periksa provider usage sebelum melanjutkan</p>
@@ -156,7 +156,7 @@ curl -I http://127.0.0.1:8080
 <tr><td colspan="1" rowspan="1"><p>Pengujian</p>
 </td><td colspan="1" rowspan="1"><p>Bukti yang harus diisi operator</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>Layar hub mati, charger terpasang</p>
+<tr><td colspan="1" rowspan="1"><p>Layar server Intel mati, charger terpasang</p>
 </td><td colspan="1" rowspan="1"><p>Waktu cek + akses SSH/HTTPS dari client</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>HP di jaringan seluler</p>
@@ -165,10 +165,10 @@ curl -I http://127.0.0.1:8080
 <tr><td colspan="1" rowspan="1"><p>Client disconnect/reconnect</p>
 </td><td colspan="1" rowspan="1"><p>Sesi tmux dan proses task yang sama</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>Intel dimatikan</p>
-</td><td colspan="1" rowspan="1"><p>Hub tetap tersedia; task worker tertunda jelas</p>
+<tr><td colspan="1" rowspan="1"><p>M1 dimatikan</p>
+</td><td colspan="1" rowspan="1"><p>Server Intel dan job tetap berjalan; client lain dapat masuk</p>
 </td></tr>
-<tr><td colspan="1" rowspan="1"><p>Restart M1 terencana</p>
+<tr><td colspan="1" rowspan="1"><p>Restart Intel 2019 terencana</p>
 </td><td colspan="1" rowspan="1"><p>Durasi downtime + langkah unlock/login + status service</p>
 </td></tr>
 <tr><td colspan="1" rowspan="1"><p>Backup dan restore</p>
@@ -182,7 +182,7 @@ curl -I http://127.0.0.1:8080
 </td></tr>
 </table>
 <p>Restart dilakukan saat tidak ada job penting. Catat kebutuhan operator fisik, bukan mengklaim pemulihan otomatis tanpa mengujinya. Jadwalkan update OS/tool di jendela pemeliharaan. Setelah update, ulangi smoke test SSH/browser/agent; bandingkan versi dengan catatan sebelumnya.</p>
-<p><strong>Checklist selesai:</strong> koneksi privat bekerja, job tidak terduplikasi, hub responsif, backup dapat dipulihkan, budget terukur, dan recovery terdokumentasi. Laptop tetap memiliki keterbatasan daya, jaringan, login, dan mobilitas; kebutuhan SLA lebih tinggi memerlukan host yang memang dikelola sebagai server.</p>
+<p><strong>Checklist selesai:</strong> koneksi privat bekerja, job tidak terduplikasi, server Intel responsif, backup dapat dipulihkan, budget terukur, dan recovery terdokumentasi. Laptop tetap memiliki keterbatasan daya, jaringan, login, dan mobilitas; kebutuhan SLA lebih tinggi memerlukan host yang memang dikelola sebagai server.</p>
 <p><a href="../agentic-dual-mac-workflow.html" target="_blank">Kembali ke peta seri</a> · <a href="../data/dual-mac-projects.json" target="_blank">Bukti proyek open source</a>.</p>
 
 
