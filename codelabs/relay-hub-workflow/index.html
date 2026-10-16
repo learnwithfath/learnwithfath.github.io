@@ -27,10 +27,54 @@
                   title="Relay Hub — Workflow Knowledge Hub dari Sesi Pertama sampai Handoff"
                   environment="web"
                   feedback-link="https://github.com/learnwithfath/learnwithfath.github.io/issues">
-    
-      <google-codelab-step label="Apa yang Akan Anda Bangun?" duration="5">
+
+      <google-codelab-step label="Mulai dari Percakapan, Agent Mengurus Teknisnya" duration="5">
         <p>Relay Hub adalah pola kerja berbasis repository: aturan agent, ingatan tim, catatan operator, dan pekerjaan yang sedang diestafetkan berada dalam Markdown yang direview melalui Git. Tutorial ini menjelaskan workflow implementasi hub yang menjadi acuan, bukan instalasi paket bernama <code>relay-hub</code>.</p>
-<p>Target pembaca: engineer, support, dan maintainer yang sudah mendapat akses ke clone hub beserta <code>scripts/hub.py</code>. Tutorial ini tidak menyertakan kode hub, URL repository privat, data client, atau integrasi internal. Perintah <code>hub.py</code> dijalankan dari root clone hub Anda, bukan dari repository situs tutorial ini.</p>
+<p>Tutorial ini ditujukan kepada operator yang bekerja melalui percakapan dengan AI agent. Anda cukup menyampaikan tujuan, konteks, dan hasil yang diinginkan. <strong>Anda tidak perlu menjalankan Python, mengedit YAML, atau mengetik perintah Git.</strong> Agent mengurus pekerjaan teknis sesuai aturan repository dan akses yang tersedia.</p>
+<p>Hub perlu dapat diakses agent melalui folder project yang dibuka. Untuk setup pertama, berikan lokasi atau akses resmi dari maintainer. Jika login, izin OS, atau akses layanan perlu dilakukan manusia, agent menjelaskan hambatan spesifik dan bantuan minimum yang diperlukan.</p>
+<p>Tutorial memakai contoh sintetis dan tidak membagikan data client atau repository privat. Ganti <code>operator-demo</code>, nama kasus, lokasi repo, dan LINK_THREAD dengan informasi aktual Anda. Jangan memasukkan secret atau data pribadi customer ke prompt.</p>
+<h2 is-upgraded>Pola prompt yang membantu agent bekerja tuntas</h2>
+<p>Sebutkan <strong>siapa Anda → tujuan → sumber konteks → hasil yang diharapkan → batas tindakan</strong>. Tidak perlu menyebut command internal. Setelah konteks disepakati dalam sesi, cukup instruksi singkat untuk melanjutkan.</p>
+<pre><code language="language-text" class="language-text">Saya operator-demo. Tangani kasus timeout ekspor dari LINK_THREAD;
+repo aplikasinya berada di LOKASI_REPO. Cari konteks lama di hub,
+lalu investigasi dan siapkan perbaikan lokal bila buktinya cukup.
+Perbarui catatan hub, buat ringkasan temuan dan draft balasan.
+Kerjakan langkah rutin secara mandiri; tanyakan hanya informasi
+atau keputusan yang benar-benar menghambat. Jangan kirim pesan,
+merge, push, atau mengubah infrastruktur tanpa instruksi spesifik.
+</code></pre>
+<h2 is-upgraded>Prompt singkat setelah konteks sudah jelas</h2>
+<p>Tidak perlu mengulang prompt panjang pada setiap giliran. Dalam sesi kasus yang sama, instruksi berikut cukup:</p>
+<ul>
+<li>&#34;Lanjutkan investigasi dari temuan terakhir dan perbarui catatannya.&#34;</li>
+<li>&#34;Buat draft update singkat untuk thread ini, belum dikirim.&#34;</li>
+<li>&#34;Catat bahwa kita menunggu tim penguji; jangan tutup ticket dulu.&#34;</li>
+<li>&#34;Siapkan handoff karena saya akan pindah sesi.&#34;</li>
+<li>&#34;Rapikan catatan sesi ini dan simpan progres lokal sesuai aturan repo.&#34;</li>
+</ul>
+<p>Agent tetap mengikuti aturan yang telah dimuat. Jika ada beberapa ticket aktif dan rujukan &#34;ini&#34; ambigu, sebut nama kasus atau slug agar tidak salah memperbarui catatan.</p>
+<h2 is-upgraded>Pembagian tugas</h2>
+<table>
+<tr><td colspan="1" rowspan="1"><p>Operator</p>
+</td><td colspan="1" rowspan="1"><p>Agent secara mandiri</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Menyebut identitas, tujuan, dan sumber kasus</p>
+</td><td colspan="1" rowspan="1"><p>Membaca aturan, profil, journal, konteks aktif dan handoff terkait</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Menambahkan informasi yang belum bisa diakses agent</p>
+</td><td colspan="1" rowspan="1"><p>Mencari kasus lama, menguji hipotesis, mencatat batas bukti</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Mereview hasil dan memutuskan pilihan yang berdampak</p>
+</td><td colspan="1" rowspan="1"><p>Memperbarui ticket, journal, dashboard, handoff dan tautan balik</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Memberi instruksi aksi keluar yang spesifik</p>
+</td><td colspan="1" rowspan="1"><p>Menjalankan <code>sync-used-by</code>, validasi dan commit lokal sesuai aturan</p>
+</td></tr>
+<tr><td colspan="1" rowspan="1"><p>Memverifikasi klaim sebelum menaikkan confidence</p>
+</td><td colspan="1" rowspan="1"><p>Menghasilkan draft knowledge berstatus unverified dengan sumber</p>
+</td></tr>
+</table>
+<p>Pekerjaan mandiri ini terjadi dalam sesi ketika agent dijalankan dan memiliki tool yang dibutuhkan. Hub bukan layanan yang otomatis bekerja di latar belakang ketika tidak ada sesi agent aktif.</p>
 <p>Setelah selesai, Anda dapat:</p>
 <ul>
 <li>Memulai sesi dengan identitas dan konteks yang tepat.</li>
@@ -50,9 +94,17 @@ Pelajaran → usulan knowledge/runbook → verifikasi manusia
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Kenali Peta Repository" duration="6">
-        <table>
+        <h2 is-upgraded>Prompt operator — Kenali konteks tanpa menghafal folder</h2>
+<pre><code language="language-text" class="language-text">Saya operator-demo. Jelaskan pekerjaan aktif saya dari hub:
+apa status terakhir, blocker, dan tiga prioritas berikutnya?
+Tautkan ke catatan sumber dan bedakan data yang sudah basi.
+Jangan mengubah status hanya untuk merapikan daftar.
+</code></pre>
+<p><strong>Yang dikerjakan agent:</strong> Agent membaca konteks operator, menemukan sumber yang relevan, dan menyajikan ringkasan. Peta folder di bawah adalah referensi agar Anda dapat mengenali hasilnya.</p>
+<h2 is-upgraded>Yang perlu dipahami operator</h2>
+<table>
 <tr><td colspan="1" rowspan="1"><p>Lokasi</p>
 </td><td colspan="1" rowspan="1"><p>Fungsi</p>
 </td><td colspan="1" rowspan="1"><p>Kapan dibaca atau diubah</p>
@@ -111,51 +163,51 @@ Pelajaran → usulan knowledge/runbook → verifikasi manusia
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Onboarding dan Pemeriksaan Lingkungan" duration="10">
-        <p>Prasyarat: Git, Python 3.9+, akses repository hub, dan izin menjalankan setup lokal. Python tooling hub menggunakan standard library; tidak perlu memasang dependensi pip untuk <code>hub.py</code>.</p>
-<p>Ganti URL contoh dengan remote yang diberikan maintainer. Placeholder URL ini tidak dapat langsung di-clone.</p>
-<pre><code language="language-bash" class="language-bash">git clone URL_REMOTE_HUB ~/projects/team-hub
-cd ~/projects/team-hub
-git status --short --branch
-git worktree list
-git remote show origin
+        <h2 is-upgraded>Prompt operator — Setup pertama melalui agent</h2>
+<pre><code language="language-text" class="language-text">Saya operator-demo, baru memakai Relay Hub. Folder hub ada di
+LOKASI_HUB. Siapkan lingkungan sesuai aturan repo, periksa
+kesiapannya, dan buat profil saya jika belum ada. Role saya ROLE;
+area kerja saya AREA; preferensi saya PREFERENSI. Kerjakan setup
+lokal yang diperlukan dan tampilkan ringkasan hasil serta blocker.
+Jangan push atau mengubah konfigurasi layanan eksternal.
 </code></pre>
-<p>Cari branch default dari output remote. Contoh berikut memakai <code>main</code>; gunakan <code>master</code> jika itu yang benar pada hub Anda. Update hanya ketika working tree bersih dan Anda berada di branch target pada checkout utama.</p>
-<pre><code language="language-bash" class="language-bash">git switch main
-git pull --ff-only origin main
-git switch -c hub/operator-demo/onboarding
-export QISCUS_HUB=&#34;$PWD&#34;
-export HUB_OPERATOR=operator-demo
-bash scripts/setup.sh
-python3 scripts/hub.py install --dry-run
-python3 scripts/hub.py install
-python3 scripts/hub.py doctor
-</code></pre>
-<p><code>setup.sh</code> memasang hook validasi. <code>install</code> membuat symlink skill dan dapat memindahkan salinan lama ke backup; review dry-run terlebih dahulu. Variabel export di atas hanya berlaku di shell aktif; bila diperlukan, simpan pengaturan yang sesuai di profil shell Anda.</p>
-<p>Ganti <code>operator-demo</code> dengan handle sendiri. Identitas harus dinyatakan operator, bukan ditebak dari git config, email, atau perangkat bersama.</p>
+<p><strong>Yang dikerjakan agent:</strong> Agent memeriksa repo dan worktree, memilih branch yang benar, menyiapkan hook dan skill sesuai aturan, memeriksa kesehatan lingkungan, lalu membuat atau memperbarui profil. Agent tidak meminta operator menyalin command terminal.</p>
+<h2 is-upgraded>Yang perlu dipahami operator</h2>
+<p>Prasyarat: Git, Python 3.9+, akses repository hub, dan izin menjalankan setup lokal. Python tooling hub menggunakan standard library; tidak perlu memasang dependensi pip untuk <code>hub.py</code>.</p>
+<p>Berikan lokasi clone yang sudah ada atau remote resmi dari maintainer kepada agent. Agent menggunakan data aktual tersebut saat setup.</p>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
+<p>Agent mendeteksi branch default dari remote, memeriksa perubahan sesi lain, lalu memperbarui branch utama ketika working tree bersih sebelum membuat topic branch.</p>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
+<p><code>setup.sh</code> memasang hook validasi. <code>install</code> membuat symlink skill dan dapat memindahkan salinan lama ke backup; review dry-run terlebih dahulu. Agent juga memeriksa lokasi hub dan identitas operator pada lingkungan aktif; kebutuhan konfigurasi persisten mengikuti aturan setup lokal.</p>
+<p>Sebutkan handle sendiri dalam prompt. Identitas harus dinyatakan operator, bukan ditebak dari git config, email, atau perangkat bersama.</p>
 <p>Jika profil belum ada:</p>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py new person --person operator-demo
-python3 scripts/hub.py export
-python3 scripts/hub.py check
-</code></pre>
-<p>Isi role, area tanggung jawab, dan preferensi di profil. <code>export</code> menghasilkan berkas diskusi dari profil dan konteks aktif; jangan mengedit output generated secara langsung.</p>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
+<p>Sampaikan role, area tanggung jawab, dan preferensi; agent memasukkannya ke profil. <code>export</code> menghasilkan berkas diskusi dari profil dan konteks aktif; jangan mengedit output generated secara langsung.</p>
 <p><strong>Checkpoint: </strong><code>doctor</code> tidak menunjukkan GAGAL. Pahami setiap peringatan sebelum lanjut; output sukses bukan jaminan akses MCP atau layanan pihak ketiga tersedia.</p>
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Mulai Sesi dan Rencanakan Hari" duration="6">
-        <p>Urutan baca agent:</p>
+        <h2 is-upgraded>Prompt operator — Mulai hari kerja</h2>
+<pre><code language="language-text" class="language-text">Saya operator-demo. Mulai sesi hari ini dari konteks hub saya.
+Lihat pekerjaan aktif dan handoff terkait, lanjutkan journal yang
+sudah ada atau buat bila belum ada. Susun prioritas berdasarkan
+blocker dan langkah berikut. Kerjakan dulu yang tidak membutuhkan
+jawaban saya, lalu laporkan keputusan yang perlu saya ambil.
+</code></pre>
+<p><strong>Yang dikerjakan agent:</strong> Agent memuat konteks, menjaga journal tidak duplikat, dan menyiapkan rencana. Jika operator belum menyebut identitas, agent bertanya; jika sudah, agent tidak perlu menanyakannya kembali.</p>
+<h2 is-upgraded>Yang perlu dipahami operator</h2>
+<p>Urutan baca agent:</p>
 <ol type="1">
 <li>Konfirmasi identitas operator.</li>
 <li>Baca <code>AGENTS.md</code>, lalu <code>memory/_hot.md</code>.</li>
 <li>Jalankan daftar handoff; buka hanya pekerjaan yang ditugaskan.</li>
 <li>Baca profil dan journal terakhir operator.</li>
 </ol>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py handoff list
-python3 scripts/hub.py new journal --person operator-demo
-</code></pre>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p>Jangan menjalankan <code>new journal</code> berulang bila entry hari ini sudah ada; buka dan perbarui entry tersebut. Isi Plan dengan pekerjaan aktual, lalu pindahkan hasil nyata ke Done. Catat blocker dan langkah berikut di bagian handoff journal.</p>
 <p>Contoh prompt untuk agent yang bisa membaca file:</p>
 <pre><code language="language-text" class="language-text">Saya operator-demo. Baca AGENTS.md dan konteks awal sesi.
@@ -167,17 +219,24 @@ jangan kirim, push, merge, atau mengubah infrastruktur.
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Cari Dulu, Baru Buat Tiket" duration="8">
-        <p>Ilustrasi: sebuah proses ekspor mengalami timeout. Ini gejala latihan, bukan insiden aktual. Mulai dengan pencarian:</p>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py search &#34;timeout ekspor&#34;
-python3 scripts/hub.py search &#34;timeout&#34; --type ticket,runbook,knowledge
-python3 scripts/hub.py report stale
+        <h2 is-upgraded>Prompt operator — Tangani laporan baru</h2>
+<pre><code language="language-text" class="language-text">Saya operator-demo. Ada laporan timeout ekspor di LINK_THREAD.
+Repo aplikasi: LOKASI_REPO. Cari kasus, runbook, dan knowledge yang
+relevan di hub sebelum investigasi. Gunakan skill yang sesuai,
+catat bukti serta hipotesis, lalu siapkan perbaikan lokal dan
+verifikasi yang relevan bila memungkinkan. Perbarui ticket dan
+status aktif. Beri saya temuan, batas bukti, dan langkah berikut;
+siapkan draft balasan tanpa mengirimnya.
 </code></pre>
+<p><strong>Yang dikerjakan agent:</strong> Agent membaca sumber yang dapat diakses, mencari konteks lama, membuat atau melanjutkan ticket aktual, dan memelihara dashboard. Jika thread tidak dapat dibaca, agent meminta isi relevan atau akses yang diizinkan; agent tetap melanjutkan pemeriksaan independen yang tersedia.</p>
+<h2 is-upgraded>Yang perlu dipahami operator</h2>
+<p>Ilustrasi: sebuah proses ekspor mengalami timeout. Ini gejala latihan, bukan insiden aktual. Mulai dengan pencarian:</p>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p>Baca hasil relevan, confidence, sumber, dan tanggal verifikasinya. Hasil pencarian adalah petunjuk; kemiripan gejala tidak membuktikan root cause sama. Beri tahu operator hasil mana yang dipakai dan apa yang perlu dicek ulang.</p>
 <p>Untuk laporan aktual baru, buat entry dari template:</p>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py new ticket export-timeout
-</code></pre>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p>Nama file bertanggal dibuat tool. Isi Summary, sumber laporan, Timeline, Investigation, dan Actions Taken. Simpan konteks yang membantu reproduksi: komponen, endpoint, kode error, struktur payload, versi, lingkungan, dan rujukan kode. Jangan menyimpan token, env produksi, data pribadi customer, atau isi pesan customer asli.</p>
 <p>Pisahkan empat hal:</p>
 <table>
@@ -202,9 +261,18 @@ python3 scripts/hub.py report stale
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Investigasi, Status, dan Komunikasi" duration="8">
-        <p>Catat setiap pemeriksaan beserta lingkup buktinya: pembacaan kode, unit test, mock, staging, atau observasi production. Tes lokal yang lulus tidak membuktikan masalah production sudah selesai.</p>
+        <h2 is-upgraded>Prompt operator — Update ketika menunggu pihak lain</h2>
+<pre><code language="language-text" class="language-text">Kasus timeout ekspor sekarang menunggu hasil uji dari tim penguji.
+Catat sebagai pending, tulis siapa yang ditunggu dan bukti yang
+masih dibutuhkan. Perbarui catatan terkait secara konsisten.
+Buat draft follow-up singkat dari konteks thread terbaru;
+jangan kirim dan jangan mengklaim kasus sudah resolved.
+</code></pre>
+<p><strong>Yang dikerjakan agent:</strong> Agent memperbarui tahap berdasarkan informasi aktual dan menyiapkan draft. Jika skill memerlukan konfirmasi status papan eksternal yang tidak dapat diakses, agent meminta konfirmasi itu secara spesifik.</p>
+<h2 is-upgraded>Yang perlu dipahami operator</h2>
+<p>Catat setiap pemeriksaan beserta lingkup buktinya: pembacaan kode, unit test, mock, staging, atau observasi production. Tes lokal yang lulus tidak membuktikan masalah production sudah selesai.</p>
 <p><code>status</code> ticket dan <code>stage</code> operator memiliki peran berbeda. <code>status: open</code> dapat tetap dipakai ketika operator sudah mencapai <code>stage: to-verify</code>: pekerjaan operator selesai dan menunggu verifikasi pihak berwenang. Jangan otomatis mengubahnya menjadi resolved.</p>
 <table>
 <tr><td colspan="1" rowspan="1"><p>Stage</p>
@@ -229,18 +297,32 @@ python3 scripts/hub.py report stale
 </td><td colspan="1" rowspan="1"><p>Penutupan administratif sesuai kewenangan</p>
 </td></tr>
 </table>
-<p>Baca bantuan command sebelum memindahkan stage:</p>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py stage --help
-</code></pre>
-<p>Jangan mengklaim perubahan kolom tool eksternal sudah dilakukan bila Anda hanya mengubah frontmatter lokal. Konfirmasi status eksternal kepada operator jika aksesnya tidak tersedia.</p>
+<p>Agent memeriksa sintaks tool sebelum memindahkan stage:</p>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
+<p>Jangan mengklaim perubahan kolom tool eksternal sudah dilakukan bila agent hanya mengubah frontmatter lokal. Konfirmasi status eksternal kepada operator jika aksesnya tidak tersedia.</p>
 <p>Draft follow-up yang berguna menjawab: apa yang berubah, siapa pemilik aksi berikut, dan bukti apa yang masih dibutuhkan. Ringkasan untuk reviewer menampilkan masalah, status, rekomendasi, dan blocker lebih dulu; detail log serta kronologi dapat ditautkan.</p>
 <p>Agent menampilkan draft pesan terlebih dahulu. Kata &#34;lanjut&#34; atau &#34;oke&#34; bukan izin mengirim; diperlukan instruksi kirim untuk pesan tersebut. Pesan yang dikirim agent atas nama operator membawa penanda terlihat <code>sent by AGENT (AI)</code>. Deploy, restart, scale, konfigurasi, dan perubahan database membutuhkan konfirmasi spesifik.</p>
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Tutup Kasus dan Bangun Trusted Memory" duration="8">
-        <p>Sebelum menetapkan ticket resolved/closed, pastikan hasil yang dicatat benar-benar terjadi. Lengkapi Resolution, tanggal resolusi yang benar, dan dua bagian pembelajaran:</p>
+        <h2 is-upgraded>Prompt operator — Tutup setelah ada verifikasi</h2>
+<pre><code language="language-text" class="language-text">Hasil verifikasi dari PIHAK_VERIFIKASI di SUMBER_VERIFIKASI
+menyatakan kasus timeout ekspor selesai. Tutup ticket berdasarkan
+bukti tersebut. Lengkapi resolusi, rujukan yang benar-benar dipakai,
+dan pelajaran yang dapat diulang; rapikan dashboard dan journal.
+Sinkronkan referensi dan validasi sendiri. Jika layak jadi knowledge
+atau runbook, ajukan draft untuk review; jangan menaikkan confidence
+atau mengarang hasil pengujian.
+</code></pre>
+<p><strong>Yang dikerjakan agent: Agent menjalankan </strong></p>
+<p><strong><code>sync-used-by</code></strong></p>
+<p><strong> dan </strong></p>
+<p><strong><code>hub.py check</code></strong></p>
+<p><strong> sendiri.</strong> Operator tidak perlu mengingat atau meminta command tersebut satu per satu. Jika bukti baru menyatakan implementasi selesai, agent mencatat tahap yang sesuai dan tidak menutup ticket sebagai resolved.</p>
+<h2 is-upgraded>Yang perlu dipahami operator</h2>
+<p>Sebelum menetapkan ticket resolved/closed, pastikan hasil yang dicatat benar-benar terjadi. Lengkapi Resolution, tanggal resolusi yang benar, dan dua bagian pembelajaran:</p>
 <pre><code language="language-markdown" class="language-markdown">## Rujukan yang dipakai
 
 Tautkan runbook, knowledge, atau ticket yang benar-benar dipakai.
@@ -252,82 +334,100 @@ Tuliskan langkah, query, atau jebakan yang benar-benar ditemukan.
 Bila tidak ada, tulis tidak ada.
 </code></pre>
 <p>Isi <code>pattern:</code> dalam kebab-case jika kasus benar-benar cocok dengan pola berulang. Kemudian:</p>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py sync-used-by
-python3 scripts/hub.py check
-</code></pre>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p><code>sync-used-by</code> menyelaraskan back-reference runbook/knowledge dari bagian rujukan ticket. Review diff karena command dapat memperbarui lebih dari satu file.</p>
 <p>Knowledge baru dibuat dari template:</p>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py new knowledge export-timeout-observations
-</code></pre>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p>Untuk tulisan agent, mulai dengan <code>confidence: unverified</code>, <code>last_verified: null</code>, dan sumber yang dapat diikuti. Gunakan sumber permanen yang diizinkan, seperti path kode atau dokumen; handoff sementara bukan sumber knowledge. Hanya manusia yang menaikkan confidence sesudah memeriksa klaim terhadap sumbernya.</p>
 <p>Jangan menandai verified karena test lolos saja. Jika prosedur berulang layak menjadi runbook atau skill, ajukan promosi lewat PR untuk review manusia.</p>
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Handoff yang Bisa Dilanjutkan" duration="8">
-        <p>Buat handoff di awal pekerjaan panjang atau ketika berisiko terputus:</p>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py handoff new export-timeout-review --task &#34;Lanjutkan pemeriksaan timeout ekspor&#34; --operator operator-demo
-python3 scripts/hub.py handoff show export-timeout-review
+        <h2 is-upgraded>Prompt operator — Berhenti atau ganti agent</h2>
+<pre><code language="language-text" class="language-text">Saya akan pindah sesi. Siapkan handoff untuk kasus timeout ekspor:
+simpan hasil aktual, branch dan commit, batas bukti, tool yang wajib
+tersedia, larangan, serta langkah berikut yang konkret. Perbarui
+ticket dan journal agar agent lain dapat melanjutkan tanpa briefing
+ulang. Beri saya slug handoff dan prompt siap tempel untuk sesi baru.
 </code></pre>
+<p><strong>Yang dikerjakan agent:</strong> Agent membuat handoff di awal pekerjaan panjang, memperbaruinya setiap langkah bermakna, dan menyiapkannya sebelum berhenti. Operator tidak perlu mengelola file handoff secara manual.</p>
+<h2 is-upgraded>Yang perlu dipahami operator</h2>
+<p>Buat handoff di awal pekerjaan panjang atau ketika berisiko terputus:</p>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p>Isi tujuan, branch/repo kerja, kebutuhan tool di <code>requires:</code>, bukti yang sudah ada, bagian Sudah selesai, Langkah berikut, serta Jangan dilakukan. Gunakan task aktual; contoh ini tidak boleh menjadi catatan insiden fiktif di hub tim.</p>
 <p>Setelah langkah bermakna:</p>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py handoff update export-timeout-review --agent codex --stop-reason other --note &#34;Catat hasil aktual dan titik lanjut di file handoff&#34;
-</code></pre>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p>Perbarui isi checklist file juga; log singkat saja belum cukup. Sebelum berhenti, tulis command berikut yang perlu dijalankan dan batas bukti saat itu.</p>
 <p>Agent penerima menjalankan <code>handoff show</code>, memeriksa <code>git status</code> dan <code>git log</code> pada branch yang dicatat, serta memastikan tool di <code>requires:</code> tersedia. Jika tool wajib tidak ada, berhenti dan laporkan; jangan menebak hasil. Bagian Jangan dilakukan tetap mengikat.</p>
 <p>Jika tujuan benar-benar selesai:</p>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py handoff close export-timeout-review
-</code></pre>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p>Close memindahkan ringkasan ke journal dan menghapus handoff. Simpan bukti permanen di ticket/project sebelum close. Jangan menutup atau mengubah handoff milik pekerjaan lain hanya untuk membersihkan daftar.</p>
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Skill dan Artifact dalam Workflow" duration="8">
-        <p>Skill adalah prosedur berversi yang dapat memerlukan CLI, environment, dan MCP tertentu. Tooling tidak otomatis menyediakan akses layanan.</p>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py skills list
-python3 scripts/hub.py preflight NAMA-SKILL
+        <h2 is-upgraded>Prompt operator — Minta hasil yang siap direview</h2>
+<pre><code language="language-text" class="language-text">Buat explainer kasus timeout ekspor untuk reviewer internal.
+Gunakan skill yang sesuai dan periksa dependensinya sendiri.
+Layar pertama harus menjelaskan masalah, bukti penyebab, status,
+blocker, dan rekomendasi dengan pemilik aksi. Detail teknis boleh
+diletakkan setelah ringkasan. Simpan sumber di hub, buka preview
+lokal, dan siapkan draft balasan. Jangan publikasikan atau kirim.
 </code></pre>
+<p><strong>Yang dikerjakan agent:</strong> Agent memilih skill yang relevan, menjalankan preflight, membuat sumber artifact beserta metadata, lalu memeriksa tampilan. Tool atau akses wajib yang hilang dilaporkan sebagai blocker; keberadaan skill tidak otomatis memberi akses layanan.</p>
+<h2 is-upgraded>Yang perlu dipahami operator</h2>
+<p>Skill adalah prosedur berversi yang dapat memerlukan CLI, environment, dan MCP tertentu. Tooling tidak otomatis menyediakan akses layanan.</p>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p>Ganti placeholder dengan nama dari registry. Baca SKILL.md dan lakukan Langkah 0. Pemeriksaan CLI/env dapat diotomatisasi; ketersediaan MCP yang dicetak tetap perlu diperiksa agent. Dependensi wajib hilang berarti laporkan blocker sebelum eksekusi.</p>
 <p>Sumber skill bersama berada di <code>skills/</code>; symlink lokal menunjuk ke sana. Perubahan skill membutuhkan metadata versi/owner/requires, preflight, validasi, dan review. Hindari menimpa versi lokal yang lebih baru tanpa menelaah perbedaannya.</p>
 <p>Untuk deliverable yang dapat dibuka ulang:</p>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py new artifact export-review --person operator-demo
-python3 scripts/hub.py publish export-review
-</code></pre>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p>Sumber dibuat di <code>artifacts/YYYY-MM-DD_export-review/</code> beserta <code>meta.yaml</code>. Isi HTML/Markdown dan metadata audience sesuai penerima. <code>publish</code> default mencetak lokasi lokal; itu belum berarti artifact sudah dipublikasikan di internet.</p>
 <p>Review sumber dan tampilan, termasuk batas data yang boleh dibagikan. Publikasi eksternal hanya atas instruksi spesifik operator. Sesudah publikasi aktual, catat URL hasilnya dengan <code>publish SLUG --record URL_AKTUAL</code>. Jangan merekam URL ilustrasi sebagai publikasi nyata.</p>
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Git, Review, dan Penutupan Sesi" duration="8">
-        <p>Sebelum mengubah file, periksa branch dan perubahan sesi lain. Agent menggunakan branch <code>hub/HANDLE/SLUG</code>, menambahkan file sesi ini satu per satu, dan membuat commit kecil per tujuan. Jangan commit ke main/master, jangan memakai <code>git add .</code>, dan jangan melewati hook.</p>
-<pre><code language="language-bash" class="language-bash">git status --short --branch
-git diff --stat
-python3 scripts/hub.py check
-git diff --check
+        <h2 is-upgraded>Prompt operator — Simpan progres dan akhiri sesi</h2>
+<pre><code language="language-text" class="language-text">Tutup sesi ini dengan rapi. Perbarui ticket, journal, dashboard,
+dan handoff pekerjaan ini berdasarkan hasil aktual. Jalankan
+validasi, tinjau diff, lalu simpan perubahan sesi ini dalam commit
+lokal per topik sesuai aturan repo. Jangan menyentuh perubahan sesi
+lain, push, atau merge. Laporkan hasil, blocker, dan titik lanjut.
 </code></pre>
-<p>Stage nama file aktual yang ditinjau, lalu commit dengan Conventional Commits dan trailer agent. Contoh di bawah memperlihatkan format pesan; staging dilakukan sebelumnya dengan path eksplisit:</p>
-<pre><code language="language-bash" class="language-bash">git commit -m &#34;docs(ticket): record export investigation&#34; -m &#34;Agent: codex&#34;
-</code></pre>
+<p><strong>Yang dikerjakan agent:</strong> Agent menangani branch, staging file spesifik, validasi, commit dan checklist wrapup. Operator cukup mereview hasil serta memberi instruksi khusus bila ingin melakukan aksi keluar.</p>
+<h2 is-upgraded>Yang perlu dipahami operator</h2>
+<p>Sebelum mengubah file, periksa branch dan perubahan sesi lain. Agent menggunakan branch <code>hub/HANDLE/SLUG</code>, menambahkan file sesi ini satu per satu, dan membuat commit kecil per tujuan. Jangan commit ke main/master, jangan memakai <code>git add .</code>, dan jangan melewati hook.</p>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
+<p>Agent meninjau dan menambahkan file sesi ini dengan path eksplisit, lalu membuat commit Conventional Commits dengan trailer agent:</p>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p>Jika hook gagal, baca dan laporkan masalahnya; jangan gunakan <code>--no-verify</code>. Perubahan milik orang lain tidak ikut di-stage.</p>
 <p>Push perlu instruksi eksplisit operator. Review memory bersama dan perubahan prosedur mengikuti aturan maintainer. Persetujuan draft isi belum otomatis mengizinkan kirim pesan atau ubah infrastruktur.</p>
 <p>Sebelum merge yang telah diperintahkan: fetch, update target dengan fast-forward, sinkronkan topic branch terhadap target terbaru, lalu cek konflik. <code>git merge-tree --write-tree TARGET TOPIC</code> dapat dipakai sebagai pemeriksaan tanpa mengubah working tree. Laporkan hasilnya; konflik memerlukan keputusan penyelesaian. Jalankan validasi lagi setelah merge.</p>
 <p>Jika perlu worktree, buat pada branch baru di folder parent repo; jangan menempati main/master di worktree tambahan. Cek daftar worktree dan jangan mengganggu sesi lain.</p>
-<p>Akhiri sesi dengan:</p>
-<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py wrapup
-</code></pre>
+<p>Pada penutupan sesi, agent menjalankan checklist wrapup:</p>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p>Wrapup bersifat read-only: daftar perubahan belum di-commit, commit belum di-push, branch tersisa, dan handoff basi. Output adalah checklist untuk ditinjau, bukan izin otomatis push atau hapus branch.</p>
 
 
       </google-codelab-step>
-    
+
       <google-codelab-step label="Review Mingguan dan Troubleshooting" duration="7">
-        <pre><code language="language-bash" class="language-bash">python3 scripts/hub.py report weekly
-python3 scripts/hub.py report stale
-python3 scripts/hub.py report health
+        <h2 is-upgraded>Prompt operator — Review mingguan tanpa terminal</h2>
+<pre><code language="language-text" class="language-text">Saya operator-demo. Review aktivitas hub minggu ini: rangkum kasus
+selesai, pekerjaan tersendat, knowledge basi, dan pola berulang.
+Pilih maksimal dua usulan promosi menjadi runbook atau skill dan
+jelaskan manfaatnya dengan bukti. Catat review aktual di journal,
+perbarui item saya yang berubah, dan tampilkan keputusan yang
+memerlukan review manusia. Jangan mengubah confidence sendiri.
 </code></pre>
+<p><strong>Yang dikerjakan agent:</strong> Agent menjalankan laporan mingguan, kesegaran dan kesehatan hub, lalu merangkum hasil untuk operator. Masalah teknis ditangani agent dalam scope yang diizinkan; login atau akses manusia diminta hanya bila diperlukan.</p>
+<h2 is-upgraded>Yang perlu dipahami operator</h2>
+<p>Agent menjalankan langkah teknis terkait secara mandiri; perintahnya tersedia di lampiran opsional.</p>
 <p>Review mingguan memeriksa kasus selesai, kandidat pelajaran, dan knowledge yang menua. Pilih maksimal dua usulan promosi agar review tetap dapat ditangani. Catat review aktual di journal, lalu perbarui <code>_hot.md</code> untuk pekerjaan Anda yang berubah.</p>
 <table>
 <tr><td colspan="1" rowspan="1"><p>Gejala</p>
@@ -361,16 +461,56 @@ python3 scripts/hub.py report health
 
 
       </google-codelab-step>
-    
-      <google-codelab-step label="Latihan Akhir dan Checklist" duration="5">
-        <p>Di clone latihan yang diizinkan, lakukan simulasi berikut tanpa menghubungi client atau layanan production:</p>
+
+      <google-codelab-step label="Bank Prompt Lanjutan dan Latihan Akhir" duration="8">
+        <h2 is-upgraded>Lanjutkan handoff di sesi baru</h2>
+<pre><code language="language-text" class="language-text">Saya operator-demo. Lanjutkan handoff SLUG_HANDOFF dari hub di
+LOKASI_HUB. Cocokkan handoff dengan branch, commit, dan working tree
+aktual; periksa tool wajib dan ikuti bagian Jangan dilakukan.
+Lanjutkan langkah yang sudah diotorisasi, perbarui bukti serta
+handoff setiap progres bermakna, dan laporkan bila ada blocker baru.
+</code></pre>
+<h2 is-upgraded>Minta status singkat di tengah pekerjaan</h2>
+<pre><code language="language-text" class="language-text">Kasus timeout ekspor sudah sampai mana? Beri status terbaru,
+apa yang berubah sejak update terakhir, bukti yang sudah ada,
+siapa yang ditunggu, dan satu langkah berikut. Jangan memulai
+ulang investigasi atau mengubah status hanya karena saya bertanya.
+</code></pre>
+<h2 is-upgraded>Revisi draft tanpa mengulang investigasi</h2>
+<pre><code language="language-text" class="language-text">Ringkas draft balasan kasus timeout ekspor menjadi tiga paragraf:
+perubahan terbaru, batas bukti, dan permintaan aksi berikut.
+Pertahankan fakta dan tanggal bukti. Jangan mengubah status ticket,
+menjalankan ulang investigasi, atau mengirim pesan.
+</code></pre>
+<h2 is-upgraded>Persetujuan yang jelas untuk satu pesan</h2>
+<pre><code language="language-text" class="language-text">Kirim draft terakhir yang baru saya review ke LINK_THREAD.
+Pertahankan isi yang disetujui dan penanda AI sesuai aturan hub.
+Laporkan hasil pengirimannya.
+</code></pre>
+<p>Gunakan prompt kirim hanya setelah benar-benar mereview draft dan memastikan thread tujuannya benar. Persetujuan itu berlaku untuk pesan tersebut.</p>
+<h2 is-upgraded>Setelah menyetujui hasil branch</h2>
+<pre><code language="language-text" class="language-text">Saya menyetujui perubahan pada BRANCH_TUTORIAL. Lakukan preflight
+merge ke BRANCH_TARGET sesuai aturan repo: update dari remote,
+sinkronkan branch, cek konflik dan validasi. Jika bersih, merge dan
+push ke remote yang disepakati. Jika konflik atau check gagal,
+berhenti dan laporkan tanpa melewati pemeriksaan.
+</code></pre>
+<p>Gunakan hanya jika aturan repository mengizinkan agent melakukan merge/push ke tujuan tersebut. Aturan hub privat dapat membatasi push ke main sehingga langkah akhir perlu dilakukan operator melalui antarmuka Git/PR. Agent harus menjelaskan batas yang benar-benar berlaku, bukan menganggap prompt menghapus seluruh aturan.</p>
+<h2 is-upgraded>Bila hasil belum sesuai</h2>
+<pre><code language="language-text" class="language-text">Jangan minta saya menjalankan command rutin. Selesaikan sendiri
+langkah teknis yang termasuk tugas ini dengan tool yang tersedia.
+Jika terhalang, jelaskan tindakan yang gagal, penyebabnya, dan
+bantuan minimum yang benar-benar perlu saya lakukan.
+</code></pre>
+<h2 is-upgraded>Latihan melalui percakapan</h2>
+<p>Di clone latihan yang diizinkan, lakukan simulasi berikut tanpa menghubungi client atau layanan production:</p>
 <ol type="1">
-<li>Nyatakan handle, baca aturan, jalankan doctor.</li>
-<li>Cari gejala sintetis dan bedakan hasil pencarian dari fakta terverifikasi.</li>
-<li>Buat satu catatan latihan yang jelas berlabel simulasi; catat hipotesis dan batas buktinya.</li>
-<li>Siapkan handoff sehingga pembaca berikut dapat menyebut langkah selanjutnya tanpa chat tambahan.</li>
-<li>Jalankan check, tinjau diff, dan siapkan commit di topic branch.</li>
-<li>Buka deliverable lokal jika ada; pastikan tidak ada data internal yang masuk materi publik.</li>
+<li>Kirim prompt onboarding dengan identitas dan lokasi hub; review ringkasan kesiapan dari agent.</li>
+<li>Minta agent mencari gejala sintetis dan menjelaskan perbedaan petunjuk dengan fakta terverifikasi.</li>
+<li>Minta agent membuat catatan latihan yang jelas berlabel simulasi, beserta hipotesis dan batas bukti.</li>
+<li>Kirim prompt handoff dan coba prompt lanjutkan pada sesi berikutnya.</li>
+<li>Minta agent memvalidasi dan menyimpan perubahan lokal; review ringkasan hasil dan diff yang disajikan.</li>
+<li>Review preview yang dibuka agent dan pastikan isi serta audience sudah tepat.</li>
 </ol>
 <p>Anda siap menggunakan workflow ketika dapat menjawab:</p>
 <ul>
@@ -384,7 +524,93 @@ python3 scripts/hub.py report health
 
 
       </google-codelab-step>
-    
+
+      <google-codelab-step label="Lampiran Opsional — Perintah yang Dijalankan Agent" duration="3">
+        <p>Bagian ini ditujukan untuk maintainer yang ingin memeriksa pelaksanaan teknis. <strong>Operator tidak perlu mengetik perintah ini.</strong> Agent memilih perintah yang relevan, mengganti placeholder dengan data aktual, dan mengikuti aturan repo. Perintah penulisan hanya dijalankan untuk tugas yang diminta; jangan mengeksekusi seluruh daftar sebagai satu script.</p>
+<h2 is-upgraded>Onboarding dan Pemeriksaan Lingkungan</h2>
+<pre><code language="language-bash" class="language-bash">git clone URL_REMOTE_HUB ~/projects/team-hub
+cd ~/projects/team-hub
+git status --short --branch
+git worktree list
+git remote show origin
+</code></pre>
+<h2 is-upgraded>Onboarding dan Pemeriksaan Lingkungan</h2>
+<pre><code language="language-bash" class="language-bash">git switch main
+git pull --ff-only origin main
+git switch -c hub/operator-demo/onboarding
+export QISCUS_HUB=&#34;$PWD&#34;
+export HUB_OPERATOR=operator-demo
+bash scripts/setup.sh
+python3 scripts/hub.py install --dry-run
+python3 scripts/hub.py install
+python3 scripts/hub.py doctor
+</code></pre>
+<h2 is-upgraded>Onboarding dan Pemeriksaan Lingkungan</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py new person --person operator-demo
+python3 scripts/hub.py export
+python3 scripts/hub.py check
+</code></pre>
+<h2 is-upgraded>Mulai Sesi dan Rencanakan Hari</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py handoff list
+python3 scripts/hub.py new journal --person operator-demo
+</code></pre>
+<h2 is-upgraded>Cari Dulu, Baru Buat Tiket</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py search &#34;timeout ekspor&#34;
+python3 scripts/hub.py search &#34;timeout&#34; --type ticket,runbook,knowledge
+python3 scripts/hub.py report stale
+</code></pre>
+<h2 is-upgraded>Cari Dulu, Baru Buat Tiket</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py new ticket export-timeout
+</code></pre>
+<h2 is-upgraded>Investigasi, Status, dan Komunikasi</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py stage --help
+</code></pre>
+<h2 is-upgraded>Yang bisa dipakai ulang</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py sync-used-by
+python3 scripts/hub.py check
+</code></pre>
+<h2 is-upgraded>Yang bisa dipakai ulang</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py new knowledge export-timeout-observations
+</code></pre>
+<h2 is-upgraded>Handoff yang Bisa Dilanjutkan</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py handoff new export-timeout-review --task &#34;Lanjutkan pemeriksaan timeout ekspor&#34; --operator operator-demo
+python3 scripts/hub.py handoff show export-timeout-review
+</code></pre>
+<h2 is-upgraded>Handoff yang Bisa Dilanjutkan</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py handoff update export-timeout-review --agent codex --stop-reason other --note &#34;Catat hasil aktual dan titik lanjut di file handoff&#34;
+</code></pre>
+<h2 is-upgraded>Handoff yang Bisa Dilanjutkan</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py handoff close export-timeout-review
+</code></pre>
+<h2 is-upgraded>Skill dan Artifact dalam Workflow</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py skills list
+python3 scripts/hub.py preflight NAMA-SKILL
+</code></pre>
+<h2 is-upgraded>Skill dan Artifact dalam Workflow</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py new artifact export-review --person operator-demo
+python3 scripts/hub.py publish export-review
+</code></pre>
+<h2 is-upgraded>Git, Review, dan Penutupan Sesi</h2>
+<pre><code language="language-bash" class="language-bash">git status --short --branch
+git diff --stat
+python3 scripts/hub.py check
+git diff --check
+</code></pre>
+<h2 is-upgraded>Git, Review, dan Penutupan Sesi</h2>
+<pre><code language="language-bash" class="language-bash">git commit -m &#34;docs(ticket): record export investigation&#34; -m &#34;Agent: codex&#34;
+</code></pre>
+<h2 is-upgraded>Git, Review, dan Penutupan Sesi</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py wrapup
+</code></pre>
+<h2 is-upgraded>Review Mingguan dan Troubleshooting</h2>
+<pre><code language="language-bash" class="language-bash">python3 scripts/hub.py report weekly
+python3 scripts/hub.py report stale
+python3 scripts/hub.py report health
+</code></pre>
+
+
+      </google-codelab-step>
+
   </google-codelab>
 
   <script src="../vendor/codelab-elements/native-shim.js"></script>

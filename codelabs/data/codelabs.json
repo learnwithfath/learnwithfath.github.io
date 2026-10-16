@@ -4,8 +4,8 @@
       "id": "relay-hub-workflow",
       "title": "Relay Hub — Knowledge Hub & Handoff Workflow",
       "icon": "📚",
-      "summary": "Panduan lengkap onboarding, konteks agent, investigasi tiket, trusted memory, handoff, skill, artifact, dan review Git dengan contoh sintetis.",
-      "duration": 87,
+      "summary": "Workflow Relay Hub lewat prompt siap pakai: operator menyampaikan tujuan, agent mengurus onboarding, investigasi, trusted memory, handoff, artifact, dan validasi.",
+      "duration": 93,
       "tags": [
         "AI",
         "Relay Hub",
@@ -17,7 +17,7 @@
         "ai",
         "developer-tools"
       ],
-      "searchTerms": "relay hub knowledge hub memory handoff ticket workflow journal skill artifact trusted memory onboarding",
+      "searchTerms": "relay hub knowledge hub memory handoff ticket workflow journal skill artifact trusted memory onboarding prompt operator bahasa alami agent mandiri otomatis",
       "url": "relay-hub-workflow/",
       "ctaText": "Mulai Tutorial"
     },
