@@ -1,6 +1,27 @@
 {
   "codelabs": [
     {
+      "id": "relay-hub-workflow",
+      "title": "Relay Hub — Knowledge Hub & Handoff Workflow",
+      "icon": "📚",
+      "summary": "Panduan lengkap onboarding, konteks agent, investigasi tiket, trusted memory, handoff, skill, artifact, dan review Git dengan contoh sintetis.",
+      "duration": 87,
+      "tags": [
+        "AI",
+        "Relay Hub",
+        "Git",
+        "Knowledge Management",
+        "Handoff"
+      ],
+      "categories": [
+        "ai",
+        "developer-tools"
+      ],
+      "searchTerms": "relay hub knowledge hub memory handoff ticket workflow journal skill artifact trusted memory onboarding",
+      "url": "relay-hub-workflow/",
+      "ctaText": "Mulai Tutorial"
+    },
+    {
       "id": "agentic-engineering-roadmap",
       "title": "Agentic Engineering Roadmap — Full Stack & Mobile",
       "icon": "🧭",
